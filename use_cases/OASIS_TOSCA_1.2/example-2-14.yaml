@@ -1,0 +1,65 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: Template with a TOSCA Orchestrator selectable database using node template.
+
+# NOTE: node types added.
+node_types:
+  my.types.MyApplication:
+    derived_from: tosca.nodes.Root
+    properties:
+      admin_user:
+        type: string
+      admin_password:
+        type: string
+      db_endpoint_url:
+        type: string
+    requirements:
+      - database_endpoint:
+          capability: tosca.capabilities.Endpoint.Database
+          node: tosca.nodes.Database
+          relationship: tosca.relationships.ConnectsTo
+
+  my.types.nodes.MyDatabase:
+    derived_from: tosca.nodes.Database
+    properties:
+      db_version:
+        type: string
+
+topology_template:
+  # inputs: # ISSUE: can't be empty
+    # omitted here for brevity
+
+  node_templates:
+    my_app:
+      type: my.types.MyApplication
+      properties:
+        admin_user: { get_input: admin_username }
+        admin_password: { get_input: admin_password }
+        db_endpoint_url: { get_property: [SELF, database_endpoint, url_path ] }
+      requirements:
+        - database_endpoint: my_abstract_database
+
+    my_abstract_database:
+      type: my.types.nodes.MyDatabase
+# TODO: node_filter will be supported later.
+      node_filter:
+        properties:
+          - db_version: { greater_or_equal: 5.5 }
+      properties: # TODO: remove when node_filter will be supported
+        name: my_abstract_database
+        db_version: '1.0.0'

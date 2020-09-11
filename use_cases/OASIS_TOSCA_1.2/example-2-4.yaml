@@ -1,0 +1,47 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: Template for deploying a single server with MySQL software on top.
+
+imports:
+  - non_normative_types.yaml
+
+topology_template:
+  inputs:
+    # omitted here for brevity
+    # NOTE: following inputs must be defined
+    my_mysql_rootpw:
+      type: string
+    my_mysql_port:
+      type: integer
+
+  node_templates:
+    mysql:
+      type: tosca.nodes.DBMS.MySQL
+      properties:
+        root_password: { get_input: my_mysql_rootpw }
+        port: { get_input: my_mysql_port }
+      requirements:
+        - host: db_server
+      interfaces:
+        Standard:
+          configure: scripts/my_own_configure.sh
+
+    db_server:
+      type: tosca.nodes.Compute
+      # capabilities: # ISSUE: can't be empty
+        # omitted here for brevity

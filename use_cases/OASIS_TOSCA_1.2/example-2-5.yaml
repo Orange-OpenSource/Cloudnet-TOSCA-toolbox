@@ -1,0 +1,74 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: Template for deploying MySQL and database content.
+
+imports:
+  - non_normative_types.yaml
+
+topology_template:
+  inputs:
+    # omitted here for brevity
+    # NOTE: following inputs must be defined
+    database_name:
+      type: string
+    database_user:
+      type: string
+    database_password:
+      type: string
+    database_port:
+      type: integer
+    my_mysql_rootpw:
+      type: string
+    my_mysql_port:
+      type: integer
+
+  node_templates:
+
+    my_db:
+      type: tosca.nodes.Database.MySQL
+      properties:
+        name: { get_input: database_name }
+        user: { get_input: database_user }
+        password: { get_input: database_password }
+        port: { get_input: database_port }
+      artifacts:
+        db_content:
+          file: files/my_db_content.txt
+          type: tosca.artifacts.File
+      requirements:
+        - host: mysql
+      interfaces:
+        Standard:
+          create:
+            implementation: db_create.sh
+            inputs:
+              # Copy DB file artifact to server’s staging area
+              db_data: { get_artifact: [ SELF, db_content ] }
+
+    mysql:
+      type: tosca.nodes.DBMS.MySQL
+      properties:
+        root_password: { get_input: mysql_rootpw }
+        port: { get_input: mysql_port }
+      requirements:
+        - host: db_server
+
+    db_server:
+      type: tosca.nodes.Compute
+      # capabilities: # ISSUE: can't be empty
+        # omitted here for brevity

@@ -1,0 +1,32 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: >
+    Tosca template for creating an object storage service.
+
+topology_template:
+  inputs:
+    objectstore_name:
+      type: string
+
+  node_templates:
+    obj_store_server:
+      type: tosca.nodes.Storage.ObjectStorage
+      properties:
+        name: { get_input: objectstore_name }
+        size: 4096 MB
+        maxsize: 20 GB

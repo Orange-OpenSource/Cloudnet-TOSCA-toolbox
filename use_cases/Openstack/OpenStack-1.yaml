@@ -1,0 +1,87 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: One OpenStack topology.
+
+imports:
+  - OpenStack_types.yaml
+
+topology_template:
+  node_templates:
+
+    facts:
+      type: openstack.nodes.Facts
+
+    common:
+      type: openstack.nodes.Common
+      requirements:
+        - facts: facts
+
+    haproxy:
+      type: openstack.nodes.HAProxy
+      requirements:
+        - facts: facts
+
+    memcached:
+      type: openstack.nodes.MemCached
+      requirements:
+        - facts: facts
+
+    rabbitmq:
+      type: openstack.nodes.RabbitMQ
+      requirements:
+        - facts: facts
+
+    mariadb:
+      type: openstack.nodes.MariaDB
+      requirements:
+        - com: common
+        - ha: haproxy
+
+    keystone:
+      type: openstack.nodes.Keystone
+      requirements:
+        - facts: facts # NOTE: Is it needed?
+        - mdb: mariadb
+
+    glance:
+      type: openstack.nodes.Glance
+      requirements:
+        - facts: facts
+        - kst: keystone
+        - mdb: mariadb
+
+    nova:
+      type: openstack.nodes.Nova
+      requirements:
+        - facts: facts
+        - kst: keystone
+        - mdb: mariadb
+
+    openvswitch:
+      type: openstack.nodes.OpenVSwitch
+      requirements:
+        - facts: facts
+
+    neutron:
+      type: openstack.nodes.Neutron
+      requirements:
+        - facts: facts
+        - kst: keystone
+        - mdb: mariadb
+        # NOTE: Is neutron would be connected to openvswitch?
+        - openvswitch: openvswitch

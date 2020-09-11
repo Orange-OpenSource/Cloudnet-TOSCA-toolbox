@@ -1,0 +1,85 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: Specifying network requirements within the application’s Service Template
+
+topology_template:
+  inputs:
+   oam_network_ip_version:
+      type: integer
+      constraints:
+        - valid_values: [ 4, 6 ]
+   oam_network_cidr:
+      type: string
+   oam_network_start_ip:
+      type: string
+   oam_network_end_ip:
+      type: string
+   admin_network_ip_version:
+      type: integer
+      constraints:
+        - valid_values: [ 4, 6 ]
+   admin_network_dhcp_enabled:
+      type: boolean
+   data_network_ip_version:
+      type: integer
+      constraints:
+        - valid_values: [ 4, 6 ]
+   data_network_cidr:
+      type: string
+
+  node_templates:
+    frontend:
+      type: tosca.nodes.Compute
+      # properties: # omitted for brevity # ISSUE: can't be empty
+      # requirements: # ISSUE: can't be empty
+# ISSUE: unknown references.
+#        - network_oam: oam_network
+#        - network_admin: admin_network
+    backend:
+      type: tosca.nodes.Compute
+      # properties: # omitted for brevity # ISSUE: can't be empty
+      # requirements: # ISSUE: can't be empty
+# ISSUE: unknown references.
+#        - network_admin: admin_network
+#        - network_data: data_network
+    database:
+      type: tosca.nodes.Compute
+      # properties: # omitted for brevity # ISSUE: can't be empty
+      # requirements: # ISSUE: can't be empty
+# ISSUE: unknown references.
+#        - network_data: data_network
+
+    oam_network:
+      type: tosca.nodes.network.Network
+      properties:
+        ip_version:  { get_input: oam_network_ip_version }
+        cidr: { get_input: oam_network_cidr }
+        start_ip: { get_input: oam_network_start_ip }
+        end_ip: { get_input: oam_network_end_ip }
+
+    admin_network:
+      type: tosca.nodes.network.Network
+      properties:
+        ip_version:  { get_input: admin_network_ip_version }
+        dhcp_enabled: { get_input: admin_network_dhcp_enabled }
+
+    data_network:
+      type: tosca.nodes.network.Network
+      properties:
+        ip_version:  { get_input: data_network_ip_version }
+        cidr: { get_input: data_network_cidr }

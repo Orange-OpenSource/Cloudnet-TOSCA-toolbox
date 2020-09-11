@@ -1,0 +1,98 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: Template for deploying a two-tier application servers on two
+
+imports:
+  - non_normative_types.yaml
+
+topology_template:
+  inputs:
+    # Admin user name and password to use with the WordPress application
+    wp_admin_username:
+      type: string
+    wp_admin_password:
+      type: string
+    wp_db_name:
+      type: string
+    wp_db_user:
+      type: string
+    wp_db_password:
+      type: string
+    wp_db_port:
+      type: integer
+    mysql_root_password:
+      type: string
+    mysql_port:
+      type: integer
+    context_root:
+      type: string
+
+  node_templates:
+    wordpress:
+      type: tosca.nodes.WebApplication.WordPress
+      properties:
+        context_root: { get_input: context_root }
+        admin_user: { get_input: wp_admin_username }
+        admin_password: { get_input: wp_admin_password }
+        db_host: { get_attribute: [ db_server, private_address ] }
+      requirements:
+        - host: apache
+        - database_endpoint: wordpress_db
+      interfaces:
+        Standard:
+          inputs: # TODO: Will be supported later.
+            db_host: { get_attribute: [ db_server, private_address ] }
+            db_port: { get_property: [ wordpress_db, port ] }
+            db_name: { get_property: [ wordpress_db, name ] }
+            db_user: { get_property: [ wordpress_db, user ] }
+            db_password: { get_property: [ wordpress_db, password ] }
+
+    apache:
+      type: tosca.nodes.WebServer.Apache
+      # properties: # ISSUE: can't be empty
+        # omitted here for brevity
+      requirements:
+        - host: web_server
+
+    web_server:
+      type: tosca.nodes.Compute
+      # capabilities: # ISSUE: can't be empty
+        # omitted here for brevity
+
+    wordpress_db:
+      type: tosca.nodes.Database.MySQL
+      properties:
+        name: { get_input: wp_db_name }
+        user: { get_input: wp_db_user }
+        password: { get_input: wp_db_password }
+        port: { get_input: wp_db_port }
+      requirements:
+        - host: mysql
+
+    mysql:
+      type: tosca.nodes.DBMS.MySQL
+      properties:
+        root_password: { get_input: mysql_root_password }
+        port: { get_input: mysql_port }
+      requirements:
+        - host: db_server
+
+    db_server:
+      type: tosca.nodes.Compute
+      # capabilities: # ISSUE: can't be empty
+        # omitted here for brevity

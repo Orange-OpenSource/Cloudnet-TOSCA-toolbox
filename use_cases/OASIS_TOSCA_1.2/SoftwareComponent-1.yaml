@@ -1,0 +1,60 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: >
+  TOSCA Simple Profile with a SoftwareComponent node with a declared Virtual machine (VM) deployment artifact that automatically deploys to its host Compute node.
+
+imports:
+  - non_normative_types.yaml
+
+topology_template:
+
+  inputs:
+    cpus:
+      type: integer
+
+  node_templates:
+    my_virtual_machine:
+      type: SoftwareComponent
+# TODO: This is a bug with previous line!
+      type: tosca.nodes.SoftwareComponent
+      artifacts:
+        my_vm_image:
+          file: images/fedora-18-x86_64.qcow2
+          type: tosca.artifacts.Deployment.Image.VM.QCOW2
+      requirements:
+        - host: my_server
+      # Automatically deploy the VM image referenced on the create operation
+      interfaces:
+        Standard:
+          create: my_vm_image
+
+    # Compute instance with no Operating System guest host
+    my_server:
+      type: Compute
+      capabilities:
+        # Note: no guest OperatingSystem requirements as these are in the image.
+        host:
+          properties:
+            disk_size: 10 GB
+            num_cpus: { get_input: cpus }
+            mem_size: 4 GB
+
+  outputs:
+    private_ip:
+      description: The private IP address of the deployed server instance.
+      value: { get_attribute: [my_server, private_address] }

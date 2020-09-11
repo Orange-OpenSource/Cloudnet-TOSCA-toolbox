@@ -1,0 +1,173 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+namespace: http://docs.oasis-open.org/tosca/ns/simple/yaml/1.1
+
+metadata:
+  template_name:    tosca_simple_yaml
+  template_author:  Philippe Merle
+  template_version: 1.1
+  url:              http://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.1/os/
+
+description: OASIS TOSCA 1.1 os normative types
+
+# TODO: add description to each declaration.
+# TODO: to be completed.
+
+data_types:
+
+  # Section 5.3.1 tosca.datatypes.Root
+  tosca.datatypes.Root:
+    description: The TOSCA root Data Type all other TOSCA base Data Types derive from
+
+artifact_types:
+
+  # Section 5.4.1 tosca.artifacts.Root
+  tosca.artifacts.Root:
+    description: The TOSCA Artifact Type all other TOSCA Artifact Types derive from
+
+  # Section 5.4.3.1 tosca.artifacts.Deployment
+  tosca.artifacts.Deployment:
+    derived_from: tosca.artifacts.Root
+    description: TOSCA base type for deployment artifacts
+
+  # Section 5.4.3.2 tosca.artifacts.Deployment.Image
+  tosca.artifacts.Deployment.Image:
+    derived_from: tosca.artifacts.Deployment
+
+  # Section 5.4.4.1 tosca.artifacts.Implementation
+  tosca.artifacts.Implementation:
+    derived_from: tosca.artifacts.Root
+    description: TOSCA base type for implementation artifacts
+
+capability_types:
+
+  # Section 5.5.1 tosca.capabilities.Root
+  tosca.capabilities.Root:
+    description: The TOSCA root Capability Type all other TOSCA base Capability Types derive from
+
+  # Section 5.5.2 tosca.capabilities.Node
+  tosca.capabilities.Node:
+    derived_from: tosca.capabilities.Root
+
+relationship_types:
+
+  # Section 5.7.1 tosca.relationships.Root
+  tosca.relationships.Root:
+    description: The TOSCA root Relationship Type all other TOSCA base Relationship Types derive from
+    attributes:
+      tosca_id:
+        type: string
+      tosca_name:
+        type: string
+    interfaces:
+      Configure:
+        type: tosca.interfaces.relationship.Configure
+
+  # Section 5.7.2 tosca.relationships.DependsOn
+  tosca.relationships.DependsOn:
+    derived_from: tosca.relationships.Root
+    valid_target_types: [ tosca.capabilities.Node ]
+
+interface_types:
+
+  # Section 5.8.3 tosca.interfaces.Root
+  tosca.interfaces.Root:
+# ISSUE: tosca.entity.Root undefined
+#    derived_from: tosca.entity.Root
+    description: The TOSCA root Interface Type all other TOSCA base Interface Types derive from
+
+  # Section 5.8.4 tosca.interfaces.node.lifecycle.Standard
+  tosca.interfaces.node.lifecycle.Standard:
+    derived_from: tosca.interfaces.Root
+    create:
+      description: Standard lifecycle create operation.
+    configure:
+      description: Standard lifecycle configure operation.
+    start:
+      description: Standard lifecycle start operation.
+    stop:
+      description: Standard lifecycle stop operation.
+    delete:
+      description: Standard lifecycle delete operation.
+
+  # Section 5.8.5 tosca.interfaces.relationship.Configure
+  tosca.interfaces.relationship.Configure:
+    derived_from: tosca.interfaces.Root
+    pre_configure_source:
+      description: Operation to pre-configure the source endpoint.
+    pre_configure_target:
+      description: Operation to pre-configure the target endpoint.
+    post_configure_source:
+      description: Operation to post-configure the source endpoint.
+    post_configure_target:
+      description: Operation to post-configure the target endpoint.
+    add_target:
+      description: Operation to notify the source node of a target node being added via a relationship.
+    add_source:
+      description: Operation to notify the target node of a source node which is now available via a relationship.
+    target_changed:
+      description: Operation to notify source some property or attribute of the target changed
+    remove_target:
+      description: Operation to remove a target node.
+
+node_types:
+
+  # Section 5.9.1 tosca.nodes.Root
+  tosca.nodes.Root:
+# ISSUE: tosca.entity.Root undefined
+#    derived_from: tosca.entity.Root
+    description: The TOSCA Node Type all other TOSCA base Node Types derive from
+    attributes:
+      tosca_id:
+        type: string
+      tosca_name:
+        type: string
+      state:
+        type: string
+    capabilities:
+      feature:
+        type: tosca.capabilities.Node
+    requirements:
+      - dependency:
+          capability: tosca.capabilities.Node
+          node: tosca.nodes.Root
+          relationship: tosca.relationships.DependsOn
+          occurrences: [ 0, UNBOUNDED ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+
+group_types:
+
+  # Section 5.10.1 tosca.groups.Root
+  tosca.groups.Root:
+    description: The TOSCA Group Type all other TOSCA Group Types derive from
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+
+policy_types:
+
+  # Section 5.11.1 tosca.policies.Root
+  tosca.policies.Root:
+    description: The TOSCA Policy Type all other TOSCA Policy Types derive from
+
+  # Section 5.11.2 tosca.policies.Placement
+  tosca.policies.Placement:
+    derived_from: tosca.policies.Root
+    description: The TOSCA Policy Type definition that is used to govern placement of TOSCA nodes or groups of nodes.

@@ -1,0 +1,859 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Authors: 
+#   Frédéric Klamm <frederic.klamm@orange.com>, 
+#   Philippe Merle <philippe.merle@inria.fr>
+# Software description: TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+namespace: http://docs.oasis-open.org/tosca/ns/simple/yaml/1.3
+
+metadata:
+  template_name:    tosca_simple_yaml
+  template_author:  Philippe Merle, Frederic Klamm
+  template_version: 1.3
+  url:              https://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.3/os/TOSCA-Simple-Profile-YAML-v1.3-os.html
+
+description: OASIS TOSCA 1.3 os normative types
+
+# TODO: add description to each declaration.
+
+data_types:
+
+  # Section 5.3.1 tosca.datatypes.Root
+  tosca.datatypes.Root:
+    description: The TOSCA root Data Type all other TOSCA base Data Types derive from
+
+  # Section 5.3.2 tosca.datatypes.json
+  tosca.datatypes.json:
+    derived_from: string
+    description: The TOSCA data Type used to define a string that contains data in the JavaScript Object Notation (JSON) format
+
+  # Section 5.3.3 tosca.datatypes.xml
+  tosca.datatypes.xml:
+    derived_from: string
+    description: The TOSCA data Type used to define a string that contains data in the Extensible Markup Language (XML) format
+
+  # Section 5.3.4 tosca.datatypes.Credential
+  tosca.datatypes.Credential:
+    derived_from: tosca.datatypes.Root
+    description: The TOSCA data Type used when describing authorization credentials used to access network accessible resources
+    properties:
+      protocol:
+        description: The optional protocol name
+        type: string
+        required: false
+      token_type:
+        description: The required token type
+        type: string
+        default: password
+      token:
+        description: The required token used as a credential for authorization or access to a networked resource
+        type: string
+      keys:
+        description: The optional list of protocol-specific keys or assertions
+        type: map
+        required: false
+        entry_schema:
+          type: string
+      user:
+        description: The optional user (name or ID) used for non-token based credentials
+        type: string
+        required: false
+
+  # Section 5.3.5 tosca.datatypes.TimeInterval
+  tosca.datatypes.TimeInterval:
+    derived_from: tosca.datatypes.Root
+    description: The TOSCA data Type used when describing a period of time using the YAML ISO 8601 format to declare the start and end times
+    properties:
+      start_time:
+        description: The inclusive start time for the time interval
+        type: timestamp
+        required: true
+      end_time:
+        description: The inclusive end time for the time interval
+        type: timestamp
+        required: true
+
+  # Section 5.3.6 tosca.datatypes.network.NetworkInfo
+  tosca.datatypes.network.NetworkInfo:
+    derived_from: tosca.datatypes.Root
+    properties:
+      network_name:
+        type: string
+      network_id:
+        type: string
+      addresses:
+        type: list
+        entry_schema:
+          type: string
+
+  # Section 5.3.7 tosca.datatypes.network.PortInfo
+  tosca.datatypes.network.PortInfo:
+    derived_from: tosca.datatypes.Root
+    properties:
+      port_name:
+        type: string
+      port_id:
+        type: string
+      network_id:
+        type: string
+      mac_address:
+        type: string
+      addresses:
+        type: list
+        entry_schema:
+          type: string
+
+  # Section 5.3.8 tosca.datatypes.network.PortDef
+  tosca.datatypes.network.PortDef:
+    derived_from: integer
+    constraints:
+      - in_range: [ 1, 65535 ]
+
+  # Section 5.3.9 tosca.datatypes.network.PortSpec
+  tosca.datatypes.network.PortSpec:
+    derived_from: tosca.datatypes.Root
+    properties:
+      protocol:
+        type: string
+        required: true
+        default: tcp
+        constraints:
+          - valid_values: [ udp, tcp, igmp ]
+      target:
+        type: PortDef
+        required: false
+      target_range:
+        type: range
+        required: false
+        constraints:
+          - in_range: [ 1, 65535 ]
+      source:
+        type: PortDef
+        required: false
+      source_range:
+        type: range
+        required: false
+        constraints:
+          - in_range: [ 1, 65535 ]
+
+artifact_types:
+
+  # Section 5.4.1 tosca.artifacts.Root
+  tosca.artifacts.Root:
+    description: The TOSCA Artifact Type all other TOSCA Artifact Types derive from
+
+  # Section 5.4.2 tosca.artifacts.File
+  tosca.artifacts.File:
+    derived_from: tosca.artifacts.Root
+
+  # Section 5.4.3.1 tosca.artifacts.Deployment
+  tosca.artifacts.Deployment:
+    derived_from: tosca.artifacts.Root
+    description: TOSCA base type for deployment artifacts
+
+  # Section 5.4.3.2 tosca.artifacts.Deployment.Image
+  tosca.artifacts.Deployment.Image:
+    derived_from: tosca.artifacts.Deployment
+
+  # Section 5.4.3.3 tosca.artifacts.Deployment.Image.VM
+  tosca.artifacts.Deployment.Image.VM:
+    derived_from: tosca.artifacts.Deployment.Image
+    description: Virtual Machine (VM) Image
+
+  # Section 5.4.4.1 tosca.artifacts.Implementation
+  tosca.artifacts.Implementation:
+    derived_from: tosca.artifacts.Root
+    description: TOSCA base type for implementation artifacts
+
+  # Section 5.4.4.2 tosca.artifacts.Implementation.Bash
+  tosca.artifacts.Implementation.Bash:
+    derived_from: tosca.artifacts.Implementation
+    description: Script artifact for the Unix Bash shell
+    mime_type: application/x-sh
+    file_ext: [ sh ]
+
+  # Section 5.4.4.3 tosca.artifacts.Implementation.Python
+  tosca.artifacts.Implementation.Python:
+    derived_from: tosca.artifacts.Implementation
+    description: Artifact for the interpreted Python language
+    mime_type: application/x-python
+    file_ext: [ py ]
+    
+  #fk: ajout
+  # Section 5.4.5 tosca.artifacts.template
+  tosca.artifacts.template:
+    derived_from: tosca.artifacts.Root
+    description: TOSCA base type for template type artifacts
+
+capability_types:
+
+  # Section 5.5.1 tosca.capabilities.Root
+  tosca.capabilities.Root:
+    description: The TOSCA root Capability Type all other TOSCA base Capability Types derive from
+
+  # Section 5.5.2 tosca.capabilities.Node
+  tosca.capabilities.Node:
+    derived_from: tosca.capabilities.Root
+
+  # Section 5.5.3 tosca.capabilities.Compute
+  tosca.capabilities.Compute:
+    derived_from: tosca.capabilities.Container
+    # shortname: Compute # ISSUE: error in spec. : 'shortname' is not an allowed keyword
+    properties:
+      name:
+        type: string
+        required: false
+      num_cpus:
+        type: integer
+        required: false
+        constraints:
+          - greater_or_equal: 1
+      cpu_frequency:
+        type: scalar-unit.frequency
+        required: false
+        constraints:
+          - greater_or_equal: 0.1 GHz
+      disk_size:
+        type: scalar-unit.size
+        required: false
+        constraints:
+          - greater_or_equal: 0 MB
+      mem_size:
+        type: scalar-unit.size
+        required: false
+        constraints:
+          - greater_or_equal: 0 MB
+
+  # Section 5.5.4 tosca.capabilities.Network
+  tosca.capabilities.Network:
+    derived_from: tosca.capabilities.Root
+    properties:
+      name:
+        type: string
+        required: false
+
+  # Section 5.5.5 tosca.capabilities.Storage
+  tosca.capabilities.Storage:
+    derived_from: tosca.capabilities.Root
+    properties:
+      name:
+        type: string
+        required: false
+
+  # Section 5.5.6 tosca.capabilities.Container
+  tosca.capabilities.Container:
+    derived_from: tosca.capabilities.Root
+
+  # Section 5.5.7 tosca.capabilities.Endpoint
+  tosca.capabilities.Endpoint:
+    derived_from: tosca.capabilities.Root
+    properties:
+      protocol:
+        type: string
+        required: true
+        default: tcp
+      port:
+        type: PortDef
+        required: false
+      secure:
+        type: boolean
+        required: false
+        default: false
+      url_path:
+        type: string
+        required: false
+      port_name:
+        type: string
+        required: false
+      network_name:
+        type: string
+        required: false
+        default: PRIVATE
+      initiator:
+        type: string
+        required: false
+        default: source
+        constraints:
+          - valid_values: [ source, target, peer ]
+      ports:
+        type: map
+        required: false
+        constraints:
+          - min_length: 1
+        entry_schema:
+          type: PortSpec
+    attributes:
+      ip_address:
+        type: string
+
+  # Section 5.5.8 tosca.capabilities.Endpoint.Public
+  tosca.capabilities.Endpoint.Public:
+    derived_from: tosca.capabilities.Endpoint
+    properties:
+      # Change the default network_name to use the first public network found
+      network_name:
+        type: string
+        default: PUBLIC
+        constraints:
+          - equal: PUBLIC
+      floating:
+        description: Indicates that the public address should be allocated from a pool of floating IPs that are associated with the network.
+        type: boolean
+        default: false
+        status: experimental
+      dns_name:
+        description: The optional name to register with DNS
+        type: string
+        required: false
+        status: experimental
+
+  # Section 5.5.9 tosca.capabilities.Endpoint.Admin
+  tosca.capabilities.Endpoint.Admin:
+    derived_from: tosca.capabilities.Endpoint
+    # Change Endpoint secure indicator to true from its default of false
+    properties:
+      secure:
+        type: boolean
+        default: true
+        constraints:
+          - equal: true
+
+  # Section 5.5.10 tosca.capabilities.Endpoint.Database
+  tosca.capabilities.Endpoint.Database:
+    derived_from: tosca.capabilities.Endpoint
+
+  # Section 5.5.11 tosca.capabilities.Attachment
+  tosca.capabilities.Attachment:
+    derived_from: tosca.capabilities.Root
+
+  # Section 5.5.12 tosca.capabilities.OperatingSystem
+  tosca.capabilities.OperatingSystem:
+    derived_from: tosca.capabilities.Root
+    properties:
+      architecture:
+        type: string
+        required: false
+      type:
+        type: string
+        required: false
+      distribution:
+        type: string
+        required: false
+      version:
+        type: version
+        required: false
+
+  # Section 5.5.13 tosca.capabilities.Scalable
+  tosca.capabilities.Scalable:
+    derived_from: tosca.capabilities.Root
+    properties:
+      min_instances:
+        type: integer
+        default: 1
+        constraints:
+          - greater_or_equal: 1 # ISSUE: Added.
+      max_instances:
+        type: integer
+        default: 1
+        constraints:
+          - greater_or_equal: 1 # ISSUE: Added.
+      default_instances:
+        required: false # ISSUE: Missed in the spec.
+        type: integer
+        constraints:
+          - greater_or_equal: 1 # ISSUE: Added.
+
+  # Section 5.5.14 tosca.capabilities.network.Bindable
+  tosca.capabilities.network.Bindable:
+    derived_from: tosca.capabilities.Node
+
+  # Section 8.5.3 tosca.capabilities.network.Linkable
+  tosca.capabilities.network.Linkable:
+    derived_from: tosca.capabilities.Node
+
+relationship_types:
+
+  # Section 5.7.1 tosca.relationships.Root
+  tosca.relationships.Root:
+    description: The TOSCA root Relationship Type all other TOSCA base Relationship Types derive from
+    attributes:
+      tosca_id:
+        type: string
+      tosca_name:
+        type: string
+    interfaces:
+      Configure:
+        type: tosca.interfaces.relationship.Configure
+
+  # Section 5.7.2 tosca.relationships.DependsOn
+  tosca.relationships.DependsOn:
+    derived_from: tosca.relationships.Root
+    valid_target_types: [ tosca.capabilities.Node ]
+
+  # Section 5.7.3 tosca.relationships.HostedOn
+  tosca.relationships.HostedOn:
+    derived_from: tosca.relationships.Root
+    valid_target_types: [ tosca.capabilities.Container ]
+
+  # Section 5.7.4 tosca.relationships.ConnectsTo
+  tosca.relationships.ConnectsTo:
+    derived_from: tosca.relationships.Root
+    valid_target_types: [ tosca.capabilities.Endpoint ]
+    properties:
+      credential:
+        type: tosca.datatypes.Credential
+        required: false
+
+  # Section 5.7.5 tosca.relationships.AttachesTo
+  tosca.relationships.AttachesTo:
+    derived_from: tosca.relationships.Root
+    valid_target_types: [ tosca.capabilities.Attachment ]
+    properties:
+      location:
+        type: string
+        constraints:
+          - min_length: 1
+      device:
+        type: string
+        required: false
+
+  # Section 5.7.6 tosca.relationships.RoutesTo
+  tosca.relationships.RoutesTo:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [ tosca.capabilities.Endpoint ]
+
+  # Section 8.5.4 tosca.relationships.network.LinksTo
+  tosca.relationships.network.LinksTo:
+    derived_from: tosca.relationships.DependsOn
+    valid_target_types: [ tosca.capabilities.network.Linkable ]
+
+  # Section 8.5.5 tosca.relationships.network.BindsTo
+  tosca.relationships.network.BindsTo:
+    derived_from: tosca.relationships.DependsOn
+    valid_target_types: [ tosca.capabilities.network.Bindable ]
+
+interface_types:
+
+  # Section 5.8.3 tosca.interfaces.Root
+  tosca.interfaces.Root:
+# ISSUE: tosca.entity.Root undefined
+#    derived_from: tosca.entity.Root
+    description: The TOSCA root Interface Type all other TOSCA base Interface Types derive from
+
+  # Section 5.8.4 tosca.interfaces.node.lifecycle.Standard
+  tosca.interfaces.node.lifecycle.Standard:
+    derived_from: tosca.interfaces.Root
+    operations:
+      create:
+        description: Standard lifecycle create operation.
+      configure:
+        description: Standard lifecycle configure operation.
+      start:
+        description: Standard lifecycle start operation.
+      stop:
+        description: Standard lifecycle stop operation.
+      delete:
+        description: Standard lifecycle delete operation.
+
+  # Section 5.8.5 tosca.interfaces.relationship.Configure
+  tosca.interfaces.relationship.Configure:
+    derived_from: tosca.interfaces.Root
+    operations:
+      pre_configure_source:
+        description: Operation to pre-configure the source endpoint.
+      pre_configure_target:
+        description: Operation to pre-configure the target endpoint.
+      post_configure_source:
+        description: Operation to post-configure the source endpoint.
+      post_configure_target:
+        description: Operation to post-configure the target endpoint.
+      add_target:
+        description: Operation to notify the source node of a target node being added via a relationship.
+      add_source:
+        description: Operation to notify the target node of a source node which is now available via a relationship.
+      target_changed:
+        description: Operation to notify source some property or attribute of the target changed
+      remove_target:
+        description: Operation to remove a target node.
+
+node_types:
+
+  # Section 5.9.1 tosca.nodes.Root
+  tosca.nodes.Root:
+# ISSUE: tosca.entity.Root undefined
+#    derived_from: tosca.entity.Root
+    description: The TOSCA Node Type all other TOSCA base Node Types derive from
+    attributes:
+      tosca_id:
+        type: string
+      tosca_name:
+        type: string
+      state:
+        type: string
+    capabilities:
+      feature:
+        type: tosca.capabilities.Node
+    requirements:
+      - dependency:
+          capability: tosca.capabilities.Node
+          node: tosca.nodes.Root
+          relationship: tosca.relationships.DependsOn
+          occurrences: [ 0, UNBOUNDED ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+
+  # Section 5.9.2 tosca.nodes.Abstract.Compute
+  tosca.nodes.Abstract.Compute:
+    derived_from: tosca.nodes.Root
+    capabilities:
+      host:
+        type: tosca.capabilities.Compute
+#        valid_source_types: [] # ISSUE: See page 107 line 1942: "represents the optional list of one or more names of Node Types that the Capability Type supports as valid sources for a successful relationship to be established to itself".
+
+  # Section 5.9.3 tosca.nodes.Compute
+  tosca.nodes.Compute:
+    derived_from: tosca.nodes.Abstract.Compute
+    attributes:
+      private_address:
+        type: string
+      public_address:
+        type: string
+      networks:
+        type: map
+        entry_schema:
+          type: tosca.datatypes.network.NetworkInfo
+      ports:
+        type: map
+        entry_schema:
+          type: tosca.datatypes.network.PortInfo
+    requirements:
+      - local_storage:
+          capability: tosca.capabilities.Attachment
+#          node: tosca.nodes.BlockStorage # ISSUE: undefined type.
+          node: tosca.nodes.Storage.BlockStorage
+          relationship: tosca.relationships.AttachesTo
+          occurrences: [0, UNBOUNDED]
+    capabilities:
+      host:
+        type: tosca.capabilities.Compute
+        valid_source_types: [tosca.nodes.SoftwareComponent]
+      endpoint:
+        type: tosca.capabilities.Endpoint.Admin
+      os:
+        type: tosca.capabilities.OperatingSystem
+      scalable:
+        type: tosca.capabilities.Scalable
+      binding:
+        type: tosca.capabilities.network.Bindable
+
+  # Section 5.9.4 tosca.nodes.SoftwareComponent
+  tosca.nodes.SoftwareComponent:
+    derived_from: tosca.nodes.Root
+    properties:
+      # domain-specific software component version
+      component_version:
+        type: version
+        required: false
+      admin_credential:
+        type: tosca.datatypes.Credential
+        required: false
+    requirements:
+      - host:
+          capability: tosca.capabilities.Compute
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn
+
+  # Section 5.9.5 tosca.nodes.WebServer
+  tosca.nodes.WebServer:
+    derived_from: tosca.nodes.SoftwareComponent
+    capabilities:
+      # Private, layer 4 endpoints
+      data_endpoint: tosca.capabilities.Endpoint
+      admin_endpoint: tosca.capabilities.Endpoint.Admin
+      host:
+        type: tosca.capabilities.Compute
+        valid_source_types: [ tosca.nodes.WebApplication ]
+
+  # Section 5.9.6 tosca.nodes.WebApplication
+  tosca.nodes.WebApplication:
+    derived_from: tosca.nodes.Root
+    properties:
+      context_root:
+        type: string
+        required: false # ISSUE: missed in the spec.
+    capabilities:
+      app_endpoint:
+        type: tosca.capabilities.Endpoint
+    requirements:
+      - host:
+          capability: tosca.capabilities.Compute
+          node: tosca.nodes.WebServer
+          relationship: tosca.relationships.HostedOn
+
+  # Section 5.9.7 tosca.nodes.DBMS
+  tosca.nodes.DBMS:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      root_password:
+        type: string
+        required: false
+        description: the optional root password for the DBMS service
+      port:
+        type: integer # ISSUE: Should be PortDef.
+        required: false
+        description: the port the DBMS service will listen to for data and requests
+    capabilities:
+      host:
+        type: tosca.capabilities.Compute
+        valid_source_types: [ tosca.nodes.Database ]
+
+  # Section 5.9.8 tosca.nodes.Database
+  tosca.nodes.Database:
+    derived_from: tosca.nodes.Root
+    properties:
+      name:
+        type: string
+        description: the logical name of the database
+      port:
+        type: integer # ISSUE: Should be PortDef.
+        description: the port the underlying database service will listen to for data
+        required: false # ISSUE: missed in the spec.
+      user:
+        type: string
+        description: the optional user account name for DB administration
+        required: false
+      password:
+        type: string
+        description: the optional password for the DB user account
+        required: false
+    requirements:
+      - host:
+          capability: tosca.capabilities.Compute
+          node: tosca.nodes.DBMS
+          relationship: tosca.relationships.HostedOn
+    capabilities:
+      database_endpoint:
+        type: tosca.capabilities.Endpoint.Database
+
+  # Section 5.9.9 tosca.nodes.Storage.Abstract.Storage
+  tosca.nodes.Abstract.Storage:
+    derived_from: tosca.nodes.Root
+    properties:
+      name:
+        type: string
+      size:
+        type: scalar-unit.size
+        default: 0 MB
+        constraints:
+          - greater_or_equal: 0 MB
+        required: false # ISSUE: missed in the spec.
+#    capabilities: # ISSUE: can be empty
+      # TBD
+
+  # Section 5.9.10 tosca.nodes.Storage.ObjectStorage
+  tosca.nodes.Storage.ObjectStorage:
+    derived_from: tosca.nodes.Abstract.Storage
+    properties:
+      maxsize:
+        type: scalar-unit.size
+        constraints:
+          - greater_or_equal: 0 GB
+    capabilities:
+      storage_endpoint:
+        type: tosca.capabilities.Endpoint
+
+  # Section 5.9.11 tosca.nodes.Storage.BlockStorage
+  tosca.nodes.Storage.BlockStorage:
+    derived_from: tosca.nodes.Abstract.Storage
+    properties:
+      volume_id:
+        type: string
+        required: false
+      snapshot_id:
+        type: string
+        required: false
+    capabilities:
+      attachment:
+        type: tosca.capabilities.Attachment
+
+  # Section 5.9.12 tosca.nodes.Container.Runtime
+  tosca.nodes.Container.Runtime:
+    derived_from: tosca.nodes.SoftwareComponent
+    capabilities:
+      host:
+        type: tosca.capabilities.Compute
+        valid_source_types: [ tosca.nodes.Container.Application ]
+      scalable:
+        type: tosca.capabilities.Scalable
+
+  # Section 5.9.13 tosca.nodes.Container.Application
+  tosca.nodes.Container.Application:
+    derived_from: tosca.nodes.Root
+    requirements:
+      - host:
+          capability: tosca.capabilities.Compute
+          node: tosca.nodes.Container.Runtime
+          relationship: tosca.relationships.HostedOn
+      - storage:
+          capability: tosca.capabilities.Storage
+# ISSUE: relationship undefined.
+# ISSUE: no relationship type has tosca.capabilities.Storage as valid_target_types.
+# ISSUE: no node type has tosca.capabilities.Storage as capabilities.
+          relationship: tosca.relationships.Root
+      - network:
+#          capability: tosca.capabilities.EndPoint # ISSUE: EndPoint undefined.
+#fk:  pb corrigé (EndPoint -> Endpoint)
+          capability: tosca.capabilities.Endpoint
+# ISSUE: relationship undefined.
+          relationship: tosca.relationships.Root
+
+  # Section 5.9.14 tosca.nodes.LoadBalancer
+  tosca.nodes.LoadBalancer:
+    derived_from: tosca.nodes.Root
+    properties:
+      algorithm:
+        type: string
+        required: false
+        status: experimental
+    capabilities:
+      client:
+        type: tosca.capabilities.Endpoint.Public
+        occurrences: [0, UNBOUNDED]
+        description: The Floating (IP) client’s on the public network can connect to
+    requirements:
+      - application:
+          capability: tosca.capabilities.Endpoint
+          relationship: tosca.relationships.RoutesTo
+          occurrences: [0, UNBOUNDED]
+          description: Connection to one or more load balanced applications
+
+  # Section 8.5.1 tosca.nodes.network.Network
+  tosca.nodes.network.Network:
+    derived_from: tosca.nodes.Root
+    properties:
+      ip_version:
+        type: integer
+        required: false
+        default: 4
+        constraints:
+          - valid_values: [ 4, 6 ]
+      cidr:
+        type: string
+        required: false
+      start_ip:
+        type: string
+        required: false
+      end_ip:
+        type: string
+        required: false
+      gateway_ip:
+        type: string
+        required: false
+      network_name:
+        type: string
+        required: false
+      network_id:
+        type: string
+        required: false
+      segmentation_id:
+        type: string
+        required: false
+      network_type:
+        type: string
+        required: false
+      physical_network:
+        type: string
+        required: false
+      dhcp_enabled:
+        type: boolean
+        required: false
+        default: true
+    capabilities:
+      link:
+        type: tosca.capabilities.network.Linkable
+
+  # Section 8.5.2 tosca.nodes.network.Port
+  tosca.nodes.network.Port:
+    derived_from: tosca.nodes.Root
+    properties:
+      ip_address:
+        type: string
+        required: false
+      order:
+        type: integer
+        required: true
+        default: 0
+        constraints:
+          - greater_or_equal: 0
+      is_default:
+        type: boolean
+        required: false
+        default: false
+      ip_range_start:
+        type: string
+        required: false
+      ip_range_end:
+        type: string
+        required: false
+    #fk: Ajouté l'attribut ip_address, qui est spécifié. Cela semble inutile puisqu'il y a une propriété du même nom. 
+    #fk? Mais cette propriété peut ne pas être renseignée (required = false). Il vaut donc mieux écrire l'attribut.
+    #fk? Si la propriété est renseignée, l'orchestrateur ne devrait pas créer 2 attributs de même nom.
+    attributes:
+      ip_address:
+        type: string
+    requirements:
+     - link:
+        capability: tosca.capabilities.network.Linkable
+        relationship: tosca.relationships.network.LinksTo
+     - binding:
+        capability: tosca.capabilities.network.Bindable
+        relationship: tosca.relationships.network.BindsTo
+
+group_types:
+
+  # Section 5.10.1 tosca.groups.Root
+  tosca.groups.Root:
+    description: The TOSCA Group Type all other TOSCA Group Types derive from
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+
+policy_types:
+
+  # Section 5.11.1 tosca.policies.Root
+  tosca.policies.Root:
+    description: The TOSCA Policy Type all other TOSCA Policy Types derive from
+
+  # Section 5.11.2 tosca.policies.Placement
+  tosca.policies.Placement:
+    derived_from: tosca.policies.Root
+    description: The TOSCA Policy Type definition that is used to govern placement of TOSCA nodes or groups of nodes.
+
+  # Section 5.11.3 tosca.policies.Scaling
+  tosca.policies.Scaling:
+    derived_from: tosca.policies.Root
+    description: The TOSCA Policy Type definition that is used to govern scaling of TOSCA nodes or groups of nodes.
+
+  # Section 5.11.4 tosca.policies.Update
+  tosca.policies.Update:
+    derived_from: tosca.policies.Root
+    description: The TOSCA Policy Type definition that is used to govern update of TOSCA nodes or groups of nodes.
+
+  # Section 5.11.5 tosca.policies.Performance
+  tosca.policies.Performance:
+    derived_from: tosca.policies.Root
+    description: The TOSCA Policy Type definition that is used to declare performance requirements for TOSCA nodes or groups of nodes.

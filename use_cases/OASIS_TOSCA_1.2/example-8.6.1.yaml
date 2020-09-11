@@ -1,0 +1,89 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: Specifying a network outside the application’s Service Template
+
+topology_template:
+  inputs:
+    fe_oam_net_ip_range_start:
+      type: string
+    fe_oam_net_ip_range_end:
+      type: string
+
+  node_templates:
+    frontend:
+      type: tosca.nodes.Compute
+      # properties: # omitted for brevity # ISSUE: can't be empty
+
+    backend:
+      type: tosca.nodes.Compute
+      # properties: # omitted for brevity # ISSUE: can't be empty
+
+    database:
+      type: tosca.nodes.Compute
+      # properties: # omitted for brevity # ISSUE: can't be empty
+
+    oam_network:
+      type: tosca.nodes.network.Network
+      # properties: # omitted for brevity # ISSUE: can't be empty
+
+    admin_network:
+      type: tosca.nodes.network.Network
+      # properties: # omitted for brevity # ISSUE: can't be empty
+
+    data_network:
+      type: tosca.nodes.network.Network
+      # properties: # omitted for brevity # ISSUE: can't be empty
+
+    # ports definition
+    fe_oam_net_port:
+      type: tosca.nodes.network.Port
+      properties:
+        is_default: true
+        ip_range_start: { get_input: fe_oam_net_ip_range_start }
+        ip_range_end: { get_input: fe_oam_net_ip_range_end }
+      requirements:
+        - link: oam_network
+        - binding: frontend
+
+    fe_admin_net_port:
+      type: tosca.nodes.network.Port
+      requirements:
+        - link: admin_network
+        - binding: frontend
+
+    be_admin_net_port:
+      type: tosca.nodes.network.Port
+      properties:
+        order: 0
+      requirements:
+        - link: admin_network
+        - binding: backend
+
+    be_data_net_port:
+      type: tosca.nodes.network.Port
+      properties:
+        order: 1
+      requirements:
+        - link: data_network
+        - binding: backend
+
+    db_data_net_port:
+      type: tosca.nodes.network.Port
+      requirements:
+        - link: data_network
+        - binding: database

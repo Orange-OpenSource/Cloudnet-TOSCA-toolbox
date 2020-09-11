@@ -1,0 +1,80 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: >
+  TOSCA simple profile with server and attached block storage using the normative AttachesTo Relationship Type.
+
+topology_template:
+
+  inputs:
+    cpus:
+      type: integer
+      description: Number of CPUs for the server.
+      constraints:
+        - valid_values: [ 1, 2, 4, 8 ]
+    storage_size:
+      type: scalar-unit.size
+      description: Size of the storage to be created.
+      default: 1 GB
+    storage_snapshot_id:
+      type: string
+      description: >
+        Optional identifier for an existing snapshot to use when creating storage.
+    storage_location:
+      type: string
+      description: Block storage mount point (filesystem path).
+
+  node_templates:
+    my_server:
+      type: Compute
+      capabilities:
+        host:
+          properties:
+            disk_size: 10 GB
+            num_cpus: { get_input: cpus }
+            mem_size: 1 GB
+        os:
+          properties:
+            architecture: x86_64
+            type: linux
+            distribution: fedora
+            version: 18.0
+      requirements:
+        - local_storage:
+            node: my_storage
+            relationship:
+              type: AttachesTo
+# NOTE: Previous line is not required as already defined in tosca.nodes.Compute
+              properties:
+                location: { get_input: storage_location }
+
+    my_storage:
+      type: BlockStorage
+      properties:
+        name: my_storage # ISSUE: added because required property
+        size: { get_input: storage_size }
+        snapshot_id: { get_input: storage_snapshot_id }
+
+  outputs:
+    private_ip:
+      description: The private IP address of the newly created compute instance.
+      value: { get_attribute: [my_server, private_address] }
+    volume_id:
+      description: The volume id of the block storage instance.
+# ISSUE: volume_id is a property not an attribute or the name of get_attribute function does not correctly reflect its meaning.
+# ISSUE:      value: { get_attribute: [my_storage, volume_id] }
+      value: { get_property: [my_storage, volume_id] }

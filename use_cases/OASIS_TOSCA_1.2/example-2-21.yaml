@@ -1,0 +1,87 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: Template hosting requirements and placement policy.
+
+imports:
+  - non_normative_types.yaml
+
+topology_template:
+  # inputs: # ISSUE: can't be empty
+    # omitted here for brevity
+
+  node_templates:
+    wordpress_server:
+      type: tosca.nodes.WebServer
+      # properties: # ISSUE: can't be empty
+        # omitted here for brevity
+      requirements:
+        - host:
+            # Find a Compute node that fulfills these additional filter reqs.
+# TODO: node_filter will be supported later.
+            # node_filter:
+            #   capabilities:
+            #     - host:
+            #         properties:
+            #           - mem_size: { greater_or_equal: 512 MB }
+            #           - disk_size: { greater_or_equal: 2 GB }
+            #     - os:
+            #         properties:
+            #           - architecture: x86_64
+            #           - type: linux
+            node: compute # TODO: will be removed when node_filter supported.
+
+    mysql:
+      type: tosca.nodes.DBMS.MySQL
+      properties:
+        # omitted here for brevity
+        root_password: root_password # ISSUE: added because required property
+      requirements:
+        - host:
+# TODO: node_filter will be supported later.
+#            node: tosca.nodes.Compute
+            # node_filter:
+            #   capabilities:
+            #     - host:
+            #         properties:
+            #           - disk_size: { greater_or_equal: 1 GB }
+            #     - os:
+            #         properties:
+            #           - architecture: x86_64
+            #           - type: linux
+            node: compute # TODO: will be removed when node_filter supported.
+
+# TODO: Will be removed later.
+    compute:
+      type: tosca.nodes.Compute
+
+  groups:
+    my_co_location_group:
+      type: tosca.groups.Root
+      members: [ wordpress_server, mysql ]
+
+  policies:
+    - my_anti_collocation_policy:
+        type: my.policies.anticolocation
+        targets: [ my_co_location_group ]
+        # For this example, specific policy definitions are considered
+        # domain specific and are not included here
+
+policy_types:
+  my.policies.anticolocation:
+    derived_from: tosca.policies.Placement
+    # TODO: add an invariant to force members to be HostedOn different computes.

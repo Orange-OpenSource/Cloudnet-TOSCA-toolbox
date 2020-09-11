@@ -1,0 +1,143 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: Non-normative type definitions used in examples.
+
+artifact_types:
+
+  # Section 9.1.1 tosca.artifacts.Deployment.Image.Container.Docker
+  tosca.artifacts.Deployment.Image.Container.Docker:
+    derived_from: tosca.artifacts.Deployment.Image
+    description: Docker Container Image
+
+  # Section 9.1.2 tosca.artifacts.Deployment.Image.VM.ISO
+  tosca.artifacts.Deployment.Image.VM.ISO:
+    derived_from: tosca.artifacts.Deployment.Image.VM
+    description: Virtual Machine (VM) image in ISO disk format
+    mime_type: application/octet-stream
+    file_ext: [ iso ]
+
+  # Section 9.1.3 tosca.artifacts.Deployment.Image.VM.QCOW2
+  tosca.artifacts.Deployment.Image.VM.QCOW2:
+    derived_from: tosca.artifacts.Deployment.Image.VM
+    description: Virtual Machine (VM) image in QCOW v2 standard disk format
+    mime_type: application/octet-stream
+    file_ext: [ qcow2 ]
+
+capability_types:
+
+  # Section 9.2.1 tosca.capabilities.Container.Docker
+  tosca.capabilities.Container.Docker:
+    derived_from: tosca.capabilities.Container
+    properties:
+      version:
+        type: list
+        required: false
+        entry_schema: version
+      publish_all:
+        type: boolean
+        default: false
+        required: false
+      publish_ports:
+        type: list
+        entry_schema: PortSpec
+        required: false
+      expose_ports:
+        type: list
+        entry_schema: PortSpec
+        required: false
+      volumes:
+        type: list
+        entry_schema: string
+        required: false
+
+node_types:
+
+  # Section 9.3.1 tosca.nodes.Database.MySQL
+  tosca.nodes.Database.MySQL:
+    derived_from: tosca.nodes.Database
+    requirements:
+      - host:
+          node: tosca.nodes.DBMS.MySQL
+
+  # Section 9.3.2 tosca.nodes.DBMS.MySQL
+  tosca.nodes.DBMS.MySQL:
+    derived_from: tosca.nodes.DBMS
+    properties:
+      port:
+        description: reflect the default MySQL server port
+        default: 3306
+      root_password:
+        # MySQL requires a root_password for configuration
+        # Override parent DBMS definition to make this property required
+        required: true
+    capabilities:
+      # Further constrain the ‘host’ capability to only allow MySQL databases
+      host:
+        valid_source_types: [ tosca.nodes.Database.MySQL ]
+
+  # Section 9.3.3 tosca.nodes.WebServer.Apache
+  tosca.nodes.WebServer.Apache:
+    derived_from: tosca.nodes.WebServer
+
+  # Section 9.3.4 tosca.nodes.WebApplication.WordPress
+  tosca.nodes.WebApplication.WordPress:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      admin_user:
+        type: string
+      admin_password:
+        type: string
+      db_host:
+        type: string
+    requirements:
+      - database_endpoint:
+          capability: tosca.capabilities.Endpoint.Database
+          node: tosca.nodes.Database
+          relationship: tosca.relationships.ConnectsTo
+
+  # Section 9.3.5 tosca.nodes.WebServer.Nodejs
+  tosca.nodes.WebServer.Nodejs:
+    derived_from: tosca.nodes.WebServer
+    properties:
+      # Property to supply the desired implementation in the Github repository
+      github_url:
+        required: no
+        type: string
+        description: location of the application on the github.
+        default: https://github.com/mmm/testnode.git
+
+  # Section 9.3.6 tosca.nodes.Container.Application.Docker
+  tosca.nodes.Container.Application.Docker:
+    derived_from: tosca.nodes.Container.Application
+# ISSUE: No node has a capability of type tosca.capabilities.Container.Docker
+# ISSUE:    requirements:
+# ISSUE:     - host:
+# ISSUE:         capability: tosca.capabilities.Container.Docker
+
+  tosca.nodes.WebApplication.PayPalPizzaStore:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      github_url:
+        type: string
+    requirements:
+      - host:
+          node: tosca.nodes.WebServer.Nodejs
+      - database_connection:
+          capability: tosca.capabilities.Endpoint.Database
+          node: tosca.nodes.Database
+          relationship: tosca.relationships.ConnectsTo

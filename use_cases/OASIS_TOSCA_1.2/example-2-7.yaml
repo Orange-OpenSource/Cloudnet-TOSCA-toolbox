@@ -1,0 +1,83 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: Template for deploying a two-tier application on two servers.
+
+imports:
+  - non_normative_types.yaml
+
+topology_template:
+  # inputs: # ISSUE: can't not be empty
+    # omitted here for brevity
+
+  node_templates:
+    wordpress:
+      type: tosca.nodes.WebApplication.WordPress
+      properties:
+        # omitted here for brevity
+        admin_user: admin # ISSUE: added because required property
+        admin_password: password # ISSUE: added because required property
+        db_host: db_host # ISSUE: added because required property
+      requirements:
+        - host: apache
+        - database_endpoint:
+            node: wordpress_db
+            relationship: my_custom_database_connection
+
+    wordpress_db:
+      type: tosca.nodes.Database.MySQL
+      properties:
+        # omitted here for the brevity
+        name: wordpress_db # ISSUE: added because required property
+      requirements:
+        - host: mysql
+
+    apache:
+      type: tosca.nodes.WebServer.Apache
+      # properties: # ISSUE: can't not be empty
+        # omitted here for brevity
+      requirements:
+        - host: web_server
+
+    web_server:
+      type: tosca.nodes.Compute
+      # capabilities: # ISSUE: can't not be empty
+        # omitted here for brevity
+
+    mysql:
+      type: tosca.nodes.DBMS.MySQL
+      properties:
+        # omitted here for the brevity
+        root_password: password # ISSUE: added because required property
+      requirements:
+        - host: db_server
+
+    db_server:
+      type: tosca.nodes.Compute
+      # capabilities: # ISSUE: can't not be empty
+        # omitted here for brevity
+
+  relationship_templates:
+    my_custom_database_connection:
+      type: ConnectsTo
+# TODO: This is a bug with previous line!
+      type: tosca.relationships.ConnectsTo
+      interfaces:
+        Configure:
+          pre_configure_source: scripts/wp_db_configure.sh
+
+   # other resources not shown for this example ...

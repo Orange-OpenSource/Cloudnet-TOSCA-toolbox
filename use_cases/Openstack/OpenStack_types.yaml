@@ -1,0 +1,181 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: OASIS TOSCA types for OpenStack.
+
+capability_types:
+
+  openstack.capabilities.Endpoint:
+    description: Abstract Endpoint base capability.
+    derived_from: tosca.capabilities.Endpoint.Public
+
+  openstack.capabilities.Endpoint.Facts:
+    derived_from: openstack.capabilities.Endpoint
+
+  openstack.capabilities.Endpoint.Common:
+    derived_from: openstack.capabilities.Endpoint
+
+  openstack.capabilities.Endpoint.HAProxy:
+    derived_from: openstack.capabilities.Endpoint
+
+  openstack.capabilities.Endpoint.MemCached:
+    derived_from: openstack.capabilities.Endpoint
+
+  openstack.capabilities.Endpoint.RabbitMQ:
+    derived_from: openstack.capabilities.Endpoint
+
+  openstack.capabilities.Endpoint.MariaDB:
+    derived_from: openstack.capabilities.Endpoint
+
+  openstack.capabilities.Endpoint.Keystone:
+    derived_from: openstack.capabilities.Endpoint
+
+  openstack.capabilities.Endpoint.Glance:
+    derived_from: openstack.capabilities.Endpoint
+
+  openstack.capabilities.Endpoint.Nova:
+    derived_from: openstack.capabilities.Endpoint
+
+  openstack.capabilities.Endpoint.OpenVSwitch:
+    derived_from: openstack.capabilities.Endpoint
+
+  openstack.capabilities.Endpoint.Neutron:
+    derived_from: openstack.capabilities.Endpoint
+
+relationship_types:
+
+  openstack.relationships.ConnectsTo:
+    description: ConnectsTo relationship.
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [ openstack.capabilities.Endpoint ]
+
+node_types:
+
+  openstack.nodes.Facts:
+    derived_from: tosca.nodes.SoftwareComponent
+    capabilities:
+      facts:
+        description: Facts capability
+        type: openstack.capabilities.Endpoint.Facts
+
+  openstack.nodes.Project:
+    derived_from: tosca.nodes.SoftwareComponent
+    requirements:
+      - facts:
+          capability: openstack.capabilities.Endpoint.Facts
+          node: openstack.nodes.Facts
+          relationship: openstack.relationships.ConnectsTo
+
+  openstack.nodes.Common:
+    derived_from: openstack.nodes.Project
+    capabilities:
+      com:
+        description: Common capability
+        type: openstack.capabilities.Endpoint.Common
+
+  openstack.nodes.HAProxy:
+    derived_from: openstack.nodes.Project
+    capabilities:
+      ha:
+        description: HAProxy capability
+        type: openstack.capabilities.Endpoint.HAProxy
+
+  openstack.nodes.MemCached:
+    derived_from: openstack.nodes.Project
+    capabilities:
+      memcached:
+        description: MemCached capability
+        type: openstack.capabilities.Endpoint.MemCached
+
+  openstack.nodes.RabbitMQ:
+    derived_from: openstack.nodes.Project
+    capabilities:
+      rmq:
+        description: RabbitMQ capability
+        type: openstack.capabilities.Endpoint.RabbitMQ
+
+  openstack.nodes.MariaDB:
+    derived_from: tosca.nodes.SoftwareComponent
+    capabilities:
+      mdb:
+        description: MariaDB capability
+        type: openstack.capabilities.Endpoint.MariaDB
+    requirements:
+      - com:
+          capability: openstack.capabilities.Endpoint.Common
+          node: openstack.nodes.Common
+          relationship: openstack.relationships.ConnectsTo
+      - ha:
+          capability: openstack.capabilities.Endpoint.HAProxy
+          node: openstack.nodes.HAProxy
+          relationship: openstack.relationships.ConnectsTo
+
+  openstack.nodes.Project_Requiring_MariaDB:
+    derived_from: openstack.nodes.Project
+    requirements:
+      - mdb:
+          capability: openstack.capabilities.Endpoint.MariaDB
+          node: openstack.nodes.MariaDB
+          relationship: openstack.relationships.ConnectsTo
+
+  openstack.nodes.Keystone:
+    derived_from: openstack.nodes.Project_Requiring_MariaDB
+    capabilities:
+      kst:
+        description: Keystone capability
+        type: openstack.capabilities.Endpoint.Keystone
+
+  openstack.nodes.Project_Requiring_MariaDB_and_Keystone:
+    derived_from: openstack.nodes.Project_Requiring_MariaDB
+    requirements:
+      - kst:
+          capability: openstack.capabilities.Endpoint.Keystone
+          node: openstack.nodes.Keystone
+          relationship: openstack.relationships.ConnectsTo
+
+  openstack.nodes.Glance:
+    derived_from: openstack.nodes.Project_Requiring_MariaDB_and_Keystone
+    capabilities:
+      glance:
+        description: Keystone capability
+        type: openstack.capabilities.Endpoint.Glance
+
+  openstack.nodes.Nova:
+    derived_from: openstack.nodes.Project_Requiring_MariaDB_and_Keystone
+    capabilities:
+      nova:
+        description: Nova capability
+        type: openstack.capabilities.Endpoint.Nova
+
+  openstack.nodes.OpenVSwitch:
+    derived_from: openstack.nodes.Project
+    capabilities:
+      openvswitch:
+        description: OpenVSwitch capability
+        type: openstack.capabilities.Endpoint.OpenVSwitch
+
+  openstack.nodes.Neutron:
+    derived_from: openstack.nodes.Project_Requiring_MariaDB_and_Keystone
+    capabilities:
+      neutron:
+        description: Neutron capability
+        type: openstack.capabilities.Endpoint.Neutron
+    requirements:
+      - openvswitch:
+          capability: openstack.capabilities.Endpoint.OpenVSwitch
+          node: openstack.nodes.OpenVSwitch
+          relationship: openstack.relationships.ConnectsTo
