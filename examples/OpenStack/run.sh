@@ -21,6 +21,7 @@ CLOUDNET_BINDIR=../../bin
 # Translate TOSCA-based templates.
 translate OpenStack_types.yaml
 translate OpenStack-1.yaml
+translate OpenStack-2.yaml
 
 # Generate TOSCA diagrams.
 generate_tosca_diagrams tosca_diagrams/*.dot
