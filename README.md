@@ -10,23 +10,28 @@ Prerequisites:
 To use this toolset, you'll need Docker, Python, PlantUML, nwdiag and dot.  
 However, provided you have Docker, the others are available as containers as follows.  
 You can build the Docker images by:  
-    $ cd bin/  
-    $ ./build.sh
-
+```sh
+cd bin/  
+./build.sh
+```
 How to use it?  
 - 
 If you get some TOSCA 1.0, 1.1 or 1.2 templates to check, once you've clone the repository, you can create a directory in the 'examples' directory, and copy your yaml files inside.  
-    $ cd examples/  
-	$ mkdir my_example  
-	$ cp some_place/my_tosca_template_A.yaml my_example/  
-	$ ...  
-
+```sh
+cd examples/  
+mkdir my_example  
+cp some_place/my_tosca_template_A.yaml my_example/  
+...  
+```
 Load Cloudnet commands:  
-    $ CLOUDNET_BINDIR=../../bin  
-    $ . ${CLOUDNET_BINDIR}/cloudnet_rc.sh  
-	
+```sh
+CLOUDNET_BINDIR=../../bin  
+. ${CLOUDNET_BINDIR}/cloudnet_rc.sh  
+```	
 Now, launching the command  
-    $ translate my_tosca_template_A.yaml  
+```sh
+translate my_tosca_template_A.yaml  
+```
 will :  
  - check the file yaml,  
  - check the TOSCA syntax and types correction,  
@@ -34,8 +39,14 @@ will :
  - generate .dot, .nwdiag and .plantuml templates.  
 
 Then to generate network diagrams, type:  
-    $ generate_network_diagrams nwdiag/*.nwdiag  
+```sh
+generate_network_diagrams nwdiag/*.nwdiag  
+```
 To get TOSCA diagrams, use the command:  
-    $ generate_tosca_diagrams tosca_diagrams/*.dot  
+```sh
+generate_tosca_diagrams tosca_diagrams/*.dot  
+```
 And to generate UML diagrams:  
-    $ generate_uml2_diagrams uml2/*.plantuml  
+```sh
+generate_uml2_diagrams uml2/*.plantuml  
+```

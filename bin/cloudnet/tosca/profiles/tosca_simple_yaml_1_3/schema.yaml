@@ -324,7 +324,6 @@ definitions:
         $ref: "#/definitions/schema_definition"          
       entry_schema:
         $ref: "#/definitions/schema_definition"
-      #fk? external_schema = repris du schema 1.2, mais toujours pas dans la specif: le signaler à OASIS via ETSI/NFV?
       external_schema:
         type: string
       metadata:
@@ -397,10 +396,9 @@ definitions:
               $ref: "#/definitions/property_assignment"
         additionalProperties: false
 
-  #fk: nouvelle section
-  # Section 3.6.18
+
+  # Section 3.6.18    new
   notification_implementation_definition:
-    #fk: ajouté string pour notation courte. Correct?
     anyOf:
       - type: string
       - type: object
@@ -471,7 +469,7 @@ definitions:
     additionalProperties: false
 
   # Section 3.6.21
-  #fk: added the following section, which was inspec 1.3 but not in schema 1.2, so may be copy & paste in schema 1.2   
+  #fk: section is in spec 1.2 & 1.3 but not in schema 1.2, so may be copy & paste in schema 1.2   
   event_filter_definition:
     type: object
     properties:
@@ -486,8 +484,6 @@ definitions:
         type: string
     additionalProperties: false 
     required: [node]
-
-  #k Section 3.6.23    
 
   
   #Section 3.6.24      
@@ -595,7 +591,8 @@ definitions:
                       $ref: "#/definitions/interface_definition_in_types"
                 additionalProperties: false
                 required: [ type ]
-          #fk? nouvelle propriété: peut-on spécifier un type range of X en json?
+          #fk? nouvelle propriété: peut-on spécifier un type range of X en json? plutôt avec schema_definition ?
+          #fk: idem pour les autres occurences de 'occurences' dans ce schéma.
           occurrences:
             $ref: "#/definitions/occurrences"
         additionalProperties: false
@@ -842,8 +839,7 @@ definitions:
           $ref: "#/definitions/trigger_definition"
     additionalProperties: false
 
-  # Section 3.8.1
-  #fk: ajouté occurences
+  # Section 3.8.1   'occurences' is new
   capability_assignment:
     anyOf:
       - type: object
@@ -889,7 +885,7 @@ definitions:
                 additionalProperties: false
           node_filter:
             $ref: "#/definitions/node_filter_definition"
-          #fk? nouvelle propriété: peut-on spécifier un type range of X en json?
+          #fk? nouvelle propriété: comment choisir entre tosca et json pour spécifier un type range?
           occurences:
             $ref: "#/definitions/occurrences"   
         additionalProperties: false
@@ -1040,8 +1036,7 @@ definitions:
           $ref: "#/definitions/step_definition"
     additionalProperties: false
 
-  # Section 3.8.8  
-  #fk: La propriété value est désormais obsolète.
+  # Section 3.8.8   'value' becomes deprecated, 
   #fk: La description du keyname mapping dans 1.3 laisse entendre que maxItems vaut maintenant 1. 
   #fk: Pas vu de contre-exemple => passé maxItems de 3 à 1. Est-ce correct?  
   property_mapping:
@@ -1151,6 +1146,10 @@ definitions:
     properties:
       node_type:
         type: string
+      # new  (used)
+      #fk? Pourquoi node_filter_definition plutôt que node_filter_assignment (qui n'est pas défini)
+      substitution_filter:
+        $ref: "#/definitions/node_filter_definition"
       properties:
         type: object
         additionalProperties:
