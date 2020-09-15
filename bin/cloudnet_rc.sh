@@ -31,6 +31,7 @@ run_toscaware()
 {
   local container_dest_volume="/work"
   docker run \
+    --user $(id -u):$(id -g) \
     --volume="${PWD}:${container_dest_volume}" \
     --volume="${PWD}/${CLOUDNET_BINDIR}/cloudnet:/cloudnet" \
     --workdir="${container_dest_volume}" \
@@ -83,6 +84,7 @@ run_dot()
 {
   local container_dest_volume="/work"
   docker run \
+	  --user $(id -u):$(id -g) \
           --volume="${PWD}:${container_dest_volume}" \
           --workdir="${container_dest_volume}" \
           --rm \
