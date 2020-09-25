@@ -179,7 +179,7 @@ class FilesystemImporter(Importer):
             Loads a YAML file.
         '''
         with open(filename, 'r') as stream:
-            return yaml.load(stream)
+            return yaml.load(stream, Loader=yaml.FullLoader)
 
 class UrlImporter(Importer):
     '''
@@ -199,7 +199,7 @@ class UrlImporter(Importer):
         response = requests.get(filename)
         if response.status_code == 404:
             raise FileNotFoundError(filename)
-        return yaml.load(response.text)
+        return yaml.load(response.text, Loader=yaml.FullLoader)
 
 class ArchiveImporter(Importer):
     '''
@@ -237,7 +237,7 @@ class ArchiveImporter(Importer):
         '''
         try:
             with self.zipfile.open(filename) as stream:
-                return yaml.load(stream)
+                return yaml.load(stream, Loader=yaml.FullLoader)
         except KeyError:
             raise FileNotFoundError(filename)
 
