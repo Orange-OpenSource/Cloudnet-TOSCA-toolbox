@@ -29,7 +29,7 @@ def load(config_file=CONFIGURATION_FILE):
     if os.path.exists(config_file):
         # Load the configuration file if it exists.
         with open(config_file, 'r') as stream:
-            content = yaml.load(stream)
+            content = yaml.load(stream, Loader=yaml.FullLoader)
             configuration = merge_dict(DEFAULT_CONFIGURATION, content)
 
     # Configure logging.
