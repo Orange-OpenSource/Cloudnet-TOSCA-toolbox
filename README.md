@@ -1,9 +1,9 @@
 What is Cloudnet-TOSCA-toolbox?
 =
-This is a set of tools for TOSCA deployment descriptors (a web portal is available to use the Cloudnet-TOSCA-toolbox at this url: https://toscatoolbox.noprod-b.kmt.orange.com).  
+This is a set of tools for OASIS TOSCA deployment descriptors (a web portal is available to use the Cloudnet-TOSCA-toolbox at this url: https://toscatoolbox.noprod-b.kmt.orange.com).  
 
 It can be used for syntax and type checking of specifications or resources configuration deployment/update descriptors written in TOSCA.  
-It also allow to visualize the associated architecture in different ways (UML, TOSCA, network diagrams).
+It also allows to visualize the associated architecture in different ways (UML, TOSCA, network diagrams).
 
 Prerequisites:  
 -
@@ -16,7 +16,7 @@ cd bin/
 ```
 How to use it?  
 - 
-If you get some TOSCA 1.0, 1.1 or 1.2 templates to check, once you've clone the repository, you can create a directory in the 'examples' directory, and copy your yaml files inside.  
+If you get some TOSCA 1.0, 1.1, 1.2 or 1.3 templates to check, once you've clone the repository, you can create a directory in the 'examples' directory, and copy your yaml files inside.  
 ```sh
 cd examples/  
 mkdir my_example  
