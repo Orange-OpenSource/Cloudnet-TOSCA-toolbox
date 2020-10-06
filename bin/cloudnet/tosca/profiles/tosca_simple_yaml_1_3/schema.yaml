@@ -15,14 +15,13 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
+
 $id: tosca_simple_yaml_1_3
 title: OASIS TOSCA Simple Profile in YAML Version 1.3 JSON Schema
 description: JSON Schema for OASIS TOSCA Simple Profile in YAML Version 1.3
 $ref: "#/definitions/service_template_definition"
 
 definitions:
-
-  trigger_definition: { } # TODO
 
   value: { } # any value
 
@@ -32,6 +31,33 @@ definitions:
       - type: string # TODO: define pattern
       - type: number
 
+#? Draft proposed modification
+#? version:
+#?   anyOf:
+#?     - type: string
+#?       pattern: [0-9]+\.[0-9]+\.[0-9]*\..*-[0-9]*
+#?      -type: number
+#?
+#? Enhanced proposal, which takes into account the following additionnal requirements:
+#?      A version value of zero (i.e., ‘0’, ‘0.0’, or ‘0.0.0’) SHALL indicate there no version provided.
+#?      A version value of zero used with any qualifiers SHALL NOT be valid.
+#? version:
+#?   type: string
+#?   pattern: ([1-9]+\.[0-9]+\.[0-9]*\..*-[0-9]*)|(0)|(0.0)|(0.0.0)
+#?
+
+#? Proposed addition for §3.3.3, range type definition:
+#?  # Section 3.3.3
+#?  range:
+#?    type: string
+#?    pattern: ^(\[)([0-9]+|UNBOUNDED),([0-9]+|UNBOUNDED)(\])$
+
+
+  # Section 3.3.6
+  scalar-unit_time:
+    type: string
+#    pattern: ^[0-9]+\.?[0-9]+(m|s|ms|us|ns)$
+    
   # Section 3.6.1
   description:
     type: string
@@ -48,7 +74,6 @@ definitions:
   constraint_clause:
     type: object
     properties:
-
       equal:
         $ref: "#/definitions/scalar"
       greater_than:
@@ -90,11 +115,17 @@ definitions:
       - type: boolean
       - type: string
       - type: number
-#fk? Que se passe-t-il si la propriété est de type boolean et l'utilisateur définit la contrainte avec un scalaire de type string?
-#fk? e.g. un requirement de TOSCA 1.2 §3.6.9.5 = TOSCA 1.3 §3.6.10.5: 
-#fk? Constraints of a property definition SHALL be type-compatible with the type defined for that definition.
-  # Section 3.x.y TODO
-  property_filter_definition: { }
+ 
+
+  # Section 3.6.4
+  property_filter_definition: 
+    anyOf:
+      - additionalProperties:
+          $ref: "#/definitions/constraint_clause"
+      - type: array  
+        items: 
+          $ref: "#/definitions/constraint_clause"
+
 
   # Section 3.6.5
   node_filter_definition:
@@ -162,10 +193,6 @@ definitions:
           # new in TOSCA 1.3       
           checksum_algorithm:
             type: string    
-          # Missed in the specification: artifact types could define properties
-          # but artifact definition could not assign these properties.
-          #fk? Corrigé, la propriété 'properties' est maintenant définie dans la norme(en 1.3)
-          #fk? Son type est 'map of property assignments', comme escompté dans schema (1.2) 
           properties:
             type: object
           additionalProperties:
@@ -190,15 +217,15 @@ definitions:
             format: uri
         required: [ file ]
         additionalProperties: false
-#fk: un requirement fort a été ajouté dans cette section:
-#fk: The namespace prefix “tosca” Is reserved and SHALL NOT be used as a value for “namespace_prefix” on import.
-#fk: Faut-il ajouter un pattern excluant la chaîne "tosca" dans namespace_prefix?
+#? The namespace prefix “tosca” Is reserved and SHALL NOT be used as a value for “namespace_prefix” on import.
+#? could we add to 'namespace_prefix' some pattern like meaning:
+#?   pattern: (tosca){0}.* 
 
-  # Section 3.6.9
+
+  # Section 3.6.9   (coming out in version 1.3)
   schema_definition:
     type: object
     properties:
-      #fk2
       type: 
         type: string
       description: 
@@ -211,9 +238,7 @@ definitions:
         $ref: "#/definitions/schema_definition"
       entry_schema:
         $ref: "#/definitions/schema_definition"
-    #fk2
-    required: [ type ]    #fk2: vérifier si contredit dans les exemples
-    #fk2
+    required: [ type ]
     additionalProperties: false     
     
   #Section 3.6.10
@@ -248,29 +273,34 @@ definitions:
 
   status:
     type: string
-    #fk? Pourquoi employer enum? C'est du python ? Pourquoi pas anyOf (ou oneOf si le choix est exclusif)?
+#? Is it correct to use enum here? 
     enum:
       - supported
       - unsupported
       - experimental
       - deprecated
+#? suggested:
+#?  status:
+#?    type: string
+#?    pattern: supported|unsupported|experimental|deprecated  
 
-#fk: remplacé par schema_definition, application également aux clés pour les maps (ok?)
-#fk  entry_schema:
-#fk anyOf:
-#fk     - type: string
-#fk     - type: object
-#fk       properties:
-#fk         description:
-#fk           $ref: "#/definitions/description"
-#fk         type:
-#fk           type: string
-#fk         constraints:
-#fk           type: array
-#fk           items:
-#fk             $ref: "#/definitions/constraint_clause"
-#fk       additionalProperties: false
-#fk       required: [ type ]
+
+#- This is replaced by schema_definition, which define schema also for keys
+#-  entry_schema:
+#- anyOf:
+#-     - type: string
+#-     - type: object
+#-       properties:
+#-         description:
+#-           $ref: "#/definitions/description"
+#-         type:
+#-           type: string
+#-         constraints:
+#-           type: array
+#-           items:
+#-             $ref: "#/definitions/constraint_clause"
+#-       additionalProperties: false
+#-       required: [ type ]
 
   # Section 3.6.11
   property_assignment:
@@ -286,9 +316,6 @@ definitions:
         $ref: "#/definitions/description"
       default:
         $ref: "#/definitions/value"
-    #fk? Exemple de fact général pour tous les langages?:
-    #fk? This value SHALL be type compatible with the type declared by the property definition’s type keyname.
-    #fk? Et comment exprimer bien d'autres contraintes présentes dans les descritions ou sous-sections "(additional) requirements"
       status:
         $ref: "#/definitions/status"
       key_schema:
@@ -332,8 +359,10 @@ definitions:
         $ref: "#/definitions/value"
     additionalProperties: false
 
-  #fk: Une nouvelle section appelée Attribute Mapping Definition" est insérée en 3.6.15
-  #fk? Le concept ne semble pas utilisé. La section doit-elle être transcrite dans ce schéma json? 
+  # Section 3.6.15 (as of version 1.3)
+  attribute_mapping_definition:
+    type: string
+#    pattern: ^\[(SELF|SOURCE|TARGET), .*, .*\]$
   
   # Section 3.6.16 
   operation_implementation_definition:
@@ -373,8 +402,8 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
-          # new in TOSCA 1.3
+              $ref: "#/definitions/parameter_definition"
+          # appears in TOSCA 1.3
           outputs:
             type: object
             additionalProperties:
@@ -397,7 +426,7 @@ definitions:
         additionalProperties: false
 
 
-  # Section 3.6.18    new
+  # Section 3.6.18    1.3 ->
   notification_implementation_definition:
     anyOf:
       - type: string
@@ -411,7 +440,7 @@ definitions:
               $ref: "#/definitions/artifact_definition" 
         additionalProperties: false
   
-  # Section 3.6.19     new
+  # Section 3.6.19     1.3 ->
   notification_definition:
     type: object
     properties:
@@ -469,13 +498,9 @@ definitions:
     additionalProperties: false
 
   # Section 3.6.21
-  #fk: section is in spec 1.2 & 1.3 but not in schema 1.2, so may be copy & paste in schema 1.2   
   event_filter_definition:
     type: object
     properties:
-    #fk: description est absente. Est-ce un pb?  
-      type: 
-        type: string
       node: 
         type: string
       requirement:
@@ -485,9 +510,152 @@ definitions:
     additionalProperties: false 
     required: [node]
 
-  
-  #Section 3.6.24      
-  step_definition:
+  # Section 3.6.22   1.3 ->
+  trigger_definition:
+    type: object
+    properties:
+      description: 
+        $ref: "#/definitions/description"
+      event:
+        type: string
+      schedule:
+        type: string
+      target_filter:
+        $ref: "#/definitions/event_filter_definition"
+      condition:
+        $ref: "#/definitions/condition_clause_definition"
+      action:
+        type: array
+        items:
+          $ref: "#/definitions/activity_definition"
+      constraint:
+        $ref: "#/definitions/condition_clause_definition"
+      period:
+        $ref: "#/definitions/scalar-unit_time"
+      evaluations: 
+        type: integer        
+      method:
+        type: string
+    additionalProperties: false
+    required: [ event, action ]        
+      
+  # Section 3.6.23   1.3 ->
+  activity_definition:
+    type: object
+    oneOf:
+      - properties:
+          delegate:
+            $ref: "#/definitions/delegate_workflow_activity_definition"
+        additionalProperties: false
+      - properties:
+          set_state:
+            $ref: "#/definitions/set_state_activity_definition"
+        additionalProperties: false
+      - properties:
+          call_operation:
+            $ref: "#/definitions/call_operation_activity_definition"
+        additionalProperties: false
+      - properties :
+          inline:
+            $ref: "#/definitions/inline_workflow_activity_definition"
+        additionalProperties: false
+    
+  delegate_workflow_activity_definition:
+    anyOf:
+      - type: string   
+      - type: object
+        properties:
+          workflow:
+            type: string
+          inputs:
+            type: object
+          additionalProperties:
+            $ref: "#/definitions/property_assignment"  # parameter assignment, which is not explicitly defined.
+        additionalProperties: false
+        
+  set_state_activity_definition:
+    type: string
+                  
+
+  call_operation_activity_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          operation:
+            type: string
+          inputs:
+            type: object
+          additionalProperties:
+            $ref: "#/definitions/property_assignment"  # parameter_assignment, which is not explicitly defined.
+        additionalProperties: false
+
+  inline_workflow_activity_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          workflow:
+            type: string
+          inputs:
+            type: object
+          additionalProperties:
+            $ref: "#/definitions/property_assignment" 
+        additionalProperties: false
+        
+      
+  # Section 3.6.24 
+  assertion_definition:
+    type: array
+    items:
+      $ref: "#/definitions/constraint_clause"
+      
+    
+  # Section 3.6.25
+  condition_clause_definition:
+    type: object
+    oneOf:
+      - properties:
+          and:
+            type: array
+            items:
+              $ref: "#/definitions/condition_clause_definition"
+      - properties:
+          or:
+            type: array
+            items:
+              $ref: "#/definitions/condition_clause_definition"
+      - properties:
+          not:
+            type: array
+            items:
+              $ref: "#/definitions/condition_clause_definition"
+      # assert is deprecated from 1.3 onwards
+      - properties:
+          assert:
+            type: array
+            items:
+              $ref: "#/definitions/assertion_definition"
+    additionalProperties: 
+      $ref: "#/definitions/assertion_definition"
+      
+  # Section 3.6.26
+  workflow_precondition_definition:
+    type: object
+    properties:
+      target:
+        type: string
+      target_relationship:
+        type: string
+      condition:
+        type: array
+        items: 
+          $ref: "#/definitions/condition_clause_definition"
+    additionalProperties: false
+    required: [ target ]          
+    
+  # Section 3.6.27
+  workflow_step_definition:
     type: object
     properties:
       target:
@@ -498,29 +666,32 @@ definitions:
         type: string
       filter:
         type: array
-        items: { } # TODO
+        items: 
+          $ref: "#/definitions/condition_clause_definition"
       activities:
-        # type: array
-        # items:
-          { } # TODO
+        type: array
+        items:
+          $ref: "#/definitions/activity_definition"
       on_success:
         type: array
         items:
           type: string
+#          $ref: "#/definitions/workflow_step_definition"
       on_failure:
         type: array
         items:
           type: string
+#          $ref: "#/definitions/workflow_step_definition"
     additionalProperties: false
     required: [ target, activities ]
 
   # Section 3.7.1
-  #fk? Peut-on exprimer dans le schéma que derived_from ne peut prendre que la valeur None? 
   entity_type:
     type: object
     properties:
       derived_from:
         type: string
+#        pattern: ^none|None|NONE$
       version:
         $ref: "#/definitions/version"
       metadata: # map of string
@@ -549,7 +720,7 @@ definitions:
           valid_source_types:
             type: array
             items:
-              type: string
+              $ref: "#/definitions/node_type"
             minItems: 1
           occurrences:
             $ref: "#/definitions/occurrences"
@@ -566,7 +737,8 @@ definitions:
     minItems: 2
     maxItems: 2
 
-  # Section 3.7.3
+
+  # Section 3.7.3  
   requirement_definition:
     anyOf:
       - type: string
@@ -591,8 +763,6 @@ definitions:
                       $ref: "#/definitions/interface_definition_in_types"
                 additionalProperties: false
                 required: [ type ]
-          #fk? nouvelle propriété: peut-on spécifier un type range of X en json? plutôt avec schema_definition ?
-          #fk: idem pour les autres occurences de 'occurences' dans ce schéma.
           occurrences:
             $ref: "#/definitions/occurrences"
         additionalProperties: false
@@ -646,7 +816,7 @@ definitions:
         type: object
         additionalProperties:
           $ref: "#/definitions/notification_definition"      
-      #fk: ai supprimé additionalProperties après avoir ajouté les props operations et notifications. ok?
+    # 1.3 -> : additionalProperties set to 'false' since notifications are now defined
     additionalProperties: false
  
   # Section 3.7.6    to be double-checked
@@ -839,6 +1009,7 @@ definitions:
           $ref: "#/definitions/trigger_definition"
     additionalProperties: false
 
+
   # Section 3.8.1   'occurences' is new
   capability_assignment:
     anyOf:
@@ -856,8 +1027,7 @@ definitions:
             $ref: "#/definitions/occurrences"            
         additionalProperties: false
 
-  # Section 3.8.2
-  #fk: ajouté occurences
+  # Section 3.8.2   1.3-> + 'occurrences'
   requirement_assignment:
     anyOf:
       - type: string
@@ -885,7 +1055,6 @@ definitions:
                 additionalProperties: false
           node_filter:
             $ref: "#/definitions/node_filter_definition"
-          #fk? nouvelle propriété: comment choisir entre tosca et json pour spécifier un type range?
           occurences:
             $ref: "#/definitions/occurrences"   
         additionalProperties: false
@@ -965,7 +1134,7 @@ definitions:
     additionalProperties: false
     required: [ type ]
 
-  # Section 3.8.5    property 'interfaces' is no longer there in 1.3 (deprecated)
+  # Section 3.8.5    property 'interfaces' is no longer there in 1.3
   group_definition:
     type: object
     properties:
@@ -1012,33 +1181,54 @@ definitions:
     required: [ type ]
 
   # Section 3.8.7
-  #fk: ajouté en partie les propriétés
-  workflow_definition:
-    type: object # TODO: complete
-    properties:
-      description:
-        $ref: "#/definitions/description"
-      metadata:
-        $ref: "#/definitions/metadata"
-      inputs:
-        $ref: "#/definitions/property_definition"
-
-      #fk:  preconditions:   TODO (also in 1.2)
-      
-      implementation:    # new in 1.3
-        $ref: "#/definitions/operation_implementation_definition"
-        
-      #fk  outputs:     TODO (also in 1.2)     
-
-      steps:
-        type: object
-        additionalProperties:
-          $ref: "#/definitions/step_definition"
-    additionalProperties: false
+  imperative_workflow_definition:
+    type: object 
+    oneOf:
+      - properties:
+          description:
+            $ref: "#/definitions/description"
+          metadata:
+            $ref: "#/definitions/metadata"
+          inputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/property_definition"
+          preconditions: 
+            type: array
+            items: 
+              $ref: "#/definitions/workflow_precondition_definition"
+          steps:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/workflow_step_definition"        
+          outputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/attribute_mapping"
+        additionalProperties: false
+      - properties:
+          description:
+            $ref: "#/definitions/description"
+          metadata:
+            $ref: "#/definitions/metadata"
+          inputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/property_definition"
+          preconditions: 
+            type: array
+            items: 
+              $ref: "#/definitions/workflow_precondition_definition"
+          implementation:    # new in 1.3
+            $ref: "#/definitions/operation_implementation_definition"
+          outputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/attribute_mapping"              
+        additionalProperties: false
 
   # Section 3.8.8   'value' becomes deprecated, 
-  #fk: La description du keyname mapping dans 1.3 laisse entendre que maxItems vaut maintenant 1. 
-  #fk: Pas vu de contre-exemple => passé maxItems de 3 à 1. Est-ce correct?  
+  # Description of keyname mapping in 1.3 suggests maxItems amounts to 1 whereas it was 3 in TOSCA 1.2. I saw no counter-example, so set it from 3 to 1.   
   property_mapping:
     anyOf:
       - $ref: "#/definitions/value"
@@ -1055,6 +1245,7 @@ definitions:
                 items:
                   - type: string
                 maxItems: 1
+            # deprecated:
           - properties:
               value:
                 $ref: "#/definitions/value"
@@ -1062,7 +1253,6 @@ definitions:
 
 
   # Section 3.8.9
-  #fk?! Interprétation de la section §3.8.9 apparaissant dans TOSCA 1.3. Est-ce correct? 
   attribute_mapping:
     anyOf:
       - $ref: "#/definitions/value"
@@ -1085,8 +1275,8 @@ definitions:
     anyOf:
       - type: array
         items:
-          - type: string
-          - type: string
+          type: string
+        minitems: 2
         maxItems: 2
       - type: object
         oneOf:
@@ -1094,8 +1284,8 @@ definitions:
               mapping:
                 type: array
                 items:
-                  - type: string
-                  - type: string
+                  type: string
+                minItems: 2
                 maxItems: 2
           - properties:
               properties:
@@ -1114,16 +1304,16 @@ definitions:
       - type: array
         items:
           - type: string
-          - type: string
+        minItems: 2
         maxItems: 2
       - type: object
-        anyOf:
+        oneOf:
           - properties:
               mapping:
                 type: array
                 items:
-                  - type: string
-                  - type: string
+                  type: string
+                minItems: 2
                 maxItems: 2
           - properties:
               properties:
@@ -1138,7 +1328,10 @@ definitions:
 
   # Section 3.8.12
   interface_mapping:
-    type: string
+    type: object
+    additionalProperties:
+      type: string
+  
 
   # Section 3.8.13
   substitution_mapping:
@@ -1146,15 +1339,13 @@ definitions:
     properties:
       node_type:
         type: string
-      # new  (used)
-      #fk? Pourquoi node_filter_definition plutôt que node_filter_assignment (qui n'est pas défini)
+      # 1.3 ->
       substitution_filter:
         $ref: "#/definitions/node_filter_definition"
       properties:
         type: object
         additionalProperties:
           $ref: "#/definitions/property_mapping"
-      # new
       attributes:
         type: object
         additionalProperties:
@@ -1180,6 +1371,7 @@ definitions:
           $ref: "#/definitions/interface_mapping"
     additionalProperties: false
     required: [ node_type ]
+
 
   # Section 3.9
   topology_template_definition:
@@ -1216,10 +1408,11 @@ definitions:
       workflows:
         type: object
         additionalProperties:
-          $ref: "#/definitions/workflow_definition"
+          $ref: "#/definitions/imperative_workflow_definition"
     additionalProperties: false
 
-  # Section 3.10: Service Template definition
+
+# Section 3.10: Service Template definition
   service_template_definition:
     type: object
     properties:
@@ -1303,3 +1496,4 @@ definitions:
         $ref: "#/definitions/topology_template_definition"
     required: [ tosca_definitions_version ]
     additionalProperties: false
+    
