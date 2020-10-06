@@ -16,10 +16,6 @@
 
 
 # Required Python packages
-jsonschema[format]	# JSON schema validation.
-<<<<<<< HEAD
-PyYAML==5.1		# YAML parser
-=======
+jsonschema[format]      # JSON schema validation.
 PyYAML==5.3.1		# YAML parser
->>>>>>> 853ad25a01f6bfb4aac03ddb75f4263d318cf245
 requests		# HTTP requests
