@@ -27,7 +27,9 @@ jobs:
     needs: build
     steps:
       - name: Run examples
-        run: ./examples/OASIS_TOSCA_1.2/run.sh
-        run: ./examples/OpenStack/run.sh
+        run: |
+          ./examples/OASIS_TOSCA_1.2/run.sh
+          ./examples/OpenStack/run.sh
+        shell: bash
     
 
