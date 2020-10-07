@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install docker
-        run: apt install docker
+        run: sudo apt install docker
         shell: bash
 
   build:
