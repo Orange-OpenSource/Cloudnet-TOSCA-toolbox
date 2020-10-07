@@ -11,21 +11,21 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-      run: |
-        apt install docker
+      - name: Install docker
+        run: apt install docker
+        shell: bash
 
   build:
     needs: setup
     steps:
-      run: |
-        ./bin/build.sh
-
+      - name: Build docker image
+        run: ./bin/build.sh
+        shell: bash
   test:
     needs: build
     steps:
-      run: |
-        ./examples/OASIS_TOSCA_1.2/run.sh
-      run: |
-        ./examples/OpenStack/run.sh
+      - name: Run examples
+        run: ./examples/OASIS_TOSCA_1.2/run.sh
+        run: ./examples/OpenStack/run.sh
     
 
