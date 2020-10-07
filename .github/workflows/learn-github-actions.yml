@@ -16,12 +16,14 @@ jobs:
         shell: bash
 
   build:
+    runs-on: ubuntu-latest
     needs: setup
     steps:
       - name: Build docker image
         run: ./bin/build.sh
         shell: bash
   test:
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Run examples
