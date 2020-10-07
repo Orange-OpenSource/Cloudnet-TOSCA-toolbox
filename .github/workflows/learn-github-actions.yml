@@ -20,7 +20,9 @@ jobs:
     needs: setup
     steps:
       - name: Build docker image
-        run: ./bin/build.sh
+        run: |
+          ls -laF
+          ./bin/build.sh
         shell: bash
   test:
     runs-on: ubuntu-latest
