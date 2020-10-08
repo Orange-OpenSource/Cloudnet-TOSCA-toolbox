@@ -23,7 +23,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Build docker image
         run: |
-          bin/build.sh
+          cd bin
+          build.sh
         shell: bash
   test:
     runs-on: ubuntu-latest
