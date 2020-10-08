@@ -20,6 +20,7 @@ jobs:
     needs: setup
     steps:
       - name: Build docker image
+        uses: actions/checkout@v2
         run: |
           ls -laF
           ./bin/build.sh
