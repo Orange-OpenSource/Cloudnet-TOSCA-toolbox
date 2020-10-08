@@ -24,6 +24,7 @@ jobs:
       - name: Build docker image
         run: |
           cd bin
+          ls -l
           build.sh
         shell: bash
   test:
