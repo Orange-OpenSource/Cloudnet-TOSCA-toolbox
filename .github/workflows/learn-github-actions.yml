@@ -30,6 +30,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Build docker image
+        run: |
+          cd bin
+          ./build.sh
+        shell: bash
       - name: Run examples
         run: |
           ls -laF
