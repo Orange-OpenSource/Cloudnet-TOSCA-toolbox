@@ -22,8 +22,8 @@ docker_build()
   echo
 }
 
-docker_build toscaware/dot dot
-docker_build toscaware/nwdiag nwdiag
-docker_build toscaware/plantuml plantuml
-docker_build toscaware/toscaware toscaware
+docker_build dot dot
+docker_build nwdiag nwdiag
+docker_build plantuml plantuml
+docker_build toscaware toscaware
 # docker_build toscaware/hot2cloudnet hot2cloudnet
