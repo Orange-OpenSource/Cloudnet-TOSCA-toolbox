@@ -19,8 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
-      - name: Build docker image
+      - name: Check out repository code
         uses: actions/checkout@v2
+      - name: Build docker image
         run: |
           ls -laF
           ./bin/build.sh
