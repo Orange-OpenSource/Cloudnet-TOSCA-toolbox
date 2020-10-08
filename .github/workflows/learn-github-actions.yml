@@ -32,6 +32,7 @@ jobs:
     steps:
       - name: Run examples
         run: |
+          ls -laF
           /examples/OASIS_TOSCA_1.2/run.sh
           /examples/OpenStack/run.sh
         shell: bash
