@@ -39,6 +39,9 @@ jobs:
         shell: bash
       - name: Run examples
         run: |
+          cd examples
+          ls -laF
+          cd OASIS_TOSCA_1.2
           ls -laF
           /examples/OASIS_TOSCA_1.2/run.sh
           /examples/OpenStack/run.sh
