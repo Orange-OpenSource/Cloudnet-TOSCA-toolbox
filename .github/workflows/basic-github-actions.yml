@@ -32,9 +32,7 @@ jobs:
         shell: bash
       - name: Run examples
         run: |
-          cd examples
-          ls -laF
-          cd OASIS_TOSCA_1.2
+          cd examples/OASIS_TOSCA_1.2
           ./run.sh
           cd ../OpenStack
           ./run.sh
