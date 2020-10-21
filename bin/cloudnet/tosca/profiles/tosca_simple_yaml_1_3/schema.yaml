@@ -30,7 +30,7 @@ definitions:
       - type: string # TODO: define pattern
       - type: number
       
-  # Section 3.3.3
+  # Section 3.3.3   range of integer, mainly the occurrences' type
   range:
     type: array
     items:
@@ -48,6 +48,12 @@ definitions:
     type: string
     pattern: ^[0-9]+( )*[A-Za-z]+$
 
+  # Section 3.3.4 and section 3.3.5 are covered by yaml
+  
+  # Section 3.3.6
+  scalar_unit:
+    type: string
+    pattern: ^[0-9]+( )*[A-Za-z]+$
 
   # Section 3.4.3
   directives:
@@ -336,7 +342,6 @@ definitions:
         type: string
       minItems: 2
       maxItems: 4
-
   
   # Section 3.6.16 
   operation_implementation_definition:
@@ -355,12 +360,7 @@ definitions:
             minimum: 0
           operation_host:
             type: string
-            enum:
-              - SELF
-              - HOST
-              - SOURCE
-              - TARGET
-              - ORCHESTRATOR
+            pattern: SELF|HOST|SOURCE|TARGET|ORCHESTRATOR
         additionalProperties: false
 
   # Section 3.6.17
@@ -416,7 +416,6 @@ definitions:
   # Section 3.6.19 
   # The difference between definition in types and definition in templates is not yet clearly stated in the specification
   # So here we use the same principle as the one stated for operations 
-  
   notification_definition_in_types:
     anyOf:
       - type: string
@@ -512,7 +511,20 @@ definitions:
       target_filter:
         $ref: "#/definitions/event_filter_definition"
       condition:
-        $ref: "#/definitions/condition_clause_definition"
+        anyOf:
+          # condition short notation
+          $ref: "#/definitions/condition_clause_definition"
+          # condition extended notation
+          type: object
+          properties:
+            constraint:
+              $ref: "#/definitions/condition_clause_definition"
+            period:
+              $ref: "#/definitions/scalar_unit"
+            evaluations: 
+              type: integer        
+            method:
+              type: string          
       action:
         type: array
         items:
@@ -559,13 +571,12 @@ definitions:
           inputs:
             type: object
           additionalProperties:
-            $ref: "#/definitions/property_assignment"  # parameter assignment, which is not explicitly defined.
+            $ref: "#/definitions/property_assignment"  # ~ parameter assignment, which is not explicitly defined.
         additionalProperties: false
         
   set_state_activity_definition:
     type: string
                   
-
   call_operation_activity_definition:
     anyOf:
       - type: string
@@ -679,7 +690,6 @@ definitions:
     properties:
       derived_from:
         type: string
-#        pattern: ^none|None|NONE$
       version:
         $ref: "#/definitions/version"
       metadata:
@@ -708,7 +718,7 @@ definitions:
           valid_source_types:
             type: array
             items:
-              $ref: "#/definitions/node_type"
+              type: string
             minItems: 1
           occurrences:
             $ref: "#/definitions/occurrences"
@@ -718,7 +728,6 @@ definitions:
   occurrences:
     $ref: "#/definitions/range"
     
-
   # Section 3.7.3  
   requirement_definition:
     anyOf:
@@ -773,9 +782,46 @@ definitions:
           $ref: "#/definitions/property_definition"
     additionalProperties: false
 
-  # Section 3.7.5
+  # Section 3.7.5  
   interface_type:
     type: object
+    anyOf:
+      - properties:
+          derived_from:
+            type: string
+          version:
+            $ref: "#/definitions/version"
+          metadata:
+            $ref: "#/definitions/metadata"
+          description:
+            $ref: "#/definitions/description"
+          inputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/property_definition"
+          operations:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/operation_definition_in_types"
+          notifications:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/notification_definition_in_types"      
+        additionalProperties: false
+      # Deprecated case where neither 'operations' nor 'notifications' are specified
+      - properties:
+          derived_from:
+            type: string
+          version:
+            $ref: "#/definitions/version"
+          metadata:
+            $ref: "#/definitions/metadata"
+          description:
+            $ref: "#/definitions/description"
+        additionalProperties:
+          $ref: "#/definitions/operation_definition_in_types"
+
+  # Section 3.7.6 
     properties:
       derived_from:
         type: string
@@ -811,6 +857,7 @@ definitions:
         $ref: "#/definitions/metadata"
       description:
         $ref: "#/definitions/description"
+      # make sense only for simple datatypes:
       constraints:
         type: array
         items:
@@ -818,9 +865,11 @@ definitions:
       properties:
         type: object
         additionalProperties:
-          $ref: "#/definitions/property_definition"      
+          $ref: "#/definitions/property_definition" 
+      # makes sense only for datatypes derived from tosca map:           
       key_schema:
         $ref: "#/definitions/schema_definition"
+      # makes sense only for datatypes derived from tosca map or list:    
       entry_schema:
         $ref: "#/definitions/schema_definition"
     additionalProperties: false
@@ -1003,7 +1052,7 @@ definitions:
             type: object
             additionalProperties:
               $ref: "#/definitions/attribute_assignment"
-          occurences:
+          occurrences:
             $ref: "#/definitions/occurrences"            
         additionalProperties: false
 
@@ -1035,7 +1084,7 @@ definitions:
                 additionalProperties: false
           node_filter:
             $ref: "#/definitions/node_filter_definition"
-          occurences:
+          occurrences:
             $ref: "#/definitions/occurrences"   
         additionalProperties: false
 
