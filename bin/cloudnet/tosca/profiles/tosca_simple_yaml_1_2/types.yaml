@@ -10,7 +10,9 @@
 # or see the "LICENSE-2.0.txt" file for more details.
 #
 # Author: Philippe Merle <philippe.merle@inria.fr>
+
 # Software description: TOSCA to Cloudnet Translator
+# OASIS TOSCA Simple Profile in YAML Version 1.2 normative types.
 ######################################################################
 
 tosca_definitions_version: tosca_simple_yaml_1_2
@@ -798,6 +800,10 @@ node_types:
       ip_range_end:
         type: string
         required: false
+# specified, and in case no value is provided for the property
+    attributes:
+      ip_address:
+        type: string
     requirements:
      - link:
         capability: tosca.capabilities.network.Linkable

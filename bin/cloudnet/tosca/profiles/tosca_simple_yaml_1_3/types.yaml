@@ -1,4 +1,5 @@
-######################################################################
+
+#####################################################################
 #
 # Software Name : Cloudnet TOSCA toolbox 
 # Version: 1.0
@@ -9,10 +10,12 @@
 # the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
 # or see the "LICENSE-2.0.txt" file for more details.
 #
-# Authors: 
-#   Frédéric Klamm <frederic.klamm@orange.com>, 
-#   Philippe Merle <philippe.merle@inria.fr>
+# Author: 
+#   - Philippe Merle <philippe.merle@inria.fr>
+#   - Frédéric Klamm <frederic.klamm@orange.com>
+#
 # Software description: TOSCA to Cloudnet Translator
+# OASIS TOSCA Simple Profile in YAML Version 1.3 normative types.
 ######################################################################
 
 tosca_definitions_version: tosca_simple_yaml_1_3
@@ -192,8 +195,7 @@ artifact_types:
     mime_type: application/x-python
     file_ext: [ py ]
     
-  #fk: ajout
-  # Section 5.4.5 tosca.artifacts.template
+  # Section 5.4.5 tosca.artifacts.template   1.3->
   tosca.artifacts.template:
     derived_from: tosca.artifacts.Root
     description: TOSCA base type for template type artifacts
@@ -715,8 +717,6 @@ node_types:
 # ISSUE: no node type has tosca.capabilities.Storage as capabilities.
           relationship: tosca.relationships.Root
       - network:
-#          capability: tosca.capabilities.EndPoint # ISSUE: EndPoint undefined.
-#fk:  pb corrigé (EndPoint -> Endpoint)
           capability: tosca.capabilities.Endpoint
 # ISSUE: relationship undefined.
           relationship: tosca.relationships.Root
@@ -809,9 +809,7 @@ node_types:
       ip_range_end:
         type: string
         required: false
-    #fk: Ajouté l'attribut ip_address, qui est spécifié. Cela semble inutile puisqu'il y a une propriété du même nom. 
-    #fk? Mais cette propriété peut ne pas être renseignée (required = false). Il vaut donc mieux écrire l'attribut.
-    #fk? Si la propriété est renseignée, l'orchestrateur ne devrait pas créer 2 attributs de même nom.
+# specified, and in case no value is provided for the property
     attributes:
       ip_address:
         type: string
