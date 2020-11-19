@@ -41,17 +41,6 @@ run_toscaware()
     python /cloudnet/tosca/tosca2cloudnet.py --template-file $1
 }
 
-# Translate generated Heat templates to Alloy
-hot2alloy()
-{
-  echo Translating generated Heat templates to Alloy...
-  for file in "$@"
-  do
-    echo Translating $file...
-    ${CLOUDNET_BINDIR}/hot2cloudnet/hot2cloudnet.sh --template-file "$file" ${HOT2ALLOY_DEFAULT_ARGUMENTS}
-  done
-}
-
 # Parse and type check generated Alloy files.
 alloy_parse()
 {
