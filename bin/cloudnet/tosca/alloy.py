@@ -1610,7 +1610,7 @@ class GroupTypeGenerator(ToscaComponentTypeGenerator):
                 if types != '':
                     types = types + ' + '
                 types = types + self.alloy_sig(member)
-            self.generate_call_predicate('members', types)
+            self.generate_call_predicate('members_type', types)
 
         # TODO: are other facts to generate?
         return
