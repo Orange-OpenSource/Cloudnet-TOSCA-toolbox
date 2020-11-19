@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: MIT License
+#
+# This software is distributed under the MIT License
+# the text of which is available at https://mit-license.org/
+# or see the "MIT-LICENSE.txt" file for more details.
+#
+# Author: Jean-Luc Coulin <jeanluc.coulin@orange.com>
+# Software description: TOSCA to Cloudnet Translator
+######################################################################
+# shellcheck disable=SC1003
+
+# Based on https://gist.github.com/pkuczynski/8665367
+
+parse_yaml() {
+    local yaml_file=$1
+    local prefix=$2
+    local s
+    local w
+    local fs
+
+    s='[[:space:]]*'
+    w='[a-zA-Z0-9_.-]*'
+    fs="$(echo @|tr @ '\034')"
+
+    (
+        sed -e '/- [^\“]'"[^\']"'.*: /s|\([ ]*\)- \([[:space:]]*\)|\1-\'$'\n''  \1\2|g' |
+
+        sed -ne '/^--/s|--||g; s|\"|\\\"|g; s/[[:space:]]*$//g;' \
+            -e "/#.*[\"\']/!s| #.*||g; /^#/s|#.*||g;" \
+            -e "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+            -e "s|^\($s\)\($w\)${s}[:-]$s\(.*\)$s\$|\1$fs\2$fs\3|p" |
+
+        awk -F"$fs" '{
+            indent = length($1)/2;
+            if (length($2) == 0) { conj[indent]="+";} else {conj[indent]="";}
+            vname[indent] = $2;
+            for (i in vname) {if (i > indent) {delete vname[i]}}
+                if (length($3) > 0) {
+                    vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+                    printf("%s%s%s%s=(\"%s\")\n", "'"$prefix"'",vn, $2, conj[indent-1],$3);
+                }
+            }' |
+
+        sed -e 's/_=/+=/g' |
+
+        awk 'BEGIN {
+                FS="=";
+                OFS="="
+            }
+            /(-|\.).*=/ {
+                gsub("-|\\.", "_", $1)
+            }
+            { print }'
+    ) < "$yaml_file"
+}
+
+unset_variables() {
+  # Pulls out the variable names and unsets them.
+  local variable_string="$@"
+  unset variables
+  variables=()
+  for variable in ${variable_string[@]}; do
+    variables+=($(echo $variable | grep '=' | sed 's/=.*//' | sed 's/+.*//'))
+  done
+  for variable in ${variables[@]}; do
+    unset $variable
+  done
+}
+
+create_variables() {
+    local yaml_file="$1"
+    local prefix="$2"
+    local yaml_string="$(parse_yaml "$yaml_file" "$prefix")"
+    unset_variables ${yaml_string[@]}
+    eval "${yaml_string}"
+}
