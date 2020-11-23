@@ -11,6 +11,7 @@
 # or see the "LICENSE-2.0.txt" file for more details.
 #
 # Author: Philippe Merle <philippe.merle@inria.fr>
+# Author: Jean-Luc Coulin <jeanluc.coulin@orange.com>
 # Software description: Use case for TOSCA to Cloudnet Translator
 ######################################################################
 
