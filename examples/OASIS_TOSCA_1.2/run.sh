@@ -367,9 +367,9 @@ echo -e "\nA log file will be also available here ${normal}${blue}logs/${_LOG}${
 pause
 
 ############################################################################
-#  Trap CTRL+C, CTRL+Z and quit singles
+#  Trap CTRL+Z 
 ################################################################################
-trap '' SIGINT SIGQUIT SIGTSTP
+trap '' SIGTSTP
 
 ################################################################################
 # Process the input options.
