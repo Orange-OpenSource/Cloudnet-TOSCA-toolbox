@@ -21,6 +21,8 @@
 Help()
 {
    # Display Help
+   echo 
+   echo "                TOSCA Toolbox"
    echo "  This script demonstrate how to use the TOSCA toolbox tools."
    echo
    echo "  Launched without parameter, it opens a MENU."
@@ -143,7 +145,7 @@ show_menus() {
     echo "      4. Alloy syntax checking"
     echo "      5. Alloy solve"
     echo "      c. Clean results and logs directories"
-    echo "      l. Show the log file"
+    echo "      l. Show the log file (type q to leave)"
     echo "      w. Launch the whole process"
     echo "      x. Exit"
     echo 
@@ -356,6 +358,41 @@ if (( $NBVARSSET == 0 )); then
    create_variables $TOSCA2CLOUDNET_CONF_FILE
 fi
 
+################################################################################
+# Process the input options.
+# When called in batch mode, it launch the whole treatement and retur a code
+# indicating if the statys is OK, OK with warning or KO
+################################################################################
+# Get the options
+optstring=":hb"
+
+while getopts ${optstring} option; do
+   case $option in
+      h) # display Help
+         Help
+         exit;;
+      b) # change the log file name to be identified executed in batch mode
+         _LOG=$(basename $PWD)_BATCH_MODE-$(date +%F_%H-%M-%S).log
+         # Launch the whole stuff process
+         TOSCA_SyntaxCheck
+         NetworkDiagrams
+         TOSCADiagrams
+         UML2Diagrams
+         AlloySyntax
+# take to much time and ressource, not necessary if used for regression testing in CI/CD
+#         AlloySolve 
+         exit;;
+     ?) # incorrect option
+         Help
+         echo -e "\n\n        ${bold}${red}Error${reset}: Invalid option -${OPTARG} ${reset}\n\n"
+         exit;;
+   esac
+done
+
+
+################################################################################
+# We enter here the interactive mode
+################################################################################
 clear
 
 echo -e "\n\nGenerated files will be placed in the following directories"
@@ -371,38 +408,6 @@ pause
 ################################################################################
 trap '' SIGTSTP
 
-################################################################################
-# Process the input options.
-# When called in batch mode, it launch the whole treatement and retur a code
-# indicating if the statys is OK, OK with warning or KO
-################################################################################
-# Get the options
-optstring=":hb"
-
-while getopts ${optstring} option; do
-   case $option in
-      h) # display Help
-         echo -e "\n\n        ${bold}${red}Error${reset}: Invalid option |$option| ${reset}\n\n"
-         Help
-         exit;;
-      b) # change the log file name to be identified executed in batch mode
-         _LOG=$(basename $PWD)_BATCH_MODE-$(date +%F_%H-%M-%S).log
-         # Launch the whole stuff process
-         TOSCA_SyntaxCheck
-         NetworkDiagrams
-         TOSCADiagrams
-         UML2Diagrams
-         AlloySyntax
-         AlloySolve
-         exit;;
-     \?) # incorrect option
-         echo -e "\n\n        ${bold}${red}Error${reset}: Invalid option |$option| ${reset}\n\n"
-         # Help
-         exit;;
-   esac
-done
-
- 
 ################################################################################
 # Main logic - infinite loop
 ################################################################################
