@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -9,8 +9,8 @@
 # the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
 # or see the "LICENSE-2.0.txt" file for more details.
 #
-# Authors: 
-#   Frédéric Klamm <frederic.klamm@orange.com>, 
+# Authors:
+#   Frédéric Klamm <frederic.klamm@orange.com>,
 #   Philippe Merle <philippe.merle@inria.fr>
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
@@ -29,7 +29,7 @@ definitions:
     anyOf:
       - type: string # TODO: define pattern
       - type: number
-      
+
   # Section 3.3.3   range of integer, mainly the occurrences' type
   range:
     type: array
@@ -42,14 +42,14 @@ definitions:
     maxItems: 2
 
   # Section 3.3.4 and section 3.3.5 are covered by yaml
-  
+
   # Section 3.3.6
   scalar_unit:
     type: string
     pattern: ^[0-9]+( )*[A-Za-z]+$
 
   # Section 3.3.4 and section 3.3.5 are covered by yaml
-  
+
   # Section 3.3.6
   scalar_unit:
     type: string
@@ -61,13 +61,13 @@ definitions:
     items:
       type: string
       pattern: substitute|substitutable|select|selectable
-    maxItems: 2  
+    maxItems: 2
 
 
   # Section 3.6.1
   description:
     type: string
-    
+
   # Section 3.6.2
   metadata:
     type: object
@@ -121,14 +121,14 @@ definitions:
       - type: boolean
       - type: string
       - type: number
- 
+
   # Section 3.6.4
-  property_filter_definition: 
+  property_filter_definition:
     anyOf:
       - additionalProperties:
           $ref: "#/definitions/constraint_clause"
-      - type: array  
-        items: 
+      - type: array
+        items:
           $ref: "#/definitions/constraint_clause"
 
   # Section 3.6.5
@@ -193,14 +193,14 @@ definitions:
           checksum:
             type: string
           checksum_algorithm:
-            type: string    
+            type: string
           properties:
             type: object
           additionalProperties:
             $ref: "#/definitions/property_assignment"
         additionalProperties: false
         required: [ type, file ]
-         
+
   # Section 3.6.8
   import_definition:
     anyOf:
@@ -223,9 +223,9 @@ definitions:
   schema_definition:
     type: object
     properties:
-      type: 
+      type:
         type: string
-      description: 
+      description:
         $ref: "#/definitions/description"
       constraints:
         type: array
@@ -236,8 +236,8 @@ definitions:
       entry_schema:
         $ref: "#/definitions/schema_definition"
     required: [ type ]
-    additionalProperties: false     
-    
+    additionalProperties: false
+
   #Section 3.6.10
   property_definition:
     type: object
@@ -257,7 +257,7 @@ definitions:
         items:
           $ref: "#/definitions/constraint_clause"
       key_schema:
-        $ref: "#/definitions/schema_definition"          
+        $ref: "#/definitions/schema_definition"
       entry_schema:
         $ref: "#/definitions/schema_definition"
       external_schema:
@@ -276,7 +276,7 @@ definitions:
 #      - deprecated
   status:
     type: string
-    pattern: supported|unsupported|experimental|deprecated  
+    pattern: supported|unsupported|experimental|deprecated
 
   # Section 3.6.11
   property_assignment:
@@ -295,7 +295,7 @@ definitions:
       status:
         $ref: "#/definitions/status"
       key_schema:
-        $ref: "#/definitions/schema_definition"          
+        $ref: "#/definitions/schema_definition"
       entry_schema:
         $ref: "#/definitions/schema_definition"
     additionalProperties: false
@@ -324,7 +324,7 @@ definitions:
         items:
           $ref: "#/definitions/constraint_clause"
       key_schema:
-        $ref: "#/definitions/schema_definition"          
+        $ref: "#/definitions/schema_definition"
       entry_schema:
         $ref: "#/definitions/schema_definition"
       external_schema:
@@ -342,8 +342,8 @@ definitions:
         type: string
       minItems: 2
       maxItems: 4
-  
-  # Section 3.6.16 
+
+  # Section 3.6.16
   operation_implementation_definition:
     anyOf:
       - type: string
@@ -399,23 +399,23 @@ definitions:
         additionalProperties: false
 
 
-  # Section 3.6.18 
+  # Section 3.6.18
   notification_implementation_definition:
     anyOf:
       - type: string
       - type: object
         properties:
           primary:
-            $ref: "#/definitions/artifact_definition"               
+            $ref: "#/definitions/artifact_definition"
           dependencies:
             type: array
             items:
-              $ref: "#/definitions/artifact_definition" 
+              $ref: "#/definitions/artifact_definition"
         additionalProperties: false
-  
-  # Section 3.6.19 
+
+  # Section 3.6.19
   # The difference between definition in types and definition in templates is not yet clearly stated in the specification
-  # So here we use the same principle as the one stated for operations 
+  # So here we use the same principle as the one stated for operations
   notification_definition_in_types:
     anyOf:
       - type: string
@@ -428,9 +428,9 @@ definitions:
           outputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/attribute_mapping_definition"   
-        additionalProperties: false      
-    
+              $ref: "#/definitions/attribute_mapping_definition"
+        additionalProperties: false
+
   notification_definition_in_templates:
     anyOf:
       - type: string
@@ -446,7 +446,7 @@ definitions:
   interface_definition_in_types:
     type: object
     properties:
-      description: 
+      description:
         $ref: "#/definitions/description"
       type:
         type: string
@@ -457,17 +457,17 @@ definitions:
       operations:
         type: object
         additionalProperties:
-          $ref: "#/definitions/operation_definition_in_types"        
+          $ref: "#/definitions/operation_definition_in_types"
       notifications:
         type: object
         additionalProperties:
-          $ref: "#/definitions/notification_definition_in_types"                
+          $ref: "#/definitions/notification_definition_in_types"
     additionalProperties: false
 
   interface_definition_in_templates:
     type: object
     properties:
-      description: 
+      description:
         $ref: "#/definitions/description"
       type:
         type: string
@@ -478,31 +478,31 @@ definitions:
       operations:
         type: object
         additionalProperties:
-          $ref: "#/definitions/operation_definition_in_templates"        
+          $ref: "#/definitions/operation_definition_in_templates"
       notifications:
         type: object
         additionalProperties:
-          $ref: "#/definitions/notification_definition_in_templates"                
+          $ref: "#/definitions/notification_definition_in_templates"
     additionalProperties: false
 
   # Section 3.6.21
   event_filter_definition:
     type: object
     properties:
-      node: 
+      node:
         type: string
       requirement:
         type: string
       capability:
         type: string
-    additionalProperties: false 
+    additionalProperties: false
     required: [node]
 
   # Section 3.6.22
   trigger_definition:
     type: object
     properties:
-      description: 
+      description:
         $ref: "#/definitions/description"
       event:
         type: string
@@ -521,10 +521,10 @@ definitions:
               $ref: "#/definitions/condition_clause_definition"
             period:
               $ref: "#/definitions/scalar_unit"
-            evaluations: 
-              type: integer        
+            evaluations:
+              type: integer
             method:
-              type: string          
+              type: string
       action:
         type: array
         items:
@@ -533,13 +533,13 @@ definitions:
         $ref: "#/definitions/condition_clause_definition"
       period:
         $ref: "#/definitions/scalar_unit"
-      evaluations: 
-        type: integer        
+      evaluations:
+        type: integer
       method:
         type: string
     additionalProperties: false
-    required: [ event, action ]        
-      
+    required: [ event, action ]
+
   # Section 3.6.23
   activity_definition:
     type: object
@@ -560,10 +560,10 @@ definitions:
           inline:
             $ref: "#/definitions/inline_workflow_activity_definition"
         additionalProperties: false
-    
+
   delegate_workflow_activity_definition:
     anyOf:
-      - type: string   
+      - type: string
       - type: object
         properties:
           workflow:
@@ -573,10 +573,10 @@ definitions:
           additionalProperties:
             $ref: "#/definitions/property_assignment"  # ~ parameter assignment, which is not explicitly defined.
         additionalProperties: false
-        
+
   set_state_activity_definition:
     type: string
-                  
+
   call_operation_activity_definition:
     anyOf:
       - type: string
@@ -600,15 +600,15 @@ definitions:
           inputs:
             type: object
           additionalProperties:
-            $ref: "#/definitions/property_assignment" 
+            $ref: "#/definitions/property_assignment"
         additionalProperties: false
-      
-  # Section 3.6.24 
+
+  # Section 3.6.24
   assertion_definition:
     type: array
     items:
       $ref: "#/definitions/constraint_clause"
-    
+
   # Section 3.6.25
   condition_clause_definition:
     type: object
@@ -634,9 +634,9 @@ definitions:
             type: array
             items:
               $ref: "#/definitions/assertion_definition"
-    additionalProperties: 
+    additionalProperties:
       $ref: "#/definitions/assertion_definition"
-      
+
   # Section 3.6.26
   workflow_precondition_definition:
     type: object
@@ -647,11 +647,11 @@ definitions:
         type: string
       condition:
         type: array
-        items: 
+        items:
           $ref: "#/definitions/condition_clause_definition"
     additionalProperties: false
-    required: [ target ]          
-    
+    required: [ target ]
+
   # Section 3.6.27
   workflow_step_definition:
     type: object
@@ -664,7 +664,7 @@ definitions:
         type: string
       filter:
         type: array
-        items: 
+        items:
           $ref: "#/definitions/condition_clause_definition"
       activities:
         type: array
@@ -727,8 +727,8 @@ definitions:
 
   occurrences:
     $ref: "#/definitions/range"
-    
-  # Section 3.7.3  
+
+  # Section 3.7.3
   requirement_definition:
     anyOf:
       - type: string
@@ -782,7 +782,7 @@ definitions:
           $ref: "#/definitions/property_definition"
     additionalProperties: false
 
-  # Section 3.7.5  
+  # Section 3.7.5
   interface_type:
     type: object
     anyOf:
@@ -806,7 +806,7 @@ definitions:
           notifications:
             type: object
             additionalProperties:
-              $ref: "#/definitions/notification_definition_in_types"      
+              $ref: "#/definitions/notification_definition_in_types"
         additionalProperties: false
       # Deprecated case where neither 'operations' nor 'notifications' are specified
       - properties:
@@ -821,7 +821,7 @@ definitions:
         additionalProperties:
           $ref: "#/definitions/operation_definition_in_types"
 
-  # Section 3.7.6 
+  # Section 3.7.6
     properties:
       derived_from:
         type: string
@@ -842,9 +842,9 @@ definitions:
       notifications:
         type: object
         additionalProperties:
-          $ref: "#/definitions/notification_definition_in_types"      
+          $ref: "#/definitions/notification_definition_in_types"
     additionalProperties: false
- 
+
   # Section 3.7.6    to be double-checked
   data_type:
     type: object
@@ -865,11 +865,11 @@ definitions:
       properties:
         type: object
         additionalProperties:
-          $ref: "#/definitions/property_definition" 
-      # makes sense only for datatypes derived from tosca map:           
+          $ref: "#/definitions/property_definition"
+      # makes sense only for datatypes derived from tosca map:
       key_schema:
         $ref: "#/definitions/schema_definition"
-      # makes sense only for datatypes derived from tosca map or list:    
+      # makes sense only for datatypes derived from tosca map or list:
       entry_schema:
         $ref: "#/definitions/schema_definition"
     additionalProperties: false
@@ -1020,7 +1020,7 @@ definitions:
         type: string
       version:
         $ref: "#/definitions/version"
-      metadata: 
+      metadata:
         $ref: "#/definitions/metadata"
       description:
        $ref: "#/definitions/description"
@@ -1053,7 +1053,7 @@ definitions:
             additionalProperties:
               $ref: "#/definitions/attribute_assignment"
           occurrences:
-            $ref: "#/definitions/occurrences"            
+            $ref: "#/definitions/occurrences"
         additionalProperties: false
 
   # Section 3.8.2
@@ -1085,7 +1085,7 @@ definitions:
           node_filter:
             $ref: "#/definitions/node_filter_definition"
           occurrences:
-            $ref: "#/definitions/occurrences"   
+            $ref: "#/definitions/occurrences"
         additionalProperties: false
 
   # Section 3.8.3
@@ -1209,7 +1209,7 @@ definitions:
 
   # Section 3.8.7
   imperative_workflow_definition:
-    type: object 
+    type: object
     oneOf:
       - properties:
           description:
@@ -1220,14 +1220,14 @@ definitions:
             type: object
             additionalProperties:
               $ref: "#/definitions/property_definition"
-          preconditions: 
+          preconditions:
             type: array
-            items: 
+            items:
               $ref: "#/definitions/workflow_precondition_definition"
           steps:
             type: object
             additionalProperties:
-              $ref: "#/definitions/workflow_step_definition"        
+              $ref: "#/definitions/workflow_step_definition"
           outputs:
             type: object
             additionalProperties:
@@ -1242,20 +1242,20 @@ definitions:
             type: object
             additionalProperties:
               $ref: "#/definitions/property_definition"
-          preconditions: 
+          preconditions:
             type: array
-            items: 
+            items:
               $ref: "#/definitions/workflow_precondition_definition"
           implementation:
             $ref: "#/definitions/operation_implementation_definition"
           outputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/attribute_mapping"              
+              $ref: "#/definitions/attribute_mapping"
         additionalProperties: false
 
-  # Section 3.8.8   'value' becomes deprecated, 
-  # Description of keyname mapping in 1.3 suggests maxItems amounts to 1 whereas it was 3 in TOSCA 1.2. I saw no counter-example, so set it from 3 to 1.   
+  # Section 3.8.8   'value' becomes deprecated,
+  # Description of keyname mapping in 1.3 suggests maxItems amounts to 1 whereas it was 3 in TOSCA 1.2. I saw no counter-example, so set it from 3 to 1.
   property_mapping:
     anyOf:
       - $ref: "#/definitions/value"
@@ -1296,7 +1296,7 @@ definitions:
               - type: string
             maxItems: 1
         additionalProperties: false
-        
+
   # Section 3.8.10
   capability_mapping:
     anyOf:
@@ -1358,7 +1358,7 @@ definitions:
     type: object
     additionalProperties:
       type: string
-  
+
 
   # Section 3.8.13
   substitution_mapping:
@@ -1376,7 +1376,7 @@ definitions:
       attributes:
         type: object
         additionalProperties:
-          $ref: "#/definitions/attribute_mapping"          
+          $ref: "#/definitions/attribute_mapping"
       capabilities:
         type: object
         additionalProperties:
@@ -1515,7 +1515,7 @@ definitions:
         additionalProperties:
           $ref: "#/definitions/group_type"
       # Section 3.10.3.16
-      policy_types: # map of group types
+      policy_types: # map of policy types
         type: object
         additionalProperties:
           $ref: "#/definitions/policy_type"
@@ -1523,4 +1523,3 @@ definitions:
         $ref: "#/definitions/topology_template_definition"
     required: [ tosca_definitions_version ]
     additionalProperties: false
-    
