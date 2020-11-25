@@ -33,9 +33,9 @@ jobs:
       - name: Run examples
         run: |
           cd examples/OASIS_TOSCA_1.2
-          ./run.sh
+          ./run.sh -b
           cd ../OpenStack
-          ./run.sh
+          ./run.sh -b
         shell: bash
     
 
