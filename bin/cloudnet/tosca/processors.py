@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -44,6 +44,8 @@ class Processor(object):
             self.tosca_service_template = tosca_service_template
             self.configuration = configuration
             self.type_system = type_system
+        self.nb_errors = 0
+        self.nb_warnings = 0
 
     def get_mapping(self, key, mappings):
         previous = None
@@ -95,9 +97,11 @@ class Processor(object):
 
     def error(self, message):
         print(CRED, '[ERROR] ', self.tosca_service_template.get_fullname(), ':', message, '!', CEND, sep='', file=stderr)
+        self.nb_errors += 1
 
     def warning(self, message):
         print(CYELLOW, '[Warning] ', self.tosca_service_template.get_fullname(), ':', message, '!', CEND, sep='', file=stderr)
+        self.nb_warnings += 1
 
     def info(self, message):
         if LOGGER.isEnabledFor(logging.INFO):
