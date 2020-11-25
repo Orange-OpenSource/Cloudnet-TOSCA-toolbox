@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -478,8 +478,8 @@ definitions:
         type: string
       file_ext:
         type: array
-      items:
-        type: string
+        items:
+          type: string
       properties:
         type: object
         additionalProperties:
