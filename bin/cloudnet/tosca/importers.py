@@ -178,8 +178,16 @@ class FilesystemImporter(Importer):
         '''
             Loads a YAML file.
         '''
+        template = ""
         with open(filename, 'r') as stream:
-            return yaml.load(stream, Loader=yaml.FullLoader)
+            try:
+                template = yaml.load(stream, Loader=yaml.SafeLoader)
+            except yaml.YAMLError as exc:
+                if hasattr(exc, 'problem_mark'):
+                    mark = exc.problem_mark
+                    raise ValueError("Yaml error line %s column %s" % (mark.line+1, mark.column+1))
+
+        return template
 
 class UrlImporter(Importer):
     '''
