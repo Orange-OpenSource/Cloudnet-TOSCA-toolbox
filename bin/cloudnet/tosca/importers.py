@@ -16,7 +16,6 @@
 import requests  # for HTTP GET requests.
 import yaml      # for parsing YAML.
 import zipfile   # for reading ZIP files.
-import os
 import logging   # for logging purposes.
 
 import cloudnet.tosca.configuration as configuration
