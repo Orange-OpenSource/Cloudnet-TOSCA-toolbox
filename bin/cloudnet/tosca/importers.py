@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -179,7 +179,7 @@ class FilesystemImporter(Importer):
             Loads a YAML file.
         '''
         with open(filename, 'r') as stream:
-            return yaml.load(stream, Loader=yaml.FullLoader)
+            return yaml.safe_load(stream)
 
 class UrlImporter(Importer):
     '''
@@ -199,7 +199,7 @@ class UrlImporter(Importer):
         response = requests.get(filename)
         if response.status_code == 404:
             raise FileNotFoundError(filename)
-        return yaml.load(response.text, Loader=yaml.FullLoader)
+        return yaml.safe_load(response.text)
 
 class ArchiveImporter(Importer):
     '''
@@ -237,7 +237,7 @@ class ArchiveImporter(Importer):
         '''
         try:
             with self.zipfile.open(filename) as stream:
-                return yaml.load(stream, Loader=yaml.FullLoader)
+                return yaml.safe_load(stream)
         except KeyError:
             raise FileNotFoundError(filename)
 
