@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -29,7 +29,7 @@ def load(config_file=CONFIGURATION_FILE):
     if os.path.exists(config_file):
         # Load the configuration file if it exists.
         with open(config_file, 'r') as stream:
-            content = yaml.load(stream, Loader=yaml.FullLoader)
+            content = yaml.safe_load(stream)
             configuration = merge_dict(DEFAULT_CONFIGURATION, content)
 
     # Configure logging.
