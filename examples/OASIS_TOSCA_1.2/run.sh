@@ -42,6 +42,10 @@ Help()
 ################################################################################
 TOSCA_SyntaxCheck()
 {
+   # Configure0 a log file
+   _LOG=$(basename "${PWD}")-$(date +%F_%H-%M-%S).log
+   mkdir -p logs 2>/dev/null
+
    # All description files translation
    echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/${_LOG}
    
@@ -268,10 +272,6 @@ done
 
 # Load cloundnet commands.
 . $CLOUDNET_BINDIR/cloudnet_rc.sh
-
-# Configure0 a log file
-_LOG=$(basename "${PWD}")-$(date +%F_%H-%M-%S).log
-mkdir -p logs 2>/dev/null
 
 # Variable used to know if the Syntax checking has bee done
 SYNTAX_CHECK=False
