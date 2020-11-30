@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -67,31 +67,45 @@ def main(argv):
             tosca_service_template = importers.imports(args.template_file, config.get(ALIASED_TOSCA_SERVICE_TEMPLATES))
         except Exception as e:
             print(processors.CRED, '[ERROR] ', args.template_file , ': ', e, processors.CEND, sep='', file=sys.stderr)
-            return -1
+            exit(1)
+
+        nb_errors = 0
+        nb_warnings = 0
 
         # Syntax checking.
         syntax_checker = SyntaxChecker(tosca_service_template, config)
-        if syntax_checker.check() == False:
-            return -1
+        if syntax_checker.check() == False or syntax_checker.nb_errors > 0:
+            exit(1)
+        nb_errors += syntax_checker.nb_errors
+        nb_warnings += syntax_checker.nb_warnings
 
         # Create a TOSCA type system.
         type_system = TypeSystem(config)
 
         # Type checking.
         type_checker = TypeChecker(tosca_service_template, config, type_system)
-        if type_checker.check() == False:
-            return -1
+        if type_checker.check() == False or type_checker.nb_errors > 0:
+            exit(1)
+        nb_errors += type_checker.nb_errors
+        nb_warnings += type_checker.nb_warnings
 
         # Generate Alloy specifications, UML2, network, TOSCA diagrams and Heat templates.
         type_checker.file = None
         for generator_class in [AlloyGenerator, PlantUMLGenerator, NwdiagGenerator, ToscaDiagramGenerator, HOTGenerator]:
             generator = generator_class(generator=type_checker)
             generator.generation()
-    except:
+            nb_errors += generator.nb_errors
+            nb_warnings += generator.nb_warnings
+
+        if nb_errors > 0 or nb_warnings > 0:
+            exit(1)
+
+    except Exception as e:
         print(processors.CRED, file=sys.stderr)
         import traceback
         traceback.print_exc(file=sys.stderr)
         print(processors.CEND, file=sys.stderr)
+        exit(1)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
