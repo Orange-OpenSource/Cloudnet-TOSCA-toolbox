@@ -1,5 +1,6 @@
 name: basic-github-actions
-on: [push]
+on: 
+  [push workflow_dispatch]
 jobs:
   setup:
     runs-on: ubuntu-latest
