@@ -212,7 +212,14 @@ read_options(){
            pause
            ;;
         l) # Show the log file
-           less -r logs/${_LOG}
+           # If logfilname is set : show it
+           # else, warn the user
+           if [ -z ${_LOG+x} ]; then
+             echo -e "\n\n"
+             read -p "          No log file created for this session, type any key to continue." choice
+           else
+             less -r logs/${_LOG}
+           fi
            ;;
         w) # Launch the whole process
            echo -e "\n TOSCA syntax checking"
@@ -330,7 +337,7 @@ fi
 
 if (( $NBVARSSET == 0 )); then
    DIRVARS_GENERATED=true
-   #create a config file
+   #create a config file which will be deleted at the exit of the script
    RESULT_DIR="RESULTS"
    echo "# Configuration of the Alloy generator." >> $TOSCA2CLOUDNET_CONF_FILE
    echo "Alloy:" >> $TOSCA2CLOUDNET_CONF_FILE
@@ -415,4 +422,4 @@ while true
 do
     show_menus
     read_options
-done
+ done
