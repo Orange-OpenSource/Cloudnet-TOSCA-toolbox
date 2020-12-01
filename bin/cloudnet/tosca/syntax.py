@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -524,7 +524,15 @@ class SyntaxChecker(Checker):
             error_message = error.message
             if error_message.startswith('Additional'):
                 error_message = error_message[error_message.find('(')+1:-1]
-            self.error(' ' + error_message)
+            elif error_message.startswith("None is not of type 'object'"):
+                error_message = 'can not be empty'
+            elif error_message.endswith(" is not of type 'object'"):
+                value = error_message[: error_message.index(" is not of type 'object'")]
+                error_message = value + ' was unexpected'
+            error_path = ''
+            for value in error.path:
+                error_path += value + ':'
+            self.error(error_path + ' ' + error_message)
             is_validated = False
 
         return is_validated
