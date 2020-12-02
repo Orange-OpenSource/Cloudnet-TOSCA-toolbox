@@ -23,6 +23,7 @@ import cloudnet.tosca.configuration as configuration
 import cloudnet.tosca.syntax as syntax
 from cloudnet.tosca.processors import CEND, CRED, Checker
 from cloudnet.tosca.utils import merge_dict, normalize_dict
+from cloudnet.tosca.diagnostics import diagnostic
 
 profiles_directory = "file:" + os.path.dirname(__file__) + "/profiles"
 
@@ -172,6 +173,7 @@ class TypeSystem(object):
         result = self.get_type(type_name)
         if result is None:
             # TBR            LOGGER.error(CRED + type_name + ' unknown!' + CEND)
+            diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem')
             return dict()
 
         requirements = result.get(syntax.REQUIREMENTS)

@@ -22,6 +22,7 @@ import cloudnet.tosca.syntax as syntax
 from cloudnet.tosca.syntax import *  # TODO to be removed
 import cloudnet.tosca.utils as utils
 
+from cloudnet.tosca.diagnostics import diagnostic
 
 ALLOY = "Alloy"
 SCOPE = "scope"
@@ -119,6 +120,7 @@ class Alloy(object):
             extended_signature_name = Alloy.get_superset(signature_name)
         except KeyError as e:
             LOGGER.error(CRED + str(e) + CEND)
+            diagnostic(gravity='error',message=str(e),cls=signature_name,file='')
             extended_signature_name = None
 
         while extended_signature_name:
@@ -127,6 +129,7 @@ class Alloy(object):
                 extended_signature_name = Alloy.get_superset(extended_signature_name)
             except KeyError as e:
                 LOGGER.error(CRED + str(e) + " unknown!" + CEND)
+                diagnostic(gravity='error',message=str(e)+' unknown',cls=signature_name,file='')
                 extended_signature_name = None
 
         return supersets

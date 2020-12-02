@@ -52,6 +52,7 @@ DEFAULT_CONFIGURATION[NWDIAG] = {
 DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
 }
+from cloudnet.tosca.diagnostics import diagnostic
 
 LOGGER = logging.getLogger(__name__)
 

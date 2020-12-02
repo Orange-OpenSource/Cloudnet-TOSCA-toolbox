@@ -41,6 +41,7 @@ from cloudnet.tosca.syntax import SyntaxChecker
 from cloudnet.tosca.tosca_diagrams import ToscaDiagramGenerator
 from cloudnet.tosca.type_system import TypeChecker, TypeSystem
 from cloudnet.tosca.uml2_diagrams import PlantUMLGenerator
+import cloudnet.tosca.diagnostics as diagnostics
 
 ALIASED_TOSCA_SERVICE_TEMPLATES = "aliased_tosca_service_templates"
 
@@ -70,7 +71,13 @@ def main(argv):
             required=True,
             help="YAML template or CSAR file to parse.",
         )
+        parser.add_argument('--diagnostics-file',
+                            metavar='<filename>',
+                            default='',
+                            help='json log output processing file.')
         (args, extra_args) = parser.parse_known_args(argv)
+
+        diagnostics.configure(template_filename=args.template_file, log_filename=args.diagnostics_file)
 
         # Load configuration.
         config = configuration.load()
@@ -91,7 +98,13 @@ def main(argv):
                 sep="",
                 file=sys.stderr,
             )
-            exit(1)
+            diagnostics.diagnostic(
+                gravity='error',
+                file=args.template_file, 
+                message=str(e), 
+                cls='tosca2cloudnet'
+            )
+            return 2
 
         nb_errors = 0
         nb_warnings = 0
@@ -99,9 +112,16 @@ def main(argv):
         # Syntax checking.
         syntax_checker = SyntaxChecker(tosca_service_template, config)
         if syntax_checker.check() is False or syntax_checker.nb_errors > 0:
-            exit(1)
+            return 2
         nb_errors += syntax_checker.nb_errors
         nb_warnings += syntax_checker.nb_warnings
+            print(processors.CRED, '[ERROR] ', args.template_file , ': ', e, processors.CEND, sep='', file=sys.stderr)
+            return 2
+
+        # Syntax checking.
+        syntax_checker = SyntaxChecker(tosca_service_template, config)
+        if syntax_checker.check() == False:
+            return 2
 
         # Create a TOSCA type system.
         type_system = TypeSystem(config)
@@ -124,20 +144,15 @@ def main(argv):
         ]:
             generator = generator_class(generator=type_checker)
             generator.generation()
-            nb_errors += generator.nb_errors
-            nb_warnings += generator.nb_warnings
-
-        if nb_errors > 0 or nb_warnings > 0:
-            exit(1)
-
-    except Exception as e:
+        return diagnostics.return_code
+    except Exception as exception:
         print(processors.CRED, file=sys.stderr)
         import traceback
 
         traceback.print_exc(file=sys.stderr)
         print(processors.CEND, file=sys.stderr)
-        exit(1)
+        diagnostics.diagnostic(gravity='error',message=f'global exception {type(exception).__name__}, see output log.', file='',cls='main')
+        return 2
 
-
-if __name__ == "__main__":
-    main(sys.argv[1:])
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:])) # error code: 2 -> break workflow, 1 -> warnings, but continue
