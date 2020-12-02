@@ -24,7 +24,7 @@ from cloudnet.tosca.processors import Generator
 NWDIAG = "nwdiag"
 DEFAULT_CONFIGURATION[NWDIAG] = {
     # Target directory where network diagrams are generated.
-    Generator.TARGET_DIRECTORY: "nwdiag",
+    Generator.TARGET_DIRECTORY: 'Results/NetworkDiagrams'
     # Network capability types.
     "linkable_capability_types": ["tosca.capabilities.network.Linkable"],
     # Port capability types.

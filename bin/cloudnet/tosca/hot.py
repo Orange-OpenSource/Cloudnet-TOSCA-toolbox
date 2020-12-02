@@ -30,7 +30,7 @@ HOT = "HOT"
 HEAT_TEMPLATE_VERSION = "heat_template_version"
 configuration.DEFAULT_CONFIGURATION[HOT] = {
     # Target directory where HOT templates are generated.
-    Generator.TARGET_DIRECTORY: "hot",
+    Generator.TARGET_DIRECTORY: 'Results/HOT',
     # The Heat template version used into generated HOT templates.
     HEAT_TEMPLATE_VERSION: "queens",
     #   HEAT_TEMPLATE_VERSION: 'rocky',

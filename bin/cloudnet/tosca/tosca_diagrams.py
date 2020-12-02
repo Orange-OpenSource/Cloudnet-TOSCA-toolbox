@@ -23,7 +23,7 @@ from cloudnet.tosca.utils import normalize_name, short_type_name
 TOSCA_DIAGRAMS = "tosca_diagrams"
 configuration.DEFAULT_CONFIGURATION[TOSCA_DIAGRAMS] = {
     # Target directory where network diagrams are generated.
-    Generator.TARGET_DIRECTORY: "tosca_diagrams"
+    Generator.TARGET_DIRECTORY: 'Results/ToscaDiagrams'
 }
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",

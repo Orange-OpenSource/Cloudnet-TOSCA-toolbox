@@ -24,7 +24,7 @@ from cloudnet.tosca.utils import normalize_name, short_type_name
 UML2 = "UML2"
 DEFAULT_CONFIGURATION[UML2] = {
     # Target directory where UML2 diagrams are generated.
-    Generator.TARGET_DIRECTORY: "uml2",
+    Generator.TARGET_DIRECTORY: "Results/Uml2Diagrams",
     "kinds": {
         "Compute": "node",  # OASIS TOSCA 1.2
         "tosca.nodes.Compute": "node",  # OASIS TOSCA 1.2
