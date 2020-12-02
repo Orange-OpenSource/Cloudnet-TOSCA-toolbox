@@ -75,12 +75,16 @@ def main(argv):
                             metavar='<filename>',
                             default='',
                             help='json log output processing file.')
+        parser.add_argument('--ignore-target-config',
+                            dest='ignore_target_config',
+                            action='store_true',
+                            help='ignore target directory configuration, force it to default values.')
         (args, extra_args) = parser.parse_known_args(argv)
 
         diagnostics.configure(template_filename=args.template_file, log_filename=args.diagnostics_file)
 
         # Load configuration.
-        config = configuration.load()
+        config = configuration.load(ignored_keys = [processors.Generator.TARGET_DIRECTORY] if args.ignore_target_config else [])
 
         # Load the TOSCA service template.
         try:
