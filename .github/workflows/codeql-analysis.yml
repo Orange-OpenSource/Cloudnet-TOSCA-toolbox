@@ -20,9 +20,8 @@ on:
   schedule:
     - cron: '35 9 * * 4'
 
-if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
-
 jobs:
+  if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
