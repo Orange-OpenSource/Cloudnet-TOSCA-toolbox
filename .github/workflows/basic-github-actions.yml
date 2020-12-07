@@ -1,6 +1,8 @@
 name: basic-github-actions
-on: [push]
+on: 
+  [push workflow_dispatch]
 if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
 jobs:
   setup:
     runs-on: ubuntu-latest

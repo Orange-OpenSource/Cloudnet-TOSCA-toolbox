@@ -198,6 +198,7 @@ class FilesystemImporter(Importer):
 
         return template
 
+
 class UrlImporter(Importer):
     '''
         Importer of TOSCA service templates as HTTP resources.
