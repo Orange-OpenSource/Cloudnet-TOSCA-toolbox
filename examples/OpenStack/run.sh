@@ -371,10 +371,10 @@ fi
 # indicating if the statys is OK, OK with warning or KO
 ################################################################################
 # Get the options
-optstring=":hb"
+optstring=":h:b:s:"
 
 while getopts ${optstring} option; do
-   case $option in
+   case ${option} in
       h) # display Help
          Help
          exit;;
@@ -389,7 +389,14 @@ while getopts ${optstring} option; do
 # take to much time and ressource, not necessary if used for regression testing in CI/CD
 #         AlloySolve 
          exit;;
-     ?) # incorrect option
+      s) # run syntax checking on a single file
+         echo -e "\n${normal}${magenta}    `echo ${OPTARG} | tr [a-z] [A-Z]` ${reset}"
+         translate ${OPTARG}
+         if [ "$DIRVARS_GENERATED" = true ]; then 
+           rm -f $TOSCA2CLOUDNET_CONF_FILE
+         fi
+         exit;;
+      ?) # incorrect option
          Help
          echo -e "\n\n        ${bold}${red}Error${reset}: Invalid option -${OPTARG} ${reset}\n\n"
          exit;;
