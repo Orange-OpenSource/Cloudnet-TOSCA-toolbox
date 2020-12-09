@@ -1,19 +1,24 @@
-/******************************************************************************
- *
- * Software Name : Cloudnet TOSCA toolbox 
- * Version: 1.0
- * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
- * SPDX-License-Identifier: Apache-2.0
- *
- * This software is distributed under the Apache License 2.0
- * the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
- * or see the "LICENSE-2.0.txt" file for more details.
- *
- * Author: Philippe Merle (INRIA) <philippe.merle@inria.fr>
+/*******************************************************************************
+ * Copyright (c) 2017 Orange
  *
  * A formal specification of TOSCA in Alloy with Location Graphs.
  *
-*******************************************************************************/
+ * Authors:
+ * - Philippe Merle <philippe.merle@inria.fr>
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *   not use this file except in compliance with the License. You may obtain
+ *   a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *   License for the specific language governing permissions and limitations
+ *   under the License.
+ *
+ *******************************************************************************/
 
 /*******************************************************************************
  * This is an encoding of Capability, Relationship, and Node Types defined in
@@ -598,7 +603,7 @@ sig Node_Root extends Node
   dependency: set Requirement
 } {
   feature in capabilities
-  dependency in requirements
+  dependency in String.requirements
   /* - dependency: capability: tosca.capabilities.Node */
   dependency.capability[Capability_Node] // TO CHECK: This constraint is useless as already defined in DependsOn.
   /* - dependency:  node: tosca.nodes.Root */
@@ -661,7 +666,7 @@ sig Compute extends Node_Root
   scalable: one Scalable,
   binding: one Bindable
 } {
-  local_storage in requirements
+  local_storage in String.requirements
   /* - local_storage: capability: tosca.capabilities.Attachment */
 
   local_storage.capability[Attachment] // TO CHECK: This constraint is useless as already defined in AttachesTo.
@@ -702,7 +707,7 @@ sig Compute extends Node_Root
 sig SoftwareComponent extends Node_Root {
   host: one Requirement
 } {
-  host in requirements
+  host in String.requirements
 
   /* - host: capability: tosca.capabilities.Container */
   host.capability[Container]                          // TO CHECK: This constraint is useless as already defined in HostedOn.
@@ -764,7 +769,7 @@ sig WebApplication extends Node_Root {
   host: one Requirement
 } {
   app_endpoint in capabilities
-  host in requirements
+  host in String.requirements
   /* - host: capability: tosca.capabilities.Container */
   host.capability[Container]                                             // TO CHECK: This constraint is useless as already defined in HostedOn.
   /* - host: node: tosca.nodes.WebServer */
@@ -835,7 +840,7 @@ sig Database extends Node_Root {
   host: one Requirement,
   database_endpoint: one Endpoint_Database
 } {
-  host in requirements
+  host in String.requirements
   /* - host: tosca.capabilities.Container */
   host.capability[Container]                      // TO CHECK: This constraint is useless as already defined in HostedOn.
   /* - host:  # node: tosca.nodes.DBMS */
@@ -945,7 +950,7 @@ sig Container_Runtime extends SoftwareComponent {
 sig Container_Application extends Node_Root {
   host: one Requirement
 } {
-  host in requirements
+  host in String.requirements
   /* - host: capability: tosca.capabilities.Container */
   host.capability[Container]                                    // TO CHECK: It is useless as already defined in HostedOn.
   /* - host: node: tosca.nodes.Container */
@@ -982,7 +987,7 @@ sig LoadBalancer extends Node_Root {
   application: set Requirement
 } {
   client in capabilities
-  application in requirements
+  application in String.requirements
   /* - application: capability: tosca.capabilities.Endpoint */
   application.capability[Endpoint]                                    // TO CHECK: This constraint is useless as already defined in RoutesTo.
   /* - application: relationship: tosca.relationships.RoutesTo */
@@ -1071,13 +1076,13 @@ sig Port extends Node_Root {
   link: one Requirement,
   binding: one Requirement
 } {
-  link in requirements
+  link in String.requirements
   /* - link: capability: tosca.capabilities.network.Linkable */
   link.capability[Linkable]                                        // TO CHECK: This constraint is useless as already defined in LinksTo.
   /* - link: relationship: tosca.relationships.network.LinksTo */
   link.relationship in LinksTo
 
-  binding in requirements
+  binding in String.requirements
   /* - binding: capability: tosca.capabilities.network.Bindable */
   binding.capability[Bindable]                                  // TO CHECK: This constraint is useless as already defined in BindsTo.
   /* - binding: relationship: tosca.relationships.network.BindsTo */
@@ -1124,35 +1129,35 @@ description: The TOSCA Policy Type definition that is used to declare performanc
 run Model {} for 10
 
 run OneTopologyWithTwoNodeOneRelationship {
-  Node in Topology.nodes
-  Relationship in Topology.relationships
-} for 10 but exactly 1 Topology, exactly 2 Node, exactly 1 Relationship
+  Node in TopologyTemplate.nodes
+  Relationship in TopologyTemplate.relationships
+} for 10 but exactly 1 TopologyTemplate, exactly 2 Node, exactly 1 Relationship
 
 /** TOSCA Simple Profile YAML v1.0 cs01 page 12 */
 run TOSCA_Example_2_1 {
-  Topology.nodes = Compute
-} for 10 but exactly 1 Topology, exactly 1 Compute, exactly 5 Capability
+  TopologyTemplate.nodes = Compute
+} for 10 but exactly 1 TopologyTemplate, exactly 1 Compute, exactly 5 Capability
 
 /** TOSCA Simple Profile YAML v1.0 cs01 page 16 */
 run TOSCA_Example_2_2 {
-  Topology.nodes = Compute + DBMS
-  Topology.relationships = HostedOn
-} for 20 but exactly 1 Topology, exactly 1 Compute, exactly 1 DBMS, exactly 1 HostedOn, exactly 7 Capability
+  TopologyTemplate.nodes = Compute + DBMS
+  TopologyTemplate.relationships = HostedOn
+} for 20 but exactly 1 TopologyTemplate, exactly 1 Compute, exactly 1 DBMS, exactly 1 HostedOn, exactly 7 Capability
 
 /** TOSCA Simple Profile YAML v1.0 cs01 page 19 */
 run TOSCA_Example_2_4 {
-  Topology.nodes = Compute + DBMS + Database
-  Topology.relationships = HostedOn
-} for 20 but exactly 1 Topology, exactly 1 Compute, exactly 1 DBMS, exactly 1 Database, exactly 2 HostedOn, exactly 9 Capability
+  TopologyTemplate.nodes = Compute + DBMS + Database
+  TopologyTemplate.relationships = HostedOn
+} for 20 but exactly 1 TopologyTemplate, exactly 1 Compute, exactly 1 DBMS, exactly 1 Database, exactly 2 HostedOn, exactly 9 Capability
 
 /** TOSCA Simple Profile YAML v1.0 cs01 page 19 */
 run TOSCA_Example_2_5 {
-  Topology.nodes = Compute + DBMS + Database + WebServer + WebApplication
-  Topology.relationships = HostedOn
-} for 40 but exactly 1 Topology, exactly 2 Compute, exactly 1 DBMS, exactly 1 Database, exactly 1 WebServer, exactly 1 WebApplication, exactly 4 HostedOn, exactly 20 Capability, exactly 24 Role
+  TopologyTemplate.nodes = Compute + DBMS + Database + WebServer + WebApplication
+  TopologyTemplate.relationships = HostedOn
+} for 40 but exactly 1 TopologyTemplate, exactly 2 Compute, exactly 1 DBMS, exactly 1 Database, exactly 1 WebServer, exactly 1 WebApplication, exactly 4 HostedOn, exactly 20 Capability, exactly 24 Role
 
 /** TOSCA Simple Profile YAML v1.0 cs01 page 178 */
 run TOSCA_Example_7_2 {
-  Topology.nodes = Compute + Network + Port
-  Topology.relationships = LinksTo + BindsTo
-} for 20 but exactly 1 Topology, exactly 1 Compute, exactly 1 Port, exactly 1 Network, exactly 1 BindsTo, exactly 1 LinksTo, exactly 7 Capability
+  TopologyTemplate.nodes = Compute + Network + Port
+  TopologyTemplate.relationships = LinksTo + BindsTo
+} for 20 but exactly 1 TopologyTemplate, exactly 1 Compute, exactly 1 Port, exactly 1 Network, exactly 1 BindsTo, exactly 1 LinksTo, exactly 7 Capability
