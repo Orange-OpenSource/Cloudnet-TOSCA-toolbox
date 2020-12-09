@@ -30,10 +30,12 @@ Help()
    echo "  With the -b option, it launches the whole process and store "
    echo "  the result in a log file located in logs/ directory"
    echo
-   echo "     Syntax: run.sh [-b|h]"
+   echo "     Syntax: run.sh [-b|h|s]"
    echo "     options:"
    echo "     b     Global execution :"
    echo "     h     Print this Help."
+   echo "     s     launch a TOSCA syntax checking on the file provided on the command line."
+   echo "           run.sh -s filename"
    echo
 }
 
@@ -237,6 +239,11 @@ read_options(){
            pause
            ;;
         x) # Exit with status code 0
+           if [ "$DIRVARS_GENERATED" = true ]; then 
+             # Remove generated configuration file
+             rm -f $TOSCA2CLOUDNET_CONF_FILE
+             rm -rf $RESULT_DIR
+           fi
            echo -e "\nSee you soon ..."
            exit 0
            ;;
