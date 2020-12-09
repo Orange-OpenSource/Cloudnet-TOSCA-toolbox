@@ -242,7 +242,6 @@ read_options(){
            if [ "$DIRVARS_GENERATED" = true ]; then 
              # Remove generated configuration file
              rm -f $TOSCA2CLOUDNET_CONF_FILE
-             rm -rf $RESULT_DIR
            fi
            echo -e "\nSee you soon ..."
            exit 0
