@@ -1,24 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2017 Orange
+/******************************************************************************
+ *
+ * Software Name : Cloudnet TOSCA toolbox 
+ * Version: 1.0
+ * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * This software is distributed under the Apache License 2.0
+ * the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+ * or see the "LICENSE-2.0.txt" file for more details.
+ *
+ * Author: Philippe Merle (INRIA) <philippe.merle@inria.fr>
  *
  * A formal specification of TOSCA in Alloy with Location Graphs.
  *
- * Authors:
- * - Philippe Merle <philippe.merle@inria.fr>
- *
- *   Licensed under the Apache License, Version 2.0 (the "License"); you may
- *   not use this file except in compliance with the License. You may obtain
- *   a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- *   License for the specific language governing permissions and limitations
- *   under the License.
- *
- *******************************************************************************/
+*******************************************************************************/
 
 /*******************************************************************************
  * This is an encoding of Capability, Relationship, and Node Types defined in
