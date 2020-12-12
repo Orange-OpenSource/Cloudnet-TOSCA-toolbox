@@ -719,7 +719,12 @@ class TypeChecker(Checker):
         self.check_topology_template(syntax.get_topology_template(service_template_definition))
 
     def check_repository_definition(self, repository_name, repository_definition, context_error_message):
-        pass # TODO
+        # Normalize repository_definition
+        if type(repository_definition) == str:
+            repository_definition = { syntax.URL: repository_definition }
+        # check description - nothing to do
+        # check url - nothing to do
+        # check credential - nothing to do
 
     def check_attribute_definition(self, attribute_name, attribute_definition, previous_attribute_definition, context_error_message):
         # check type

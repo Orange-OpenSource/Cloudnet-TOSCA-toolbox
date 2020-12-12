@@ -22,6 +22,11 @@ imports:
   - file: http://www.google.org/one_file.yaml # ERROR: file not found!
   - file: http://unknown.site.org/one_file.yaml # ERROR: file not found!
 
+repositories:
+  repo1: http://repo1.org
+  repo2:
+    url: http://repo2.org
+
 artifact_types:
   # CORRECT: artifact type
   ArtifactType:
