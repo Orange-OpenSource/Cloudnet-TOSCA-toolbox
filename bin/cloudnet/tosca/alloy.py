@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -1571,7 +1571,8 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
 
         # Iterate over derived_from
         derived_from = node_type_yaml.get(DERIVED_FROM)
-        result = result + self.get_required_locations(derived_from, 0)
+        if not self.type_system.is_derived_from(derived_from, node_type_name):
+            result = result + self.get_required_locations(derived_from, 0)
         return result
 
     def generate_command_Check_predicates(self, node_type_name, node_type_yaml):
