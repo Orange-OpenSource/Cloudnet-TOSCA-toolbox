@@ -791,6 +791,18 @@ class TypeChecker(Checker):
             return # don't check constraints
 
         def evaluate_constraints(constraint_clauses, value):
+
+            def get_constraint_clause_checker(type_name, constraint_clause_checkers):
+                constraint_clause_checker = constraint_clause_checkers.get(type_name)
+                if constraint_clause_checker == None:
+                    # type_name could be a data type
+                    data_type = self.type_system.data_types.get(self.type_system.get_type_uri(type_name))
+                    if data_type != None: # data type found
+                        derived_from = data_type.get(syntax.DERIVED_FROM)
+                        if derived_from != None and not self.type_system.is_derived_from(derived_from, type_name):
+                            constraint_clause_checker = get_constraint_clause_checker(derived_from, constraint_clause_checkers)
+                return constraint_clause_checker
+
             for constraint_clause in constraint_clauses:
                 for constraint_name, constraint_value in constraint_clause.items():
                     constraint_clause_checkers = BASIC_CONSTRAINT_CLAUSES.get(constraint_name)
@@ -798,10 +810,7 @@ class TypeChecker(Checker):
                         self.error(cem + ' - ' + constraint_name + ' unsupported operator')
                         continue
                     definition_type = definition.get(syntax.TYPE)
-                    # TODO
-                    if definition_type == 'PortDef':
-                        definition_type = 'integer'
-                    constraint_clause_checker = constraint_clause_checkers.get(definition_type)
+                    constraint_clause_checker = get_constraint_clause_checker(definition_type, constraint_clause_checkers)
                     if constraint_clause_checker is None:
                         self.error(cem + ' - ' + constraint_name + ' unallowed operator on ' + definition_type + ' value')
                         continue
