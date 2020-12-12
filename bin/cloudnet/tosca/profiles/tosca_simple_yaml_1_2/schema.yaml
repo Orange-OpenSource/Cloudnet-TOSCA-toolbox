@@ -13,6 +13,8 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
+# TODO: some anyOf would be replaced by OneOf
+
 $id: tosca_simple_yaml_1_2
 title: OASIS TOSCA Simple Profile in YAML Version 1.2 JSON Schema
 description: JSON Schema for OASIS TOSCA Simple Profile in YAML Version 1.2
@@ -42,20 +44,20 @@ definitions:
     type: object
     properties:
       equal:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       greater_than:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       greater_or_equal:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       less_than:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       less_or_equal:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       in_range:
         type: array
         items:
-          - $ref: "#/definitions/scalar"
-          - $ref: "#/definitions/scalar"
+          - $ref: "#/definitions/value"
+          - $ref: "#/definitions/value"
         maxItems: 2
       valid_values:
         type: array # of any values
@@ -432,9 +434,11 @@ definitions:
     type: array
     items:
       - type: integer
-      - anyOf:
+        minimum: 0 # must be positive
+      - oneOf: # the second item is either a positive integer or the UNBOUNDED constant
           - type: integer
-          - const: UNBOUNDED
+            minimum: 0 # must be positive
+          - enum: [ UNBOUNDED ] # const: UNBOUNDED does not work!
     minItems: 2
     maxItems: 2
 
