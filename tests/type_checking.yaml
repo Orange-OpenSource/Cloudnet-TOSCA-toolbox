@@ -305,9 +305,12 @@ data_types:
         default:
           v1: false # ERROR: string expected!
           v2: 1 # ERROR: string expected!
-      p-scalar-unit.size-0:
+      p-scalar-unit.size-01:
         type: scalar-unit.size
         default: 100 MB # CORRECT
+      p-scalar-unit.size-02:
+        type: scalar-unit.size
+        default: 100MB # CORRECT: spaces between <scalar> and <unit> are optional.
       p-scalar-unit.size-1:
         type: scalar-unit.size
         default: 20 # ERROR: scalar-unit.size expected!
@@ -323,9 +326,12 @@ data_types:
       p-scalar-unit.size-5:
         type: scalar-unit.size
         default: '1 Xy' # ERROR: <unit.size> expected!
-      p-scalar-unit.time-0:
+      p-scalar-unit.time-01:
         type: scalar-unit.time
         default: 100 ms # CORRECT
+      p-scalar-unit.time-02:
+        type: scalar-unit.time
+        default: 100ms # CORRECT: spaces between <scalar> and <unit> are optional.
       p-scalar-unit.time-1:
         type: scalar-unit.time
         default: 20 # ERROR: scalar-unit.time expected!
@@ -341,9 +347,12 @@ data_types:
       p-scalar-unit.time-5:
         type: scalar-unit.time
         default: '1 Xy' # ERROR: <unit.time> expected!
-      p-scalar-unit.frequency-0:
+      p-scalar-unit.frequency-01:
         type: scalar-unit.frequency
         default: 8 GHz # CORRECT
+      p-scalar-unit.frequency-02:
+        type: scalar-unit.frequency
+        default: 8GHz # CORRECT: spaces between <scalar> and <unit> are optional.
       p-scalar-unit.frequency-1:
         type: scalar-unit.frequency
         default: 20 # ERROR: scalar-unit.frequency expected!
