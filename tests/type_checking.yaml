@@ -2062,6 +2062,8 @@ node_types:
       a1:
         # CORRECT: valid artifact type.
         type: ArtifactType
+        # CORRECT: repository name.
+        repository: repo1
     properties:
       p1:
         # CORRECT: YAML type.
@@ -2357,6 +2359,12 @@ node_types:
       a1:
         # ERROR: incompatible type with previous declared type!
         type: tosca.artifacts.File
+
+  NodeTypeArtifactsRepositoryUndefined:
+    artifacts:
+      a1:
+        # ERROR: repository not found.
+        repository: undefined_repository
 
 relationship_types:
   # CORRECT: relationship type

@@ -1014,7 +1014,11 @@ class TypeChecker(Checker):
         # check type
         self.check_type_in_definition('artifact', syntax.TYPE, artifact_definition, previous_artifact_definition, context_error_message)
         # check file # TODO
-        # check repository # TODO
+        # check repository
+        repository = artifact_definition.get(syntax.REPOSITORY)
+        if repository != None:
+            if self.tosca_service_template.get_yaml().get(syntax.REPOSITORIES, {}).get(repository) == None:
+                self.error(context_error_message + ':' + syntax.REPOSITORY + ': ' + repository + ' - repository not found')
         # check description - nothing to do
         # check deploy_path - nothing to do
         # check properties
