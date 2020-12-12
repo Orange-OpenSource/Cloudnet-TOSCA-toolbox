@@ -252,12 +252,39 @@ data_types:
       p-version-0:
         type: version
         default: 1.0 # CORRECT
+      p-version-01:
+        type: version
+        default: '1.0' # CORRECT
+      p-version-02:
+        type: version
+        default: '1.0.0' # CORRECT
+      p-version-03:
+        type: version
+        default: '1.0.0.build' # CORRECT
+      p-version-04:
+        type: version
+        default: '1.0.0.build-1' # CORRECT
       p-version-1:
         type: version
         default: false # ERROR: version expected!
       p-version-2:
         type: version
-        default: abcde # TODO: here an error must be reported!
+        default: abcde # ERROR: <major_version>.<minor_version>[.<fix_version>[.<qualifier>[-<build_version>]]] expected!
+      p-version-3:
+        type: version
+        default: '1' # ERROR: .<minor_version>[.<fix_version>[.<qualifier>[-<build_version>]]] missed!
+      p-version-4:
+        type: version
+        default: '1.' # ERROR: <minor_version>[.<fix_version>[.<qualifier>[-<build_version>]]] missed!
+      p-version-5:
+        type: version
+        default: '1.2.' # ERROR: <fix_version>[.<qualifier>[-<build_version>]] missed!
+      p-version-6:
+        type: version
+        default: '1.2.3.' # ERROR: <qualifier>[-<build_version>] missed!
+      p-version-7:
+        type: version
+        default: '1.2.3.build-' # ERROR: <build_version> missed!
       p-range-0:
         type: range
         default: [1, 1000] # CORRECT

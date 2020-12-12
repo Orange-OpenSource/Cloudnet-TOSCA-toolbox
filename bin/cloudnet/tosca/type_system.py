@@ -249,6 +249,11 @@ def normalize_scalar_unit(a_string, units):
     scalar, unit = split_scalar_unit(a_string, units)
     return scalar * units.get(unit)
 
+VERSION_RE = re.compile('^([0-9]+)\.([0-9]+)(((\.[0-9]+)?)(\.[A-Za-z]+(\-[0-9]+)?)?)?$')
+
+def check_version(a_string):
+    return VERSION_RE.fullmatch(a_string) != None
+
 class AbstractTypeChecker(object):
     def __init__(self, type_name):
         self.type_name = type_name
@@ -312,7 +317,7 @@ BASIC_TYPE_CHECKERS = {
     'timestamp': BasicTypeChecker('timestamp', lambda value : type(value) == datetime.datetime),
     'null': BasicTypeChecker('null', lambda value : value == None),
     # TOSCA types
-    'version': BasicTypeChecker('version', lambda value : type(value) in [float, str]),
+    'version': BasicTypeChecker('version', lambda value : (type(value) == float) or (type(value) == str and check_version(value))),
     'range': BasicTypeChecker('range', lambda value : type(value) == list and len(value) == 2 and type(value[0]) == int and type(value[1]) == int),
     'list': BasicTypeChecker('list', lambda value : type(value) == list),
     'map': BasicTypeChecker('map', lambda value : type(value) == dict),
