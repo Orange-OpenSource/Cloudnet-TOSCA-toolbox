@@ -18,13 +18,31 @@
 
 invalid_keyname: # ERROR: was unexpected!
 
-artifact_types: # ERROR: can not be empty!
+artifact_types: # ERROR: can not be null!
 
 data_types:
-  dt1: # ERROR: can not be empty!
+  dt1: # ERROR: can not be null!
   dt2:
     invalid_keyname: # ERROR: invalid keyname!
 
-interface_types: 10 # ERROR: was unexpected!
+interface_types: 10 # ERROR: unexpected!
 
-topology_template: # ERROR: can not be empty!
+node_types:
+  nt1:
+    capabilities:
+      c1:
+        occurrences: # ERROR: can not be null!
+      c2:
+        occurrences: [] # ERROR: minimum items must be 2 instead of 0!
+      c3:
+        occurrences: [0] # ERROR: minimum items must be 2 instead of 1!
+      c4:
+        occurrences: [0,0,0] # ERROR: minimum items must be 2 instead of 3!
+      c5:
+        occurrences: [-1, UNBOUNDED] # ERROR: the lower occurrence must be a positive integer
+      c6:
+        occurrences: [0, -1] # ERROR: the upper occurrence must be a positive integer or UNBOUNDED
+      c7:
+        occurrences: [0, hello] # ERROR: the upper occurrence must be a positive integer or UNBOUNDED
+
+topology_template: # ERROR: can not be null!
