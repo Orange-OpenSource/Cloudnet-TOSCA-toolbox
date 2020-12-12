@@ -223,8 +223,10 @@ SCALAR_FREQUENCY_UNITS = {
 def array_to_string_with_or_separator(a_list):
     return str(a_list).replace("['", '').replace("']", '').replace("', '", ' or ')
 
+SCALAR_UNIT_RE = re.compile('^([0-9]+(\.[0-9]+)?)( )*([A-Za-z]+)$')
+
 def split_scalar_unit(a_string, units):
-    match = re.fullmatch('^([0-9]+(\.[0-9]+)?)( )*([A-Za-z]+)$', a_string)
+    match = SCALAR_UNIT_RE.fullmatch(a_string)
     if match == None:
         raise ValueError('<scalar> <unit> expected instead of ' + a_string)
     values = [ match.group(1), match.group(4) ]
