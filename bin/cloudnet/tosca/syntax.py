@@ -531,7 +531,10 @@ class SyntaxChecker(Checker):
                 error_message = value + ' was unexpected'
             error_path = ''
             for value in error.path:
-                error_path += value + ':'
+                if type(value) is int:
+                    error_path = error_path[:-1] + '[' + str(value) + ']:'
+                else:
+                    error_path += str(value) + ':'
             self.error(error_path + ' ' + error_message)
             is_validated = False
 
