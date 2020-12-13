@@ -35,7 +35,9 @@ check_regression()
   fi
 }
 
-check_regression syntax_checking.yaml
+# TOSCA syntax checking
+check_regression syntax_checking.yaml # tosca_definitions_version: tosca_simple_yaml_1_2
+check_regression syntax_checking-1.3.yaml # tosca_definitions_version: tosca_simple_yaml_1_3
 
 # TOSCA type checking
 translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_0/types.yaml
