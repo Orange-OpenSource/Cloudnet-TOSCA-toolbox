@@ -525,17 +525,17 @@ class SyntaxChecker(Checker):
             if error_message.startswith('Additional'):
                 error_message = error_message[error_message.find('(')+1:-1]
             elif error_message.startswith("None is not of type 'object'"):
-                error_message = 'can not be empty'
+                error_message = 'null unexpected'
             elif error_message.endswith(" is not of type 'object'"):
                 value = error_message[: error_message.index(" is not of type 'object'")]
-                error_message = value + ' was unexpected'
+                error_message = value + ' unexpected'
             error_path = ''
             for value in error.path:
                 if type(value) is int:
                     error_path = error_path[:-1] + '[' + str(value) + ']:'
                 else:
                     error_path += str(value) + ':'
-            self.error(error_path + ' ' + error_message)
+            self.error(error_path + ' - ' + error_message)
             is_validated = False
 
         return is_validated
