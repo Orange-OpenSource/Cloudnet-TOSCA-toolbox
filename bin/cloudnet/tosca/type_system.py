@@ -880,7 +880,9 @@ class TypeChecker(Checker):
         self.check_constraint_clauses(property_definition, type_checker, context_error_message)
         # check entry_schema
         self.check_entry_schema(property_definition, previous_property_definition, context_error_message)
-        # check external_schema # TODO
+        # check external_schema
+        if property_definition.get(syntax.EXTERNAL_SCHEMA) != None:
+            self.warning(context_error_message + ':' + syntax.EXTERNAL_SCHEMA + ' - currently unchecked') # TODO later
         # check metadata - nothing to do
 
     def check_requirement_definition(self, requirement_name, requirement_definition, previous_requirement_definition, context_error_message):

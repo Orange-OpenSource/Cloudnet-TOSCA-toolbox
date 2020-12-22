@@ -1848,6 +1848,11 @@ data_types:
         constraints:
         - valid_values: [ 1 Hz, false ] # ERROR: scalar-unit.frequency expected!
 
+  DataTypePropertiesExternalSchemaUnchecked:
+    properties:
+      p1:
+        external_schema: 'an external schema' # WARNING: external_schema currently unchecked!
+
 capability_types:
   # CORRECT: capability type
   CapabilityType:
