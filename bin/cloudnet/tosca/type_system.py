@@ -1031,7 +1031,10 @@ class TypeChecker(Checker):
         if interface_type_name != None:
             interface_type = self.type_system.merge_type(self.type_system.get_type_uri(interface_type_name))
         # check inputs
-# TODO verifier inputs versus les inputs de l'interface type
+        # check inputs against the interface type
+        if interface_type_name != None:
+            self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, interface_definition, interface_type, REFINE_OR_NEW, context_error_message)
+        # check inputs against the derived from type
         self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, interface_definition, previous_interface_definition, REFINE_OR_NEW, context_error_message)
         # check operations
         # check operations against the interface type

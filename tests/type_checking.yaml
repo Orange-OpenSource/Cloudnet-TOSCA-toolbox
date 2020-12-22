@@ -2516,13 +2516,22 @@ node_types:
             # ERROR: must be an interface type!
             type: tosca.nodes.Root
 
-  NodeTypeInterfacesInputsIncompatibleType:
+  NodeTypeInterfacesInputsTypeIncompatibleWithDerivedFromType:
     derived_from: NodeType
     interfaces:
       i1:
         inputs:
           i1:
             # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  NodeTypeInterfacesInputsTypeIncompatibleWithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: incompatible type with interface type!
             type: integer
 
   NodeTypeInterfacesOperationsInputsUndefinedType:
@@ -2725,13 +2734,22 @@ relationship_types:
             # ERROR: must be an interface type!
             type: tosca.nodes.Root
 
-  RelationshipTypeInterfacesInputsIncompatibleType:
+  RelationshipTypeInterfacesInputsTypeIncompatibleWithDerivedFromType:
     derived_from: RelationshipType
     interfaces:
       i1:
         inputs:
           i1:
             # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  RelationshipTypeInterfacesInputsTypeIncompatibleWithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: incompatible type with interface type!
             type: integer
 
   RelationshipTypeInterfacesOperationsInputsUndefinedType:
@@ -3273,13 +3291,22 @@ group_types:
             # ERROR: must be an interface type!
             type: tosca.nodes.Root
 
-  GroupTypeInterfacesInputsIncompatibleType:
+  GroupTypeInterfacesInputsTypeIncompatibleWithDerivedFromType:
     derived_from: GroupType
     interfaces:
       i1:
         inputs:
           i1:
             # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  GroupTypeInterfacesInputsTypeIncompatibleWithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: incompatible type with interface type!
             type: integer
 
   GroupTypeInterfacesOperationsInputsUndefinedType:
