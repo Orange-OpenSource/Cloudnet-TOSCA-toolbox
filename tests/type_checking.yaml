@@ -1976,8 +1976,17 @@ interface_types:
       i3:
         # CORRECT: data type.
         type: DataType
-
-      # TODO operations
+    op1:
+      inputs:
+        i1:
+          # CORRECT: YAML type.
+          type: string
+        i2:
+          # CORRECT: TOSCA type.
+          type: range
+        i3:
+          # CORRECT: data type.
+          type: DataType
 
   # ERROR: already defined interface type!
   tosca.interfaces.Root:
@@ -2026,7 +2035,27 @@ interface_types:
         # ERROR: incompatible type with previous declared type!
         type: integer
 
-  # TODO interface type operations
+  InterfaceTypeOperationsInputsUndefinedType:
+    op1:
+      inputs:
+        i1:
+          # ERROR: undefined data type!
+          type: UndefinedType
+
+  InterfaceTypeOperationsInputsIncorrectType:
+    op1:
+      inputs:
+        i1:
+          # ERROR: data type required!
+          type: tosca.interfaces.Root
+
+  InterfaceTypeOperationsInputsIncompatibleType:
+    derived_from: InterfaceType
+    op1:
+      inputs:
+        i1:
+          # ERROR: incompatible type with previous declared type!
+          type: integer
 
 node_types:
   # CORRECT: node type
@@ -2037,6 +2066,26 @@ node_types:
       c1:
         # CORRECT: valid capability type.
         type: CapabilityType
+        attributes:
+          a1:
+            # CORRECT: YAML type.
+            type: string
+          a2:
+            # CORRECT: TOSCA type.
+            type: range
+          a3:
+            # CORRECT: data type.
+            type: DataType
+        properties:
+          p1:
+            # CORRECT: YAML type.
+            type: string
+          p2:
+            # CORRECT: TOSCA type.
+            type: range
+          p3:
+            # CORRECT: data type.
+            type: DataType
         # CORRECT: valid node type.
         valid_source_types: [ NodeType ]
         # CORRECT: valid occurrences.
@@ -2058,6 +2107,27 @@ node_types:
       i1:
         # CORRECT: valid interface type.
         type: InterfaceType
+        inputs:
+          i1:
+            # CORRECT: YAML type.
+            type: string
+          i2:
+            # CORRECT: TOSCA type.
+            type: range
+          i3:
+            # CORRECT: data type.
+            type: DataType
+        op1:
+          inputs:
+            i1:
+              # CORRECT: YAML type.
+              type: string
+            i2:
+              # CORRECT: TOSCA type.
+              type: range
+            i3:
+              # CORRECT: data type.
+              type: DataType
     artifacts:
       a1:
         # CORRECT: valid artifact type.
@@ -2178,6 +2248,90 @@ node_types:
       c1:
         # ERROR: incompatible type with previous declared type!
         type: tosca.capabilities.Root
+
+  NodeTypeCapabilitiesAttributesUndefinedInCapabilityType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a4: # ERROR: a4 undefined in CapabilityType
+            type: string
+
+  NodeTypeCapabilitiesAttributesUndefinedType:
+    capabilities:
+      c1:
+        attributes:
+          a1:
+            # ERROR: undefined data type!
+            type: UndefinedType
+
+  NodeTypeCapabilitiesAttributesIncorrectType:
+    capabilities:
+      c1:
+        attributes:
+          a1:
+            # ERROR: data type required!
+            type: tosca.interfaces.Root
+
+  NodeTypeCapabilitiesAttributesIncompatibleType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  NodeTypeCapabilitiesAttributesIncompatibleType2:
+    derived_from: NodeType
+    capabilities:
+      c1:
+        attributes:
+          a1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  NodeTypeCapabilitiesPropertiesUndefinedInCapabilityType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p4: # ERROR: p4 undefined in CapabilityType
+            type: string
+
+  NodeTypeCapabilitiesPropertiesUndefinedType:
+    capabilities:
+      c1:
+        properties:
+          p1:
+            # ERROR: undefined data type!
+            type: UndefinedType
+
+  NodeTypeCapabilitiesPropertiesIncorrectType:
+    capabilities:
+      c1:
+        properties:
+          p1:
+            # ERROR: data type required!
+            type: tosca.interfaces.Root
+
+  NodeTypeCapabilitiesPropertiesIncompatibleType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  NodeTypeCapabilitiesPropertiesIncompatibleType2:
+    derived_from: NodeType
+    capabilities:
+      c1:
+        properties:
+          p1:
+            # ERROR: incompatible type refinement!
+            type: integer
 
   NodeTypeCapabilitiesValidSourceTypesUndefinedType:
     capabilities:
@@ -2341,6 +2495,76 @@ node_types:
         # ERROR: incompatible type with previous declared type!
         type: tosca.interfaces.Root
 
+  NodeTypeInterfacesInputsUndefinedType:
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  NodeTypeInterfacesInputsIncorrectType:
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: must be an interface type!
+            type: tosca.nodes.Root
+
+  NodeTypeInterfacesInputsIncompatibleType:
+    derived_from: NodeType
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  NodeTypeInterfacesOperationsInputsUndefinedType:
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  NodeTypeInterfacesOperationsInputsIncorrectType:
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be an interface type!
+              type: tosca.nodes.Root
+
+  NodeTypeInterfacesOperationsInputsIncompatiblewithDerivedFromType:
+    derived_from: NodeType
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  NodeTypeInterfacesOperationsInputsIncompatiblewithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  NodeTypeInterfacesOperationsUndefinedInInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op2: # ERROR: op2 undefined in InterfaceType
+          description: new operation
+
   NodeTypeArtifactsUndefinedType:
     artifacts:
       a1:
@@ -2377,6 +2601,27 @@ relationship_types:
       i1:
         # CORRECT: valid interface type.
         type: InterfaceType
+        inputs:
+          i1:
+            # CORRECT: YAML type.
+            type: string
+          i2:
+            # CORRECT: TOSCA type.
+            type: range
+          i3:
+            # CORRECT: data type.
+            type: DataType
+        op1:
+          inputs:
+            i1:
+              # CORRECT: YAML type.
+              type: string
+            i2:
+              # CORRECT: TOSCA type.
+              type: range
+            i3:
+              # CORRECT: data type.
+              type: DataType
     properties:
       p1:
         # CORRECT: YAML type.
@@ -2459,6 +2704,76 @@ relationship_types:
         # ERROR: incompatible type with previous declared type!
         type: tosca.interfaces.Root
 
+  RelationshipTypeInterfacesInputsUndefinedType:
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  RelationshipTypeInterfacesInputsIncorrectType:
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: must be an interface type!
+            type: tosca.nodes.Root
+
+  RelationshipTypeInterfacesInputsIncompatibleType:
+    derived_from: RelationshipType
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  RelationshipTypeInterfacesOperationsInputsUndefinedType:
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  RelationshipTypeInterfacesOperationsInputsIncorrectType:
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be an interface type!
+              type: tosca.nodes.Root
+
+  RelationshipTypeInterfacesOperationsInputsIncompatibleWithDerivedFromType:
+    derived_from: RelationshipType
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  RelationshipTypeInterfacesOperationsInputsIncompatibleWithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  RelationshipTypeInterfacesOperationsUndefinedInInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op2: # ERROR: op2 undefined in InterfaceType
+          description: new operation
+
   RelationshipTypeAttributesUndefinedType:
     attributes:
       a1:
@@ -2508,6 +2823,26 @@ group_types:
       c1:
         # CORRECT: valid capability type.
         type: CapabilityType
+        attributes:
+          a1:
+            # CORRECT: YAML type.
+            type: string
+          a2:
+            # CORRECT: TOSCA type.
+            type: range
+          a3:
+            # CORRECT: data type.
+            type: DataType
+        properties:
+          p1:
+            # CORRECT: YAML type.
+            type: string
+          p2:
+            # CORRECT: TOSCA type.
+            type: range
+          p3:
+            # CORRECT: data type.
+            type: DataType
         # CORRECT: valid node types.
         valid_source_types: [ NodeType ]
       c2:
@@ -2527,6 +2862,27 @@ group_types:
       i1:
         # CORRECT: valid interface type.
         type: InterfaceType
+        inputs:
+          i1:
+            # CORRECT: YAML type.
+            type: string
+          i2:
+            # CORRECT: TOSCA type.
+            type: range
+          i3:
+            # CORRECT: data type.
+            type: DataType
+        op1:
+          inputs:
+            i1:
+              # CORRECT: YAML type.
+              type: string
+            i2:
+              # CORRECT: TOSCA type.
+              type: range
+            i3:
+              # CORRECT: data type.
+              type: DataType
     properties:
       p1:
         # CORRECT: YAML type.
@@ -2655,6 +3011,90 @@ group_types:
       c1:
         # ERROR: incompatible type with previous declared type!
         type: tosca.capabilities.Root
+
+  GroupTypeCapabilitiesAttributesUndefinedInCapabilityType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a4: # ERROR: a4 undefined in CapabilityType
+            type: string
+
+  GroupTypeCapabilitiesAttributesUndefinedType:
+    capabilities:
+      c1:
+        attributes:
+          a1:
+            # ERROR: undefined data type!
+            type: UndefinedType
+
+  GroupTypeCapabilitiesAttributesIncorrectType:
+    capabilities:
+      c1:
+        attributes:
+          a1:
+            # ERROR: data type required!
+            type: tosca.interfaces.Root
+
+  GroupTypeCapabilitiesAttributesIncompatibleType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  GroupTypeCapabilitiesAttributesIncompatibleType2:
+    derived_from: GroupType
+    capabilities:
+      c1:
+        attributes:
+          a1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  GroupTypeCapabilitiesPropertiesUndefinedInCapabilityType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p4: # ERROR: p4 undefined in CapabilityType
+            type: string
+
+  GroupTypeCapabilitiesPropertiesUndefinedType:
+    capabilities:
+      c1:
+        properties:
+          p1:
+            # ERROR: undefined data type!
+            type: UndefinedType
+
+  GroupTypeCapabilitiesPropertiesIncorrectType:
+    capabilities:
+      c1:
+        properties:
+          p1:
+            # ERROR: data type required!
+            type: tosca.interfaces.Root
+
+  GroupTypeCapabilitiesPropertiesIncompatibleType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  GroupTypeCapabilitiesPropertiesIncompatibleType2:
+    derived_from: GroupType
+    capabilities:
+      c1:
+        properties:
+          p1:
+            # ERROR: incompatible type refinement!
+            type: integer
 
   GroupTypeCapabilitiesValidSourceTypesUndefinedType:
     capabilities:
@@ -2811,6 +3251,76 @@ group_types:
       i1:
         # ERROR: incompatible type with previous declared type!
         type: tosca.interfaces.Root
+
+  GroupTypeInterfacesInputsUndefinedType:
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  GroupTypeInterfacesInputsIncorrectType:
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: must be an interface type!
+            type: tosca.nodes.Root
+
+  GroupTypeInterfacesInputsIncompatibleType:
+    derived_from: GroupType
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  GroupTypeInterfacesOperationsInputsUndefinedType:
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  GroupTypeInterfacesOperationsInputsIncorrectType:
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be an interface type!
+              type: tosca.nodes.Root
+
+  GroupTypeInterfacesOperationsInputsIncompatibleWithDerivedFromType:
+    derived_from: GroupType
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  GroupTypeInterfacesOperationsInputsIncompatibleWithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  GroupTypeInterfacesOperationsUndefinedInInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op2: # ERROR: op2 undefined in InterfaceType
+          description: new operation
 
 policy_types:
   # CORRECT: policy type

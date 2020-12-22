@@ -500,6 +500,8 @@ BASIC_CONSTRAINT_CLAUSES = {
     },
 }
 
+REFINE_OR_NEW = None
+
 class TypeChecker(Checker):
     '''
         TOSCA type system checker
@@ -648,7 +650,7 @@ class TypeChecker(Checker):
                 return True
         return False
 
-    def iterate_over_definitions(self, method, keyword, definition1, definition2, context_error_message):
+    def iterate_over_definitions(self, method, keyword, definition1, definition2, refined_interface_name, context_error_message):
         context_error_message += ':' + keyword + ':'
         definition2_keyword = definition2.get(keyword, {})
 
@@ -662,7 +664,12 @@ class TypeChecker(Checker):
         self.previous_parent_definition = definition2_keyword
 
         for key, value in definition1.get(keyword, {}).items():
-            method(key, value, definition2_keyword.get(key, {}), context_error_message + key)
+            previous_value = definition2_keyword.get(key)
+            if previous_value is None:
+                if refined_interface_name != REFINE_OR_NEW:
+                    self.error(context_error_message + key + ' - undefined in ' + refined_interface_name)
+                previous_value = {}
+            method(key, value, previous_value, context_error_message + key)
 
         # Restore previous_parent_definition
         self.previous_parent_definition = previous_parent_definition
@@ -674,8 +681,8 @@ class TypeChecker(Checker):
         # check description - nothing to do
         # check dsl_definitions - nothing to do
         # check repositories
-        for name, repository_definition in syntax.get_repositories(service_template_definition).items():
-            self.check_repository_definition(name, repository_definition, syntax.REPOSITORIES)
+        for repository_name, repository_definition in syntax.get_repositories(service_template_definition).items():
+            self.check_repository_definition(repository_name, repository_definition, syntax.REPOSITORIES)
         # check imports - already done
 
         def iterate_over_types(check_method, service_template_definition, keyword):
@@ -974,27 +981,37 @@ class TypeChecker(Checker):
 
         # check type
         if self.check_type_in_definition('capability', syntax.TYPE, capability_definition, previous_capability_definition, context_error_message):
-            capability_type = syntax.get_capability_type(capability_definition)
+            capability_type_name = capability_definition.get(syntax.TYPE)
+            capability_type = self.type_system.merge_type(self.type_system.get_type_uri(capability_type_name))
         else:
+            capability_type_name = None
             capability_type = None
 
-        # check properties # TODO add tests
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, capability_definition, previous_capability_definition, context_error_message)
-        # check attributes # TODO add tests
-        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, capability_definition, previous_capability_definition, context_error_message)
+        # check properties
+        # check properties against the capability type
+        if capability_type_name != None:
+            self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, capability_definition, capability_type, capability_type_name, context_error_message)
+        # check properties against the derived from type
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, capability_definition, previous_capability_definition, REFINE_OR_NEW, context_error_message)
+        # check attributes
+        # check attributes against the capability type
+        if capability_type_name != None:
+            self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, capability_definition, capability_type, capability_type_name, context_error_message)
+        # check attributes against the derived from type
+        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, capability_definition, previous_capability_definition, REFINE_OR_NEW, context_error_message)
 
         # check valid_source_types
-        if capability_type != None:
+        if capability_type_name != None:
             def check_valid_source_type(valid_source_type, context_error_message):
                 node_type = self.type_system.merge_type(valid_source_type)
-                # check each valid_source_type has at least a requirement with capability compatible with capability_type
+                # check each valid_source_type has at least a requirement with capability compatible with capability_type_name
                 requirement_not_found = True
                 for requirement_name, requirement_definition in syntax.get_requirements_dict(node_type).items():
-                    if self.type_system.is_derived_from(capability_type, syntax.get_requirement_capability(requirement_definition)):
+                    if self.type_system.is_derived_from(capability_type_name, syntax.get_requirement_capability(requirement_definition)):
                         requirement_not_found = False
                         break
                 if requirement_not_found:
-                    self.error(context_error_message + valid_source_type + ' - no requirement compatible with ' + capability_type)
+                    self.error(context_error_message + valid_source_type + ' - no requirement compatible with ' + capability_type_name)
         else:
             check_valid_source_type = None
         self.check_types_in_definition('node', syntax.VALID_SOURCE_TYPES, capability_definition, previous_capability_definition, context_error_message, check_valid_source_type)
@@ -1006,9 +1023,46 @@ class TypeChecker(Checker):
         # check description - nothing to do
         # check type
         self.check_type_in_definition('interface', syntax.TYPE, interface_definition, previous_interface_definition, context_error_message)
+        interface_type_name = interface_definition.get(syntax.TYPE)
+        if interface_type_name != None:
+            interface_type = self.type_system.merge_type(self.type_system.get_type_uri(interface_type_name))
         # check inputs
-        self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, interface_definition, previous_interface_definition, context_error_message)
-        # check operations # TODO check_operation_definition
+# TODO verifier inputs versus les inputs de l'interface type
+        self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, interface_definition, previous_interface_definition, REFINE_OR_NEW, context_error_message)
+        # check operations
+        # check operations against the interface type
+        if interface_type_name != None:
+            self.check_operations(interface_definition, interface_type, interface_type_name, context_error_message)
+        # check operations against the derived from type
+        self.check_operations(interface_definition, previous_interface_definition, REFINE_OR_NEW, context_error_message)
+
+    def check_operations(self, definition, previous_definition, mode, context_error_message):
+        # normalize operations
+        def normalize_operations(definition):
+            if definition.get(syntax.OPERATIONS) != None:
+                return # need not to normalize operations
+            operations = {}
+            for operation_name, operation_definition in definition.items():
+                if operation_name not in [ syntax.DESCRIPTION, syntax.TYPE, syntax.INPUTS ]:
+                    operations[operation_name] = operation_definition
+            definition[syntax.OPERATIONS] = operations
+
+        normalize_operations(definition)
+        normalize_operations(previous_definition)
+
+        # check operation
+        self.iterate_over_definitions(self.check_operation_definition, syntax.OPERATIONS, definition, previous_definition, mode, context_error_message)
+
+    def check_operation_definition(self, operation_name, operation_definition, previous_operation_definition, context_error_message):
+        # normalize both operation_definition and previous_operation_definition
+        if type(operation_definition) == str:
+            operation_definition = { 'TODO': operation_definition }
+        if type(previous_operation_definition) == str:
+            previous_operation_definition = { 'TODO': previous_operation_definition }
+        # check description - nothing to do
+        # check implementation - TODO
+        # check inputs
+        self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, operation_definition, previous_operation_definition, REFINE_OR_NEW, context_error_message)
 
     def check_artifact_definition(self, artifact_name, artifact_definition, previous_artifact_definition, context_error_message):
         # check type
@@ -1022,7 +1076,8 @@ class TypeChecker(Checker):
         # check description - nothing to do
         # check deploy_path - nothing to do
         # check properties
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, artifact_definition, previous_artifact_definition, context_error_message)
+        # TODO check properties versus properties du artifact type
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, artifact_definition, previous_artifact_definition, REFINE_OR_NEW, context_error_message)
 
     def check_artifact_type(self, artifact_type_name, artifact_type, derived_from_artifact_type, context_error_message):
         # check version - nothing to do
@@ -1031,7 +1086,7 @@ class TypeChecker(Checker):
         # check mime_type - nothing to do
         # check file_ext # TODO already done previously move previous code here
         # check properties
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, artifact_type, derived_from_artifact_type, context_error_message)
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, artifact_type, derived_from_artifact_type, REFINE_OR_NEW, context_error_message)
 
     def check_data_type(self, data_type_name, data_type, derived_from_data_type, context_error_message):
         # check version - nothing to do
@@ -1041,16 +1096,16 @@ class TypeChecker(Checker):
         type_checker = self.get_type_checker({ syntax.TYPE: data_type.get(syntax.DERIVED_FROM) }, context_error_message)
         self.check_constraint_clauses(data_type, type_checker, context_error_message)
         # check properties
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, data_type, derived_from_data_type, context_error_message)
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, data_type, derived_from_data_type, REFINE_OR_NEW, context_error_message)
 
     def check_capability_type(self, capability_type_name, capability_type, derived_from_capability_type, context_error_message):
         # check version - nothing to do
         # check metadata - nothing to do
         # check description - nothing to do
         # check properties
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, capability_type, derived_from_capability_type, context_error_message)
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, capability_type, derived_from_capability_type, REFINE_OR_NEW, context_error_message)
         # check attributes
-        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, capability_type, derived_from_capability_type, context_error_message)
+        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, capability_type, derived_from_capability_type, REFINE_OR_NEW, context_error_message)
         # check valid_source_types
         self.check_types_in_definition('node', syntax.VALID_SOURCE_TYPES, capability_type, derived_from_capability_type, context_error_message)
 
@@ -1059,20 +1114,20 @@ class TypeChecker(Checker):
         # check metadata - nothing to do
         # check description - nothing to do
         # check inputs
-        self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, interface_type, derived_from_interface_type, context_error_message)
-        # check operations TODO add tests
-        # TODO check_operation_definition
+        self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, interface_type, derived_from_interface_type, REFINE_OR_NEW, context_error_message)
+        # check operations
+        self.check_operations(interface_type, derived_from_interface_type, REFINE_OR_NEW, context_error_message)
 
     def check_relationship_type(self, relationship_type_name, relationship_type, derived_from_relationship_type, context_error_message):
         # check version - nothing to do
         # check metadata - nothing to do
         # check description - nothing to do
         # check attributes
-        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, relationship_type, derived_from_relationship_type, context_error_message)
+        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, relationship_type, derived_from_relationship_type, REFINE_OR_NEW, context_error_message)
         # check properties
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, relationship_type, derived_from_relationship_type, context_error_message)
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, relationship_type, derived_from_relationship_type, REFINE_OR_NEW, context_error_message)
         # check interfaces
-        self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, relationship_type, derived_from_relationship_type, context_error_message)
+        self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, relationship_type, derived_from_relationship_type, REFINE_OR_NEW, context_error_message)
         # check valid_target_types
         self.check_types_in_definition('capability', syntax.VALID_TARGET_TYPES, relationship_type, derived_from_relationship_type, context_error_message)
 
@@ -1081,30 +1136,30 @@ class TypeChecker(Checker):
         # check metadata - nothing to do
         # check description - nothing to do
         # check attributes
-        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, node_type, derived_from_node_type, context_error_message)
+        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, node_type, derived_from_node_type, REFINE_OR_NEW, context_error_message)
         # check properties
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, node_type, derived_from_node_type, context_error_message)
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, node_type, derived_from_node_type, REFINE_OR_NEW, context_error_message)
         # normalize requirements
         requirements = node_type.get(syntax.REQUIREMENTS)
         if requirements != None:
             node_type[syntax.REQUIREMENTS] = syntax.get_requirements_dict(node_type)
         # check requirements
-        self.iterate_over_definitions(self.check_requirement_definition, syntax.REQUIREMENTS, node_type, derived_from_node_type, context_error_message)
+        self.iterate_over_definitions(self.check_requirement_definition, syntax.REQUIREMENTS, node_type, derived_from_node_type, REFINE_OR_NEW, context_error_message)
         # check capabilities
-        self.iterate_over_definitions(self.check_capability_definition, syntax.CAPABILITIES, node_type, derived_from_node_type, context_error_message)
+        self.iterate_over_definitions(self.check_capability_definition, syntax.CAPABILITIES, node_type, derived_from_node_type, REFINE_OR_NEW, context_error_message)
         # check interfaces
-        self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, node_type, derived_from_node_type, context_error_message)
+        self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, node_type, derived_from_node_type, REFINE_OR_NEW, context_error_message)
         # check artifacts
-        self.iterate_over_definitions(self.check_artifact_definition, syntax.ARTIFACTS, node_type, derived_from_node_type, context_error_message)
+        self.iterate_over_definitions(self.check_artifact_definition, syntax.ARTIFACTS, node_type, derived_from_node_type, REFINE_OR_NEW, context_error_message)
 
     def check_group_type(self, group_type_name, group_type, derived_from_group_type, context_error_message):
         # check version - nothing to do
         # check metadata - nothing to do
         # check description - nothing to do
         # check attributes
-        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, group_type, derived_from_group_type, context_error_message)
+        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, group_type, derived_from_group_type, REFINE_OR_NEW, context_error_message)
         # check properties
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, group_type, derived_from_group_type, context_error_message)
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, group_type, derived_from_group_type, REFINE_OR_NEW, context_error_message)
         # check members
         self.check_types_in_definition('node', syntax.MEMBERS, group_type, derived_from_group_type, context_error_message)
         # normalize requirements
@@ -1112,18 +1167,18 @@ class TypeChecker(Checker):
         if requirements != None:
             group_type[syntax.REQUIREMENTS] = syntax.get_requirements_dict(group_type)
         # check requirements
-        self.iterate_over_definitions(self.check_requirement_definition, syntax.REQUIREMENTS, group_type, derived_from_group_type, context_error_message)
+        self.iterate_over_definitions(self.check_requirement_definition, syntax.REQUIREMENTS, group_type, derived_from_group_type, REFINE_OR_NEW, context_error_message)
         # check capabilities
-        self.iterate_over_definitions(self.check_capability_definition, syntax.CAPABILITIES, group_type, derived_from_group_type, context_error_message)
+        self.iterate_over_definitions(self.check_capability_definition, syntax.CAPABILITIES, group_type, derived_from_group_type, REFINE_OR_NEW, context_error_message)
         # check interfaces
-        self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, group_type, derived_from_group_type, context_error_message)
+        self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, group_type, derived_from_group_type, REFINE_OR_NEW, context_error_message)
 
     def check_policy_type(self, policy_type_name, policy_type, derived_from_policy_type, context_error_message):
         # check version - nothing to do
         # check metadata - nothing to do
         # check description - nothing to do
         # check properties
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, policy_type, derived_from_policy_type, context_error_message)
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, policy_type, derived_from_policy_type, REFINE_OR_NEW, context_error_message)
         # check targets
         self.check_types_in_definition(['node', 'group'], syntax.TARGETS, policy_type, derived_from_policy_type, context_error_message)
         # check triggers
