@@ -1074,6 +1074,9 @@ class TypeChecker(Checker):
     def check_artifact_definition(self, artifact_name, artifact_definition, previous_artifact_definition, context_error_message):
         # check type
         self.check_type_in_definition('artifact', syntax.TYPE, artifact_definition, previous_artifact_definition, context_error_message)
+        artifact_type_name = artifact_definition.get(syntax.TYPE)
+        if artifact_type_name != None:
+            artifact_type = self.type_system.merge_type(self.type_system.get_type_uri(artifact_type_name))
         # check file # TODO
         # check repository
         repository = artifact_definition.get(syntax.REPOSITORY)
@@ -1083,7 +1086,10 @@ class TypeChecker(Checker):
         # check description - nothing to do
         # check deploy_path - nothing to do
         # check properties
-        # TODO check properties versus properties du artifact type
+        # check properties against the artifact type
+        if artifact_type_name != None:
+            self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, artifact_definition, artifact_type, artifact_type_name, context_error_message)
+        # check properties against the derived from type
         self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, artifact_definition, previous_artifact_definition, REFINE_OR_NEW, context_error_message)
 
     def check_artifact_type(self, artifact_type_name, artifact_type, derived_from_artifact_type, context_error_message):

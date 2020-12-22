@@ -2139,6 +2139,10 @@ node_types:
         type: ArtifactType
         # CORRECT: repository name.
         repository: repo1
+        properties:
+          p1:
+            # CORRECT: YAML type.
+            type: string
     properties:
       p1:
         # CORRECT: YAML type.
@@ -2603,6 +2607,48 @@ node_types:
       a1:
         # ERROR: repository not found.
         repository: undefined_repository
+
+  NodeTypeArtifactsPropertiesUndefinedType:
+    artifacts:
+      a1:
+        properties:
+          p1:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  NodeTypeArtifactsPropertiesIncorrectType:
+    artifacts:
+      a1:
+        properties:
+          p1:
+            # ERROR: must be a data type!
+            type: tosca.nodes.Root
+
+  NodeTypeArtifactsPropertiesTypeIncompatibleWithDerivedFromType:
+    derived_from: NodeType
+    artifacts:
+      a1:
+        properties:
+          p1:
+            # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  NodeTypeArtifactsPropertiesTypeIncompatibleWithArtifactType:
+    artifacts:
+      a1:
+        type: ArtifactType
+        properties:
+          p1:
+            # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  NodeTypeArtifactsPropertiesUndefinedInArtifactType:
+    artifacts:
+      a1:
+        type: ArtifactType
+        properties:
+          undefined-property: # ERROR: undefined in ArtifactType!
+            type: string
 
 relationship_types:
   # CORRECT: relationship type
