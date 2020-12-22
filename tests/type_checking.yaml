@@ -2583,6 +2583,44 @@ node_types:
         op2: # ERROR: op2 undefined in InterfaceType
           description: new operation
 
+  NodeTypeInterfacesOperationsImplementationPrimaryTypeUndefined:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  NodeTypeInterfacesOperationsImplementationPrimaryTypeIncorrect:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be an artifact type!
+              type: tosca.nodes.Root
+
+  NodeTypeInterfacesOperationsImplementationDependenciesTypeUndefined:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be a defined type!
+                type: UndefinedType
+
+  NodeTypeInterfacesOperationsImplementationDependenciesTypeIncorrect:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be an artifact type!
+                type: tosca.nodes.Root
+
   NodeTypeArtifactsUndefinedType:
     artifacts:
       a1:
@@ -2848,6 +2886,44 @@ relationship_types:
         type: InterfaceType
         op2: # ERROR: op2 undefined in InterfaceType
           description: new operation
+
+  RelationshipTypeInterfacesOperationsImplementationPrimaryTypeUndefined:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  RelationshipTypeInterfacesOperationsImplementationPrimaryTypeIncorrect:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be an artifact type!
+              type: tosca.nodes.Root
+
+  RelationshipTypeInterfacesOperationsImplementationDependenciesTypeUndefined:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be a defined type!
+                type: UndefinedType
+
+  RelationshipTypeInterfacesOperationsImplementationDependenciesTypeIncorrect:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be an artifact type!
+                type: tosca.nodes.Root
 
   RelationshipTypeAttributesUndefinedType:
     attributes:
@@ -3405,6 +3481,44 @@ group_types:
         type: InterfaceType
         op2: # ERROR: op2 undefined in InterfaceType
           description: new operation
+
+  GroupTypeInterfacesOperationsImplementationPrimaryTypeUndefined:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  GroupTypeInterfacesOperationsImplementationPrimaryTypeIncorrect:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be an artifact type!
+              type: tosca.nodes.Root
+
+  GroupTypeInterfacesOperationsImplementationDependenciesTypeUndefined:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be a defined type!
+                type: UndefinedType
+
+  GroupTypeInterfacesOperationsImplementationDependenciesTypeIncorrect:
+    interfaces:
+      i1:
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be an artifact type!
+                type: tosca.nodes.Root
 
 policy_types:
   # CORRECT: policy type

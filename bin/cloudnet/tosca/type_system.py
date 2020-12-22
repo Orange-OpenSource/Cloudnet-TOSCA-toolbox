@@ -1050,7 +1050,7 @@ class TypeChecker(Checker):
                 return # need not to normalize operations
             operations = {}
             for operation_name, operation_definition in definition.items():
-                if operation_name not in [ syntax.DESCRIPTION, syntax.TYPE, syntax.INPUTS ]:
+                if operation_name not in [ syntax.DERIVED_FROM, syntax.DESCRIPTION, syntax.TYPE, syntax.INPUTS ]:
                     operations[operation_name] = operation_definition
             definition[syntax.OPERATIONS] = operations
 
@@ -1062,16 +1062,39 @@ class TypeChecker(Checker):
 
     def check_operation_definition(self, operation_name, operation_definition, previous_operation_definition, context_error_message):
         # normalize both operation_definition and previous_operation_definition
-        if type(operation_definition) == str:
-            operation_definition = { 'TODO': operation_definition }
-        if type(previous_operation_definition) == str:
-            previous_operation_definition = { 'TODO': previous_operation_definition }
+        if type(operation_definition) is str:
+            operation_definition = { syntax.IMPLEMENTATION: operation_definition }
+        if type(previous_operation_definition) is str:
+            previous_operation_definition = { syntax.IMPLEMENTATION: previous_operation_definition }
         # check description - nothing to do
-        # check implementation - TODO
+        # check implementation
+        self.check_operation_implementation_definition(operation_definition.get(syntax.IMPLEMENTATION), context_error_message + ':' + syntax.IMPLEMENTATION)
         # check inputs
         self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, operation_definition, previous_operation_definition, REFINE_OR_NEW, context_error_message)
 
+    def check_operation_implementation_definition(self, operation_implementation_definition, context_error_message):
+        if operation_implementation_definition is None:
+            return # nothing to check
+        # normalize when the short notation is used
+        if type(operation_implementation_definition) is str:
+            operation_implementation_definition = { syntax.PRIMARY: operation_implementation_definition }
+        # check primary
+        primary = operation_implementation_definition.get(syntax.PRIMARY)
+        if primary != None:
+            self.check_artifact_definition(syntax.PRIMARY, primary, {}, context_error_message + ':' + syntax.PRIMARY)
+        # check dependencies
+        idx = 0
+        for dependency in operation_implementation_definition.get(syntax.DEPENDENCIES, []):
+            dependency_name = syntax.DEPENDENCIES + '[' + str(idx) + ']'
+            self.check_artifact_definition(dependency_name, dependency, {}, context_error_message + ':' + dependency_name)
+            idx += 1
+        # check timeout - nothing to do
+        # check operation_host - nothing to do
+
     def check_artifact_definition(self, artifact_name, artifact_definition, previous_artifact_definition, context_error_message):
+        # normalize when the short notation is used
+        if type(artifact_definition) is str:
+            artifact_definition = { syntax.FILE: artifact_definition }
         # check type
         self.check_type_in_definition('artifact', syntax.TYPE, artifact_definition, previous_artifact_definition, context_error_message)
         artifact_type_name = artifact_definition.get(syntax.TYPE)
@@ -1079,7 +1102,7 @@ class TypeChecker(Checker):
             artifact_type = self.type_system.merge_type(self.type_system.get_type_uri(artifact_type_name))
         # check file
         if artifact_definition.get(syntax.FILE) != None:
-            self.warning(context_error_message + ':' + syntax.FILE + ' - currently unchecked') # TODO later
+            self.warning(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + ' - currently unchecked') # TODO later
         # check repository
         repository = artifact_definition.get(syntax.REPOSITORY)
         if repository != None:

@@ -130,6 +130,9 @@ NAMESPACE_PREFIX = 'namespace_prefix'
 
 OPERATIONS = 'operations'
 
+PRIMARY = 'primary'
+DEPENDENCIES = 'dependencies'
+
 #
 # Getter functions.
 #
