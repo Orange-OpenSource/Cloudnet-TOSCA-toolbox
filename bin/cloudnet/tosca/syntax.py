@@ -128,6 +128,8 @@ URL = 'url'
 
 NAMESPACE_PREFIX = 'namespace_prefix'
 
+OPERATIONS = 'operations'
+
 #
 # Getter functions.
 #
