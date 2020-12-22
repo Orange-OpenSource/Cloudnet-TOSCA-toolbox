@@ -949,6 +949,8 @@ class TypeChecker(Checker):
                     # check relationship interfaces
                     # TODO check_interface_definition
 
+        # check node_filter # TODO added in TOSCA 2.0
+
         # check occurrences
         self.check_occurrences(requirement_definition, self.previous_parent_definition.get(requirement_name), [1, 1], context_error_message)
 
