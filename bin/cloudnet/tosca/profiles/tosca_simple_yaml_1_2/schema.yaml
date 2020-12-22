@@ -513,7 +513,7 @@ definitions:
         additionalProperties:
           $ref: "#/definitions/property_definition"
       additionalProperties:
-        $ref: "#/definitions/operation_definition"
+        $ref: "#/definitions/operation_definition_in_types"
 
   # Section 3.7.6
   data_type:
