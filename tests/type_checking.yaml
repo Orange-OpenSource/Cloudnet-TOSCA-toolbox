@@ -2640,6 +2640,19 @@ node_types:
         # ERROR: incompatible type with previous declared type!
         type: tosca.artifacts.File
 
+  NodeTypeArtifactsFileUnchecked:
+    artifacts:
+      a1:
+        type: ArtifactType
+        file: 'the file of this artifact' # WARNING: file currently unchecked!
+
+  NodeTypeArtifactsFileNoArtifactTypeFound:
+    artifacts:
+      a1:
+        file: script.py # CORRECT: tosca.artifacts.Implementation.Python found!
+      a2:
+        file: script.xyz # ERROR: no artifact type found for 'xyz' file extension!
+
   NodeTypeArtifactsRepositoryUndefined:
     artifacts:
       a1:
@@ -2687,12 +2700,6 @@ node_types:
         properties:
           undefined-property: # ERROR: undefined in ArtifactType!
             type: string
-
-  DataTypeArtifactsFileUnchecked:
-    artifacts:
-      a1:
-        type: ArtifactType
-        file: 'the file of this artifact' # WARNING: file currently unchecked!
 
 relationship_types:
   # CORRECT: relationship type

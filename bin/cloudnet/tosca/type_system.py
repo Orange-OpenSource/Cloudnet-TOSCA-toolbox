@@ -1101,8 +1101,19 @@ class TypeChecker(Checker):
         if artifact_type_name != None:
             artifact_type = self.type_system.merge_type(self.type_system.get_type_uri(artifact_type_name))
         # check file
-        if artifact_definition.get(syntax.FILE) != None:
-            self.warning(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + ' - currently unchecked') # TODO later
+        artifact_file = artifact_definition.get(syntax.FILE)
+        if artifact_file != None:
+            if artifact_type_name is None:
+                idx_dot = artifact_file.rfind('.')
+                if idx_dot != -1:
+                    artifact_type_name = self.type_system.get_artifact_type_by_file_ext(artifact_file[idx_dot+1:])
+                    if artifact_type_name is None:
+                        self.error(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + " - no artifact type found for '" + artifact_file[idx_dot+1:] + "' file extension")
+                    else:
+                        self.warning(context_error_message + ':' + syntax.TYPE + ' - undefined but ' + artifact_type_name + " found for '" + artifact_file[idx_dot+1:] + "' file extension")
+                        artifact_type = self.type_system.merge_type(self.type_system.get_type_uri(artifact_type_name))
+            self.warning(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + ' - file currently unchecked') # TODO later
+
         # check repository
         repository = artifact_definition.get(syntax.REPOSITORY)
         if repository != None:
