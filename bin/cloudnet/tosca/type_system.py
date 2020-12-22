@@ -1077,7 +1077,9 @@ class TypeChecker(Checker):
         artifact_type_name = artifact_definition.get(syntax.TYPE)
         if artifact_type_name != None:
             artifact_type = self.type_system.merge_type(self.type_system.get_type_uri(artifact_type_name))
-        # check file # TODO
+        # check file
+        if artifact_definition.get(syntax.FILE) != None:
+            self.warning(context_error_message + ':' + syntax.FILE + ' - currently unchecked') # TODO later
         # check repository
         repository = artifact_definition.get(syntax.REPOSITORY)
         if repository != None:

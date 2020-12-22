@@ -2650,6 +2650,12 @@ node_types:
           undefined-property: # ERROR: undefined in ArtifactType!
             type: string
 
+  DataTypeArtifactsFileUnchecked:
+    artifacts:
+      a1:
+        type: ArtifactType
+        file: 'the file of this artifact' # WARNING: file currently unchecked!
+
 relationship_types:
   # CORRECT: relationship type
   RelationshipType:
