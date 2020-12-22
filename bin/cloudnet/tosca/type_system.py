@@ -604,9 +604,9 @@ class TypeChecker(Checker):
             if getattr(self.type_system, type_kind + '_types').get(type_name) != None:
                 return True
         if self.type_system.types.get(type_name) == None:
-            self.error(context_error_message + ': ' + type_name + ' - undefined type but ' + array_to_string_with_or_separator(type_kinds) + ' type required')
+            self.error(context_error_message + ': ' + type_name + ' - undefined type but ' + array_to_string_with_or_separator(type_kinds) + ' type expected')
         else:
-            self.error(context_error_message + ': ' + type_name + ' - defined type but ' + array_to_string_with_or_separator(type_kinds) + ' type required')
+            self.error(context_error_message + ': ' + type_name + ' - defined type but ' + array_to_string_with_or_separator(type_kinds) + ' type expected')
         return False
 
     def check_type(self, type_kinds, the_type, previous_type, context_error_message):
