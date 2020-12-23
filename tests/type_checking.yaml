@@ -2465,6 +2465,36 @@ node_types:
           # ERROR: no valid target type compatible with CapabilityType!
           relationship: tosca.relationships.HostedOn
 
+
+  NodeTypeRequirementsRelationshipTypeUndefinedType:
+    requirements:
+      - r1:
+          relationship:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  NodeTypeRequirementsRelationshipTypeIncorrectType:
+    requirements:
+      - r1:
+          relationship:
+            # ERROR: must be a relationship type!
+            type: tosca.datatypes.Root
+
+  NodeTypeRequirementsRelationshipTypeIncompatibleWithDerivedFromType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          relationship:
+            # ERROR: incompatible type with previous declared type!
+            type: tosca.relationships.Root
+
+  NodeTypeRequirementRelationshipTypeIncompatibleWithCapabilityType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: no valid target type compatible with CapabilityType!
+          relationship: tosca.relationships.HostedOn
+
   NodeTypeRequirementsOccurrences:
     requirements:
       - r1:
@@ -3357,7 +3387,7 @@ group_types:
           # ERROR: must be a relationship type!
           relationship: tosca.datatypes.Root
 
-  GroupTypeRequirementsRelationshipIncompatibleType:
+  GroupTypeRequirementsRelationshipIncompatibleWithDerivedFromType:
     derived_from: GroupType
     requirements:
       - r1:
@@ -3365,6 +3395,35 @@ group_types:
           relationship: tosca.relationships.Root
 
   GroupTypeRequirementRelationshipIncompatibleWithCapabilityType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: no valid target type compatible with CapabilityType!
+          relationship: tosca.relationships.HostedOn
+
+  GroupTypeRequirementsRelationshipTypeUndefinedType:
+    requirements:
+      - r1:
+          relationship:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  GroupTypeRequirementsRelationshipTypeIncorrectType:
+    requirements:
+      - r1:
+          relationship:
+            # ERROR: must be a relationship type!
+            type: tosca.datatypes.Root
+
+  GroupTypeRequirementsRelationshipTypeIncompatibleWithDerivedFromType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          relationship:
+            # ERROR: incompatible type with previous declared type!
+            type: tosca.relationships.Root
+
+  GroupTypeRequirementRelationshipTypeIncompatibleWithCapabilityType:
     requirements:
       - r1:
           capability: CapabilityType

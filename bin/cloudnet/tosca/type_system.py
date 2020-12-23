@@ -934,20 +934,32 @@ class TypeChecker(Checker):
                     self.warning(context_error_message + ':relationship undefined but ' + array_to_string_with_or_separator(found_relationship_types) + ' are compatible with ' + requirement_capability)
         else:
             # relationship defined
-            if self.check_type_in_definition('relationship', syntax.RELATIONSHIP, requirement_definition, previous_requirement_definition, context_error_message):
-                if requirement_capability != None:
-                    # Check that requirement_capability is compatible with at least one requirement_relationship valid target type
-                    relationship_type = self.type_system.merge_type(requirement_relationship)
-                    capability_not_compatible = True
-                    for valid_target_type in relationship_type.get(syntax.VALID_TARGET_TYPES, []):
-                        if self.type_system.is_derived_from(requirement_capability, valid_target_type):
-                            capability_not_compatible = False
-                            break
-                    if capability_not_compatible:
-                        self.error(context_error_message + ':' + syntax.RELATIONSHIP + ': ' + requirement_relationship + ' - no valid target type compatible with ' + requirement_capability)
 
-                    # check relationship interfaces
-                    # TODO check_interface_definition
+            # normalize when the short notation is used
+            if type(requirement_relationship) is str:
+                requirement_relationship = { syntax.TYPE: requirement_relationship }
+            previous_requirement_relationship = previous_requirement_definition.get(syntax.RELATIONSHIP, {})
+            if type(previous_requirement_relationship) is str:
+                previous_requirement_relationship = { syntax.TYPE: previous_requirement_relationship }
+
+            # check relationship type
+            self.check_type_in_definition('relationship', syntax.TYPE, requirement_relationship, previous_requirement_relationship, context_error_message + ':' + syntax.RELATIONSHIP)
+            requirement_relationship_type = requirement_relationship.get(syntax.TYPE)
+            relationship_type = self.type_system.merge_type(requirement_relationship_type)
+            if requirement_capability != None:
+                # Check that requirement_capability is compatible with at least one requirement_relationship valid target type
+                capability_not_compatible = True
+                for valid_target_type in relationship_type.get(syntax.VALID_TARGET_TYPES, []):
+                    if self.type_system.is_derived_from(requirement_capability, valid_target_type):
+                        capability_not_compatible = False
+                        break
+                if capability_not_compatible:
+                    self.error(context_error_message + ':' + syntax.RELATIONSHIP + ':' + syntax.TYPE + ': ' + requirement_relationship_type + ' - no valid target type compatible with ' + requirement_capability)
+
+            # check relationship interfaces
+            if requirement_relationship_type != None:
+                self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, requirement_relationship, relationship_type, requirement_relationship_type, context_error_message + ':' + syntax.RELATIONSHIP)
+            self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, requirement_relationship, previous_requirement_relationship, REFINE_OR_NEW, context_error_message + ':' + syntax.RELATIONSHIP)
 
         # check node_filter # TODO added in TOSCA 2.0
 
