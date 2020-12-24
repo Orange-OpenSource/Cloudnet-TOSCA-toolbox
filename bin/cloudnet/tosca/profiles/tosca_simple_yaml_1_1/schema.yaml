@@ -458,7 +458,8 @@ definitions:
                     additionalProperties:
                       $ref: "#/definitions/interface_definition_in_types"
                 additionalProperties: false
-                required: [ type ]
+#               required: [ type ] # type is required but can be set into the parent definition.
+                # So type requirement is checked by TypeChecker.
           occurrences:
             $ref: "#/definitions/occurrences"
         additionalProperties: false
