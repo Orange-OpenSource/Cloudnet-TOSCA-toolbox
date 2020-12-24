@@ -2465,6 +2465,12 @@ node_types:
           # ERROR: no valid target type compatible with CapabilityType!
           relationship: tosca.relationships.HostedOn
 
+  NodeTypeRequirementsRelationshipTypeMissed:
+    requirements:
+      - r1:
+          relationship: {
+            # ERROR: type missed
+            }
 
   NodeTypeRequirementsRelationshipTypeUndefinedType:
     requirements:
@@ -2488,12 +2494,226 @@ node_types:
             # ERROR: incompatible type with previous declared type!
             type: tosca.relationships.Root
 
-  NodeTypeRequirementRelationshipTypeIncompatibleWithCapabilityType:
+  NodeTypeRequirementsRelationshipTypeIncompatibleWithCapabilityType:
     requirements:
       - r1:
           capability: CapabilityType
           # ERROR: no valid target type compatible with CapabilityType!
           relationship: tosca.relationships.HostedOn
+
+  NodeTypeRequirementsRelationshipInterfacesUndefinedInRelationshipType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              undefined-interface: # ERROR: undefined in RelationshipType!
+                type: InterfaceType
+
+  NodeTypeRequirementsRelationshipInterfacesUndefinedInDerivedFromType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          relationship:
+            # type is set to RelationshipType into NodeType.
+            interfaces:
+              undefined-interface: # ERROR: undefined in RelationshipType!
+                type: InterfaceType
+
+  NodeTypeRequirementsRelationshipInterfacesUndefinedType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                # ERROR: must be a defined type!
+                type: UndefinedType
+
+  NodeTypeRequirementsRelationshipInterfacesIncorrectType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                # ERROR: must be an interface type!
+                type: tosca.nodes.Root
+
+  NodeTypeRequirementsRelationshipInterfacesIncompatibleType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          relationship:
+            interfaces:
+              i1:
+                # ERROR: incompatible type with previous declared type!
+                type: tosca.interfaces.Root
+
+  NodeTypeRequirementsRelationshipInterfacesInputsUndefinedType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: must be a defined type!
+                    type: UndefinedType
+
+  NodeTypeRequirementsRelationshipInterfacesInputsIncorrectType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: must be an interface type!
+                    type: tosca.nodes.Root
+
+  NodeTypeRequirementsRelationshipInterfacesInputsTypeIncompatibleWithDerivedFromType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: incompatible type with previous declared type!
+                    type: integer
+
+  NodeTypeRequirementsRelationshipInterfacesInputsTypeIncompatibleWithRelationshipType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: incompatible type with interface type!
+                    type: integer
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsInputsUndefinedType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: must be a defined type!
+                      type: UndefinedType
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsInputsIncorrectType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: must be an interface type!
+                      type: tosca.nodes.Root
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsInputsIncompatiblewithDerivedFromType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          relationship:
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: incompatible type with previous declared type!
+                      type: integer
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsInputsIncompatiblewithRelationshipType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: incompatible type with previous declared type!
+                      type: integer
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsUndefinedInInterfaceType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                type: InterfaceType
+                op2: # ERROR: op2 undefined in InterfaceType
+                  description: new operation
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeUndefined:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    primary:
+                      # ERROR: must be a defined type!
+                      type: UndefinedType
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeIncorrect:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    primary:
+                      # ERROR: must be an artifact type!
+                      type: tosca.nodes.Root
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeUndefined:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    dependencies:
+                      -
+                        # ERROR: must be a defined type!
+                        type: UndefinedType
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeIncorrect:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    dependencies:
+                      - # ERROR: must be an artifact type!
+                        type: tosca.nodes.Root
 
   NodeTypeRequirementsOccurrences:
     requirements:
@@ -3394,12 +3614,19 @@ group_types:
           # ERROR: incompatible type with previous declared type!
           relationship: tosca.relationships.Root
 
-  GroupTypeRequirementRelationshipIncompatibleWithCapabilityType:
+  GroupTypeRequirementsRelationshipIncompatibleWithCapabilityType:
     requirements:
       - r1:
           capability: CapabilityType
           # ERROR: no valid target type compatible with CapabilityType!
           relationship: tosca.relationships.HostedOn
+
+  GroupTypeRequirementsRelationshipTypeMissed:
+    requirements:
+      - r1:
+          relationship: {
+            # ERROR: type missed
+            }
 
   GroupTypeRequirementsRelationshipTypeUndefinedType:
     requirements:
@@ -3423,12 +3650,226 @@ group_types:
             # ERROR: incompatible type with previous declared type!
             type: tosca.relationships.Root
 
-  GroupTypeRequirementRelationshipTypeIncompatibleWithCapabilityType:
+  GroupTypeRequirementsRelationshipTypeIncompatibleWithCapabilityType:
     requirements:
       - r1:
           capability: CapabilityType
           # ERROR: no valid target type compatible with CapabilityType!
           relationship: tosca.relationships.HostedOn
+
+  GroupTypeRequirementsRelationshipInterfacesUndefinedInRelationshipType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              undefined-interface: # ERROR: undefined in RelationshipType!
+                type: InterfaceType
+
+  GroupTypeRequirementsRelationshipInterfacesUndefinedInDerivedFromType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          relationship:
+            # type is set to RelationshipType into GroupType.
+            interfaces:
+              undefined-interface: # ERROR: undefined in RelationshipType!
+                type: InterfaceType
+
+  GroupTypeRequirementsRelationshipInterfacesUndefinedType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                # ERROR: must be a defined type!
+                type: UndefinedType
+
+  GroupTypeRequirementsRelationshipInterfacesIncorrectType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                # ERROR: must be an interface type!
+                type: tosca.nodes.Root
+
+  GroupTypeRequirementsRelationshipInterfacesIncompatibleType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          relationship:
+            interfaces:
+              i1:
+                # ERROR: incompatible type with previous declared type!
+                type: tosca.interfaces.Root
+
+  GroupTypeRequirementsRelationshipInterfacesInputsUndefinedType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: must be a defined type!
+                    type: UndefinedType
+
+  GroupTypeRequirementsRelationshipInterfacesInputsIncorrectType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: must be an interface type!
+                    type: tosca.nodes.Root
+
+  GroupTypeRequirementsRelationshipInterfacesInputsTypeIncompatibleWithDerivedFromType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: incompatible type with previous declared type!
+                    type: integer
+
+  GroupTypeRequirementsRelationshipInterfacesInputsTypeIncompatibleWithRelationshipType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: incompatible type with interface type!
+                    type: integer
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsInputsUndefinedType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: must be a defined type!
+                      type: UndefinedType
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsInputsIncorrectType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: must be an interface type!
+                      type: tosca.nodes.Root
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsInputsIncompatiblewithDerivedFromType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          relationship:
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: incompatible type with previous declared type!
+                      type: integer
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsInputsIncompatiblewithRelationshipType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: incompatible type with previous declared type!
+                      type: integer
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsUndefinedInInterfaceType:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                type: InterfaceType
+                op2: # ERROR: op2 undefined in InterfaceType
+                  description: new operation
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeUndefined:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    primary:
+                      # ERROR: must be a defined type!
+                      type: UndefinedType
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeIncorrect:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    primary:
+                      # ERROR: must be an artifact type!
+                      type: tosca.nodes.Root
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeUndefined:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    dependencies:
+                      -
+                        # ERROR: must be a defined type!
+                        type: UndefinedType
+
+  GroupTypeDerivedFromCyclicTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeIncorrect:
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    dependencies:
+                      - # ERROR: must be an artifact type!
+                        type: tosca.nodes.Root
 
   GroupTypeRequirementsOccurrences:
     requirements:

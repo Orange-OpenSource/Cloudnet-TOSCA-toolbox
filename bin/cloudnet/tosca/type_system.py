@@ -944,22 +944,32 @@ class TypeChecker(Checker):
 
             # check relationship type
             self.check_type_in_definition('relationship', syntax.TYPE, requirement_relationship, previous_requirement_relationship, context_error_message + ':' + syntax.RELATIONSHIP)
-            requirement_relationship_type = requirement_relationship.get(syntax.TYPE)
-            relationship_type = self.type_system.merge_type(requirement_relationship_type)
+            # compute relationship type name
+            requirement_relationship_type_name = requirement_relationship.get(syntax.TYPE)
+            if requirement_relationship_type_name is None:
+                requirement_relationship_type_name = previous_requirement_relationship.get(syntax.TYPE)
+            # compute merged type that is the union of relationship type and previous_requirement_relationship
+            if requirement_relationship_type_name != None:
+                merged_type = merge_dict(
+                    self.type_system.merge_type(self.type_system.get_type_uri(requirement_relationship_type_name)),
+                    previous_requirement_relationship)
+            else:
+                self.error(context_error_message + ':' + syntax.RELATIONSHIP + ' - relationship type missed')
+                merged_type = previous_requirement_relationship
+
+            # check that capability is compatible with requirement type valid target types
             if requirement_capability != None:
                 # Check that requirement_capability is compatible with at least one requirement_relationship valid target type
                 capability_not_compatible = True
-                for valid_target_type in relationship_type.get(syntax.VALID_TARGET_TYPES, []):
+                for valid_target_type in merged_type.get(syntax.VALID_TARGET_TYPES, []):
                     if self.type_system.is_derived_from(requirement_capability, valid_target_type):
                         capability_not_compatible = False
                         break
                 if capability_not_compatible:
-                    self.error(context_error_message + ':' + syntax.RELATIONSHIP + ':' + syntax.TYPE + ': ' + requirement_relationship_type + ' - no valid target type compatible with ' + requirement_capability)
+                    self.error(context_error_message + ':' + syntax.RELATIONSHIP + ':' + syntax.TYPE + ': ' + requirement_relationship_type_name + ' - no valid target type compatible with ' + requirement_capability)
 
             # check relationship interfaces
-            if requirement_relationship_type != None:
-                self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, requirement_relationship, relationship_type, requirement_relationship_type, context_error_message + ':' + syntax.RELATIONSHIP)
-            self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, requirement_relationship, previous_requirement_relationship, REFINE_OR_NEW, context_error_message + ':' + syntax.RELATIONSHIP)
+            self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, requirement_relationship, merged_type, requirement_relationship_type_name, context_error_message + ':' + syntax.RELATIONSHIP)
 
         # check node_filter # TODO added in TOSCA 2.0
 
