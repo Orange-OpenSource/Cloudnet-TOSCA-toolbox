@@ -3019,6 +3019,12 @@ node_types:
       a2:
         file: script.xyz # ERROR: no artifact type found for 'xyz' file extension!
 
+  NodeTypeArtifactsFileIncompatibleWithArtifactTypeFileExt:
+    artifacts:
+      a1:
+        type: tosca.artifacts.Implementation.Bash # file_ext: [ sh ]
+        file: script.py # ERROR: file extension incompatible with artifact type file_ext!
+
   NodeTypeArtifactsRepositoryUndefined:
     artifacts:
       a1:

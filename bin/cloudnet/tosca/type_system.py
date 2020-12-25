@@ -1092,28 +1092,37 @@ class TypeChecker(Checker):
         # check operation_host - nothing to do
 
     def check_artifact_definition(self, artifact_name, artifact_definition, previous_artifact_definition, context_error_message):
+        def get_file_ext(a_file):
+            return a_file[a_file.rfind('.')+1:]
+
         # normalize when the short notation is used
         if type(artifact_definition) is str:
             artifact_definition = { syntax.FILE: artifact_definition }
 
         # if file and no type then try to find an appropriate type
         artifact_file = artifact_definition.get(syntax.FILE)
-        if artifact_file != None and ( artifact_definition.get(syntax.TYPE) is None or previous_artifact_definition.get(syntax.TYPE) is None):
-            idx_dot = artifact_file.rfind('.')
-            if idx_dot != -1:
-                artifact_file_ext = artifact_file[idx_dot+1:]
-                artifact_type_name = self.type_system.get_artifact_type_by_file_ext(artifact_file_ext)
-                if artifact_type_name is None:
-                    self.error(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + " - no artifact type found for '" + artifact_file_ext + "' file extension")
-                else:
-                    self.warning(context_error_message + ':' + syntax.TYPE + ' - undefined but ' + artifact_type_name + " found for '" + artifact_file_ext + "' file extension")
-                    artifact_definition[syntax.TYPE] = artifact_type_name
+        if artifact_file != None and artifact_definition.get(syntax.TYPE) is None and previous_artifact_definition.get(syntax.TYPE) is None:
+            artifact_file_ext = get_file_ext(artifact_file)
+            artifact_type_name = self.type_system.get_artifact_type_by_file_ext(artifact_file_ext)
+            if artifact_type_name is None:
+                self.error(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + " - no artifact type found for '" + artifact_file_ext + "' file extension")
+            else:
+                self.warning(context_error_message + ':' + syntax.TYPE + ' - undefined but ' + artifact_type_name + " found for '" + artifact_file_ext + "' file extension")
+                artifact_definition[syntax.TYPE] = artifact_type_name
 
         # check type
         checked, artifact_type_name, artifact_type = self.check_type_in_definition('artifact', syntax.TYPE, artifact_definition, previous_artifact_definition, context_error_message)
 
         # check file
         if artifact_file != None:
+            # check that the file ext is in the artifact type file_ext
+            artifact_type_file_ext = artifact_type.get(syntax.FILE_EXT)
+            if artifact_type_file_ext != None:
+                artifact_file_ext = get_file_ext(artifact_file)
+                if artifact_file_ext not in artifact_type_file_ext:
+                    self.error(context_error_message + ':' + syntax.FILE + ': ' + artifact_file + " - '" + artifact_file_ext + "' file extension not supported by " + artifact_type_name)
+
+            # check that the file exists
             self.warning(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + ' - file currently unchecked') # TODO later
 
         # check repository
