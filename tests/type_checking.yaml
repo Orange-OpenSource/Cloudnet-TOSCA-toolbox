@@ -71,6 +71,12 @@ artifact_types:
     # ERROR: cyclic derived from!
     derived_from: ArtifactTypeDerivedFromCyclicType2
 
+  ArtifactTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
+
   ArtifactTypePropertiesUndefinedType:
     properties:
       p1:
@@ -144,6 +150,12 @@ data_types:
   DataTypeDerivedFromCyclicType3:
     # ERROR: cyclic derived from!
     derived_from: DataTypeDerivedFromCyclicType2
+
+  DataTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
 
   DataTypePropertiesUndefinedType:
     properties:
@@ -1851,6 +1863,7 @@ data_types:
   DataTypePropertiesExternalSchemaUnchecked:
     properties:
       p1:
+        type: string
         external_schema: 'an external schema' # WARNING: external_schema currently unchecked!
 
 capability_types:
@@ -1927,6 +1940,12 @@ capability_types:
     # ERROR: must be compatible with derived_from valid_source_types!
     # Here tosca.nodes.Compute doesn't derived from NodeType.
     valid_source_types: [ tosca.nodes.Compute ]
+
+  CapabilityTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
 
   CapabilityTypePropertiesUndefinedType:
     properties:
@@ -2211,6 +2230,12 @@ node_types:
         # ERROR: incompatible type with previous declared type!
         type: integer
 
+  NodeTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
+
   NodeTypePropertiesUndefinedType:
     properties:
       p1:
@@ -2229,6 +2254,12 @@ node_types:
       p1:
         # ERROR: incompatible type with previous declared type!
         type: integer
+
+  NodeTypeCapabilitiesTypeMissed:
+    capabilities:
+      c1: {
+        # ERROR: type missed!
+      }
 
   NodeTypeCapabilitiesUndefinedCapabilityType:
     capabilities:
@@ -2269,6 +2300,7 @@ node_types:
   NodeTypeCapabilitiesAttributesUndefinedType:
     capabilities:
       c1:
+        type: CapabilityType
         attributes:
           a1:
             # ERROR: undefined data type!
@@ -2277,6 +2309,7 @@ node_types:
   NodeTypeCapabilitiesAttributesIncorrectType:
     capabilities:
       c1:
+        type: CapabilityType
         attributes:
           a1:
             # ERROR: data type required!
@@ -2308,9 +2341,19 @@ node_types:
           p4: # ERROR: p4 undefined in CapabilityType
             type: string
 
+  NodeTypeCapabilitiesPropertiesTypeMissed:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1: {
+            # ERROR: type missed!
+          }
+
   NodeTypeCapabilitiesPropertiesUndefinedType:
     capabilities:
       c1:
+        type: CapabilityType
         properties:
           p1:
             # ERROR: undefined data type!
@@ -2319,6 +2362,7 @@ node_types:
   NodeTypeCapabilitiesPropertiesIncorrectType:
     capabilities:
       c1:
+        type: CapabilityType
         properties:
           p1:
             # ERROR: data type required!
@@ -2345,12 +2389,14 @@ node_types:
   NodeTypeCapabilitiesValidSourceTypesUndefinedType:
     capabilities:
       c1:
+        type: CapabilityType
         # ERROR: must be a defined type!
         valid_source_types: [ UndefinedType ]
 
   NodeTypeCapabilitiesValidSourceTypesIncorrectType:
     capabilities:
       c1:
+        type: CapabilityType
         # ERROR: must be a node type!
         valid_source_types: [ tosca.capabilities.Root ]
 
@@ -2371,6 +2417,7 @@ node_types:
   NodeTypeCapabilitiesOccurrences:
     capabilities:
       c1:
+        type: CapabilityType
         # ERROR: lower occurrence can not be greater than upper occurrence!
         occurrences: [ 1, 0 ]
 
@@ -2387,6 +2434,12 @@ node_types:
       c1:
         # ERROR: upper occurrence can not be greater than previous upper occurrence!
         occurrences: [ 1, 20 ]
+
+  NodeTypeRequirementsCapabilityMissed:
+    requirements:
+      - r1: {
+          # ERROR: capability missed!
+        }
 
   NodeTypeRequirementsCapabilityUndefinedType:
     requirements:
@@ -2416,12 +2469,14 @@ node_types:
   NodeTypeRequirementsNodeUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           # ERROR: must be a defined type!
           node: UndefinedType
 
   NodeTypeRequirementsNodeIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           # ERROR: must be a node type!
           node: tosca.datatypes.Root
 
@@ -2442,12 +2497,14 @@ node_types:
   NodeTypeRequirementsRelationshipUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           # ERROR: must be a defined type!
           relationship: UndefinedType
 
   NodeTypeRequirementsRelationshipIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           # ERROR: must be a relationship type!
           relationship: tosca.datatypes.Root
 
@@ -2468,6 +2525,7 @@ node_types:
   NodeTypeRequirementsRelationshipTypeMissed:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship: {
             # ERROR: type missed
             }
@@ -2475,6 +2533,7 @@ node_types:
   NodeTypeRequirementsRelationshipTypeUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             # ERROR: must be a defined type!
             type: UndefinedType
@@ -2482,6 +2541,7 @@ node_types:
   NodeTypeRequirementsRelationshipTypeIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             # ERROR: must be a relationship type!
             type: tosca.datatypes.Root
@@ -2504,6 +2564,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesUndefinedInRelationshipType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2523,6 +2584,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2533,6 +2595,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2553,6 +2616,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesInputsUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2565,6 +2629,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesInputsIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2590,6 +2655,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesInputsTypeIncompatibleWithRelationshipType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2602,6 +2668,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesOperationsInputsUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2615,6 +2682,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesOperationsInputsIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2641,6 +2709,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesOperationsInputsIncompatiblewithRelationshipType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2654,6 +2723,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesOperationsUndefinedInInterfaceType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2665,6 +2735,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeUndefined:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2678,6 +2749,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeIncorrect:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2691,6 +2763,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeUndefined:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2705,6 +2778,7 @@ node_types:
   NodeTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeIncorrect:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -2718,6 +2792,7 @@ node_types:
   NodeTypeRequirementsOccurrences:
     requirements:
       - r1:
+          capability: CapabilityType
           # ERROR: lower occurrence can not be greater than upper occurrence!
           occurrences: [ 1, 0 ]
 
@@ -2734,6 +2809,12 @@ node_types:
       - r1:
           # ERROR: upper occurrence can not be greater than previous upper occurrence!
           occurrences: [ 1, UNBOUNDED ]
+
+  NodeTypeInterfacesTypeMissed:
+    interfaces:
+      i1: {
+        # ERROR: type missed!
+      }
 
   NodeTypeInterfacesUndefinedType:
     interfaces:
@@ -2757,6 +2838,7 @@ node_types:
   NodeTypeInterfacesInputsUndefinedType:
     interfaces:
       i1:
+        type: InterfaceType
         inputs:
           i1:
             # ERROR: must be a defined type!
@@ -2765,6 +2847,7 @@ node_types:
   NodeTypeInterfacesInputsIncorrectType:
     interfaces:
       i1:
+        type: InterfaceType
         inputs:
           i1:
             # ERROR: must be an interface type!
@@ -2791,6 +2874,7 @@ node_types:
   NodeTypeInterfacesOperationsInputsUndefinedType:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           inputs:
             i1:
@@ -2800,6 +2884,7 @@ node_types:
   NodeTypeInterfacesOperationsInputsIncorrectType:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           inputs:
             i1:
@@ -2833,9 +2918,20 @@ node_types:
         op2: # ERROR: op2 undefined in InterfaceType
           description: new operation
 
+  NodeTypeInterfacesOperationsImplementationPrimaryTypeMissed:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            primary: {
+              # ERROR: type missed!
+            }
+
   NodeTypeInterfacesOperationsImplementationPrimaryTypeUndefined:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             primary:
@@ -2845,15 +2941,28 @@ node_types:
   NodeTypeInterfacesOperationsImplementationPrimaryTypeIncorrect:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             primary:
               # ERROR: must be an artifact type!
               type: tosca.nodes.Root
 
+  NodeTypeInterfacesOperationsImplementationDependenciesTypeMissed:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            dependencies:
+              - {
+                  # ERROR: type missed!
+                }
+
   NodeTypeInterfacesOperationsImplementationDependenciesTypeUndefined:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             dependencies:
@@ -2864,12 +2973,19 @@ node_types:
   NodeTypeInterfacesOperationsImplementationDependenciesTypeIncorrect:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             dependencies:
               -
                 # ERROR: must be an artifact type!
                 type: tosca.nodes.Root
+
+  NodeTypeArtifactsTypeMissed:
+    artifacts:
+      a1: {
+        # ERROR: type missed!
+      }
 
   NodeTypeArtifactsUndefinedType:
     artifacts:
@@ -2906,12 +3022,23 @@ node_types:
   NodeTypeArtifactsRepositoryUndefined:
     artifacts:
       a1:
+        type: ArtifactType
         # ERROR: repository not found.
         repository: undefined_repository
+
+  NodeTypeArtifactsPropertiesTypeMissed:
+    artifacts:
+      a1:
+        type: ArtifactType
+        properties:
+          p1: {
+            # ERROR: type missed!
+          }
 
   NodeTypeArtifactsPropertiesUndefinedType:
     artifacts:
       a1:
+        type: ArtifactType
         properties:
           p1:
             # ERROR: must be a defined type!
@@ -2920,6 +3047,7 @@ node_types:
   NodeTypeArtifactsPropertiesIncorrectType:
     artifacts:
       a1:
+        type: ArtifactType
         properties:
           p1:
             # ERROR: must be a data type!
@@ -3046,6 +3174,12 @@ relationship_types:
     # Here tosca.capabilities.Compute doesn't derived from CapabilityType.
     valid_target_types: [ tosca.capabilities.Compute ]
 
+  RelationshipTypeInterfacesTypeMissed:
+    interfaces:
+      i1: {
+        # ERROR: type missed!
+      }
+
   RelationshipTypeInterfacesUndefinedType:
     interfaces:
       i1:
@@ -3068,6 +3202,7 @@ relationship_types:
   RelationshipTypeInterfacesInputsUndefinedType:
     interfaces:
       i1:
+        type: InterfaceType
         inputs:
           i1:
             # ERROR: must be a defined type!
@@ -3076,6 +3211,7 @@ relationship_types:
   RelationshipTypeInterfacesInputsIncorrectType:
     interfaces:
       i1:
+        type: InterfaceType
         inputs:
           i1:
             # ERROR: must be an interface type!
@@ -3102,6 +3238,7 @@ relationship_types:
   RelationshipTypeInterfacesOperationsInputsUndefinedType:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           inputs:
             i1:
@@ -3111,6 +3248,7 @@ relationship_types:
   RelationshipTypeInterfacesOperationsInputsIncorrectType:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           inputs:
             i1:
@@ -3121,6 +3259,7 @@ relationship_types:
     derived_from: RelationshipType
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           inputs:
             i1:
@@ -3147,6 +3286,7 @@ relationship_types:
   RelationshipTypeInterfacesOperationsImplementationPrimaryTypeUndefined:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             primary:
@@ -3156,6 +3296,7 @@ relationship_types:
   RelationshipTypeInterfacesOperationsImplementationPrimaryTypeIncorrect:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             primary:
@@ -3165,6 +3306,7 @@ relationship_types:
   RelationshipTypeInterfacesOperationsImplementationDependenciesTypeUndefined:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             dependencies:
@@ -3175,6 +3317,7 @@ relationship_types:
   RelationshipTypeInterfacesOperationsImplementationDependenciesTypeIncorrect:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             dependencies:
@@ -3200,6 +3343,12 @@ relationship_types:
       a1:
         # ERROR: incompatible type with previous declared type!
         type: integer
+
+  RelationshipTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
 
   RelationshipTypePropertiesUndefinedType:
     properties:
@@ -3359,6 +3508,12 @@ group_types:
         # ERROR: incompatible type with previous declared type!
         type: integer
 
+  GroupTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
+
   GroupTypePropertiesUndefinedType:
     properties:
       p1:
@@ -3391,6 +3546,12 @@ group_types:
     # ERROR: must be compatible with derived_from members types!
     # Here tosca.nodes.Compute doesn't derived from NodeType or SoftwareComponent.
     members: [ tosca.nodes.Compute ]
+
+  GroupTypeCapabilitiesTypeMissed:
+    capabilities:
+      c1: {
+        # ERROR: type missed!
+      }
 
   GroupTypeCapabilitiesUndefinedType:
     capabilities:
@@ -3431,6 +3592,7 @@ group_types:
   GroupTypeCapabilitiesAttributesUndefinedType:
     capabilities:
       c1:
+        type: CapabilityType
         attributes:
           a1:
             # ERROR: undefined data type!
@@ -3439,6 +3601,7 @@ group_types:
   GroupTypeCapabilitiesAttributesIncorrectType:
     capabilities:
       c1:
+        type: CapabilityType
         attributes:
           a1:
             # ERROR: data type required!
@@ -3470,9 +3633,19 @@ group_types:
           p4: # ERROR: p4 undefined in CapabilityType
             type: string
 
+  GroupTypeCapabilitiesPropertiesTypeMissed:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1: {
+            # ERROR: type missed!
+          }
+
   GroupTypeCapabilitiesPropertiesUndefinedType:
     capabilities:
       c1:
+        type: CapabilityType
         properties:
           p1:
             # ERROR: undefined data type!
@@ -3481,6 +3654,7 @@ group_types:
   GroupTypeCapabilitiesPropertiesIncorrectType:
     capabilities:
       c1:
+        type: CapabilityType
         properties:
           p1:
             # ERROR: data type required!
@@ -3507,12 +3681,14 @@ group_types:
   GroupTypeCapabilitiesValidSourceTypesUndefinedType:
     capabilities:
       c1:
+        type: CapabilityType
         # ERROR: must be a defined type.
         valid_source_types: [ UndefinedType ]
 
   GroupTypeCapabilitiesValidSourceTypesIncorrectType:
     capabilities:
       c1:
+        type: CapabilityType
         # ERROR: must be a node type!
         valid_source_types: [ tosca.capabilities.Root ]
 
@@ -3526,6 +3702,7 @@ group_types:
   GroupTypeCapabilitiesOccurrences:
     capabilities:
       c1:
+        type: CapabilityType
         # ERROR: lower occurrence can not be greater than upper occurrence!
         occurrences: [ 1, 0 ]
 
@@ -3542,6 +3719,12 @@ group_types:
       c2:
         # ERROR: upper occurrence can not be greater than previous upper occurrence!
         occurrences: [ 1, 20 ]
+
+  GroupTypeRequirementsCapabilityMissed:
+    requirements:
+      - r1: {
+          # ERROR: capability missed!
+        }
 
   GroupTypeRequirementsCapabilityUndefinedType:
     requirements:
@@ -3571,12 +3754,14 @@ group_types:
   GroupTypeRequirementsNodeUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           # ERROR: must be a defined type!
           node: UndefinedType
 
   GroupTypeRequirementsNodeIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           # ERROR: must be a node type!
           node: tosca.datatypes.Root
 
@@ -3598,12 +3783,14 @@ group_types:
   GroupTypeRequirementsRelationshipUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           # ERROR: must be a defined type!
           relationship: UndefinedType
 
   GroupTypeRequirementsRelationshipIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           # ERROR: must be a relationship type!
           relationship: tosca.datatypes.Root
 
@@ -3624,6 +3811,7 @@ group_types:
   GroupTypeRequirementsRelationshipTypeMissed:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship: {
             # ERROR: type missed
             }
@@ -3631,6 +3819,7 @@ group_types:
   GroupTypeRequirementsRelationshipTypeUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             # ERROR: must be a defined type!
             type: UndefinedType
@@ -3638,6 +3827,7 @@ group_types:
   GroupTypeRequirementsRelationshipTypeIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             # ERROR: must be a relationship type!
             type: tosca.datatypes.Root
@@ -3660,6 +3850,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesUndefinedInRelationshipType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3679,6 +3870,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3689,6 +3881,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3709,6 +3902,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesInputsUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3721,6 +3915,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesInputsIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3746,6 +3941,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesInputsTypeIncompatibleWithRelationshipType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3758,6 +3954,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesOperationsInputsUndefinedType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3771,6 +3968,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesOperationsInputsIncorrectType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3797,6 +3995,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesOperationsInputsIncompatiblewithRelationshipType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3810,6 +4009,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesOperationsUndefinedInInterfaceType:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3821,6 +4021,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeUndefined:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3834,6 +4035,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeIncorrect:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3847,6 +4049,7 @@ group_types:
   GroupTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeUndefined:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3861,6 +4064,7 @@ group_types:
   GroupTypeDerivedFromCyclicTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeIncorrect:
     requirements:
       - r1:
+          capability: CapabilityType
           relationship:
             type: RelationshipType
             interfaces:
@@ -3874,6 +4078,7 @@ group_types:
   GroupTypeRequirementsOccurrences:
     requirements:
       - r1:
+          capability: CapabilityType
           # ERROR: lower occurrence can not be greater than upper occurrence!
           occurrences: [ 1, 0 ]
 
@@ -3890,6 +4095,12 @@ group_types:
       - r1:
           # ERROR: upper occurrence can not be greater than previous upper occurrence!
           occurrences: [ 1, UNBOUNDED ]
+
+  GroupTypeInterfacesTypeMissed:
+    interfaces:
+      i1: {
+        # ERROR: type missed!
+      }
 
   GroupTypeInterfacesUndefinedType:
     interfaces:
@@ -3913,6 +4124,7 @@ group_types:
   GroupTypeInterfacesInputsUndefinedType:
     interfaces:
       i1:
+        type: InterfaceType
         inputs:
           i1:
             # ERROR: must be a defined type!
@@ -3921,6 +4133,7 @@ group_types:
   GroupTypeInterfacesInputsIncorrectType:
     interfaces:
       i1:
+        type: InterfaceType
         inputs:
           i1:
             # ERROR: must be an interface type!
@@ -3947,6 +4160,7 @@ group_types:
   GroupTypeInterfacesOperationsInputsUndefinedType:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           inputs:
             i1:
@@ -3956,6 +4170,7 @@ group_types:
   GroupTypeInterfacesOperationsInputsIncorrectType:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           inputs:
             i1:
@@ -3992,6 +4207,7 @@ group_types:
   GroupTypeInterfacesOperationsImplementationPrimaryTypeUndefined:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             primary:
@@ -4001,6 +4217,7 @@ group_types:
   GroupTypeInterfacesOperationsImplementationPrimaryTypeIncorrect:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             primary:
@@ -4010,6 +4227,7 @@ group_types:
   GroupTypeInterfacesOperationsImplementationDependenciesTypeUndefined:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             dependencies:
@@ -4020,6 +4238,7 @@ group_types:
   GroupTypeInterfacesOperationsImplementationDependenciesTypeIncorrect:
     interfaces:
       i1:
+        type: InterfaceType
         op1:
           implementation:
             dependencies:
@@ -4072,6 +4291,12 @@ policy_types:
   PolicyTypeDerivedFromCyclicType3:
     # ERROR: cyclic derived from!
     derived_from: PolicyTypeDerivedFromCyclicType2
+
+  PolicyTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
 
   PolicyTypePropertiesUndefinedType:
     properties:

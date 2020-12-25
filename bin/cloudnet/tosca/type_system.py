@@ -621,7 +621,20 @@ class TypeChecker(Checker):
         return False
 
     def check_type_in_definition(self, type_kinds, keyword, definition, previous_definition, context_error_message):
-        return self.check_type(type_kinds, definition.get(keyword), previous_definition.get(keyword), context_error_message + ':' + keyword)
+        definition_type_name = definition.get(keyword)
+        previous_definition_type_name = previous_definition.get(keyword)
+        checked = self.check_type(type_kinds, definition_type_name, previous_definition_type_name, context_error_message + ':' + keyword)
+        if definition_type_name is None:
+            definition_type_name = previous_definition_type_name
+        # compute merged type that is the union of relationship type and previous_requirement_relationship
+        if definition_type_name is None:
+            self.error(context_error_message + ':' + keyword + ' - ' + type_kinds + ' type missed')
+            merged_type = previous_definition
+        else:
+            merged_type = merge_dict(
+                self.type_system.merge_type(self.type_system.get_type_uri(definition_type_name)),
+                previous_definition)
+        return checked, definition_type_name, merged_type
 
     def check_types_in_definition(self, type_kinds, keyword, definition, previous_definition, context_error_message, additional_check = None):
         previous_types = previous_definition.get(keyword)
@@ -889,17 +902,17 @@ class TypeChecker(Checker):
         # check description - nothing to do
 
         # check capability
-        if self.check_type_in_definition('capability', syntax.CAPABILITY, requirement_definition, previous_requirement_definition, context_error_message):
-            requirement_capability = syntax.get_requirement_capability(requirement_definition)
-            valid_source_types = self.type_system.capability_types.get(requirement_capability).get(syntax.VALID_SOURCE_TYPES)
-            if not self.check_type_compatible_with_valid_source_types(self.current_type_name, valid_source_types):
-                self.error(context_error_message + ':capability: ' + requirement_capability + ' - ' + self.current_type_name + ' incompatible with valid source types ' + str(valid_source_types) + ' of ' + requirement_capability)
-        else:
+        checked, requirement_capability, requirement_capability_type = self.check_type_in_definition('capability', syntax.CAPABILITY, requirement_definition, previous_requirement_definition, context_error_message)
+        if checked == False:
             # capability undefined or not a capability type
             requirement_capability = None
+        else:
+            valid_source_types = requirement_capability_type.get(syntax.VALID_SOURCE_TYPES)
+            if not self.check_type_compatible_with_valid_source_types(self.current_type_name, valid_source_types):
+                self.error(context_error_message + ':capability: ' + requirement_capability + ' - ' + self.current_type_name + ' incompatible with valid source types ' + str(valid_source_types) + ' of ' + requirement_capability)
 
         # check node
-        if self.check_type_in_definition('node', syntax.NODE, requirement_definition, previous_requirement_definition, context_error_message):
+        if self.check_type('node', requirement_definition.get(syntax.NODE), previous_requirement_definition.get(syntax.NODE), context_error_message + ':' + syntax.NODE):
             if requirement_capability != None:
                 requirement_node = syntax.get_requirement_node_type(requirement_definition)
                 node_type = self.type_system.merge_type(requirement_node)
@@ -943,25 +956,14 @@ class TypeChecker(Checker):
                 previous_requirement_relationship = { syntax.TYPE: previous_requirement_relationship }
 
             # check relationship type
-            self.check_type_in_definition('relationship', syntax.TYPE, requirement_relationship, previous_requirement_relationship, context_error_message + ':' + syntax.RELATIONSHIP)
-            # compute relationship type name
-            requirement_relationship_type_name = requirement_relationship.get(syntax.TYPE)
-            if requirement_relationship_type_name is None:
-                requirement_relationship_type_name = previous_requirement_relationship.get(syntax.TYPE)
-            # compute merged type that is the union of relationship type and previous_requirement_relationship
-            if requirement_relationship_type_name != None:
-                merged_type = merge_dict(
-                    self.type_system.merge_type(self.type_system.get_type_uri(requirement_relationship_type_name)),
-                    previous_requirement_relationship)
-            else:
-                self.error(context_error_message + ':' + syntax.RELATIONSHIP + ' - relationship type missed')
-                merged_type = previous_requirement_relationship
+            checked, requirement_relationship_type_name, merged_definition = self.check_type_in_definition('relationship', syntax.TYPE, requirement_relationship, previous_requirement_relationship, context_error_message + ':' + syntax.RELATIONSHIP)
 
             # check that capability is compatible with requirement type valid target types
-            if requirement_capability != None:
+            valid_target_types = merged_definition.get(syntax.VALID_TARGET_TYPES)
+            if requirement_capability != None and valid_target_types != None:
                 # Check that requirement_capability is compatible with at least one requirement_relationship valid target type
                 capability_not_compatible = True
-                for valid_target_type in merged_type.get(syntax.VALID_TARGET_TYPES, []):
+                for valid_target_type in valid_target_types:
                     if self.type_system.is_derived_from(requirement_capability, valid_target_type):
                         capability_not_compatible = False
                         break
@@ -969,7 +971,7 @@ class TypeChecker(Checker):
                     self.error(context_error_message + ':' + syntax.RELATIONSHIP + ':' + syntax.TYPE + ': ' + requirement_relationship_type_name + ' - no valid target type compatible with ' + requirement_capability)
 
             # check relationship interfaces
-            self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, requirement_relationship, merged_type, requirement_relationship_type_name, context_error_message + ':' + syntax.RELATIONSHIP)
+            self.iterate_over_definitions(self.check_interface_definition, syntax.INTERFACES, requirement_relationship, merged_definition, requirement_relationship_type_name, context_error_message + ':' + syntax.RELATIONSHIP)
 
         # check node_filter # TODO added in TOSCA 2.0
 
@@ -1006,25 +1008,12 @@ class TypeChecker(Checker):
             previous_capability_definition = { syntax.TYPE: previous_capability_definition }
 
         # check type
-        if self.check_type_in_definition('capability', syntax.TYPE, capability_definition, previous_capability_definition, context_error_message):
-            capability_type_name = capability_definition.get(syntax.TYPE)
-            capability_type = self.type_system.merge_type(self.type_system.get_type_uri(capability_type_name))
-        else:
-            capability_type_name = None
-            capability_type = None
+        checked, capability_type_name, capability_type = self.check_type_in_definition('capability', syntax.TYPE, capability_definition, previous_capability_definition, context_error_message)
 
         # check properties
-        # check properties against the capability type
-        if capability_type_name != None:
-            self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, capability_definition, capability_type, capability_type_name, context_error_message)
-        # check properties against the derived from type
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, capability_definition, previous_capability_definition, REFINE_OR_NEW, context_error_message)
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, capability_definition, capability_type, capability_type_name, context_error_message)
         # check attributes
-        # check attributes against the capability type
-        if capability_type_name != None:
-            self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, capability_definition, capability_type, capability_type_name, context_error_message)
-        # check attributes against the derived from type
-        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, capability_definition, previous_capability_definition, REFINE_OR_NEW, context_error_message)
+        self.iterate_over_definitions(self.check_attribute_definition, syntax.ATTRIBUTES, capability_definition, capability_type, capability_type_name, context_error_message)
 
         # check valid_source_types
         if capability_type_name != None:
@@ -1048,22 +1037,11 @@ class TypeChecker(Checker):
     def check_interface_definition(self, interface_name, interface_definition, previous_interface_definition, context_error_message):
         # check description - nothing to do
         # check type
-        self.check_type_in_definition('interface', syntax.TYPE, interface_definition, previous_interface_definition, context_error_message)
-        interface_type_name = interface_definition.get(syntax.TYPE)
-        if interface_type_name != None:
-            interface_type = self.type_system.merge_type(self.type_system.get_type_uri(interface_type_name))
+        checked, interface_type_name, interface_type = self.check_type_in_definition('interface', syntax.TYPE, interface_definition, previous_interface_definition, context_error_message)
         # check inputs
-        # check inputs against the interface type
-        if interface_type_name != None:
-            self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, interface_definition, interface_type, REFINE_OR_NEW, context_error_message)
-        # check inputs against the derived from type
-        self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, interface_definition, previous_interface_definition, REFINE_OR_NEW, context_error_message)
+        self.iterate_over_definitions(self.check_property_definition, syntax.INPUTS, interface_definition, interface_type, REFINE_OR_NEW, context_error_message)
         # check operations
-        # check operations against the interface type
-        if interface_type_name != None:
-            self.check_operations(interface_definition, interface_type, interface_type_name, context_error_message)
-        # check operations against the derived from type
-        self.check_operations(interface_definition, previous_interface_definition, REFINE_OR_NEW, context_error_message)
+        self.check_operations(interface_definition, interface_type, interface_type_name, context_error_message)
 
     def check_operations(self, definition, previous_definition, mode, context_error_message):
         # normalize operations
@@ -1117,23 +1095,25 @@ class TypeChecker(Checker):
         # normalize when the short notation is used
         if type(artifact_definition) is str:
             artifact_definition = { syntax.FILE: artifact_definition }
-        # check type
-        self.check_type_in_definition('artifact', syntax.TYPE, artifact_definition, previous_artifact_definition, context_error_message)
-        artifact_type_name = artifact_definition.get(syntax.TYPE)
-        if artifact_type_name != None:
-            artifact_type = self.type_system.merge_type(self.type_system.get_type_uri(artifact_type_name))
-        # check file
+
+        # if file and no type then try to find an appropriate type
         artifact_file = artifact_definition.get(syntax.FILE)
+        if artifact_file != None and ( artifact_definition.get(syntax.TYPE) is None or previous_artifact_definition.get(syntax.TYPE) is None):
+            idx_dot = artifact_file.rfind('.')
+            if idx_dot != -1:
+                artifact_file_ext = artifact_file[idx_dot+1:]
+                artifact_type_name = self.type_system.get_artifact_type_by_file_ext(artifact_file_ext)
+                if artifact_type_name is None:
+                    self.error(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + " - no artifact type found for '" + artifact_file_ext + "' file extension")
+                else:
+                    self.warning(context_error_message + ':' + syntax.TYPE + ' - undefined but ' + artifact_type_name + " found for '" + artifact_file_ext + "' file extension")
+                    artifact_definition[syntax.TYPE] = artifact_type_name
+
+        # check type
+        checked, artifact_type_name, artifact_type = self.check_type_in_definition('artifact', syntax.TYPE, artifact_definition, previous_artifact_definition, context_error_message)
+
+        # check file
         if artifact_file != None:
-            if artifact_type_name is None:
-                idx_dot = artifact_file.rfind('.')
-                if idx_dot != -1:
-                    artifact_type_name = self.type_system.get_artifact_type_by_file_ext(artifact_file[idx_dot+1:])
-                    if artifact_type_name is None:
-                        self.error(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + " - no artifact type found for '" + artifact_file[idx_dot+1:] + "' file extension")
-                    else:
-                        self.warning(context_error_message + ':' + syntax.TYPE + ' - undefined but ' + artifact_type_name + " found for '" + artifact_file[idx_dot+1:] + "' file extension")
-                        artifact_type = self.type_system.merge_type(self.type_system.get_type_uri(artifact_type_name))
             self.warning(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + ' - file currently unchecked') # TODO later
 
         # check repository
@@ -1144,11 +1124,7 @@ class TypeChecker(Checker):
         # check description - nothing to do
         # check deploy_path - nothing to do
         # check properties
-        # check properties against the artifact type
-        if artifact_type_name != None:
-            self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, artifact_definition, artifact_type, artifact_type_name, context_error_message)
-        # check properties against the derived from type
-        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, artifact_definition, previous_artifact_definition, REFINE_OR_NEW, context_error_message)
+        self.iterate_over_definitions(self.check_property_definition, syntax.PROPERTIES, artifact_definition, artifact_type, artifact_type_name, context_error_message)
 
     def check_artifact_type(self, artifact_type_name, artifact_type, derived_from_artifact_type, context_error_message):
         # check version - nothing to do
