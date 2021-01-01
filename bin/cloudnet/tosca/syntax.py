@@ -133,6 +133,14 @@ OPERATIONS = 'operations'
 PRIMARY = 'primary'
 DEPENDENCIES = 'dependencies'
 
+WORKFLOWS = 'workflows'
+
+DIRECTIVES = 'directives'
+
+COPY = 'copy'
+
+TRIGGERS = 'triggers'
+
 #
 # Getter functions.
 #
