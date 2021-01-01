@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -32,18 +32,16 @@ topology_template:
       requirements:
         - host:
             # Find a Compute node that fulfills these additional filter reqs.
-# TODO: node_filter will be supported later.
-            # node_filter:
-            #   capabilities:
-            #     - host:
-            #         properties:
-            #           - mem_size: { greater_or_equal: 512 MB }
-            #           - disk_size: { greater_or_equal: 2 GB }
-            #     - os:
-            #         properties:
-            #           - architecture: x86_64
-            #           - type: linux
-            node: compute # TODO: will be removed when node_filter supported.
+            node_filter:
+              capabilities:
+                - host:
+                    properties:
+                      - mem_size: { greater_or_equal: 512 MB }
+                      - disk_size: { greater_or_equal: 2 GB }
+                - os:
+                    properties:
+                      - architecture: x86_64
+                      - type: linux
 
     mysql:
       type: tosca.nodes.DBMS.MySQL
@@ -52,22 +50,16 @@ topology_template:
         root_password: root_password # ISSUE: added because required property
       requirements:
         - host:
-# TODO: node_filter will be supported later.
-#            node: tosca.nodes.Compute
-            # node_filter:
-            #   capabilities:
-            #     - host:
-            #         properties:
-            #           - disk_size: { greater_or_equal: 1 GB }
-            #     - os:
-            #         properties:
-            #           - architecture: x86_64
-            #           - type: linux
-            node: compute # TODO: will be removed when node_filter supported.
-
-# TODO: Will be removed later.
-    compute:
-      type: tosca.nodes.Compute
+            node: tosca.nodes.Compute
+            node_filter:
+              capabilities:
+                - host:
+                    properties:
+                      - disk_size: { greater_or_equal: 1 GB }
+                - os:
+                    properties:
+                      - architecture: x86_64
+                      - type: linux
 
   groups:
     my_co_location_group:
