@@ -805,7 +805,7 @@ definitions:
       attributes:
         type: object
         additionalProperties:
-          $ref: "#/definitions/attribute_assigment"
+          $ref: "#/definitions/attribute_assignment"
       interfaces:
         type: object
         additionalProperties:
