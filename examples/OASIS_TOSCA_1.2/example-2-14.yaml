@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -38,11 +38,17 @@ node_types:
     derived_from: tosca.nodes.Database
     properties:
       db_version:
-        type: string
+#       type: string
+        type: version # ISSUE: version is more appropriate than string!
 
 topology_template:
-  # inputs: # ISSUE: can't be empty
+  inputs:
     # omitted here for brevity
+    # ISSUE: following inputs must be defined as used
+    admin_username:
+      type: string
+    admin_password:
+      type: string
 
   node_templates:
     my_app:
@@ -56,7 +62,6 @@ topology_template:
 
     my_abstract_database:
       type: my.types.nodes.MyDatabase
-# TODO: node_filter will be supported later.
       node_filter:
         properties:
           - db_version: { greater_or_equal: 5.5 }
