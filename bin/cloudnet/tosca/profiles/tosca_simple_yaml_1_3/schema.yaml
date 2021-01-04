@@ -35,9 +35,11 @@ definitions:
     type: array
     items:
       - type: integer
-      - anyOf:
+        minimum: 0 # must be positive
+      - oneOf: # the second item is either a positive integer or the UNBOUNDED constant
           - type: integer
-          - const: UNBOUNDED
+            minimum: 0 # must be positive
+          - enum: [ UNBOUNDED ] # const: UNBOUNDED does not work!
     minItems: 2
     maxItems: 2
 
@@ -81,20 +83,20 @@ definitions:
     type: object
     properties:
       equal:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       greater_than:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       greater_or_equal:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       less_than:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       less_or_equal:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       in_range:
         type: array
         items:
-          - $ref: "#/definitions/scalar"
-          - $ref: "#/definitions/scalar"
+          - $ref: "#/definitions/value"
+          - $ref: "#/definitions/value"
         maxItems: 2
       valid_values:
         type: array # of any values
@@ -196,8 +198,8 @@ definitions:
             type: string
           properties:
             type: object
-          additionalProperties:
-            $ref: "#/definitions/property_assignment"
+            additionalProperties:
+              $ref: "#/definitions/property_assignment"
         additionalProperties: false
         required: [ type, file ]
 
@@ -529,14 +531,6 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/activity_definition"
-      constraint:
-        $ref: "#/definitions/condition_clause_definition"
-      period:
-        $ref: "#/definitions/scalar_unit"
-      evaluations:
-        type: integer
-      method:
-        type: string
     additionalProperties: false
     required: [ event, action ]
 
