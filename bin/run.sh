@@ -32,7 +32,7 @@ Help()
    echo
    echo "     Syntax: run.sh -[b|h|s]"
    echo "     options:"
-   echo "     b     Global execution :"
+   echo "     b     Global execution (translate, diagrams generation, Alloy syntax checking)"
    echo "     h     Print this Help."
    echo "     s     launch a TOSCA syntax checking on the file provided on the command line."
    echo "           run.sh -s filename"
@@ -403,7 +403,7 @@ while getopts ${optstring} option; do
 #         AlloySolve 
          exit;;
       s) # run syntax checking on a single file
-         echo -e "\n${normal}${magenta}    `echo ${OPTARG} | tr [a-z] [A-Z]` ${reset}"
+         echo -e "${normal}${magenta}  xxx  `echo ${OPTARG} | tr [a-z] [A-Z]` xxx ${reset}"
          translate ${OPTARG}
          if [ "$DIRVARS_GENERATED" = true ]; then 
            rm -f $TOSCA2CLOUDNET_CONF_FILE
