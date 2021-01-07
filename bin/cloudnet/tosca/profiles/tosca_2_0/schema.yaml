@@ -1,0 +1,1492 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox 
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Authors: 
+#   Frédéric Klamm <frederic.klamm@orange.com>, 
+#   Philippe Merle <philippe.merle@inria.fr>
+# Software description: TOSCA to Cloudnet Translator
+######################################################################
+
+$id: tosca_2_0
+title: OASIS TOSCA Version 2.0 JSON Schema
+description: JSON Schema for OASIS TOSCA Version 2.0
+$ref: "#/definitions/service_template_definition"
+
+definitions:
+
+# Section 4.2.1 Service Template definition
+
+  service_template_definition:
+    type: object
+    properties:
+      tosca_definitions_version:
+        type: string
+        enum: [ tosca_2_0 ]
+      profile:
+        type: string
+      metadata:
+        $ref: "#/definitions/metadata_definition"
+      description:
+        type: string
+      dsl_definitions:    # type : N/A in specification
+        $ref: "#/definitions/value"
+      repositories:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/repository_definition"
+      imports:
+        type: array
+        items:
+          $ref: "#/definitions/import_definition"
+      artifact_types:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/artifact_type_definition"
+      data_types:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/data_type_definition" 
+      capability_types:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/capability_type_definition"
+      interface_types:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/interface_type_definition"          
+      relationship_types:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/relationship_type_definition"
+      node_types:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/node_type_definition"
+      group_types:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/group_type_definition"
+      policy_types:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/policy_type_definition"
+      topology_template:
+        $ref: "#/definitions/topology_template_definition"
+    additionalProperties: false
+    required: [ tosca_definitions_version ]
+    
+  metadata_definition:
+    type: object
+    properties:
+      template_name:
+        type: string
+      template_author:
+        type: string
+      template_version:
+        type: string
+    additionalProperties:
+      type: string    
+
+  metadata:
+    type: object
+    additionalProperties:
+      ## shall we keep number ?
+      anyOf:
+        - type: string
+        - type: number
+   
+# Section 4.2.3 Imports and Namespaces
+
+  import_definition:
+    oneOf:
+      - type: string
+      - type: object
+        properties:
+          url:
+            type: string
+          repository:
+            type: string
+          namespace: string
+        additionalProperties: false
+      - type: object
+        properties:
+          profile:
+            type: string
+          namespace:
+            type: string
+        additionalProperties: false
+
+  repository_definition:
+    type: object
+    properties:
+      description:
+        type: string
+      url:
+        type: string
+    additionalProperties: false
+    required: [ url ]
+
+# 4.2.5 Type definition
+
+  common_keynames_in_type_definitions:
+    type: object
+    properties:
+      derived_from:
+        type: string
+      version:
+        $ref: "#/definitions/version"
+      metadata: 
+        $ref: "#/definitions/metadata"
+      description:
+        type: string
+          
+  version:
+    anyOf:
+      - type: string # TODO: define pattern
+      - type: number
+
+# Section 4.2.6 Topology Template definition
+       
+  topology_template_definition:
+    type: object
+    properties:
+      description:
+        type: string
+      inputs:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/parameter_definition"
+      node_templates:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/node_template"
+      relationship_templates:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/relationship_template"
+      groups:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/group_definition"
+      policies:
+        type: array
+        additionalProperties:
+          $ref: "#/definitions/policy_definition"
+      outputs:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/parameter_definition"
+      substitution_mappings:
+        $ref: "#/definitions/substitution_mapping"
+      workflows:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/imperative_workflow_definition"
+    additionalProperties: false
+    required: [ node_template ]
+
+# Section 4.3.1 Node Type
+
+  node_type_definition:
+    type: object
+    properties:
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_definition"
+      attributes:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/attribute_definition"
+      capabilities:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/capability_definition"
+      requirements:
+        type: array
+        items:
+          $ref: "#/definitions/requirement_definition"
+      interfaces:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/interface_definition"
+      artifacts:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/artifact_definition"
+    additionalProperties:
+      $ref: "#/definitions/common_keynames_in_type_definitions"
+
+# Section 4.3.2 Node Template
+
+  node_template:
+    type: object
+    properties:
+      type:
+        type: string
+      description:
+        type: string
+      metadata:
+        $ref: "#/definitions/metadata"
+      directives:
+        type: array
+        items:
+          type: string
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_assignment"
+      attributes:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/attribute_assignment"
+      requirements:
+        type: array
+        items:
+          type: object
+          additionalProperties:
+            $ref: "#/definitions/requirement_assignment"
+          maxProperties: 1
+      capabilities:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/capability_assignment"
+      interfaces:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/interface_assignment"
+      artifacts:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/artifact_definition"
+      node_filter:
+        $ref: "#/definitions/node_filter_definition"
+      copy:
+        type: string
+    additionalProperties: false
+    required: [ type ]
+    
+# Section 4.3.3 Relationship Type
+
+  relationship_type_definition:
+    type: object
+    properties:
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_definition"
+      attributes:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/attribute_definition"
+      interfaces:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/interface_definition"
+      valid_target_types:
+        type: array
+        items:
+          type: string
+    additionalProperties: 
+      $ref: "#/definitions/common_keynames_in_type_definitions"
+
+# Section 4.3.4 Relationship Template
+
+  relationship_template:
+    type: object
+    properties:
+      type:
+        type: string
+      description:
+        type: string
+      metadata:
+        $ref: "#/definitions/metadata"
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_assignment"
+      attributes:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/attribute_assigment"
+      interfaces:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/interface_assignment"
+      copy:
+        type: string
+    additionalProperties: false
+    required: [ type ]
+
+# Section 4.3.5.1 Capability Type
+  capability_type_definition:
+    type: object
+    properties:
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_definition"
+      attributes:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/attribute_definition"
+      valid_source_types:
+        type: array
+        items:
+          type: string
+    additionalProperties: 
+      $ref: "#/definitions/common_keynames_in_type_definitions"
+
+# Section 4.3.5.2 Capability definition
+
+  capability_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          type:
+            type: string
+          description:
+            type: string
+          properties:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/property_refinement"
+          attributes:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/attribute_refinement"
+          valid_source_types:
+            type: array
+            items:
+              type: string
+            minItems: 1
+          occurrences:
+            $ref: "#/definitions/range_of_integers"
+        additionalProperties: false
+        required: [ type ] ## ISSUE in previous versions: some examples didn't define type
+
+# Section 4.3.5.3 Capability assignment
+ 
+  capability_assignment:
+    anyOf:
+      - type: object
+        properties:
+          properties:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/property_assignment"
+          attributes:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/attribute_assignment"
+          occurences:
+            type: integer            
+        additionalProperties: false
+
+# Section 4.3.5.5 Requirement definition
+ 
+  requirement_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          description:
+            type: string
+          capability:
+            type: string
+          ## node is mandatory when the capability value is the symbolic name
+          ##  of a capability definition
+          node:
+            type: string
+          relationship:
+            anyOf:
+              - type: string
+              - type: object
+                properties:
+                  type:
+                    type: string
+                  interfaces:
+                    type: object
+                    additionalProperties:
+                      $ref: "#/definitions/interface_refinement"
+                additionalProperties: false
+                required: [ type ]
+
+          occurrences:
+            $ref: "#/definitions/range_of_integers"
+        additionalProperties: false
+        required: [ capability ] ## ISSUE: some examples didn't define capability in previous versions
+
+
+# Section 4.3.5.6 Requirement assignment
+
+  requirement_assignment:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          capability:
+            type: string
+          node:
+            type: string
+          relationship:
+            anyOf:
+              - type: string
+              - type: object
+                properties:
+                  type:
+                    type: string
+                  properties:
+                    type: object
+                    additionalProperties:
+                      $ref: "#/definitions/property_assignment"
+                  interfaces:
+                    type: object
+                    additionalProperties:
+                      $ref: "#/definitions/interface_assignment"
+                additionalProperties: false
+          node_filter:
+            $ref: "#/definitions/node_filter_definition"
+          occurrences:
+            $ref: "#/definitions/range_of_integers"
+        additionalProperties: false
+
+
+# Section 4.3.5.7 Node Filter definition
+
+##  copy & paste from 1.3: check whether to change capabilities items to:
+##  anyOf: [type: string, type: object]
+
+  node_filter_definition:
+    type: object
+    properties:
+      properties:
+        type: array
+        items:
+          $ref: "#/definitions/property_filter_definition"
+      capabilities:
+        type: array
+        items:
+          - type: string
+          - type: object
+            additionalProperties:
+              type: object
+              properties:
+                properties:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties:
+                      $ref: "#/definitions/property_filter_definition"
+              additionalProperties: false
+    additionalProperties: false
+
+# Section 4.3.5.8 Property Filter definition
+## if this one is correct, it's also a fix for 1.3
+  property_filter_definition:
+    anyOf:
+      - $ref: "#/definitions/constraint_clause"
+      - type: array
+        items:
+          $ref: "#/definitions/constraint_clause"
+
+# Section 4.3.6.1 Interface Type
+
+  interface_type_definition:
+    type: object
+    properties:
+      inputs:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/parameter_definition"
+      operations:
+        type: object
+        additionalProperties:
+      notifications:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/notification_definition"
+    additionalProperties: false
+
+# Section 4.3.6.2 Interface Definition
+
+  interface_definition:
+    type: object
+    properties:
+      type:
+        type: string
+      description:
+        type: string
+      inputs:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/parameter_definition" # and refinement
+      operations:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/operation_refinements"
+      notifications:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/notification_refinements"
+    additionalProperties: false
+    required: [ type ]
+
+  interface_refinement:
+    $ref: "#/definitions/interface_definition"
+
+# Section 4.3.6.3 Interface assignment
+
+  interface_assignment:
+    type: object
+    properties:
+      inputs:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/parameter_value_assignment"
+      operations:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/operation_assignment"        
+      notifications:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/notification_assignment"                
+    additionalProperties: false
+ 
+# Section 4.3.6.4 Operation definition
+
+  operation_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          description:
+            type: string
+          implementation:
+            additionalProperties:
+              $ref: "#/definitions/operation_and_notification_implementation_definition"
+          inputs:
+            additionalProperties:
+              $ref: "#/definitions/parameter_definition"
+          outputs:
+            additionalProperties:
+              $ref: "#/definitions/parameter_definition"
+        additionalProperties: false
+
+  operation_refinement:
+    $ref: "#/definitions/operation_definition"
+ 
+# Section 4.3.6.5 Operation assignment
+
+  operation_assignment:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          implementation:
+            additionalProperties:
+              $ref: "#/definitions/operation_and_notification_implementation_definition"
+          inputs:
+            additionalProperties:
+              $ref: "#/definitions/parameter_value_assignment"
+          outputs:
+            additionalProperties:
+              $ref: "#/definitions/parameter_mapping_assignment"
+        additionalProperties: false         
+
+# Section 4.3.6.6 Notification definition
+  notification_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          description:
+            type: string
+          implementation:
+            additionalProperties:
+              $ref: "#/definitions/operation_and_notification_implementation_definition"
+          outputs:
+            additionalProperties:
+              $ref: "#/definitions/parameter_definition"
+        additionalProperties: false
+
+  notification_refinement:
+    $ref: "#/definitions/notification_definition"
+
+# Section 4.3.6.7 Notification assignment
+
+  notification_assignment:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          implementation:
+            additionalProperties:
+              $ref: "#/definitions/operation_and_notification_implementation_definition"
+          outputs:
+            additionalProperties:
+              $ref: "#/definitions/parameter_mapping_assignment"
+        additionalProperties: false          
+
+# Section 4.3.6.8 Operation and notification implementation definition
+
+  operation_and_notification_implementation_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          primary:
+            $ref: "#/definitions/artifact_definition"
+          dependencies:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                $ref: "#/definitions/artifact_definition"
+          timeout:
+            type: integer
+        additionalProperties: false
+
+# Section 4.3.7.1 Artifact type
+
+  artifact_type_definition:
+    type: object
+    properties:
+      mime_type:
+        type: string
+      file_ext:
+        type: array
+        items:
+          type: string
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_definition"
+    additionalProperties:
+      $ref: "#/definitions/common_keynames_in_type_definitions"
+
+# Section 4.3.7.2 Artifact definition
+
+  artifact_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          type:
+            type: string
+          file:
+            type: string
+#            format: uri # commented as file paths are not URI most of the time.
+          repository:
+            type: string
+          description:
+            type: string
+          deploy_path:
+            type: string
+          artifact_version:
+            type: string
+          checksum:
+            type: string
+          checksum_algorithm:
+            type: string
+          properties:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/property_assignment"
+        additionalProperties: false
+        required: [ type, file ]
+
+# Section 4.4.2.1 TOSCA version
+
+## pattern <major_version>.<minor_version>[.<string>] to be checked
+  version:
+    type: string
+    pattern: ^[0-9]?[0-9]\.[0-9]?[0-9]\.?[a-zA-Z0-9.-]+$
+
+# Section 4.4.2.2 TOSCA range type
+## referred to as range of integer, TOSCA range, or range of occurences
+
+  range_of_integers:
+    type: array
+    items:
+      - type: integer
+      - anyOf:
+          - type: integer
+          - const: UNBOUNDED
+    minItems: 2
+    maxItems: 2
+      
+# Section 4.4.2.3 TOSCA timestamp type
+  timestamp:
+    type: string
+
+# Section 4.4.2.4  TOSCA scalar-unit type
+
+  scalar_unit:
+    type: string
+    pattern: ^[0-9]+( )*[A-Za-z]+$
+        
+# Section 4.4.3 Collection Types
+
+## So far, TOSCA list & map concepts have been directly mapped in json 
+## In 2.0, keyname key_schema of data_type_definition depends on 
+## whether the data type derived from TOSCA map. How to cope with this ?
+
+
+# Section 4.4.4 Data Type
+
+  data_type_definition:
+    type: object
+    properties:
+      constraints:
+        type: array
+        items:
+          $ref: "#/definitions/constraint_clause"
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_definition"
+## not allowed because collection types are undefined
+#       key_schema:
+#         $ref: "#/definitions/schema_definition"
+#       entry_schema:
+#         $ref: "#/definitions/schema_definition"
+## The following line may rise an error during template checking
+    additionalProperties: false  
+
+# Section 4.4.5 Schema definition
+
+## Comments in data_type_definitions may apply also here for entry_schema
+
+  schema_definition:
+    anyOf:
+      - type: string    # for entry_schema of type string
+      - type: object
+        properties:
+          type: 
+            type: string
+          description: 
+            type: string
+          constraints:
+            type: array
+            items:
+              $ref: "#/definitions/constraint_clause"
+          key_schema:
+            $ref: "#/definitions/schema_definition"
+          entry_schema:
+            $ref: "#/definitions/schema_definition"
+        required: [ type ]
+        additionalProperties: false
+        
+# Section 4.4.6 Constraint clause definition
+
+  constraint_clause:
+    type: object
+    properties:
+      equal:
+        $ref: "#/definitions/scalar"
+      greater_than:
+        $ref: "#/definitions/scalar"
+      greater_or_equal:
+        $ref: "#/definitions/scalar"
+      less_than:
+        $ref: "#/definitions/scalar"
+      less_or_equal:
+        $ref: "#/definitions/scalar"
+      in_range:
+        type: array
+        items:
+          - $ref: "#/definitions/scalar"
+          - $ref: "#/definitions/scalar"
+        maxItems: 2
+      valid_values:
+        type: array # of any values
+        items:
+          $ref: "#/definitions/value"
+      length:
+        type: integer
+        minimum: 0
+      min_length:
+        type: integer
+        minimum: 0
+      max_length:
+        type: integer
+        minimum: 0
+      pattern:
+        type: string
+      schema:
+        type: string
+    minProperties: 1
+    maxProperties: 1
+
+  scalar:
+    anyOf:
+      - type: boolean
+      - type: string
+      - type: number
+
+  value: { } # any value   
+
+# Section 4.4.7 Property definition
+
+  property_definition:
+  ## added anyof with 2 more alternatives
+    anyOf:
+      - $ref: "#/definitions/value"
+      - type: object
+        properties: 
+          value:
+            $ref: "#/definitions/value"
+        additionalProperties: false
+      - type: object
+        properties:
+          type:
+            type: string
+          description:
+            type: string
+          required:
+            type: boolean
+            ## ?
+            default: true
+          default:
+            $ref: "#/definitions/value"
+          value:
+            $ref: "#/definitions/value"
+          status:
+            $ref: "#/definitions/status"
+          constraints:
+            type: array
+            items:
+              $ref: "#/definitions/constraint_clause"
+          key_schema:
+            $ref: "#/definitions/schema_definition"
+          entry_schema:
+            $ref: "#/definitions/schema_definition"
+          external_schema:
+            type: string
+          metadata:
+            $ref: "#/definitions/metadata"
+        additionalProperties: false
+        required: [ type ] ## ISSUE: Some examples didn't define type in 1.3
+
+  property_refinement:
+    $ref: "#/definitions/property_definition"
+    
+  status:
+    type: string
+    enum:
+      - supported
+      - unsupported
+      - experimental
+      - deprecated
+    ## ? :
+    default: supported
+
+# Section 4.4.8 Property assignment
+
+  property_assignment:
+    $ref: "#/definitions/value"
+    
+# Section 4.4.9 Attribute definition
+
+  attribute_definition:
+    type: object
+    properties:
+      type:
+        type: string
+      description:
+        type: string
+      default:
+        $ref: "#/definitions/value"
+      status:
+        $ref: "#/definitions/status"
+      constraints:
+        type: array
+        items:
+          $ref: "#/definitions/constraint_clause"
+      key_schema:
+        $ref: "#/definitions/schema_definition"
+      entry_schema:
+        $ref: "#/definitions/schema_definition"
+      metadata:
+        $ref: "#/definitions/metadata"        
+    additionalProperties: false
+    required: [ type ]
+
+  attribute_refinement:
+    $ref: "#/definitions/attribute_definition"
+
+# Section 4.4.10 Attribute assignment
+
+  attribute_assignment:
+    $ref: "#/definitions/value"
+
+# Section 4.4.11 Parameter definition
+
+  parameter_definition:
+    anyOf:
+      - $ref: "#/definitions/value"
+      - type: object
+        properties: 
+          value:
+            $ref: "#/definitions/value"
+        additionalProperties: false
+      - type: object
+        oneOf:
+          - properties:
+              type:
+                type: string
+              description:
+                type: string
+              required:
+                type: boolean
+                ## ?
+                default: true
+              default:
+                $ref: "#/definitions/value"
+              value:
+                $ref: "#/definitions/value"
+              status:
+                $ref: "#/definitions/status"
+              constraints:
+                type: array
+                items:
+                  $ref: "#/definitions/constraint_clause"
+              key_schema:
+                $ref: "#/definitions/schema_definition"
+              entry_schema:
+                $ref: "#/definitions/schema_definition"
+              external_schema:
+                type: string
+              metadata:
+                $ref: "#/definitions/metadata"
+            additionalProperties: false
+            required: [ type ] ## ISSUE: Some examples didn't define type in 1.3
+          - properties:
+              type:
+                type: string
+              description:
+                type: string
+              required:
+                type: boolean
+                ## ?
+                default: true
+              default:
+                $ref: "#/definitions/value"
+              mapping:
+                $ref: "#/definitions/attribut_selection_format"
+              status:
+                $ref: "#/definitions/status"
+              constraints:
+                type: array
+                items:
+                  $ref: "#/definitions/constraint_clause"
+              key_schema:
+                $ref: "#/definitions/schema_definition"
+              entry_schema:
+                $ref: "#/definitions/schema_definition"
+              external_schema:
+                type: string
+              metadata:
+                $ref: "#/definitions/metadata"
+            additionalProperties: false
+            required: [ type ] ## ISSUE: Some examples didn't define type in 1.3
+
+# Section 4.4.12 Parameter value assignment
+
+  parameter_value_assignment:
+    $ref: "#/definitions/value"
+
+# Section 4.4.13 Parameter mapping assignment
+
+  parameter_mapping_assignment:
+    $ref: "#/definitions/attribut_selection_format"
+
+# Section 4.4.13.3 Attribute selection format
+
+  attribute_selection_format:
+    type: string
+    pattern: ## probably incorrect
+      (^\[SELF(,\s?[a-zA-Z0-9.-])?(,\s?[a-zA-Z0-9.-])(,\s[a-zA-Z0-9.-])?\])$
+      |(^\[SOURCE(,\s?[a-zA-Z0-9.-])?(,\s?[a-zA-Z0-9.-])(,\s?[a-zA-Z0-9.-])?\])$
+      |(^\[TARGET(,\s?[a-zA-Z0-9.-])?(,\s?[a-zA-Z0-9.-])(,\s?[a-zA-Z0-9.-])?\])$  
+
+
+# Section 4.5.1 Substitution mapping
+
+  substitution_mapping:
+    type: object
+    properties:
+      node_type:
+        type: string
+      substitution_filter:
+        $ref: "#/definitions/node_filter_definition"
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_mapping"
+      attributes:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/attribute_mapping"
+      capabilities:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/capability_mapping"
+      requirements:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/requirement_mapping"
+      interfaces:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/interface_mapping"
+    additionalProperties: false
+    required: [ node_type ]
+
+
+# Section 4.5.2 Property mapping
+
+  property_mapping:
+    anyOf:
+      - $ref: "#/definitions/value"
+      - type: object
+        properties:
+          mapping:
+            type: array
+            items:
+              type: string
+            min_length: 1
+            max_length: 1
+        additionalProperties: false
+      - type: object
+        properties:
+          value: 
+            $ref: "#/definitions/value"
+        additionalProperties: false
+
+# Section 4.5.3 Attribute mapping
+
+  attribute_mapping:
+    type: object
+    properties:
+      mapping:
+        type: array
+        items:
+          type: string
+        min_length: 1
+        max_length: 1
+    additionalProperties: false
+
+
+# Section 4.5.4 Capability mapping
+
+  capability_mapping:
+    oneOf:
+      - type: object
+        properties:
+          mapping:
+            type: array
+            items:
+              type: string
+            min_length: 2
+            max_length: 2
+        additionalProperties: false
+      - type: object
+        properties:
+          properties:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/property_assignment"          
+          attributes:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/attribute_assignment"
+        additionalProperties: false
+
+# Section Requirement mapping
+
+  requirement_mapping:
+    oneOf:
+      - type: object
+        properties:
+          mapping:
+            type: array
+            items:
+              type: string
+            min_length: 2
+            max_length: 2
+        additionalProperties: false
+      - type: object
+        properties:
+          properties:
+            type: array
+            items:
+              $ref: "#/definitions/property_assignment"          
+          attributes:
+            type: array
+            items:
+              $ref: "#/definitions/attribute_assignment"
+        additionalProperties: false
+
+# Section 4.5.6 Interface mapping
+
+  interface_mapping:
+    type: object
+    additionalProperties:
+      type: string
+
+# Section 4.6.1 Group Type
+
+  group_type_definition:
+    type: object
+    properties:
+      attributes:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/attribute_definition"
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_definition"
+      members:
+        type: array
+        items:
+          type: string
+    additionalProperties:
+      $ref: "#/definitions/common_keynames_in_type_definitions"
+
+# Section 4.6.2 Group definition
+
+  group_definition:
+    type: object
+    properties:
+      type:
+        type: string
+      description:
+        type: string
+      metadata:
+        $ref: "#/definitions/metadata"
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_assignment"
+      attributes:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/attribute_assignment"
+      members:
+        type: array
+        additionalProperties:
+          type: string
+    additionalProperties: false
+    required: [ type ]
+
+# Section 4.6.3 Policy Type
+
+  policy_type_definition:
+    type: object
+    properties:
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_definition"
+      targets:
+        type: array
+        items:
+          type: string
+      triggers:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/trigger_definition"
+    additionalProperties:
+      $ref: "#/definitions/common_keynames_in_type_definitions"
+
+# Section 4.6.4 Policy definition
+
+  policy_definition:
+    type: object
+    properties:
+      type:
+        type: string
+      description:
+        type: string
+      metadata:
+        $ref: "#/definitions/metadata"
+      properties:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/property_assignment"
+      targets:
+        type: array
+        additionalProperties:
+          type: string
+      triggers:
+        type: object
+        additionalProperties:
+          $ref: "#/definitions/trigger_definition"
+    additionalProperties: false
+    required: [ type ]
+
+# Section 4.6.5 Trigger definition
+
+  trigger_definition:
+    type: object
+    properties:
+      description:
+        type: string
+      event:
+        type: string
+      schedule:
+        type: string
+      target_filter:
+        $ref: "#/definitions/event_filter_definition"
+      condition:
+        anyOf:
+          # condition short notation
+          $ref: "#/definitions/condition_clause_definition"
+          # condition extended notation
+          type: object
+          properties:
+            constraint:
+              $ref: "#/definitions/condition_clause_definition"
+            period:
+              $ref: "#/definitions/scalar_unit"
+            evaluations:
+              type: integer
+            method:
+              type: string
+      action:
+        type: array
+        items:
+          $ref: "#/definitions/activity_definition"
+    additionalProperties: false
+    required: [ event, action ]
+
+# Section 4.6.6 Event filter definition
+
+  event_filter_definition:
+    type: object
+    properties:
+      node:
+        type: string
+      requirement:
+        type: string
+      capability:
+        type: string
+    additionalProperties: false
+    required: [node]
+
+# Section 4.6.7 Condition clause definition
+
+  condition_clause_definition:
+    type: object
+    oneOf:
+      - properties:
+          and:
+            type: array
+            items:
+              $ref: "#/definitions/condition_clause_definition"
+      - properties:
+          or:
+            type: array
+            items:
+              $ref: "#/definitions/condition_clause_definition"
+      - properties:
+          not:
+            type: array
+            items:
+              $ref: "#/definitions/condition_clause_definition"
+      # assert is deprecated from 1.3 onwards
+      - properties:
+          assert:
+            type: array
+            items:
+              $ref: "#/definitions/assertion_definition"
+    additionalProperties:
+      $ref: "#/definitions/assertion_definition"
+
+# Section 4.6.8 Assertion definition
+
+  assertion_definition:
+    type: array
+    items:
+      $ref: "#/definitions/constraint_clause"
+
+# Section 4.6.9 Activity definition
+
+  activity_definition:
+    type: object
+    oneOf:
+      - properties:
+          delegate:
+            $ref: "#/definitions/delegate_workflow_activity_definition"
+        additionalProperties: false
+      - properties:
+          set_state:
+            $ref: "#/definitions/set_state_activity_definition"
+        additionalProperties: false
+      - properties:
+          call_operation:
+            $ref: "#/definitions/call_operation_activity_definition"
+        additionalProperties: false
+      - properties :
+          inline:
+            $ref: "#/definitions/inline_workflow_activity_definition"
+        additionalProperties: false
+
+  delegate_workflow_activity_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          workflow:
+            type: string
+          inputs:
+            type: object
+          additionalProperties:
+            $ref: "#/definitions/property_assignment"
+        additionalProperties: false
+
+  set_state_activity_definition:
+    type: string
+
+  call_operation_activity_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          operation:
+            type: string
+          inputs:
+            type: object
+          additionalProperties:
+            $ref: "#/definitions/property_assignment"
+        additionalProperties: false
+
+  inline_workflow_activity_definition:
+    anyOf:
+      - type: string
+      - type: object
+        properties:
+          workflow:
+            type: string
+          inputs:
+            type: object
+          additionalProperties:
+            $ref: "#/definitions/property_assignment"
+        additionalProperties: false
+
+# Section 4.7.1 Imperative Workflow definition
+
+  imperative_workflow_definition:
+    type: object
+    oneOf:
+      - properties:
+          description:
+            type: string
+          metadata:
+            $ref: "#/definitions/metadata"
+          inputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/property_definition"
+          preconditions:
+            type: array
+            items:
+              $ref: "#/definitions/workflow_precondition_definition"
+          steps:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/workflow_step_definition"
+          outputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/attribute_mapping"
+        additionalProperties: false
+      - properties:
+          description:
+            type: string
+          metadata:
+            $ref: "#/definitions/metadata"
+          inputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/property_definition"
+          preconditions:
+            type: array
+            items:
+              $ref: "#/definitions/workflow_precondition_definition"
+          implementation:
+            $ref: "#/definitions/operation_and_notification_implementation_definition"
+          outputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/attribute_mapping"
+        additionalProperties: false
+
+# Section 4.7.2 Workflow precondition definition
+
+  workflow_precondition_definition:
+    type: object
+    properties:
+      target:
+        type: string
+      target_relationship:
+        type: string
+      condition:
+        type: array
+        items:
+          $ref: "#/definitions/condition_clause_definition"
+    additionalProperties: false
+    required: [ target ]
+
+# Section 4.7.3 Workflow step definition
+
+  workflow_step_definition:
+    type: object
+    properties:
+      target:
+        type: string
+      target_relationship:
+        type: string
+      operation_host:
+        type: string
+      filter:
+        type: array
+        items:
+          $ref: "#/definitions/condition_clause_definition"
+      activities:
+        type: array
+        items:
+          $ref: "#/definitions/activity_definition"
+      on_success:
+        type: array
+        items:
+          type: string
+      on_failure:
+        type: array
+        items:
+          type: string
+    additionalProperties: false
+    required: [ target, activities ]
+      
+# Section 5.1 Reserved function Keywords
+
+  reserved_function_keywords:
+    type: string
+    enum:
+      - SELF
+      - SOURCE
+      - TARGET
+
