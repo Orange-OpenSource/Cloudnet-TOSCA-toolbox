@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -938,6 +938,8 @@ class HOTGenerator(Generator):
                 elif requirement_name == 'virtual_binding':
                     # Already done in Vdu.Compute
                     pass
+                elif requirement_name == 'trunk_binding':
+                    pass # TODO
                 # TODO: deal with requirement 'dependency'
                 else:
                     self.error(' HOT - Invalid requirement ' + requirement_name + ': ' + str(requirement_value))
