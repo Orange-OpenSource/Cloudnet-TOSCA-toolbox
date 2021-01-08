@@ -52,7 +52,7 @@ definitions:
 
   # Section 3.3.4 and section 3.3.5 are covered by yaml
 
-  # Section 3.3.6
+  # Section 3.3.6 # ISSUE: duplication of lines 48-51 ?
   scalar_unit:
     type: string
     pattern: ^[0-9]+( )*[A-Za-z]+$
@@ -64,7 +64,6 @@ definitions:
       type: string
       pattern: substitute|substitutable|select|selectable
     maxItems: 2
-
 
   # Section 3.6.1
   description:
@@ -240,7 +239,7 @@ definitions:
     required: [ type ]
     additionalProperties: false
 
-  #Section 3.6.10
+  # Section 3.6.10
   property_definition:
     type: object
     properties:
@@ -279,7 +278,7 @@ definitions:
 #      - deprecated
   status:
     type: string
-    pattern: supported|unsupported|experimental|deprecated
+    pattern: supported|unsupported|experimental|deprecated # ISSUE: why not using enum: [...]?
 
   # Section 3.6.11
   property_assignment:
@@ -401,7 +400,6 @@ definitions:
               $ref: "#/definitions/property_assignment"
         additionalProperties: false
 
-
   # Section 3.6.18
   notification_implementation_definition:
     anyOf:
@@ -514,20 +512,21 @@ definitions:
       target_filter:
         $ref: "#/definitions/event_filter_definition"
       condition:
-        anyOf:
+        oneOf:
           # condition short notation
-          $ref: "#/definitions/condition_clause_definition"
+          - $ref: "#/definitions/condition_clause_definition"
           # condition extended notation
-          type: object
-          properties:
-            constraint:
-              $ref: "#/definitions/condition_clause_definition"
-            period:
-              $ref: "#/definitions/scalar_unit"
-            evaluations:
-              type: integer
-            method:
-              type: string
+          - type: object
+            properties:
+              constraint:
+                $ref: "#/definitions/condition_clause_definition"
+              period:
+                $ref: "#/definitions/scalar_unit"
+              evaluations:
+                type: integer
+              method:
+                type: string
+            additionalProperties: false
       action:
         type: array
         items:
@@ -546,26 +545,21 @@ definitions:
   # Section 3.6.23
   activity_definition:
     type: object
-    oneOf:
-      - properties:
-          delegate:
-            $ref: "#/definitions/delegate_workflow_activity_definition"
-        additionalProperties: false
-      - properties:
-          set_state:
-            $ref: "#/definitions/set_state_activity_definition"
-        additionalProperties: false
-      - properties:
-          call_operation:
-            $ref: "#/definitions/call_operation_activity_definition"
-        additionalProperties: false
-      - properties :
-          inline:
-            $ref: "#/definitions/inline_workflow_activity_definition"
-        additionalProperties: false
+    properties:
+      delegate:
+        $ref: "#/definitions/delegate_workflow_activity_definition"
+      set_state:
+        $ref: "#/definitions/set_state_activity_definition"
+      call_operation:
+        $ref: "#/definitions/call_operation_activity_definition"
+      inline:
+        $ref: "#/definitions/inline_workflow_activity_definition"
+    additionalProperties: false
+    minProperties: 1
+    maxProperties: 1
 
   delegate_workflow_activity_definition:
-    anyOf:
+    oneOf:
       - type: string
       - type: object
         properties:
@@ -573,15 +567,15 @@ definitions:
             type: string
           inputs:
             type: object
-          additionalProperties:
-            $ref: "#/definitions/property_assignment"  # ~ parameter assignment, which is not explicitly defined.
+            additionalProperties:
+              $ref: "#/definitions/property_assignment"  # ~ parameter assignment, which is not explicitly defined.
         additionalProperties: false
 
   set_state_activity_definition:
     type: string
 
   call_operation_activity_definition:
-    anyOf:
+    oneOf:
       - type: string
       - type: object
         properties:
@@ -589,12 +583,12 @@ definitions:
             type: string
           inputs:
             type: object
-          additionalProperties:
-            $ref: "#/definitions/property_assignment"  # parameter_assignment, which is not explicitly defined.
+            additionalProperties:
+              $ref: "#/definitions/property_assignment"  # parameter_assignment, which is not explicitly defined.
         additionalProperties: false
 
   inline_workflow_activity_definition:
-    anyOf:
+    oneOf:
       - type: string
       - type: object
         properties:
@@ -602,43 +596,47 @@ definitions:
             type: string
           inputs:
             type: object
-          additionalProperties:
-            $ref: "#/definitions/property_assignment"
+            additionalProperties:
+              $ref: "#/definitions/property_assignment"
         additionalProperties: false
 
   # Section 3.6.24
   assertion_definition:
-    type: array
-    items:
-      $ref: "#/definitions/constraint_clause"
+    type: object
+    additionalProperties:
+      type: array
+      items:
+        $ref: "#/definitions/constraint_clause"
+    minProperties: 1
+    maxProperties: 1
 
   # Section 3.6.25
   condition_clause_definition:
     type: object
-    oneOf:
-      - properties:
-          and:
-            type: array
-            items:
-              $ref: "#/definitions/condition_clause_definition"
-      - properties:
-          or:
-            type: array
-            items:
-              $ref: "#/definitions/condition_clause_definition"
-      - properties:
-          not:
-            type: array
-            items:
-              $ref: "#/definitions/condition_clause_definition"
+    properties:
+      and:
+        type: array
+        items:
+          $ref: "#/definitions/condition_clause_definition"
+      or:
+        type: array
+        items:
+          $ref: "#/definitions/condition_clause_definition"
+      not:
+        type: array
+        items:
+          $ref: "#/definitions/condition_clause_definition"
       # assert is deprecated from 1.3 onwards
-      - properties:
-          assert:
-            type: array
-            items:
-              $ref: "#/definitions/assertion_definition"
+      assert:
+        type: array
+        items:
+          $ref: "#/definitions/assertion_definition"
     additionalProperties:
-      $ref: "#/definitions/assertion_definition"
+      type: array
+      items:
+        $ref: "#/definitions/constraint_clause"
+    minProperties: 1
+    maxProperties: 1
 
   # Section 3.6.26
   workflow_precondition_definition:
@@ -685,7 +683,6 @@ definitions:
 #          $ref: "#/definitions/workflow_step_definition"
     additionalProperties: false
     required: [ target, activities ]
-
 
   # Section 3.7.1
   entity_type:
@@ -828,7 +825,7 @@ definitions:
           $ref: "#/definitions/operation_definition_in_types"
 
   # Section 3.7.6
-    properties:
+    properties: # ISSUE: following seems to duplicate lines 795-816?
       derived_from:
         type: string
       version:
@@ -1044,7 +1041,6 @@ definitions:
           $ref: "#/definitions/trigger_definition"
     additionalProperties: false
 
-
   # Section 3.8.1
   capability_assignment:
     anyOf:
@@ -1183,7 +1179,7 @@ definitions:
           $ref: "#/definitions/property_assignment"
       members:
         type: array
-        additionalProperties:
+        items:
           type: string
     additionalProperties: false
     required: [ type ]
@@ -1204,7 +1200,7 @@ definitions:
           $ref: "#/definitions/property_assignment"
       targets:
         type: array
-        additionalProperties:
+        items:
           type: string
       triggers:
         type: object
@@ -1284,7 +1280,6 @@ definitions:
                 $ref: "#/definitions/value"
         additionalProperties: false
 
-
   # Section 3.8.9
   attribute_mapping:
     anyOf:
@@ -1325,7 +1320,7 @@ definitions:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/property_assignment"
-              attribute:
+              attributes:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/attribute_assignment"
@@ -1353,7 +1348,7 @@ definitions:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/property_assignment"
-              attribute:
+              attributes:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/attribute_assignment"
@@ -1364,7 +1359,6 @@ definitions:
     type: object
     additionalProperties:
       type: string
-
 
   # Section 3.8.13
   substitution_mapping:
@@ -1405,7 +1399,6 @@ definitions:
     additionalProperties: false
     required: [ node_type ]
 
-
   # Section 3.9
   topology_template_definition:
     type: object
@@ -1430,8 +1423,10 @@ definitions:
           $ref: "#/definitions/group_definition"
       policies:
         type: array
-        additionalProperties:
-          $ref: "#/definitions/policy_definition"
+        items:
+          type: object
+          additionalProperties:
+            $ref: "#/definitions/policy_definition"
       outputs:
         type: object
         additionalProperties:
@@ -1443,7 +1438,6 @@ definitions:
         additionalProperties:
           $ref: "#/definitions/imperative_workflow_definition"
     additionalProperties: false
-
 
 # Section 3.10: Service Template definition
   service_template_definition:
