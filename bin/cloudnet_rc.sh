@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -33,7 +33,7 @@ run_toscaware()
   docker run \
     --user $(id -u):$(id -g) \
     --volume="${PWD}:${container_dest_volume}" \
-    --volume="${PWD}/${CLOUDNET_BINDIR}/cloudnet:/cloudnet" \
+    --volume="${CLOUDNET_BINDIR}/cloudnet:/cloudnet" \
     --workdir="${container_dest_volume}" \
     --rm \
     --attach=stdin --attach=stdout --attach=stderr \

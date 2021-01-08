@@ -3,7 +3,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -15,7 +15,7 @@
 ######################################################################
 
 # Load cloudnet commands.
-CLOUDNET_BINDIR=../bin
+CLOUDNET_BINDIR=$PWD/../bin
 . ${CLOUDNET_BINDIR}/cloudnet_rc.sh
 
 exit_code=0
