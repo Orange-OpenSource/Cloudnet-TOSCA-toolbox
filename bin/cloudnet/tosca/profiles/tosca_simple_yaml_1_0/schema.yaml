@@ -831,7 +831,7 @@ definitions:
           $ref: "#/definitions/property_assignment"
       members:
         type: array
-        additionalProperties:
+        items:
           type: string
       interfaces:
         type: object
@@ -856,7 +856,7 @@ definitions:
           $ref: "#/definitions/property_assignment"
       targets:
         type: array
-        additionalProperties:
+        items:
           type: string
     additionalProperties: false
     required: [ type ]
@@ -905,7 +905,7 @@ definitions:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/property_assignment"
-              attribute:
+              attributes:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/attribute_assignment"
@@ -933,7 +933,7 @@ definitions:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/property_assignment"
-              attribute:
+              attributes:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/attribute_assignment"
@@ -994,8 +994,10 @@ definitions:
           $ref: "#/definitions/group_definition"
       policies:
         type: array
-        additionalProperties:
-          $ref: "#/definitions/policy_definition"
+        items:
+          type: object
+          additionalProperties:
+            $ref: "#/definitions/policy_definition"
       outputs:
         anyOf:
           - type: 'null'
