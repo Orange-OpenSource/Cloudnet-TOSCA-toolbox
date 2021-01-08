@@ -18,4 +18,18 @@ tosca_definitions_version: tosca_simple_yaml_1_3
 interface_types:
   i1:
     operations: # ERROR: null unexpected!
-                # ISSUE: but two ERROR are produced!
+                # ISSUE: two ERROR are produced!
+
+topology_template:
+  policies:
+    - policy1:
+        # type: type_name # ERROR: keyword required!
+        unexpected-keyword: # ERROR: unexpected keyword!
+        triggers:
+          trigger1:
+            event: event_name
+            action:
+              - call_operation: interface_name.operation_name # CORRECT
+              - inline: workflow1 # CORRECT
+              - call_operation: interface_name.operation_name # CORRECT
+                inline: workflow1 # ERROR: unexpected!
