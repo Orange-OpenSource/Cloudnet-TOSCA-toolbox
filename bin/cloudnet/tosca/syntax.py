@@ -141,6 +141,12 @@ COPY = 'copy'
 
 TRIGGERS = 'triggers'
 
+MAPPING = 'mapping'
+
+KEY_SCHEMA = 'key_schema'
+
+NOTIFICATIONS = 'notifications'
+
 #
 # Getter functions.
 #
