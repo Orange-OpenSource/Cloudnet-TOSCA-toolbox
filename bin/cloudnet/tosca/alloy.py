@@ -2495,6 +2495,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 for node_template_requirement_name, node_template_requirement_yaml in syntax.get_substitution_mappings_requirements(substitution_mappings).items():
                     if node_template_requirement_name == requirement_name:
                         if node_template_requirement_yaml:
+                            acs.update_sig_scope(TOSCA.Requirement)
                             nb_filled_requirements = nb_filled_requirements + 1
 
                 requirement_lower_occurrences = get_requirement_occurrences(requirement_yaml)[0]
