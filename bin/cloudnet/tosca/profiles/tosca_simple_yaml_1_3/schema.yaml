@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -50,19 +50,16 @@ definitions:
     type: string
     pattern: ^[0-9]+( )*[A-Za-z]+$
 
-  # Section 3.3.4 and section 3.3.5 are covered by yaml
-
-  # Section 3.3.6 # ISSUE: duplication of lines 48-51 ?
-  scalar_unit:
-    type: string
-    pattern: ^[0-9]+( )*[A-Za-z]+$
-
   # Section 3.4.3
   directives:
     type: array
     items:
       type: string
-      pattern: substitute|substitutable|select|selectable
+      enum:
+        - substitute
+        - substitutable
+        - select
+        - selectable
     maxItems: 2
 
   # Section 3.6.1
@@ -269,16 +266,13 @@ definitions:
 #    required: [ type ] # type is required but can be set into the parent definition.
      # So type requirement is checked by TypeChecker.
 
-#  status:
-#    type: string
-#    enum:
-#      - supported
-#      - unsupported
-#      - experimental
-#      - deprecated
   status:
     type: string
-    pattern: supported|unsupported|experimental|deprecated # ISSUE: why not using enum: [...]?
+    enum:
+      - supported
+      - unsupported
+      - experimental
+      - deprecated
 
   # Section 3.6.11
   property_assignment:
@@ -362,7 +356,12 @@ definitions:
             minimum: 0
           operation_host:
             type: string
-            pattern: SELF|HOST|SOURCE|TARGET|ORCHESTRATOR
+            enum:
+              - SELF
+              - HOST
+              - SOURCE
+              - TARGET
+              - ORCHESTRATOR
         additionalProperties: false
 
   # Section 3.6.17
@@ -538,15 +537,6 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/activity_definition"
-# ISSUE: must be removed because these are not properties of trigger_definition ?
-      # constraint:
-      #   $ref: "#/definitions/condition_clause_definition"
-      # period:
-      #   $ref: "#/definitions/scalar_unit"
-      # evaluations:
-      #   type: integer
-      # method:
-      #   type: string
     additionalProperties: false
     required: [ event, action ]
 
@@ -831,30 +821,6 @@ definitions:
             $ref: "#/definitions/description"
         additionalProperties:
           $ref: "#/definitions/operation_definition_in_types"
-
-  # Section 3.7.6
-    properties: # ISSUE: following seems to duplicate lines 795-816?
-      derived_from:
-        type: string
-      version:
-        $ref: "#/definitions/version"
-      metadata:
-        $ref: "#/definitions/metadata"
-      description:
-        $ref: "#/definitions/description"
-      inputs:
-        type: object
-        additionalProperties:
-          $ref: "#/definitions/property_definition"
-      operations:
-        type: object
-        additionalProperties:
-          $ref: "#/definitions/operation_definition_in_types"
-      notifications:
-        type: object
-        additionalProperties:
-          $ref: "#/definitions/notification_definition_in_types"
-    additionalProperties: false
 
   # Section 3.7.6    to be double-checked
   data_type:
