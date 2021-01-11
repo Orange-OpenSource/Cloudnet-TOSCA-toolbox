@@ -508,7 +508,14 @@ definitions:
       event:
         type: string
       schedule:
-        type: string
+        type: object
+        properties:
+          start_time:
+            type: string
+          end_time:
+            type: string
+        additionalProperties: false
+        required: [ start_time, end_time]
       target_filter:
         $ref: "#/definitions/event_filter_definition"
       condition:
@@ -531,14 +538,15 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/activity_definition"
-      constraint:
-        $ref: "#/definitions/condition_clause_definition"
-      period:
-        $ref: "#/definitions/scalar_unit"
-      evaluations:
-        type: integer
-      method:
-        type: string
+# ISSUE: must be removed because these are not properties of trigger_definition ?
+      # constraint:
+      #   $ref: "#/definitions/condition_clause_definition"
+      # period:
+      #   $ref: "#/definitions/scalar_unit"
+      # evaluations:
+      #   type: integer
+      # method:
+      #   type: string
     additionalProperties: false
     required: [ event, action ]
 
