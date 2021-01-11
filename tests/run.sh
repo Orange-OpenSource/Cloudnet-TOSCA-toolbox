@@ -45,5 +45,6 @@ translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_1/types.yaml
 translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_2/types.yaml
 translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_3/types.yaml
 check_regression type_checking.yaml
+check_regression type_checking-1.3.yaml
 
 exit ${exit_code}

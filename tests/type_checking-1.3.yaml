@@ -1,0 +1,389 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Tests for Cloudnet TOSCA toolbox
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: Tests related to TOSCA type checking done by TypeChecker component.
+
+interface_types:
+  MyStandardInterface:
+    derived_from: tosca.interfaces.node.lifecycle.Standard
+    operations:
+      start:
+        inputs:
+          parameter: # add a parameter to the start operation
+            type: string
+            required: false
+
+topology_template:
+
+  node_templates:
+    compute:
+      type: tosca.nodes.Compute
+      interfaces:
+        Standard:
+          type: MyStandardInterface
+
+  policies:
+    - targets_undefined:
+        type: tosca.policies.Root
+        targets: [ node1 ] # ERROR: node1 undefined!
+    - policy1:
+        type: tosca.policies.Root
+        targets: [ compute ]
+        triggers:
+          schedule_incorrect:
+            event: EventName
+            action: []
+            schedule:
+              start_time: xxx # ERROR: timestamp expected!
+              end_time: xxx # ERROR: timestamp expected!
+          target_filter_node_incorrect:
+            event: EventName
+            action: []
+            target_filter:
+              node: node1 # ERROR: node1 not in policy targets!
+          target_filter_node_correct:
+            event: EventName
+            action: []
+            target_filter:
+              node: compute # compute is in policy targets
+          target_filter_requirement_incorrect:
+            event: EventName
+            action: []
+            target_filter:
+              node: compute
+              requirement: xxx # ERROR: undefined requirement!
+          target_filter_requirement_correct:
+            event: EventName
+            action: []
+            target_filter:
+              node: compute
+              requirement: local_storage # requirement defined
+          target_filter_capability_incorrect:
+            event: EventName
+            action: []
+            target_filter:
+              node: compute
+              capability: xxx # ERROR: undefined capability!
+          target_filter_requirement_capability_incorrect:
+            event: EventName
+            action: []
+            target_filter:
+              node: compute
+              requirement: xxx # ERROR: undefined requirement!
+              capability: xxx # ERROR: undefined capability!
+          target_filter_capability_correct:
+            event: EventName
+            action: []
+            target_filter:
+              node: compute
+              capability: endpoint # capability defined
+          target_filter_requirement_capability_correct:
+            event: EventName
+            action: []
+            target_filter:
+              node: compute
+              requirement: local_storage
+              capability: attachment
+          condition_incorrect:
+            event: EventName
+            action: []
+            condition:
+              and:
+                - attribute_name: [] # ERROR: attribute undefined in compute!
+                - state: # attribute defined in compute
+                  - equal: 1 # ERROR: string expected!
+                - state:
+                  - equal: started # string expected
+          condition_constraint_incorrect:
+            event: EventName
+            action: []
+            condition:
+              constraint:
+                and:
+                  - attribute_name: [] # ERROR: attribute undefined in compute!
+                  - state: # attribute defined in compute
+                    - equal: 1 # ERROR: string expected!
+                  - state:
+                    - equal: started # string expected
+          condition_period_incorrect:
+            event: EventName
+            action: []
+            condition:
+              period: 1 x # ERROR: scalar-unit.time expected!
+          condition_period_correct:
+            event: EventName
+            action: []
+            condition:
+              period: 1 m # scalar-unit.time
+          condition_evaluations_incorrect1:
+            event: EventName
+            action: []
+            condition:
+              evaluations: -10 # ERROR: must be greater than 0!
+          condition_evaluations_incorrect2:
+            event: EventName
+            action: []
+            condition:
+              evaluations: 0 # ERROR: must be greater than 0!
+          condition_evaluations_correct:
+            event: EventName
+            action: []
+            condition:
+              evaluations: 10 # positive integer
+          condition_method_unchecked:
+            event: EventName
+            action: []
+            condition:
+              method: average # Warning: unchecked!
+          with_actions:
+            event: EventName
+            action:
+              - delegate: workflow # ERROR: workflow undefined!
+              - delegate: deploy # workflow defined
+              - delegate: undeploy # workflow defined
+              - set_state: some_state # TODO: constraints the state attribute in TOSCA 2.0!
+              - call_operation: xxx # ERROR: <interface_name>.<operation_name> expected!
+              - call_operation: xxx.yyy.zzz # ERROR: <interface_name>.<operation_name> expected!
+              - call_operation: xxx.yyy # ERROR: xxx interface undefined!
+              - call_operation: Standard.operation_name # ERROR: operation undefined in Standard interface!
+              - call_operation: Standard.start # correct
+              - call_operation:
+                  operation: Standard.start
+              - call_operation:
+                  operation: Standard.start
+                  inputs:
+                    in1: value_1 # ERROR: input undefined in Standard.start!
+              - call_operation:
+                  operation: Standard.start
+                  inputs:
+                    parameter: true # ERROR: boolean but string expected!
+              - inline: workflow # ERROR: workflow undefined!
+              - inline: wf1 # workflow defined
+              - inline: deploy # workflow pre-defined
+              - inline: undeploy # workflow pre-defined
+          target_filter_node_with_condition_and_actions:
+            event: EventName
+            target_filter:
+              node: compute
+            condition:
+              and:
+                - attribute_name: [] # ERROR: attribute undefined in compute!
+                - state: # attribute defined in compute
+                  - equal: 1 # ERROR: string expected!
+                - state:
+                  - equal: started # string expected
+            action:
+              - call_operation: xxx # ERROR: <interface_name>.<operation_name> expected!
+              - call_operation: xxx.yyy.zzz # ERROR: <interface_name>.<operation_name> expected!
+              - call_operation: xxx.yyy # ERROR: xxx interface undefined!
+              - call_operation: Standard.operation_name # ERROR: operation undefined in Standard interface!
+              - call_operation: Standard.start # correct
+          target_filter_requirement_with_condition_and_actions:
+            event: EventName
+            target_filter:
+              node: compute
+              requirement: local_storage # requirement defined
+            condition:
+              and:
+                - attribute_name: [] # ERROR: attribute undefined in compute!
+                - state: # attribute defined in compute
+                  - equal: 1 # ERROR: string expected!
+                - state:
+                  - equal: started # string expected
+            action:
+              - call_operation: xxx # ERROR: <interface_name>.<operation_name> expected!
+              - call_operation: xxx.yyy.zzz # ERROR: <interface_name>.<operation_name> expected!
+              - call_operation: xxx.yyy # ERROR: xxx interface undefined!
+              - call_operation: Standard.operation_name # ERROR: operation undefined in Standard interface!
+              - call_operation: Standard.start # correct
+          target_filter_capability_with_condition_and_actions:
+            event: EventName
+            action: []
+            target_filter:
+              node: compute
+              capability: endpoint # capability defined
+            condition:
+              and:
+                - attribute_name: [] # ERROR: attribute undefined in compute!
+                - ip_address: # attribute defined in compute.capabilities.endpoint
+                  - equal: 1 # ERROR: string expected!
+                - ip_address:
+                  - equal: 1.1.1.1 # string expected
+            action:
+              - call_operation: xxx # ERROR: <interface_name>.<operation_name> expected!
+              - call_operation: xxx.yyy.zzz # ERROR: <interface_name>.<operation_name> expected!
+              - call_operation: xxx.yyy # ERROR: xxx interface undefined!
+              - call_operation: Standard.operation_name # ERROR: operation undefined in Standard interface!
+              - call_operation: Standard.start # correct
+          target_filter_requirement_capability_with_condition_and_actions:
+            event: EventName
+            action: []
+            target_filter:
+              node: compute
+              requirement: local_storage # requirement defined
+              capability: attachment # capability defined
+            condition:
+              and:
+                - attribute_name: [] # ERROR: attribute undefined in compute.requirements.local_storage.node.capabilities.attachment!
+            action:
+              - call_operation: xxx # ERROR: <interface_name>.<operation_name> expected!
+              - call_operation: xxx.yyy.zzz # ERROR: <interface_name>.<operation_name> expected!
+              - call_operation: xxx.yyy # ERROR: xxx interface undefined!
+              - call_operation: Standard.operation_name # ERROR: operation undefined in Standard interface!
+              - call_operation: Standard.start # correct
+
+  workflows:
+    wf1:
+      inputs:
+        in1: {} # ERROR: type missed!
+        in2:
+          type: UndefinedType # ERROR: undefined type!
+        in3:
+          type: tosca.interfaces.Root # ERROR: data type expected!
+
+      preconditions:
+        - target: node1 # ERROR: node1 undefined!
+        - target: compute # node template defined
+        - target: node1 # ERROR: node1 undefined!
+          target_relationship: requirement # ERROR: requirement undefined in node1!
+        - target: compute
+          target_relationship: requirement # ERROR: requirement undefined in compute!
+        - target: compute
+          target_relationship: local_storage # requirement defined in compute
+        - target: compute
+          condition:
+            - attribute_name: [] # ERROR: attribute undefined in compute!
+        - target: compute
+          condition:
+            - state: # attribute defined in compute
+              - equal: 1 # ERROR: string expected!
+        - target: compute
+          condition:
+            - state:
+              - equal: started # string expected
+        - target: compute
+          target_relationship: local_storage
+          condition:
+            - attribute_name: [] # ERROR: undefined in requirements.local_storage.relationship!
+        - target: compute
+          target_relationship: local_storage
+          condition:
+            - location: # defined in compute.requirements.local_storage.relationship, i.e. tosca.relationships.AttachesTo
+              - equal: 1 # ERROR: string expected!
+        - target: compute
+          target_relationship: local_storage
+          condition:
+            - location:
+              - equal: path # string expected
+
+      steps:
+        target_undefined:
+          target: node1 # ERROR: node1 template or group undefined!
+          activities: [] # Warning: unchecked because target undefined!
+        target_relationship_undefined:
+          target: compute
+          target_relationship: requirement # ERROR: requirement undefined in compute!
+          activities: []
+        target_relationship_defined:
+          target: compute
+          target_relationship: local_storage # requirement defined in compute
+          activities: []
+        filter_attribute_undefined:
+          target: compute
+          filter:
+            - attribute_name: [] # ERROR: attribute undefined in compute!
+          activities: []
+        filter_relationship_attribute_undefined:
+          target: compute
+          target_relationship: local_storage
+          filter:
+            - attribute_name: [] # ERROR: undefined in requirements.local_storage.relationship!
+          activities: []
+        filter_attribute_value_expected:
+          target: compute
+          filter:
+            - state:
+              - equal: 1 # ERROR: string expected!
+          activities: []
+        filter_relationship_attribute_value_expected:
+          target: compute
+          target_relationship: local_storage
+          filter:
+            - location:
+              - equal: 1 # ERROR: string expected!
+          activities: []
+        filter_correct:
+          target: compute
+          filter:
+            - state:
+              - equal: stopped
+          activities: []
+        operation_host_unchecked:
+          target: compute # required
+          operation_host: operation_host # ERROR: currently unchecked!
+          activities: [] # required
+        steps_undefined:
+          target: compute
+          activities: []
+          on_success:
+            - with_activities
+            - step_a # ERROR: step_a undefined!
+          on_failure:
+            - with_activities
+            - step_b # ERROR: step_b undefined!
+        with_activities:
+          target: compute
+          activities:
+            - delegate: workflow # ERROR: workflow undefined!
+            - delegate: deploy # workflow defined
+            - delegate: undeploy # workflow defined
+            - set_state: some_state # TODO: constraints the state attribute in TOSCA 2.0!
+            - call_operation: xxx # ERROR: <interface_name>.<operation_name> expected!
+            - call_operation: xxx.yyy.zzz # ERROR: <interface_name>.<operation_name> expected!
+            - call_operation: xxx.yyy # ERROR: xxx interface undefined!
+            - call_operation: Standard.operation_name # ERROR: operation undefined in Standard interface!
+            - call_operation: Standard.start # correct
+            - call_operation:
+                operation: Standard.start
+            - call_operation:
+                operation: Standard.start
+                inputs:
+                  in1: value_1 # ERROR: input undefined in Standard.start!
+            - call_operation:
+                operation: Standard.start
+                inputs:
+                  parameter: true # ERROR: boolean but string expected!
+            - inline: workflow # ERROR: workflow undefined!
+            - inline: wf1 # workflow defined
+            - inline: deploy # workflow pre-defined
+            - inline: undeploy # workflow pre-defined
+
+      outputs: {} # ERROR: currently unchecked!
+
+    wf2:
+      implementation: workflow.py # Info: tosca.artifacts.Implementation.Python found!
+
+    wf3:
+      implementation:
+        primary: workflow.py # Info: tosca.artifacts.Implementation.Python found!
+
+    wf4:
+      implementation: xxx # Warning: no artifact type found!
+
+    wf5:
+      implementation:
+        primary: xxx # Warning: no artifact type found!

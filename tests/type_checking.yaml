@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -36,12 +36,15 @@ artifact_types:
       p1:
         # CORRECT: YAML type.
         type: string
+        required: false
       p2:
         # CORRECT: TOSCA type.
         type: range
+        required: false
       p3:
         # CORRECT: data type.
         type: DataType
+        required: false
 
   # ERROR: already defined artifact type!
   tosca.artifacts.Root:
@@ -96,6 +99,18 @@ artifact_types:
         # ERROR: incompatible type with previous declared type!
         type: integer
 
+  ArtifactTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  ArtifactTypePropertiesRequiredFalse:
+    derived_from: ArtifactTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
+
 data_types:
   # CORRECT: data type
   DataType:
@@ -105,23 +120,28 @@ data_types:
       p1:
         # CORRECT: YAML type.
         type: string
+        required: false
       p2:
         # CORRECT: TOSCA type.
         type: range
+        required: false
       p3:
         # CORRECT: data type.
         type: DataType
+        required: false
       p4:
         # CORRECT: type.
         type: list
         # CORRECT: type.
         entry_schema: string
+        required: false
       p5:
         # CORRECT: map type.
         type: map
         # CORRECT: type.
         entry_schema:
           type: string
+        required: false
 
   # ERROR: already defined data type!
   tosca.datatypes.Root:
@@ -175,6 +195,18 @@ data_types:
       p1:
         # ERROR: incompatible type with previous declared type!
         type: integer
+
+  DataTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  DataTypePropertiesRequiredFalse:
+    derived_from: DataTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
 
   DataTypePropertiesEntrySchemaUnexpected:
     properties:
@@ -1864,7 +1896,7 @@ data_types:
     properties:
       p1:
         type: string
-        external_schema: 'an external schema' # WARNING: external_schema currently unchecked!
+        external_schema: 'an external schema' # ERROR: external_schema currently unchecked!
 
 capability_types:
   # CORRECT: capability type
@@ -1875,12 +1907,15 @@ capability_types:
       p1:
         # CORRECT: yaml type.
         type: string
+        required: false
       p2:
         # CORRECT: tosca type.
         type: range
+        required: false
       p3:
         # CORRECT: data type.
         type: DataType
+        required: false
     attributes:
       a1:
         # CORRECT: yaml type.
@@ -1965,6 +2000,18 @@ capability_types:
       p1:
         # ERROR: incompatible type with previous declared type!
         type: integer
+
+  CapabilityTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  CapabilityTypePropertiesRequiredFalse:
+    derived_from: CapabilityTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
 
   CapabilityTypeAttributesUndefinedType:
     attributes:
@@ -2059,6 +2106,18 @@ interface_types:
         # ERROR: incompatible type with previous declared type!
         type: integer
 
+  InterfaceTypeInputsRequiredTrue:
+    inputs:
+      p1:
+        type: string
+        # required: true by default
+
+  InterfaceTypeInputsRequiredFalse:
+    derived_from: InterfaceTypeInputsRequiredTrue
+    inputs:
+      p1:
+        required: false # ERROR: previous declared as required!
+
   InterfaceTypeOperationsInputsUndefinedType:
     op1:
       inputs:
@@ -2080,6 +2139,20 @@ interface_types:
         i1:
           # ERROR: incompatible type with previous declared type!
           type: integer
+
+  InterfaceTypeOperationsInputsRequiredTrue:
+    op1:
+      inputs:
+        i1:
+          type: string
+          # required: true by default
+
+  InterfaceTypeOperationsInputsRequiredFalse:
+    derived_from: InterfaceTypeOperationsInputsRequiredTrue
+    op1:
+      inputs:
+        i1:
+          required: false # ERROR: previous declared as required!
 
 node_types:
   # CORRECT: node type
@@ -2159,19 +2232,20 @@ node_types:
         # CORRECT: repository name.
         repository: repo1
         properties:
-          p1:
-            # CORRECT: YAML type.
-            type: string
+          p1: "a string"
     properties:
       p1:
         # CORRECT: YAML type.
         type: string
+        required: false
       p2:
         # CORRECT: TOSCA type.
         type: range
+        required: false
       p3:
         # CORRECT: data type.
         type: DataType
+        required: false
     attributes:
       a1:
         # CORRECT: YAML type.
@@ -2255,6 +2329,18 @@ node_types:
         # ERROR: incompatible type with previous declared type!
         type: integer
 
+  NodeTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  NodeTypePropertiesRequiredFalse:
+    derived_from: NodeTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
+
   NodeTypeCapabilitiesTypeMissed:
     capabilities:
       c1: {
@@ -2272,8 +2358,7 @@ node_types:
       c1:
         # ERROR: must be a defined type!
         type: UndefinedType
-        # NOTE: tosca.nodes.Compute has no requirement compatible with UndefinedType
-        # but no error produced because previous error already produced.
+        # ERROR: tosca.nodes.Compute has no requirement compatible with UndefinedType!
         valid_source_types: [ tosca.nodes.Compute ]
 
   NodeTypeCapabilitiesIncorrectCapabilityType:
@@ -2347,7 +2432,7 @@ node_types:
         type: CapabilityType
         properties:
           p1: {
-            # ERROR: type missed!
+            # ER TODO ROR: type missed!
           }
 
   NodeTypeCapabilitiesPropertiesUndefinedType:
@@ -2385,6 +2470,14 @@ node_types:
           p1:
             # ERROR: incompatible type refinement!
             type: integer
+
+  NodeTypeCapabilitiesPropertiesRequiredFalse:
+    capabilities:
+      c1:
+        type: CapabilityTypePropertiesRequiredTrue
+        properties:
+          p1:
+            required: false # ERROR: previous declared as required!
 
   NodeTypeCapabilitiesValidSourceTypesUndefinedType:
     capabilities:
@@ -2871,6 +2964,23 @@ node_types:
             # ERROR: incompatible type with interface type!
             type: integer
 
+  NodeTypeInterfacesInputsRequiredTrue:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            type: string
+            # required: true by default
+
+  NodeTypeInterfacesInputsRequiredFalse:
+    derived_from: NodeTypeInterfacesInputsRequiredTrue
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            required: false # ERROR: previous declared as required!
+
   NodeTypeInterfacesOperationsInputsUndefinedType:
     interfaces:
       i1:
@@ -3014,10 +3124,8 @@ node_types:
 
   NodeTypeArtifactsFileNoArtifactTypeFound:
     artifacts:
-      a1:
-        file: script.py # CORRECT: tosca.artifacts.Implementation.Python found!
-      a2:
-        file: script.xyz # ERROR: no artifact type found for 'xyz' file extension!
+      a1: script.py # CORRECT: tosca.artifacts.Implementation.Python found!
+      a2: script.xyz # WARNING: no artifact type found for 'xyz' file extension!
 
   NodeTypeArtifactsFileIncompatibleWithArtifactTypeFileExt:
     artifacts:
@@ -3032,58 +3140,19 @@ node_types:
         # ERROR: repository not found.
         repository: undefined_repository
 
-  NodeTypeArtifactsPropertiesTypeMissed:
+  NodeTypeArtifactsPropertiesValueExpected:
     artifacts:
       a1:
         type: ArtifactType
         properties:
-          p1: {
-            # ERROR: type missed!
-          }
-
-  NodeTypeArtifactsPropertiesUndefinedType:
-    artifacts:
-      a1:
-        type: ArtifactType
-        properties:
-          p1:
-            # ERROR: must be a defined type!
-            type: UndefinedType
-
-  NodeTypeArtifactsPropertiesIncorrectType:
-    artifacts:
-      a1:
-        type: ArtifactType
-        properties:
-          p1:
-            # ERROR: must be a data type!
-            type: tosca.nodes.Root
-
-  NodeTypeArtifactsPropertiesTypeIncompatibleWithDerivedFromType:
-    derived_from: NodeType
-    artifacts:
-      a1:
-        properties:
-          p1:
-            # ERROR: incompatible type with previous declared type!
-            type: integer
-
-  NodeTypeArtifactsPropertiesTypeIncompatibleWithArtifactType:
-    artifacts:
-      a1:
-        type: ArtifactType
-        properties:
-          p1:
-            # ERROR: incompatible type with previous declared type!
-            type: integer
+          p1: true # ERROR: string expected!
 
   NodeTypeArtifactsPropertiesUndefinedInArtifactType:
     artifacts:
       a1:
         type: ArtifactType
         properties:
-          undefined-property: # ERROR: undefined in ArtifactType!
-            type: string
+          undefined-property: {} # ERROR: undefined in ArtifactType!
 
 relationship_types:
   # CORRECT: relationship type
@@ -3121,12 +3190,15 @@ relationship_types:
       p1:
         # CORRECT: YAML type.
         type: string
+        required: false
       p2:
         # CORRECT: TOSCA type.
         type: range
+        required: false
       p3:
         # CORRECT: data type.
         type: DataType
+        required: false
     attributes:
       a1:
         # CORRECT: YAML type.
@@ -3375,6 +3447,19 @@ relationship_types:
         # ERROR: incompatible type with previous declared type!
         type: integer
 
+  RelationshipTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  RelationshipTypePropertiesRequiredFalse:
+    derived_from: RelationshipTypePropertiesRequiredTrue
+    properties:
+      p1:
+        type: string
+        required: false # ERROR: previous declared as required!
+
 group_types:
   # CORRECT: group type
   GroupType:
@@ -3450,12 +3535,15 @@ group_types:
       p1:
         # CORRECT: YAML type.
         type: string
+        required: false
       p2:
         # CORRECT: TOSCA type.
         type: range
+        required: false
       p3:
         # CORRECT: data type.
         type: DataType
+        required: false
     attributes:
       a1:
         # CORRECT: YAML type.
@@ -3538,6 +3626,18 @@ group_types:
       p1:
         # ERROR: incompatible type with previous declared type!
         type: integer
+
+  GroupTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  GroupTypePropertiesRequiredFalse:
+    derived_from: GroupTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
 
   GroupTypeMembersUndefinedType:
     # ERROR: must be defined types!
@@ -4263,12 +4363,15 @@ policy_types:
       p1:
         # CORRECT: YAML type.
         type: string
+        required: false
       p2:
         # CORRECT: TOSCA type.
         type: range
+        required: false
       p3:
         # CORRECT: data type.
         type: DataType
+        required: false
 
   # ERROR: already defined policy type!
   tosca.policies.Root:
@@ -4323,6 +4426,18 @@ policy_types:
         # ERROR: incompatible type with previous declared type!
         type: integer
 
+  PolicyTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  PolicyTypePropertiesRequiredFalse:
+    derived_from: PolicyTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
+
   PolicyTypeTargetsUndefinedType:
     # ERROR: must be defined types!
     targets: [ UndefinedType ]
@@ -4336,3 +4451,101 @@ policy_types:
     # ERROR: must be compatible with derived_from targets types!
     # Here tosca.nodes.Compute doesn't derived from NodeType or GroupType.
     targets: [ tosca.nodes.Compute ]
+
+topology_template:
+  inputs:
+    i1:
+      # ERROR: undefined data type!
+      type: UndefinedType
+    i2:
+      # ERROR: data type required!
+      type: NodeType
+    i-int:
+      type: integer
+    i-string:
+      type: string
+
+  node_templates:
+    n1:
+      # ERROR: undefined node type!
+      type: UndefinedType
+    n2:
+      # ERROR: node type required!
+      type: DataType
+    n3:
+      type: NodeType
+      properties:
+        undefined-property: # ERROR: undefined in NodeType!
+        p1: # ERROR: string expected!
+      attributes:
+        undefined-attribute: # ERROR: undefined in NodeType!
+      capabilities:
+        undefined-capability: {} # ERROR: undefined in NodeType!
+        c1:
+          properties:
+            undefined-property: # ERROR: undefined in CapabilityType!
+          attributes:
+            undefined-attribute: # ERROR: undefined in CapabilityType!
+      requirements:
+        - undefined-requirement: {} # ERROR: undefined in NodeType!
+        - r1: undefined-node-template # ERROR: node template undefined!
+      interfaces:
+        undefined-interface: {} # ERROR: undefined in NodeType!
+      # artifacts: TODO
+
+  relationship_templates:
+    r1:
+      # ERROR: undefined relationship type!
+      type: UndefinedType
+    r2:
+      # ERROR: relationship type required!
+      type: DataType
+    r3:
+      type: RelationshipType
+      properties:
+        undefined-property: # ERROR: undefined in NodeType!
+        p1: # ERROR: string expected!
+      attributes:
+        undefined-attribute: # ERROR: undefined in NodeType!
+      interfaces:
+        undefined-interface: {} # ERROR: undefined in NodeType!
+
+  groups:
+    g1:
+      # ERROR: undefined group type!
+      type: UndefinedType
+    g2:
+      # ERROR: group type required!
+      type: DataType
+    g3:
+      type: GroupType
+      properties:
+        undefined-property: # ERROR: undefined in NodeType!
+        p1: # ERROR: string expected!
+      interfaces:
+        undefined-interface: {} # ERROR: undefined in NodeType!
+
+  policies:
+    - p1:
+        # ERROR: undefined policy type!
+        type: UndefinedType
+    - p2:
+        # ERROR: policy type required!
+        type: DataType
+    - p3:
+        type: PolicyType
+        properties:
+          undefined-property: # ERROR: undefined in NodeType!
+          p1: # ERROR: string expected!
+
+  outputs:
+    o1:
+      # ERROR: undefined data type!
+      type: UndefinedType
+    o2:
+      # ERROR: data type required!
+      type: NodeType
+
+  # substitution_mappings: TODO
+
+  # workflows: TODO
