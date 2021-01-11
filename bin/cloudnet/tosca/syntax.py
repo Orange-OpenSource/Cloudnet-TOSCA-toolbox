@@ -487,6 +487,15 @@ def get_artifact_type(yaml):
         return yaml.get(TYPE)
     return None
 
+def get_operations(definition):
+    operations = definition.get(OPERATIONS)
+    if operations is None:
+        operations = {}
+        for operation_name, operation_definition in definition.items():
+            if operation_name not in [ DERIVED_FROM, DESCRIPTION, TYPE, INPUTS, NOTIFICATIONS ]:
+                operations[operation_name] = operation_definition
+    return { OPERATIONS: operations }
+
 class SyntaxChecker(Checker):
     '''
         TOSCA syntax checker

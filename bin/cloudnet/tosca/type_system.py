@@ -1137,20 +1137,11 @@ class TypeChecker(Checker):
         # check notifications
         self.iterate_over_map_of_definitions(self.check_notification_definition, syntax.NOTIFICATIONS, interface_definition, interface_type, interface_type_name, context_error_message)
 
-    def get_operations(self, definition):
-        operations = definition.get(syntax.OPERATIONS)
-        if operations is None:
-            operations = {}
-            for operation_name, operation_definition in definition.items():
-                if operation_name not in [ syntax.DERIVED_FROM, syntax.DESCRIPTION, syntax.TYPE, syntax.INPUTS ]:
-                    operations[operation_name] = operation_definition
-        return { syntax.OPERATIONS: operations }
-
     # TBR
     def check_operations(self, definition, previous_definition, mode, context_error_message):
         # normalize operations
-        operations = self.get_operations(definition)
-        previous_operations = self.get_operations(previous_definition)
+        operations = syntax.get_operations(definition)
+        previous_operations = syntax.get_operations(previous_definition)
 
         # check operation
         self.iterate_over_map_of_definitions(self.check_operation_definition, syntax.OPERATIONS, operations, previous_operations, mode, context_error_message)
@@ -1876,8 +1867,8 @@ class TypeChecker(Checker):
         self.iterate_over_map_of_assignments(self.check_property_assignment, syntax.INPUTS, interface_assignment, interface_type, REFINE_OR_NEW, context_error_message)
         self.check_required_properties(interface_assignment, interface_type, context_error_message)
         # check operations
-        operations = self.get_operations(interface_assignment)
-        type_operations = self.get_operations(interface_type)
+        operations = syntax.get_operations(interface_assignment)
+        type_operations = syntax.get_operations(interface_type)
         self.iterate_over_map_of_assignments(self.check_operation_assignment, syntax.OPERATIONS, operations, type_operations, interface_type_name, context_error_message)
         # check notifications - TODO
         self.unchecked(interface_assignment, syntax.NOTIFICATIONS, context_error_message)
