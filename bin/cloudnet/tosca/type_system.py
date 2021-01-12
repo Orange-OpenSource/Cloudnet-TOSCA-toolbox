@@ -45,7 +45,9 @@ configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
         'ConnectsTo': 'tosca.relationships.ConnectsTo',
         'Database': 'tosca.nodes.Database',
         'DBMS': 'tosca.nodes.DBMS',
+        'DependsOn': 'tosca.relationships.DependsOn',
         'Deployment.Image.VM': 'tosca.artifacts.Deployment.Image.VM',
+        'Endpoint': 'tosca.capabilities.Endpoint',
         'LoadBalancer': 'tosca.nodes.LoadBalancer',
         'HostedOn': 'tosca.relationships.HostedOn',
         'Node': 'tosca.capabilities.Node',
@@ -334,7 +336,9 @@ BASIC_TYPE_CHECKERS = {
     'integer': BasicTypeChecker('integer', lambda value : type(value) == int),
     'float': BasicTypeChecker('float', lambda value : type(value) in [int, float]),
     'boolean': BasicTypeChecker('boolean', lambda value : type(value) == bool),
-    'timestamp': BasicTypeChecker('timestamp', lambda value : type(value) == datetime.datetime),
+    'timestamp': BasicTypeChecker('timestamp', \
+        lambda value : type(value) == datetime.datetime \
+                    or ( type(value) == str and datetime.datetime.fromisoformat(value)) ),
     'null': BasicTypeChecker('null', lambda value : value == None),
     # TOSCA types
     'version': BasicTypeChecker('version', lambda value : (type(value) == float) or (type(value) == str and check_version(value))),
@@ -1291,8 +1295,11 @@ class TypeChecker(Checker):
                     self.check_condition_clause_definition(cc, cem + '[' + str(idx) + ']')
                     idx += 1
             elif key == 'assert':
-                for k, v in value.items():
-                    check_attribute_constraints(k, v, cem + ':' + k)
+                idx = 0
+                for cc in value:
+                    for k, v in cc.items():
+                        check_attribute_constraints(k, v, cem + '[' + str(idx) + ']' + ':' + k)
+                idx += 1
             else:
                 check_attribute_constraints(key, value, cem)
 
@@ -1810,19 +1817,32 @@ class TypeChecker(Checker):
                     if not self.type_system.is_derived_from(node_template.get(syntax.TYPE), requirement_node_type_name):
                         self.error(context_error_message + ': ' + str(requirement_assignment) + ' - ' + node_template.get(syntax.TYPE) + ' but ' + requirement_node_type_name + ' expected')
             else:
-                node_type = self.type_system.node_types.get(node)
+                node_type = self.type_system.merge_type(node)
                 if node_type is None:
                     self.error(context_error_message + ':' + syntax.NODE + ': ' + node + ' - node template or type undefined')
                 else:
                     requirement_node_type_name = requirement_definition.get(syntax.NODE)
-                    if requirement_node_type_name is None:
-                        self.error(context_error_message + ':' + syntax.NODE + ': ' + node + ' - no node type in ' + str(requirement_definition))
-                    else:
+                    if requirement_node_type_name != None:
                         # check node_template type is compatible with requirement_definition node
                         if not self.type_system.is_derived_from(node, requirement_node_type_name):
                             self.error(context_error_message + ':' + syntax.NODE + ': ' + node + ' - ' + requirement_node_type_name + ' expected')
 
-                        # TODO search a node template conform to node_type
+                    if capability != None:
+                        requirement_capability = capability
+                    else:
+                        requirement_capability = requirement_definition.get(syntax.CAPABILITY)
+                    if requirement_capability is None:
+                        self.error(context_error_message + ':' + syntax.NODE + ': ' + node + ' - no capability type in ' + str(requirement_definition))
+                    else:
+                        compatible_with_capability = False
+                        for cap_name, cap_def in node_type.get(syntax.CAPABILITIES, {}).items():
+                            if cap_name == requirement_capability or self.type_system.is_derived_from(cap_def.get(syntax.TYPE), requirement_capability):
+                                compatible_with_capability = True
+                                break
+                        if compatible_with_capability is False:
+                            self.error(context_error_message + ':' + syntax.NODE + ': ' + node + ' - ' + requirement_capability + ' capability expected')
+
+                    # TODO search a node template conform to node_type
 
         # check relationship
         relationship = requirement_assignment.get(syntax.RELATIONSHIP)
@@ -1857,7 +1877,7 @@ class TypeChecker(Checker):
         if node_filter != None:
             checked, node_type_name, node_type = self.check_type_in_definition('node', syntax.NODE, requirement_assignment, requirement_definition, context_error_message)
             self.check_node_filter_definition(node_filter, node_type_name, node_type, context_error_message + ':' + syntax.NODE_FILTER)
-            self.error(context_error_message + ':' + syntax.NODE_FILTER + ' - checked but unsupported')
+            self.warning(context_error_message + ':' + syntax.NODE_FILTER + ' - checked but unsupported')
 
     def check_interface_assignment(self, interface_name, interface_assignment, interface_definition, context_error_message):
         # check description - nothing to do
