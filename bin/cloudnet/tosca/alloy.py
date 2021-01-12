@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -743,9 +743,10 @@ class AbstractAlloySigGenerator(Generator):
         self.generate(indentation, '// YAML type: ', parameter_type, sep='')
         self.generate(indentation, prefix, parameter_name, '.type = "', parameter_type, '"', sep='')
         if parameter_type == 'list':
-            self.error(prefix + ':' + parameter_name + ':type: list unsupported currrently')
-        else:
-            self.generate(indentation, prefix, parameter_name, '.type[', self.alloy_sig(parameter_type), ']', sep='')
+            parameter_type = parameter_yaml.get('entry_schema',{}).get('type')
+        elif parameter_type == 'map':
+            parameter_type = self.get_map_signature(parameter_yaml)
+        self.generate(indentation, prefix, parameter_name, '.type[', self.alloy_sig(parameter_type), ']', sep='')
 
         parameter_description = syntax.get_input_description(parameter_yaml)
         self.generate(indentation, '// YAML description: ', parameter_description, sep='')
@@ -800,8 +801,8 @@ class AbstractAlloySigGenerator(Generator):
             self.generate('  // YAML inputs:')
             for (input_name, input_yaml) in inputs.items():
                 self.generate('  // YAML   ', input_name, ':', sep='')
-                self.generate('  one', input_name, ':', prefix + 'input["' + input_name + '"]', '{')
-                self.generate_parameter_facts('    ', '', input_name, input_yaml, context_error_message + ':' + INPUTS + ':' + input_name)
+                self.generate('  one', 'input_' + input_name, ':', prefix + 'input["' + input_name + '"]', '{')
+                self.generate_parameter_facts('    ', 'input_', input_name, input_yaml, context_error_message + ':' + INPUTS + ':' + input_name)
                 self.generate('  }')
 
     def generate_all_sigs(self):
@@ -1107,12 +1108,23 @@ class InterfaceTypeGenerator(AbstractTypeGenerator):
         # TODO: are other fields to generate?
 
         if interface_type_yaml:
+
+            # compute operations of the derived_from interface type
+            derived_from = interface_type_yaml.get(DERIVED_FROM)
+            if derived_from is None:
+                inherited_operations = {}
+            else:
+                derived_from_type = self.type_system.merge_type(derived_from)
+                inherited_operations = syntax.get_operations(derived_from_type).get(OPERATIONS)
+
             self.generate_header('Operations', '  ')
-            for (operation_name, operation_yaml) in interface_type_yaml.items():
-                if operation_name not in [DESCRIPTION, DERIVED_FROM, INPUTS]:
+            for (operation_name, operation_yaml) in syntax.get_operations(interface_type_yaml).get(OPERATIONS).items():
                     self.generate('  // YAML ', operation_name, ': ', operation_yaml, sep='')
-                    self.generate_description(operation_yaml, '  ')
-                    self.generate_sig_field('operation', operation_name, Alloy.ONE, TOSCA.Operation)
+                    if operation_name in inherited_operations:
+                        self.generate('  // NOTE:', operation_name, 'overloaded')
+                    else:
+                        self.generate_description(operation_yaml, '  ')
+                        self.generate_sig_field('operation', operation_name, Alloy.ONE, TOSCA.Operation)
                     self.generate()
         return
 
@@ -1123,8 +1135,7 @@ class InterfaceTypeGenerator(AbstractTypeGenerator):
         # TODO: are other facts to generate?
         if interface_type_yaml:
             self.generate_header('Operations', '  ')
-            for (operation_name, operation_yaml) in interface_type_yaml.items():
-                if operation_name not in [DESCRIPTION, DERIVED_FROM, INPUTS]:
+            for (operation_name, operation_yaml) in syntax.get_operations(interface_type_yaml).get(OPERATIONS).items():
                     self.generate('  // YAML ', operation_name, ': ', operation_yaml, sep='')
                     self.generate_description(operation_yaml, '  ')
                     prefixed_operation_name = self.prefix_name('operation', operation_name)
@@ -1305,8 +1316,7 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                     self.generate('  interface[interface_', interface_name, ']', sep='')
                     self.generate('  interface_', interface_name, '.name["', interface_name, '"]', sep='')
                 if interface_yaml:
-                    for (operation_name, operation_yaml) in interface_yaml.items():
-                        if operation_name not in [DESCRIPTION, DERIVED_FROM, INPUTS, TYPE]:
+                    for (operation_name, operation_yaml) in syntax.get_operations(interface_yaml).get('operations').items():
                             self.generate('  // YAML   ', operation_name, ':', sep='')
                             if type(operation_yaml) == dict:
                                 # Translate inputs.
@@ -1765,8 +1775,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         for (interface_name, interface_yaml) in interfaces.items():
             self.generate('  // YAML ', interface_name, ':', sep='')
             nb_operations = 0
-            for (operation_name, operation_yaml) in interface_yaml.items():
-                if operation_name not in [DESCRIPTION, DERIVED_FROM, INPUTS, TYPE]:
+            for (operation_name, operation_yaml) in syntax.get_operations(interface_yaml).get(OPERATIONS).items():
                     self.generate('  // YAML ', operation_name, ': ', operation_yaml, sep='')
                     nb_operations = nb_operations + 1
                     if operation_yaml:
@@ -2264,8 +2273,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             interfaces_yaml = get_dict(node_template_type, INTERFACES).get(interface_name)
 
             # Iterate over all operations.
-            for (operation_name, operation_yaml) in interface_yaml.items():
-                if operation_name not in [DESCRIPTION, DERIVED_FROM, INPUTS, TYPE]:
+            for (operation_name, operation_yaml) in syntax.get_operations(interface_yaml).get(OPERATIONS).items():
                     # Compute the scope required by each operation.
                     is_new_operation = is_new_interface
 
