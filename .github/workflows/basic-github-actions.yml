@@ -4,7 +4,6 @@ on:
 
 jobs:
   setup:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
     steps:
       - name: Install docker
@@ -12,7 +11,6 @@ jobs:
         shell: bash
 
   build:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
     needs: setup
     steps:
@@ -24,7 +22,6 @@ jobs:
           ./build.sh
         shell: bash
   test:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
     needs: build
     steps:
