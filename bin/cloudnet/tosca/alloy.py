@@ -1331,7 +1331,7 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                                     continue
                                 artifacts = syntax.get_dict(yaml, ARTIFACTS)
                                 if artifacts != None and artifacts.get(implementation):
-                                    self.generate('  ', prefixed_operation, '.implementation = ', utils.normalize_name(node_template_name), '.artifact["', implementation, '"]', sep='')
+                                    self.generate('  ', prefixed_operation, '.implementation = ' + self.prefix_name('artifact', implementation), sep='')
                                 else:
                                     artifact_type_sig = self.alloy_sig(self.get_implementation_artifact_type(implementation))
                                     self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "',implementation, '"]', sep='')
