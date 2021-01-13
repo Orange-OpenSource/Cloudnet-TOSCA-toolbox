@@ -35,6 +35,21 @@ topology_template:
       interfaces:
         Standard:
           type: MyStandardInterface
+      requirements:
+        - local_storage:
+            node: tosca.nodes.Storage.BlockStorage # volume1 found
+        - local_storage:
+            node_filter: {} # volume1 found
+        - local_storage:
+            node_filter: # ERROR: no node found because no BlockStorage has volume_id equal to 101!
+              properties:
+                - volume_id:
+                    - equal: '101'
+
+    volume1:
+      type: tosca.nodes.Storage.BlockStorage
+      properties:
+        name: MyVolume
 
     with_node_filter:
       type: tosca.nodes.WebServer

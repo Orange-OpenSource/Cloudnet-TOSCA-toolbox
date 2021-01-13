@@ -1791,6 +1791,7 @@ class TypeChecker(Checker):
         capability = requirement_assignment.get(syntax.CAPABILITY)
 
         # check node
+        update_requirement_node = None
         node = requirement_assignment.get(syntax.NODE)
         if node != None:
             node_template = self.get_topology_template().get(syntax.NODE_TEMPLATES, {}).get(node)
@@ -1842,7 +1843,19 @@ class TypeChecker(Checker):
                         if compatible_with_capability is False:
                             self.error(context_error_message + ':' + syntax.NODE + ': ' + node + ' - ' + requirement_capability + ' capability expected')
 
-                    # TODO search a node template conform to node_type
+                    if requirement_assignment.get(syntax.NODE_FILTER) is None:
+                        # search node templates conform to node_type
+                        cem = context_error_message + ':' + syntax.NODE + ': ' + node
+                        node_templates = self.select_node_templates(node, None, cem)
+                        if len(node_templates) == 0:
+                            self.error(cem + ' - no node template found')
+                        else:
+                            node_template = node_templates[0]
+                            if len(node_templates) == 1:
+                                self.info(cem + ' - ' + node_template + ' node template found')
+                            else:
+                                self.warning(cem + ' - ' + array_to_string_with_or_separator(node_templates) + ' node templates found, then ' + node_template + ' selected')
+                            update_requirement_node = node_template
 
         # check relationship
         relationship = requirement_assignment.get(syntax.RELATIONSHIP)
@@ -1875,9 +1888,88 @@ class TypeChecker(Checker):
         # check relationship node filter
         node_filter = requirement_assignment.get(syntax.NODE_FILTER)
         if node_filter != None:
+            # TODO: node_filter and node: <node_template_name> are exclusive!
             checked, node_type_name, node_type = self.check_type_in_definition('node', syntax.NODE, requirement_assignment, requirement_definition, context_error_message)
             self.check_node_filter_definition(node_filter, node_type_name, node_type, context_error_message + ':' + syntax.NODE_FILTER)
-            self.warning(context_error_message + ':' + syntax.NODE_FILTER + ' - checked but unsupported')
+
+            # search node templates conform to node_type
+            cem = context_error_message + ':' + syntax.NODE_FILTER
+            node_templates = self.select_node_templates(node_type_name, node_filter, cem)
+            if len(node_templates) == 0:
+                self.error(cem + ' - no node template found')
+            else:
+                update_requirement_node = node_templates[0]
+                if len(node_templates) == 1:
+                    self.info(cem + ' - ' + update_requirement_node + ' node template found')
+                else:
+                    self.warning(cem + ' - ' + array_to_string_with_or_separator(node_templates) + ' node templates found, then ' + update_requirement_node + ' selected')
+
+#            self.warning(context_error_message + ':' + syntax.NODE_FILTER + ' - checked but unsupported')
+            # WARNING: remove the node_filter from requirement_assignment!
+            del requirement_assignment[syntax.NODE_FILTER]
+
+        # update the node of requirement_assignment if a node template found
+        if update_requirement_node != None:
+            requirement_assignment[syntax.NODE] = update_requirement_node
+
+    def select_node_templates(self, node_type_name, node_filter, context_error_message):
+
+        def eval_property_filters(filter, template, template_type):
+            template_properties = template.get(syntax.PROPERTIES,{})
+            template_type_properties = template_type.get(syntax.PROPERTIES,{})
+            for property_filter in filter.get(syntax.PROPERTIES, []):
+                for property_name, property_constraint_clauses in property_filter.items():
+                    property_value = template_properties.get(property_name)
+                    property_type = template_type_properties.get(property_name, {}).get(syntax.TYPE)
+                    if property_value is None:
+                        # TODO: dealt with default or value defined in the property definition
+                        return False # no value for the property
+                    if type(property_constraint_clauses) != list:
+                        property_constraint_clauses = [ property_constraint_clauses ]
+                    for property_constraint_clause in property_constraint_clauses:
+                        if type(property_constraint_clause) != dict:
+                            property_constraint_clause = { 'equal': property_constraint_clause }
+                        for constraint_name, constraint_value in property_constraint_clause.items():
+                            constraint_clause_checkers = BASIC_CONSTRAINT_CLAUSES.get(constraint_name)
+                            if constraint_clause_checkers is None:
+                                self.error(context_error_message + ' - ' + constraint_name + ' unsupported operator')
+                                return False
+                            constraint_clause_checker = constraint_clause_checkers.get(property_type)
+                            if constraint_clause_checker is None:
+                                self.error(context_error_message + ' - ' + constraint_name + ' unallowed operator on ' + property_type + ' value')
+                                return False
+                            LOGGER.debug(context_error_message + ' - evaluate ' + constraint_name + ': ' + str(constraint_value))
+                            if not constraint_clause_checker.check_constraint(property_value, constraint_value, self, context_error_message):
+                                return False
+            # all property constraints are matched ;-)
+            return True
+
+        def eval_node_filter(node_filter, node_template):
+            node_template_type = self.type_system.merge_type(node_template.get(syntax.TYPE))
+            # evaluation node_filter properties
+            if not eval_property_filters(node_filter, node_template, node_template_type):
+                return False
+            # evaluation node_filter capabilities
+            node_template_capabilities = node_template.get(syntax.CAPABILITIES,{})
+            node_template_type_capabilities = node_template_type.get(syntax.CAPABILITIES,{})
+            for node_filter_capability in node_filter.get(syntax.CAPABILITIES, []):
+                for capability_name, capability_filter in node_filter_capability.items():
+                    capability_type = self.type_system.merge_type(node_template_type_capabilities.get(capability_name, {}).get(syntax.TYPE))
+                    if not eval_property_filters(capability_filter, \
+                                                 node_template_capabilities.get(capability_name, {}), \
+                                                 capability_type):
+                        return False
+            # all node constraints are matched ;-)
+            return True
+
+        self.logger.debug(context_error_message, '- select_node_templates with node_filter =', node_filter)
+        found_node_templates = []
+        for node_template_name, node_template in self.get_topology_template().get(syntax.NODE_TEMPLATES, {}).items():
+            if self.type_system.is_derived_from(node_template.get(syntax.TYPE), node_type_name):
+                if node_filter is None or eval_node_filter(node_filter, node_template):
+                    found_node_templates.append(node_template_name)
+        self.logger.debug(context_error_message, '- select_node_templates found_node_templates =', found_node_templates)
+        return found_node_templates
 
     def check_interface_assignment(self, interface_name, interface_assignment, interface_definition, context_error_message):
         # check description - nothing to do
