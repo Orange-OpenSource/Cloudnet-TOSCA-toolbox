@@ -1524,7 +1524,7 @@ class TypeChecker(Checker):
             if property_definition.get(syntax.REQUIRED, True) \
                and property_definition.get(syntax.DEFAULT) is None \
                and properties.get(property_name) is None:
-               self.error(context_error_message + ':' + syntax.PROPERTIES + ':' + property_name + ' - property required')
+               self.error(context_error_message + ':' + syntax.PROPERTIES + ':' + property_name + ' - required property unassigned')
 
     def check_parameter_definition(self, parameter_name, parameter_definition, context_error_message):
         # check type
@@ -1884,8 +1884,14 @@ class TypeChecker(Checker):
                 self.check_required_properties(relationship, relationship_type, context_error_message)
                 # check relationship interfaces
                 self.iterate_over_map_of_assignments(self.check_interface_assignment, syntax.INTERFACES, relationship, relationship_type, relationship_type_name, cem)
+        else:
+            # no relationship declared
+            cem = context_error_message + ':' + syntax.RELATIONSHIP
+            checked, relationship_type_name, relationship_type = self.check_type_in_definition('relationship', syntax.RELATIONSHIP, requirement_definition, {}, cem)
+            # but the required properties without default of the relationship type must be assigned
+            self.check_required_properties({}, relationship_type, cem)
 
-        # check relationship node filter
+        # check node_filter
         node_filter = requirement_assignment.get(syntax.NODE_FILTER)
         if node_filter != None:
             # TODO: node_filter and node: <node_template_name> are exclusive!
@@ -1903,8 +1909,6 @@ class TypeChecker(Checker):
                     self.info(cem + ' - ' + update_requirement_node + ' node template found')
                 else:
                     self.warning(cem + ' - ' + array_to_string_with_or_separator(node_templates) + ' node templates found, then ' + update_requirement_node + ' selected')
-
-#            self.warning(context_error_message + ':' + syntax.NODE_FILTER + ' - checked but unsupported')
             # WARNING: remove the node_filter from requirement_assignment!
             del requirement_assignment[syntax.NODE_FILTER]
 

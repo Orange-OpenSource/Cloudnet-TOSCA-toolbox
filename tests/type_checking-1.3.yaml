@@ -38,13 +38,18 @@ topology_template:
       requirements:
         - local_storage:
             node: tosca.nodes.Storage.BlockStorage # volume1 found
+            relationship:
+              properties:
+                location: /path # location must be assigned because it is a required property
         - local_storage:
             node_filter: {} # volume1 found
+            # ERROR: relationship.properties.location unassigned!
         - local_storage:
             node_filter: # ERROR: no node found because no BlockStorage has volume_id equal to 101!
               properties:
                 - volume_id:
                     - equal: '101'
+            # ERROR: relationship.properties.location unassigned!
 
     volume1:
       type: tosca.nodes.Storage.BlockStorage
