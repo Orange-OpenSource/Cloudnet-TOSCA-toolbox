@@ -936,7 +936,7 @@ class TypeChecker(Checker):
         if type(constraint_clause) != dict:
             constraint_clause = { 'equal': constraint_clause }
         for constraint_operator, constraint_value in constraint_clause.items():
-            cem = context_error_message + ': ' + constraint_operator
+            cem = context_error_message + ':' + constraint_operator
             constraint_clause_checkers = BASIC_CONSTRAINT_CLAUSES.get(constraint_operator)
             if constraint_clause_checkers is None:
                 self.error(cem + ' - unsupported operator')
@@ -1965,13 +1965,13 @@ class TypeChecker(Checker):
             node_type_properties = node_type.get(syntax.PROPERTIES, {})
             idx = 0
             for property in properties:
-                cem = context_error_message + ':' + syntax.PROPERTIES + '[' + str(idx) + ']:'
+                cem = context_error_message + ':' + syntax.PROPERTIES + '[' + str(idx) + ']'
                 for property_name, property_filter_definition in property.items():
                     property_definition = node_type_properties.get(property_name)
                     if property_definition is None:
-                        self.error(cem + property_name + ' - property undefined in ' + node_type_name)
+                        self.error(cem + ':' + property_name + ' - property undefined in ' + node_type_name)
                     else:
-                        self.check_property_filter_definition(property_name, property_filter_definition, property_definition, cem)
+                        self.check_property_filter_definition(property_name, property_filter_definition, property_definition, cem + ':' + property_name)
             idx += 1
         # check capabilities
         capabilities = node_filter.get(syntax.CAPABILITIES)
@@ -1987,6 +1987,8 @@ class TypeChecker(Checker):
                         self.error(cem1 + capability_name + ' - capability undefined in ' + node_type_name)
                     else:
                         cem1 += capability_name + ':properties'
+                        if type(capability_definition) is str:
+                            capability_definition = { syntax.TYPE : capability_definition }
                         checked, capability_type_name, capability_type = self.check_type_in_definition('capability', syntax.TYPE, capability_definition, {}, context_error_message)
                         capability_type_properties = capability_type.get(syntax.PROPERTIES, {})
                         idx2 = 0
