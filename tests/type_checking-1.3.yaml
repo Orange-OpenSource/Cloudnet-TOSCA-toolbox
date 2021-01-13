@@ -36,6 +36,39 @@ topology_template:
         Standard:
           type: MyStandardInterface
 
+    with_node_filter:
+      type: tosca.nodes.WebServer
+      node_filter:
+        properties:
+          - undefined-property: [] # ERROR: property undefined!
+          - component_version: 1.0 # implicit equal operator
+          - component_version: xxx # implicit equal operator but # ERROR: version expected!
+          - component_version: { equal: 1.0 } # correct
+          - component_version: { equal: true } # ERROR: version expected!
+          - component_version:
+              equal: 1.0 # correct
+          - component_version:
+              equal: xxx # ERROR: version expected!
+          - component_version: [ { equal: 1.0 } ] # correct
+          - component_version: [ { equal: yyy } ] # ERROR: version expected!
+          - component_version:
+              - equal: 1.0 # correct
+          - component_version:
+              - equal: xxx # ERROR: version expected!
+        capabilities:
+          - undefined-capability: {} # ERROR: capability undefined!
+          - data_endpoint:
+              properties:
+                - undefined-property: [] # ERROR: property undefined!
+                - protocol: tcp # implicit equal operator
+                - protocol: 10 # implicit equal operator but # ERROR: string expected!
+                - protocol: { equal: tcp }
+                - protocol:
+                    equal: tcp
+                - protocol: [ { equal: tcp } ]
+                - protocol:
+                    - equal: tcp
+
   policies:
     - targets_undefined:
         type: tosca.policies.Root

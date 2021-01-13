@@ -76,6 +76,11 @@ definitions:
 
   # Section 3.6.3
   constraint_clause:
+    oneOf:
+      - $ref: "#/definitions/scalar" # implicit equal operator
+      - $ref: "#/definitions/constraint_clause_with_operator"
+
+  constraint_clause_with_operator:
     type: object
     properties:
       equal:
@@ -111,6 +116,7 @@ definitions:
         type: string
       schema:
         type: string
+    additionalProperties: false
     minProperties: 1
     maxProperties: 1
 
@@ -122,12 +128,15 @@ definitions:
 
   # Section 3.6.4
   property_filter_definition:
-    anyOf:
-      - additionalProperties:
-          $ref: "#/definitions/constraint_clause"
+    type: object
+    additionalProperties:
+      oneOf:
+      - $ref: "#/definitions/constraint_clause"
       - type: array
         items:
           $ref: "#/definitions/constraint_clause"
+    minProperties: 1
+    maxProperties: 1
 
   # Section 3.6.5
   node_filter_definition:
@@ -147,9 +156,7 @@ definitions:
               properties:
                 type: array
                 items:
-                  type: object
-                  additionalProperties:
-                    $ref: "#/definitions/property_filter_definition"
+                  $ref: "#/definitions/property_filter_definition"
             additionalProperties: false
     additionalProperties: false
 
