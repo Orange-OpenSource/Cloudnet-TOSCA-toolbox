@@ -842,7 +842,7 @@ data_types:
         default: 100 # ERROR: less_or_equal failed!
         constraints:
           - less_or_equal: 50
-      p-less_than-float-0:
+      p-less_or_equal-float-0:
         type: float
         default: 1.0 # CORRECT: less_or_equal succeeded.
         constraints:

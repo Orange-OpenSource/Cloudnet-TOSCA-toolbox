@@ -260,7 +260,6 @@ topology_template:
               - call_operation: Standard.start # correct
           target_filter_capability_with_condition_and_actions:
             event: EventName
-            action: []
             target_filter:
               node: compute
               capability: endpoint # capability defined
@@ -279,7 +278,6 @@ topology_template:
               - call_operation: Standard.start # correct
           target_filter_requirement_capability_with_condition_and_actions:
             event: EventName
-            action: []
             target_filter:
               node: compute
               requirement: local_storage # requirement defined
