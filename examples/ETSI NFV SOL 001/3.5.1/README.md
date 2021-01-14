@@ -1,8 +1,8 @@
-Cloudnet-TOSCA-toolbox ETSI NFV SOL 001 example
-=
+# Cloudnet-TOSCA-toolbox ETSI NFV SOL 001 example
+
 These examples are ... TO BE COMPLETED ...
 
-You can experiment the TOSCA-toolbox with these yaml files.  
+You can experiment the TOSCA-toolbox with these yaml files.
 
 ## Table of contents
 1. [Manual procedure](#manual-procedure)
@@ -11,44 +11,44 @@ You can experiment the TOSCA-toolbox with these yaml files.
     - [Using the interactive mode](#using-the-interactive-mode)
 3. [Examples description](#examples-description)
 
-## Manual procedure 
+## Manual procedure
 ```sh
-cd examples/  
-mkdir my_example  
-cp some_place/my_tosca_template_A.yaml my_example/  
-...  
+cd examples/
+mkdir my_example
+cp some_place/my_tosca_template_A.yaml my_example/
+...
 ```
 
-Load Cloudnet commands:  
+Load Cloudnet commands:
 ```sh
-CLOUDNET_BINDIR=../../bin  
-. ${CLOUDNET_BINDIR}/cloudnet_rc.sh  
-```  	
-
-Now, launching the command  
-```sh
-translate my_tosca_template_A.yaml  
+CLOUDNET_BINDIR=../../bin
+. ${CLOUDNET_BINDIR}/cloudnet_rc.sh
 ```
 
-will :  
-- check the file yaml,  
-- check the TOSCA syntax and types correction,  
-- translate it into the MIT Alloy language,  
-- generate .dot, .nwdiag and .plantuml templates.  
-
-Then to generate network diagrams, type:  
+Now, launching the command
 ```sh
-generate_network_diagrams nwdiag/*.nwdiag  
+translate my_tosca_template_A.yaml
 ```
 
-To get TOSCA diagrams, use the command:  
+will :
+- check the file yaml,
+- check the TOSCA syntax and types correction,
+- translate it into the MIT Alloy language,
+- generate .dot, .nwdiag and .plantuml templates.
+
+Then to generate network diagrams, type:
 ```sh
-generate_tosca_diagrams tosca_diagrams/*.dot  
+generate_network_diagrams nwdiag/*.nwdiag
 ```
 
-And to generate UML diagrams:  
+To get TOSCA diagrams, use the command:
 ```sh
-generate_uml2_diagrams uml2/*.plantuml  
+generate_tosca_diagrams tosca_diagrams/*.dot
+```
+
+And to generate UML diagrams:
+```sh
+generate_uml2_diagrams uml2/*.plantuml
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Back to top](#cloudnet-tosca-toolbox-etsi-nfv-sol-001-example)
@@ -61,14 +61,14 @@ This script is located int the bin directory of the repository
 
 - The trace result  is in a log file located in logs/ directory
 - The resulting files are located in a RESULTS/ directory where
-  you will find the following diretories 
+  you will find the following diretories
   Alloy : alloy translation of yaml files
   NetworkDiagrams : nwdiag and png files
   ToscaDiagrams : dot and png files
   Uml2Diagrams : platuml and png files
 
 ```sh
-cd examples/OpenStack 
+cd examples/OpenStack
 
 ## Run all the tools (TOSCA syntax checking, diagrams generation, Alloy syntax checking)
 ../../bin -b
@@ -82,11 +82,11 @@ cd examples/OpenStack
 
 ### Using the interactive mode
 ```sh
-cd examples/OpenStack 
+cd examples/OpenStack
 ../../bin/run.sh
 ```
 It will say you where the results files will be located :
-```
+```sh
 Generated files will be placed in the following directories
       Alloy_target_directory : RESULTS/Alloy
       nwdiag_target_directory : RESULTS/NetworkDiagrams
@@ -99,9 +99,9 @@ A log file will be also available here logs/
 ```
 
 and display the following menu
-```
+```sh
       ~~~~~~~~~~~~~~~~~~~~~~~~~
-       TOSCA Toolbox - M E N U 
+       TOSCA Toolbox - M E N U
       ~~~~~~~~~~~~~~~~~~~~~~~~~
       1. TOSCA syntax checking
       2. All diagrams generation
@@ -113,7 +113,7 @@ and display the following menu
       w. Launch the whole process
       x. Exit
 
-Enter choice [ 1-5 clwx ] 
+Enter choice [ 1-5 clwx ]
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Back to top](#cloudnet-tosca-toolbox-etsi-nfv-sol-001-example)
