@@ -437,13 +437,34 @@ data_types:
         default: '20' # ERROR: <scalar> <unit> expected!
       p-scalar-unit.frequency-3:
         type: scalar-unit.frequency
-        default: 'x s' # ERROR: <scalar> expected!
+        default: 'x Hz' # ERROR: <scalar> expected!
       p-scalar-unit.frequency-4:
         type: scalar-unit.frequency
-        default: '-1 s' # ERROR: positive <scalar> expected!
+        default: '-1 Hz' # ERROR: positive <scalar> expected!
       p-scalar-unit.frequency-5:
         type: scalar-unit.frequency
         default: '1 Xy' # ERROR: <unit.frequency> expected!
+      p-scalar-unit.bitrate-01:
+        type: scalar-unit.bitrate
+        default: 8 Gbps # CORRECT
+      p-scalar-unit.bitrate-02:
+        type: scalar-unit.bitrate
+        default: 8Gbps # CORRECT: spaces between <scalar> and <unit> are optional.
+      p-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 20 # ERROR: scalar-unit.bitrate expected!
+      p-scalar-unit.bitrate-2:
+        type: scalar-unit.bitrate
+        default: '20' # ERROR: <scalar> <unit> expected!
+      p-scalar-unit.bitrate-3:
+        type: scalar-unit.bitrate
+        default: 'x Gbps' # ERROR: <scalar> expected!
+      p-scalar-unit.bitrate-4:
+        type: scalar-unit.bitrate
+        default: '-1 Gbps' # ERROR: positive <scalar> expected!
+      p-scalar-unit.bitrate-5:
+        type: scalar-unit.bitrate
+        default: '1 Xy' # ERROR: <unit.bitrate> expected!
       p-PortDef-0:
         type: PortDef
         default: 80 # CORRECT
@@ -582,6 +603,16 @@ data_types:
         default: 1 Hz # ERROR: equal failed!
         constraints:
           - equal: 1 GHz
+      p-equal-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 12 MBps # CORRECT: equal succeeded.
+        constraints:
+          - equal: 12000 KBps
+      p-equal-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 1 Bps # ERROR: equal failed!
+        constraints:
+          - equal: 1 GBps
       p-greater_than-string-0:
         type: string
         default: bbbbb # CORRECT: greater_than succeeded.
@@ -662,6 +693,16 @@ data_types:
         default: 1 Hz # ERROR: greater_than failed!
         constraints:
           - greater_than: 1 GHz
+      p-greater_than-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 12 MBps # CORRECT: greater_than succeeded.
+        constraints:
+          - greater_than: 100 KBps
+      p-greater_than-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 1 Bps # ERROR: greater_than failed!
+        constraints:
+          - greater_than: 1 GiBps
       p-greater_or_equal-string-0:
         type: string
         default: bbbbb # CORRECT: greater_or_equal succeeded.
@@ -742,6 +783,16 @@ data_types:
         default: 1 Hz # ERROR: greater_or_equal failed!
         constraints:
           - greater_or_equal: 1 GHz
+      p-greater_or_equal-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 12 MBps # CORRECT: greater_or_equal succeeded.
+        constraints:
+          - greater_or_equal: 100 KBps
+      p-greater_or_equal-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 1 Bps # ERROR: greater_or_equal failed!
+        constraints:
+          - greater_or_equal: 1 GiBps
       p-less_than-string-0:
         type: string
         default: aaaaa # CORRECT: less_than succeeded.
@@ -822,6 +873,16 @@ data_types:
         default: 1 GHz # ERROR: less_than failed!
         constraints:
           - less_than: 1 MHz
+      p-less_than-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 12 KBps # CORRECT: less_than succeeded.
+        constraints:
+          - less_than: 100 MBps
+      p-less_than-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 1 GiBps # ERROR: less_than failed!
+        constraints:
+          - less_than: 1 Bps
       p-less_or_equal-string-0:
         type: string
         default: aaaaa # CORRECT: less_or_equal succeeded.
@@ -902,6 +963,16 @@ data_types:
         default: 1 GHz # ERROR: less_or_equal failed!
         constraints:
           - less_or_equal: 1 MHz
+      p-less_or_equal-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 12 KBps # CORRECT: less_or_equal succeeded.
+        constraints:
+          - less_or_equal: 100 MBps
+      p-less_or_equal-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 1 GiBps # ERROR: less_or_equal failed!
+        constraints:
+          - less_or_equal: 1 MiBps
       p-in_range-string-0:
         type: string
         default: blue # CORRECT: in_range succeeded.
@@ -1027,6 +1098,21 @@ data_types:
         default: 10 GHz # ERROR: in_range failed!
         constraints:
           - in_range: [ 1 MHz, 100 MHz ]
+      p-in_range-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 10 MBps # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ 1 MBps, 100 MBps ]
+      p-in_range-scalar-time.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 10 KBps # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1 MBps, 100 MBps ]
+      p-in_range-scalar-unit.bitrate-2:
+        type: scalar-unit.bitrate
+        default: 10 GBps # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1 MBps, 100 MBps ]
       p-valid_values-string-0:
         type: string
         default: blue # CORRECT: valid_values succeeded.
@@ -1157,6 +1243,16 @@ data_types:
         default: 100 GHz # ERROR: valid_values failed!
         constraints:
           - valid_values: [ 1 Hz, 1 kHz, 1 MHz, 1 GHz ]
+      p-valid_values-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 1 GBps # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ 1 Bps, 1 KBps, 1 MBps, 1 GBps ]
+      p-valid_values-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 100 GBps # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ 1 Bps, 1 KBps, 1 MBps, 1 GBps ]
       p-length-string-0:
         type: string
         default: abcde # CORRECT: length succeeded.
@@ -1416,6 +1512,10 @@ data_types:
         type: scalar-unit.frequency
         constraints:
           - length: 10 # ERROR: length operator unallowed on type scalar-unit.frequency!
+      p-length-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type scalar-unit.bitrate!
       p-min_length-integer:
         type: integer
         constraints:
@@ -1456,6 +1556,10 @@ data_types:
         type: scalar-unit.frequency
         constraints:
           - min_length: 10 # ERROR: min_length operator unallowed on type scalar-unit.frequency!
+      p-min_length-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type scalar-unit.bitrate!
       p-max_length-integer:
         type: integer
         constraints:
@@ -1496,6 +1600,10 @@ data_types:
         type: scalar-unit.frequency
         constraints:
           - max_length: 10 # ERROR: max_length operator unallowed on type scalar-unit.frequency!
+      p-max_length-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type scalar-unit.bitrate!
       p-pattern-integer:
         type: integer
         constraints:
@@ -1544,6 +1652,10 @@ data_types:
         type: scalar-unit.frequency
         constraints:
           - pattern: '' # ERROR: pattern operator unallowed on type scalar-unit.frequency!
+      p-pattern-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type scalar-unit.bitrate!
       p-schema-integer:
         type: integer
         constraints:
@@ -1590,6 +1702,10 @@ data_types:
           - schema: '' # ERROR: schema operator unallowed on type scalar-unit.time!
       p-schema-scalar-unit.frequency:
         type: scalar-unit.frequency
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type scalar-unit.frequency!
+      p-schema-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
         constraints:
           - schema: '' # ERROR: schema operator unallowed on type scalar-unit.frequency!
 
@@ -1647,6 +1763,10 @@ data_types:
         type: scalar-unit.frequency
         constraints:
         - equal: false # ERROR: scalar-unit.frequency expected!
+      p-equal-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - equal: false # ERROR: scalar-unit.bitrate expected!
       p-greater_than-string:
         type: string
         constraints:
@@ -1679,6 +1799,10 @@ data_types:
         type: scalar-unit.frequency
         constraints:
         - greater_than: false # ERROR: scalar-unit.frequency expected!
+      p-greater_than-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - greater_than: false # ERROR: scalar-unit.bitrate expected!
       p-greater_or_equal-string:
         type: string
         constraints:
@@ -1711,6 +1835,10 @@ data_types:
         type: scalar-unit.frequency
         constraints:
         - greater_or_equal: false # ERROR: scalar-unit.frequency expected!
+      p-greater_or_equal-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - greater_or_equal: false # ERROR: scalar-unit.bitrate expected!
       p-less_than-string:
         type: string
         constraints:
@@ -1743,6 +1871,10 @@ data_types:
         type: scalar-unit.frequency
         constraints:
         - less_than: false # ERROR: scalar-unit.frequency expected!
+      p-less_than-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - less_than: false # ERROR: scalar-unit.bitrate expected!
       p-less_or_equal-string:
         type: string
         constraints:
@@ -1775,6 +1907,10 @@ data_types:
         type: scalar-unit.frequency
         constraints:
         - less_or_equal: false # ERROR: scalar-unit.frequency expected!
+      p-less_or_equal-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - less_or_equal: false # ERROR: scalar-unit.bitrate expected!
       p-in_range-string-1:
         type: string
         constraints:
@@ -1839,6 +1975,14 @@ data_types:
         type: scalar-unit.frequency
         constraints:
         - in_range: [ false, 1 MHz ] # ERROR: scalar-unit.frequency expected!
+      p-in_range-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        constraints:
+        - in_range: [ 1 Mbps, false ] # ERROR: scalar-unit.bitrate expected!
+      p-in_scalar-unit.bitrate-2:
+        type: scalar-unit.bitrate
+        constraints:
+        - in_range: [ false, 1 Mbps ] # ERROR: scalar-unit.bitrate expected!
       p-valid_values-string:
         type: string
         constraints:
@@ -1891,6 +2035,10 @@ data_types:
         type: scalar-unit.frequency
         constraints:
         - valid_values: [ 1 Hz, false ] # ERROR: scalar-unit.frequency expected!
+      p-valid_values-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - valid_values: [ 1 bps, false ] # ERROR: scalar-unit.bitrate expected!
 
   DataTypePropertiesExternalSchemaUnchecked:
     properties:

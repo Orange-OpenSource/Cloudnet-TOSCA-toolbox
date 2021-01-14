@@ -97,7 +97,8 @@ class TypeSystem(object):
             'map': {},
             'scalar-unit.size': {},
             'scalar-unit.time': {},
-            'scalar-unit.frequency': {}
+            'scalar-unit.frequency': {},
+            'scalar-unit.bitrate': {},
         }
         self.capability_types = {}
         self.interface_types = {}
@@ -226,6 +227,27 @@ SCALAR_FREQUENCY_UNITS = {
     'GHz': 10**9, # Gigahertz
 }
 
+SCALAR_BITRATE_UNITS = {
+    'bps':    1,             # bit per second
+    'Kbps':   1000,          # kilobit (1000 bits) per second
+    'Kibps':  1024,          # kibibits (1024 bits) per second
+    'Mbps':   1000000,       # megabit (1000000 bits) per second
+    'Mibps':  1048576,       # mebibit (1048576 bits) per second
+    'Gbps':   1000000000,    # gigabit (1000000000 bits) per second
+    'Gibps':  1073741824,    # gibibits (1073741824 bits) per second
+    'Tbps':   1000000000000, # terabit (1000000000000 bits) per second
+    'Tibps':  1099511627776, # tebibits (1099511627776 bits) per second
+    'Bps':    8,             # byte per second
+    'KBps':   8*1000,        # kilobyte (1000 bytes) per second
+    'KiBps':  8*1024,        # kibibytes (1024 bytes) per second
+    'MBps':   8*1000000,     # megabyte (1000000 bytes) per second
+    'MiBps':  8*1048576,     # mebibyte (1048576 bytes) per second
+    'GBps':   8*1000000000,  # gigabyte (1000000000 bytes) per second
+    'GiBps':  8*1073741824,  # gibibytes (1073741824 bytes) per second
+    'TBps':   8*1000000000000, # terabytes (1000000000000 bytes) per second
+    'TiBps':  8*1099511627776, # tebibytes (1099511627776 bytes) per second
+}
+
 def array_to_string_with_or_separator(a_list):
     return str(a_list).replace("['", '').replace("']", '').replace("', '", ' or ')
 
@@ -347,7 +369,8 @@ BASIC_TYPE_CHECKERS = {
     'map': BasicTypeChecker('map', lambda value : type(value) == dict),
     'scalar-unit.size': BasicTypeChecker('scalar-unit.size', lambda value : type(value) == str and check_scalar_unit(value, SCALAR_SIZE_UNITS)),
     'scalar-unit.time': BasicTypeChecker('scalar-unit.time', lambda value : type(value) == str and check_scalar_unit(value, SCALAR_TIME_UNITS)),
-    'scalar-unit.frequency': BasicTypeChecker('scalar-unit.time', lambda value : type(value) == str and check_scalar_unit(value, SCALAR_FREQUENCY_UNITS)),
+    'scalar-unit.frequency': BasicTypeChecker('scalar-unit.frequency', lambda value : type(value) == str and check_scalar_unit(value, SCALAR_FREQUENCY_UNITS)),
+    'scalar-unit.bitrate': BasicTypeChecker('scalar-unit.bitrate', lambda value : type(value) == str and check_scalar_unit(value, SCALAR_BITRATE_UNITS)),
 }
 
 class ConstraintClauseChecker(object):
@@ -402,6 +425,9 @@ BASIC_CONSTRAINT_CLAUSES = {
         'scalar-unit.frequency': ConstraintClauseChecker('equal',
             lambda v1, v2: normalize_scalar_unit(v1, SCALAR_FREQUENCY_UNITS) == normalize_scalar_unit(v2, SCALAR_FREQUENCY_UNITS),
             type_check_operand),
+        'scalar-unit.bitrate': ConstraintClauseChecker('equal',
+            lambda v1, v2: normalize_scalar_unit(v1, SCALAR_BITRATE_UNITS) == normalize_scalar_unit(v2, SCALAR_BITRATE_UNITS),
+            type_check_operand),
     },
     'greater_than': {
         'string': ConstraintClauseChecker('greater_than', CONSTRAINT_GREATER_THAN, type_check_operand),
@@ -417,6 +443,9 @@ BASIC_CONSTRAINT_CLAUSES = {
             type_check_operand),
         'scalar-unit.frequency': ConstraintClauseChecker('greater_than',
             lambda v1, v2: normalize_scalar_unit(v1, SCALAR_FREQUENCY_UNITS) > normalize_scalar_unit(v2, SCALAR_FREQUENCY_UNITS),
+            type_check_operand),
+        'scalar-unit.bitrate': ConstraintClauseChecker('greater_than',
+            lambda v1, v2: normalize_scalar_unit(v1, SCALAR_BITRATE_UNITS) > normalize_scalar_unit(v2, SCALAR_BITRATE_UNITS),
             type_check_operand),
     },
     'greater_or_equal': {
@@ -434,6 +463,9 @@ BASIC_CONSTRAINT_CLAUSES = {
         'scalar-unit.frequency': ConstraintClauseChecker('greater_or_equal',
             lambda v1, v2: normalize_scalar_unit(v1, SCALAR_FREQUENCY_UNITS) >= normalize_scalar_unit(v2, SCALAR_FREQUENCY_UNITS),
             type_check_operand),
+        'scalar-unit.bitrate': ConstraintClauseChecker('greater_or_equal',
+            lambda v1, v2: normalize_scalar_unit(v1, SCALAR_BITRATE_UNITS) >= normalize_scalar_unit(v2, SCALAR_BITRATE_UNITS),
+            type_check_operand),
     },
     'less_than': {
         'string': ConstraintClauseChecker('less_than', CONSTRAINT_LESS_THAN, type_check_operand),
@@ -450,6 +482,9 @@ BASIC_CONSTRAINT_CLAUSES = {
         'scalar-unit.frequency': ConstraintClauseChecker('less_than',
             lambda v1, v2: normalize_scalar_unit(v1, SCALAR_FREQUENCY_UNITS) < normalize_scalar_unit(v2, SCALAR_FREQUENCY_UNITS),
             type_check_operand),
+        'scalar-unit.bitrate': ConstraintClauseChecker('less_than',
+            lambda v1, v2: normalize_scalar_unit(v1, SCALAR_BITRATE_UNITS) < normalize_scalar_unit(v2, SCALAR_BITRATE_UNITS),
+            type_check_operand),
     },
     'less_or_equal': {
         'string': ConstraintClauseChecker('less_or_equal', CONSTRAINT_LESS_OR_EQUAL, type_check_operand),
@@ -465,6 +500,9 @@ BASIC_CONSTRAINT_CLAUSES = {
             type_check_operand),
         'scalar-unit.frequency': ConstraintClauseChecker('less_or_equal',
             lambda v1, v2: normalize_scalar_unit(v1, SCALAR_FREQUENCY_UNITS) <= normalize_scalar_unit(v2, SCALAR_FREQUENCY_UNITS),
+            type_check_operand),
+        'scalar-unit.bitrate': ConstraintClauseChecker('less_or_equal',
+            lambda v1, v2: normalize_scalar_unit(v1, SCALAR_BITRATE_UNITS) <= normalize_scalar_unit(v2, SCALAR_BITRATE_UNITS),
             type_check_operand),
     },
     'in_range': {
@@ -485,6 +523,9 @@ BASIC_CONSTRAINT_CLAUSES = {
         'scalar-unit.frequency': ConstraintClauseChecker('in_range',
             lambda v1, v2: in_range_scalar_unit(v1, v2, SCALAR_FREQUENCY_UNITS),
             type_check_in_range_operand),
+        'scalar-unit.bitrate': ConstraintClauseChecker('in_range',
+            lambda v1, v2: in_range_scalar_unit(v1, v2, SCALAR_BITRATE_UNITS),
+            type_check_in_range_operand),
     },
     'valid_values': {
         'string': ConstraintClauseChecker('valid_values', CONSTRAINT_VALID_VALUES, type_check_operand),
@@ -500,6 +541,7 @@ BASIC_CONSTRAINT_CLAUSES = {
         'scalar-unit.size': ConstraintClauseChecker('valid_values', CONSTRAINT_VALID_VALUES, type_check_operand),
         'scalar-unit.time': ConstraintClauseChecker('valid_values', CONSTRAINT_VALID_VALUES, type_check_operand),
         'scalar-unit.frequency': ConstraintClauseChecker('valid_values', CONSTRAINT_VALID_VALUES, type_check_operand),
+        'scalar-unit.bitrate': ConstraintClauseChecker('valid_values', CONSTRAINT_VALID_VALUES, type_check_operand),
     },
     'length': {
         'string': ConstraintClauseChecker('length', CONSTRAINT_LENGTH),
