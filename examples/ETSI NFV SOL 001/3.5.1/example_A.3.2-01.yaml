@@ -1,0 +1,123 @@
+# A.3.2-01.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml  # all of TOSCA VNFD types as defined in ETSI GS NFV-SOL 001
+  - example_A.3.2-02.yaml # contains the VNF node type definition
+  ### fixed imports for exampleVNF.yaml 
+
+#node type should be removed as it is imported
+#node_types:
+#  tosca.nodes.nfv.exampleVNF:
+#    derived_from: tosca.nodes.nfv.VNF ####underscore added
+    # properties:
+    # omitted for brevity
+#    requirements:
+#       - virtual_link:
+#          capability: tosca.capabilities.nfv.VirtualLinkable
+
+#...
+
+topology_template:
+
+#...
+
+  substitution_mappings:
+    node_type: tosca.nodes.nfv.exampleVNF
+    substitution_filter:
+      properties:  
+        - flavour_id: { equal: simple }
+    requirements:
+      virtual_link: [vduCp_B2, virtual_link]
+
+  node_templates:
+#..
+    ExampleVNF:
+      type: tosca.nodes.nfv.exampleVNF
+      properties:
+        flavour_description: A simple flavour
+      interfaces:
+        Vnflcm:
+          operations:
+            instantiate:
+              implementation: instantiate.workbook.mistral.yaml
+            terminate:
+              implementation: terminate.workbook.mistral.yaml
+
+    vduCp_B2:
+      type: tosca.nodes.nfv.VduCp
+      properties: 
+        layer_protocols: [ ipv4 ]
+      # other properties omitted for brevity
+      requirements:
+        - virtual_binding: VDU-B 
+        # - virtual_link: # mapped to virtual_link requirement of VNF node
+            
+  
+  # other node template definitions (VDU-A, VDU-B, intVL, etc.):
+    VDU-A:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties: 
+        name: VDU-A
+        description: VDU-A description
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 1
+      capabilities:
+        virtual_compute:
+          properties: 
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+
+    vduCp_A:
+      type: tosca.nodes.nfv.VduCp
+      properties: 
+        layer_protocols: [ ipv4 ]
+        protocol: [ associated_layer_protocol: ipv4 ]
+        trunk_mode: true
+      requirements:
+        - virtual_binding: VDU-A
+        - virtual_link: intVL
+
+    intVL:
+      type: tosca.nodes.nfv.VnfVirtualLink
+      properties: 
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+        vl_profile:
+          max_bitrate_requirements:
+            root: 1000000
+            leaf: 100000
+          min_bitrate_requirements:
+            root: 100000
+            leaf: 10000
+
+    vduCp_B:
+      type: tosca.nodes.nfv.VduCp
+      properties: 
+        layer_protocols: [ ipv4 ]
+        protocol: [ associated_layer_protocol: ipv4 ]
+        trunk_mode: true
+      requirements:
+        - virtual_binding: VDU-B
+        - virtual_link: intVL
+
+    VDU-B:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties: 
+        name: VDU-B
+        description: VDU-B description
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 1
+      capabilities:
+        virtual_compute:
+          properties: 
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+
+
+         

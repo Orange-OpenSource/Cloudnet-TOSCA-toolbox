@@ -1,0 +1,86 @@
+# A.11-MyExampleNs_big.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: myExampleNs with big flavour
+imports:
+  - etsi_nfv_sol001_nsd_types.yaml  # all of TOSCA NSD types as defined in ETSI GS NFVSOL 001
+  #### fixed imports
+  - example_A.11-MyExampleNs_Type.yaml # contains the NS node type definition
+  - example_A.14-etsi_nfv_example_vnf1.yaml # uri of the yaml file which contains the tosca.nodes.nfv.example_VNF1 node type definition, this file might be included in the NSD file structure
+  - example_A.14-etsi_nfv_example_vnf2.yaml # uri of the yaml file which contains the tosca.nodes.nfv.example_VNF2 node type definition, this file might be included in the NSD file structure
+  - example_A.14-etsi_nfv_example_vnf3.yaml # uri of the yaml file which contains the tosca.nodes.nfv.example_VNF3 node type definition, this file might be included in the NSD file structure
+
+
+
+topology_template:
+  substitution_mappings:
+    node_type: tosca.MyExampleNS
+    substitution_filter:
+      properties:  
+        - flavour_id: { equal: big }
+    requirements:
+       virtual_link: [ VNF_1, virtual_link_2 ]  
+
+  node_templates:
+    MyExampleNS:
+      type: tosca.MyExampleNS
+      #properties:
+        #
+      interfaces:
+        Nslcm:
+          operations:
+            instantiate:
+              implementation: instantiate.workflow.yaml
+            terminate:
+              implementation: terminate.workflow.yaml
+            scale:
+              implementation: scale.workbook.yaml
+
+    VNF_1:
+      type: tosca.nodes.nfv.example_VNF1
+      properties:
+        # no property assignments needed for required properties that have a default value assigned in the node type definition, e.g. descriptor_id
+        flavour_id: simple
+        vnf_profile:
+          instantiation_level: level_1
+          min_number_of_instances: 2
+          max_number_of_instances: 6
+      requirements:
+        - virtual_link: Ns_VL
+        # - virtual_link_2: # map to virtual_link requirement of the NS node
+    
+    VNF_2:
+      type: tosca.nodes.nfv.example_VNF2
+      properties:
+        flavour_id: simple
+        vnf_profile:
+          instantiation_level: level_1
+          min_number_of_instances: 1
+          max_number_of_instances: 3
+      requirements:
+        - virtual_link_1: Ns_VL
+
+    VNF_3:
+      type: tosca.nodes.nfv.example_VNF3
+      properties:
+        flavour_id: simple
+        vnf_profile:
+          instantiation_level: level_1
+          min_number_of_instances: 1
+          max_number_of_instances: 3
+      requirements:
+        - virtual_link_1: Ns_VL
+
+    Ns_VL:
+      type: tosca.nodes.nfv.NsVirtualLink
+      properties:
+        connectivity_type:
+          layer_protocols: [ipv4]
+          flow_pattern: mesh
+        vl_profile:
+          max_bitrate_requirements:
+             root: 1000
+          min_bitrate_requirements:    
+             root: 1000
+
+

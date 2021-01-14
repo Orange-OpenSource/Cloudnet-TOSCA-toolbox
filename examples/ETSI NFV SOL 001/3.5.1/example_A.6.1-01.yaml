@@ -1,0 +1,310 @@
+# A.6.1-01.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+description: Complex scaling example (uniform delta value) described with policies
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml  # all of TOSCA VNFD types as defined in ETSI GS NFV-SOL 001
+
+topology_template:
+  node_templates:
+    vdu_1:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: ..
+        description: ..
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 5
+        nfvi_constraints: ### colon was missing
+          key_1: value_1
+          key_2: value_2
+      capabilities: 
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+
+    vdu_2:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: ..
+        description: ..
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 7
+        nfvi_constraints:
+          key_1: value_1
+          key_2: value_2
+      capabilities: 
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+
+    vdu_3:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: ..
+        description: ..
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 5
+        nfvi_constraints:
+          key_1: value_1
+          key_2: value_2
+      capabilities: 
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+
+    vdu_4:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: ..
+        description: ..
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 9
+        nfvi_constraints:
+          key_1: value_1
+          key_2: value_2
+      capabilities: 
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+
+    vl_1:
+      type: tosca.nodes.nfv.VnfVirtualLink
+      properties:
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+        vl_profile:
+          min_bitrate_requirements:
+            root: 1000000
+          max_bitrate_requirements:
+            root: 2000000
+
+    vl_2:
+      type: tosca.nodes.nfv.VnfVirtualLink
+      properties:
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+        vl_profile:
+          min_bitrate_requirements:
+            root: 1000000
+          max_bitrate_requirements:
+            root: 4000000
+
+  policies:
+    - scaling_aspects: ### moved left
+        type: tosca.policies.nfv.ScalingAspects
+        properties:
+          aspects:
+            database:
+              name: ..
+              description: ..
+              max_scale_level: 2
+
+            call_proc:
+              name: ..
+              description: ..
+              max_scale_level: 4
+
+
+    - vdu_1_initial_delta:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ vdu_1 ]
+
+    - vdu_1_scaling_aspect_deltas:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: database
+          deltas:
+            delta_1:
+              number_of_instances: 2
+        targets: [ vdu_1 ]
+
+
+    - vdu_2_initial_delta:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ vdu_2 ]
+
+    - vdu_2_scaling_aspect_deltas:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: database
+          deltas:
+            delta_1:
+              number_of_instances: 3
+        targets: [ vdu_2 ]
+
+
+    - vl_1_bitrate_initial_delta:
+        type: tosca.policies.nfv.VirtualLinkBitrateInitialDelta
+        properties:
+          initial_delta:
+            bitrate_requirements:
+              root: 1000000
+        targets: [ vl_1 ]
+
+    - vl_1_bitrate_scaling_aspect_deltas:
+        type: tosca.policies.nfv.VirtualLinkBitrateScalingAspectDeltas
+        properties:
+          aspect: database
+          deltas:
+            delta_1:
+              bitrate_requirements:
+                root: 1000000
+        targets: [ vl_1 ]
+
+
+    - vdu_3_initial_delta:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+           number_of_instances: 1
+        targets: [ vdu_3 ]
+
+    - vdu_3_scaling_aspect_deltas:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: call_proc
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets: [ vdu_3 ]
+
+    - vdu_4_initial_delta:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ vdu_4 ]
+
+    - vdu_4_scaling_aspect_deltas:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: call_proc
+          deltas:
+            delta_1:
+              number_of_instances: 2
+        targets: [ vdu_4 ]
+
+    - vl_2_bitrate_initial_delta:
+        type: tosca.policies.nfv.VirtualLinkBitrateInitialDelta
+        properties:
+          initial_delta:
+            bitrate_requirements:
+              root: 1000000
+        targets: [ vl_2 ]
+
+    - vl_2_bitrate_scaling_aspect_deltas:
+        type: tosca.policies.nfv.VirtualLinkBitrateScalingAspectDeltas
+        properties:
+          aspect: call_proc
+          deltas:
+            delta_1:
+              bitrate_requirements:
+                root: 1000000
+        targets: [ vl_2 ]
+
+    - instantiation_levels:
+        type: tosca.policies.nfv.InstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              description: ..
+              scale_info:
+                database:
+                  scale_level: 0
+                call_proc:
+                  scale_level: 0
+            instantiation_level_2:
+              description: ..
+              scale_info:
+                database:
+                  scale_level: 2
+                call_proc:
+                  scale_level: 3
+          default_level: instantiation_level_1
+
+    - vdu_1_instantiation_levels:
+        type: tosca.policies.nfv.VduInstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              number_of_instances: 1
+            instantiation_level_2:
+              number_of_instances: 5
+        targets: [ vdu_1 ]
+
+    - vdu_2_instantiation_levels:
+        type: tosca.policies.nfv.VduInstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              number_of_instances: 1
+            instantiation_level_2:
+              number_of_instances: 7
+        targets: [ vdu_2 ]
+
+    - vl_1_instantiation_levels:
+        type: tosca.policies.nfv.VirtualLinkInstantiationLevels
+        properties: ### colon was missing
+          levels:
+            instantiation_level_1:
+              bitrate_requirements:
+                root: 30000
+            instantiation_level_2:
+              bitrate_requirements:
+                root: 30000
+        targets: [ vl_1 ]
+
+    - vdu_3_instantiation_levels:
+        type: tosca.policies.nfv.VduInstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              number_of_instances: 1
+            instantiation_level_2:
+              number_of_instances: 4
+        targets: [ vdu_3 ]
+
+    - vdu_4_instantiation_levels:
+        type: tosca.policies.nfv.VduInstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              number_of_instances: 1
+            instantiation_level_2:
+              number_of_instances: 7
+        targets: [ vdu_4 ]
+
+    - vl_2_instantiation_levels:
+        type: tosca.policies.nfv.VirtualLinkInstantiationLevels
+        properties:
+          levels: 
+            instantiation_level_1:
+              bitrate_requirements:
+                root: 30000
+            instantiation_level_2:
+              bitrate_requirements:
+                root: 60000
+
+        targets: [ vl_2 ]
+

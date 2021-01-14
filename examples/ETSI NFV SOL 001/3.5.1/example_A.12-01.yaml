@@ -1,0 +1,77 @@
+# A.12-01.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+description: myExampleNs with small flavour
+
+imports:
+  - etsi_nfv_sol001_nsd_types.yaml  # all of TOSCA NSD types as defined in ETSI GS NFVSOL 001
+# ERROR: not found!
+#  - MyExampleNs_Type.yaml # contains the NS node type definition
+#  - MyExampleNS_2.yaml # uri of the yaml file which contains the tosca.myExample.NS_2 node type definition, this file might be included in the NSD file structure of NS_1
+#  - example_VNF1.yaml # uri of the yaml file which contains the tosca.nodes.nfv.example_VNF1 node type definition, this file might be included in the NSD file structure of NS_1
+  ## updated imports
+  - example_A.12-MyExampleNs_Type.yaml
+  - example_A.12-MyExampleNS_2.yaml
+  - example_A.14-etsi_nfv_example_vnf1.yaml
+
+
+
+
+topology_template:
+  substitution_mappings:
+    node_type: tosca.MyExampleNS
+#     substitution_filter: # ERROR: indentation!
+    substitution_filter:
+        properties:
+          - flavour_id: { equal: small }
+    requirements:
+      virtual_link: [ VNF_1, virtual_link_2 ]
+
+  node_templates:
+    NS_1:
+      type: tosca.MyExampleNS
+      interfaces:
+        Nslcm:
+          operations:
+            instantiate:
+              implementation: instantiate.workflow.yaml
+            terminate:
+              implementation: terminate.workflow.yaml
+
+    VNF_1:
+      type: tosca.nodes.nfv.example_VNF1
+      properties:
+        # no property assignments needed for required properties that have a default value assigned in the node type definition, e.g. descriptor_id
+        flavour_id: simple
+        vnf_profile:
+          instantiation_level: level_1
+          min_number_of_instances: 2
+          max_number_of_instances: 6
+      requirements:
+        - virtual_link_1: NS_VL_1
+        # - virtual_link_2: # map to virtual_link requirement of the NS node
+
+    NS_2:
+      type: tosca.myExample.NS_2
+      properties:
+        descriptor_id: c1bb0ab8-deab-4fa7-95ed-4840d70a3574
+        designer: MyCompany
+        version: 1.0.0.0
+        name: myExample2Service
+        invariant_id: aaaa-bbbb-cccc-dddd
+        ns_profile:
+          ns_instantiation_level: level_1
+          min_number_of_instances: 1
+          max_number_of_instances: 3
+          flavour_id: simple
+
+    NS_VL_1:
+      type: tosca.nodes.nfv.NsVirtualLink
+      properties:
+        connectivity_type:
+          layer_protocols: [ipv4]
+          flow_pattern: mesh
+        vl_profile:
+          max_bitrate_requirements:
+             root: 1000
+          min_bitrate_requirements:
+             root: 1000

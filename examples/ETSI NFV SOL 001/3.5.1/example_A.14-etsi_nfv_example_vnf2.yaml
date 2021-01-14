@@ -1,0 +1,63 @@
+# A.14-etsi_nfv_example_vnf2.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+description: VNF Descriptor for VNF2
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml  # all of VNFD related TOSCA types as defined in ETSI GS NFVSOL 001
+
+node_types:
+  tosca.nodes.nfv.example_VNF2:
+    derived_from: tosca.nodes.nfv.VNF
+    properties:
+      descriptor_id:
+        type: string
+# ERROR: updated in order to validate example_A.14-01.yaml!
+#       constraints: [ equal: b1bb0ce7-ebca-4fa7-95ed-4840d70a1182 ]
+#       default: b1bb0ce7-ebca-4fa7-95ed-4840d70a1182
+        constraints: [ equal: b1bb0ce7-2222-4fa7-95ed-4840d70a1182 ]
+        default: b1bb0ce7-2222-4fa7-95ed-4840d70a1182
+      provider:
+        type: string
+        constraints: [ equal: MyCompany ]
+        default: MyCompany
+      product_name:
+        type: string
+        constraints: [ equal: Example_VNF2 ]
+        default: Example_VNF2
+      software_version:
+        type: string
+        constraints: [ equal: '1.0' ]
+        default: '1.0'
+      descriptor_version:
+        type: string
+# ERROR: updated in order to validate example_A.14-01.yaml!
+#       constraints: [ equal: '1.0' ]
+#       default: '1.0'
+        constraints: [ equal: '1.0.0' ]
+        default: '1.0.0'
+      flavour_id:
+        type: string
+        constraints: [ equal: simple ]
+        default: simple
+      flavour_description:
+        type: string
+        default: ""
+      vnfm_info:
+        type: list
+        entry_schema:
+          type: string
+          constraints: [ equal: '0:MyCompany-1.0.0' ]
+        default: [ '0:MyCompany-1.0.0' ]
+    requirements:
+      - virtual_link_1:
+          capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo
+          occurrences: [ 0, 1 ]
+      - virtual_link_2:
+          capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo
+          occurrences: [ 1, 1 ]
+      # ERROR: added because used in example_A.14-01.yaml!
+      - virtual_link_4:
+          capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo
+          occurrences: [ 1, 1 ]

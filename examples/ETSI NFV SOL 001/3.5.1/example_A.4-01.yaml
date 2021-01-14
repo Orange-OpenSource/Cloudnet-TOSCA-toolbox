@@ -1,0 +1,77 @@
+# A.4-01.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml  # all of TOSCA VNFD types as defined in ETSI GS NFV-SOL 001
+  - example_A.4-03.yaml
+  ### add import for group types
+
+topology_template:
+  description: Template of a VNFD example
+
+  node_templates:
+    Group_VDU_A:
+      type: tosca.nodes.nfv.groupVDU_A
+      capabilities: 
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+      requirements:
+        - virtual_link: VL_2
+
+    Group_VDU_B:
+      type: tosca.nodes.nfv.groupVDU_B
+      capabilities: 
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+      requirements:
+        - virtual_link: VL_2
+        - virtual_link1: VL_1
+
+    Group_VDU_C:
+      type: tosca.nodes.nfv.groupVDU_C # the description of this type is described
+                                        # in another service template.
+      capabilities: 
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+      requirements:
+        - virtual_link: VL_1
+
+    VL_1:
+      type: tosca.nodes.nfv.VnfVirtualLink
+      properties:
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+        vl_profile:
+          max_bitrate_requirements:
+            root: 1000000
+            leaf: 100000
+          min_bitrate_requirements:
+            root: 100000
+            leaf: 10000 
+     # other properties omitted here for brevity
+
+    VL_2:
+      type: tosca.nodes.nfv.VnfVirtualLink
+      properties:
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+        vl_profile:
+          max_bitrate_requirements:
+            root: 1000000
+            leaf: 100000
+          min_bitrate_requirements:
+            root: 100000
+            leaf: 10000      # other properties omitted here for brevity
+
+

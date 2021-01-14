@@ -1,0 +1,164 @@
+# A.13-02.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+description: Relational database, simple
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml  # all of TOSCA VNFD types as defined in ETSI GS NFVSOL 001 for a VNFD
+
+node_types:
+  MyCompany.SunshineDB.1_0.1_0:
+    derived_from: tosca.nodes.nfv.VNF
+    properties:
+      descriptor_id: ###Moved left
+        type: string
+        constraints: [ equal: b1bb0ce7-ebca-4fa7-95ed-4840d70a1177 ]
+        default: b1bb0ce7-ebca-4fa7-95ed-4840d70a1177
+      provider:
+        type: string
+        constraints: [ equal: MyCompany ]
+        default: MyCompany
+      product_name:
+        type: string
+        constraints: [ equal: SunshineDB ]
+        default: SunshineDB
+      software_version:
+        type: string
+        constraints: [ equal: '1.0' ]
+        default: '1.0'
+      descriptor_version:
+        type: string
+        constraints: [ equal: '1.0' ]
+        default: '1.0'
+      flavour_id:
+        type: string
+        constraints: [ valid_values: [ simple ] ]
+        default: simple
+      flavour_description:
+        type: string
+        default: ""
+      vnfm_info:
+        type: list
+        entry_schema:
+          type: string
+          constraints: [ equal: '0:MyCompany-1.0.0' ]
+        default: [ '0:MyCompany-1.0.0' ]
+    # interfaces:
+       # omitted for brevity
+    requirements:
+      - virtual_link:
+          capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo
+          occurrences: [ 0, 1 ]
+      - virtual_link_sby:
+          capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo
+          occurrences: [ 0, 1 ]
+      - virtual_link_vip:
+          capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VipVirtualLinksTo
+          occurrences: [ 0, 1 ]      
+    
+topology_template:
+  substitution_mappings:
+    node_type: MyCompany.SunshineDB.1_0.1_0
+    requirements:
+      virtual_link: [ Vdu-A-Cp, virtual_link ] 
+      virtual_link_sby: [ Vdu-B-Cp, virtual_link ]  
+      virtual_link_vip: [ VipCp, virtual_link ]
+
+
+  node_templates:
+    SunshineDB:
+      type: MyCompany.SunshineDB.1_0.1_0
+      # properties:
+        # omitted for brevity
+      # interfaces: 
+        # omitted for brevity
+    
+    VDU-A:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: VDU-A
+        description: VDU-A description
+
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 1
+        # other properties omitted for brevity
+      capabilities:
+        virtual_compute:
+          properties: # following properties are required.
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+
+      # requirements:
+        # omitted for brevity
+
+    VDU-B:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: VDU-B
+        description: VDU-B description
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 1
+        # other properties omitted for brevity
+      capabilities:
+        virtual_compute:
+          properties: # following properties are required.
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+
+      # requirements:
+        # omitted for brevity
+
+
+    Vdu-A-Cp:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        protocol: [associated_layer_protocol: ipv4 ]
+        trunk_mode: false
+        layer_protocols: [ ipv4 ]
+        role: leaf
+        description: Internal connection point on an VL
+      requirements:
+        - virtual_binding: VDU-A
+        #- virtual_link:  # the target node is determined in the NSD
+
+    Vdu-B-Cp:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        protocol: [associated_layer_protocol: ipv4 ]
+        trunk_mode: false
+        layer_protocols: [ ipv4 ]
+        role: leaf
+        description: Internal connection point on an VL
+      requirements:
+        - virtual_binding: VDU-B
+        #- virtual_link:  # the target node is determined in the NSD
+
+    VipCp:
+      type: tosca.nodes.nfv.VipCp
+      properties:
+        vip_function: high_availability
+        protocol: 
+           - associated_layer_protocol: ipv4
+             address_data:
+               - address_type: ip_address
+                 l3_address_data:
+                   ip_address_assignment: true
+                   floating_ip_activated: true
+                   number_of_ip_address: 1
+        trunk_mode: false
+        layer_protocols: [ ipv4 ]
+        description: >
+          Virtual IP connection point. It holds one IP address shared by the instances of the Vdu-A-Cp and the Vdu-B-Cp nodes (one instance of each). Floating IP address is used. Thus, incoming packets are first NATed to the virtual IP address and then forwarded with the virtual IP address as destination address to the instance of Vdu-A-Cp or Vdu-B-Cp that currently has the address binding. 
+      requirements:
+        - target: Vdu-A-Cp
+        - target: Vdu-B-Cp
+        # - virtual_link:  # the target node is determined in the NSD
+
+  

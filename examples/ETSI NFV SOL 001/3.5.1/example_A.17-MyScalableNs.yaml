@@ -1,0 +1,19 @@
+# ERROR: added because missed!
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  MyProviderCompany.NS.MyScalableNs:
+    derived_from: tosca.nodes.nfv.NS
+    properties:
+      descriptor_id:
+        default: "1.0"
+      designer:
+        default: ...
+      version:
+        default: "1.0"
+      name:
+        default: ...
+      invariant_id:
+        default: ...
+      flavour_id:
+        default: ...

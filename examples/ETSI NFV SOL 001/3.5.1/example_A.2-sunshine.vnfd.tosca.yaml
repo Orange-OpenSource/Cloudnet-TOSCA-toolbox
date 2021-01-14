@@ -1,0 +1,33 @@
+# A.2-sunshine.vnfd.tosca.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: Relational database, non-scalable
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml  # all of TOSCA VNFD types as defined in ETSI GS NFVSOL 001
+  - example_A.2-sunshineVNF.yaml # contains the VNF node type definition
+  ###fixed import
+
+
+topology_template:
+  inputs:
+    flavour_id:
+      type: string
+      description: VNF deployment flavour selected by the consumer. It is provided in the API       
+
+  node_templates: 
+    SunshineDB:
+        type: MyCompany.SunshineDB.1_0.1_0
+        properties:
+          flavour_id: { get_input: flavour_id }
+          descriptor_id: b1bb0ce7-ebca-4fa7-95ed-4840d70a1177
+          provider: MyCompany
+          product_name: SunshineDB
+          software_version: '1.0'
+          descriptor_version: '1.0'
+          vnfm_info:
+            - '0:MyCompany-1.0.0'
+       # requirements:
+          #- virtual_link_backend # mapped in lower-level templates
+          #- virtual_link_service # mapped in lower-level templates
+        # get_input function would be used to process the template at run time to access the selected flavour id. If the TOSCA functions are not supported by VNFM, the above function may not be needed, what other mechanisms can be used by VNFM which provide the same function are out of scope of the present document.
+

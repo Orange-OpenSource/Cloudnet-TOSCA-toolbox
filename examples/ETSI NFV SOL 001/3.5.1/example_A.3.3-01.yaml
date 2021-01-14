@@ -1,0 +1,65 @@
+# A.3.3-01.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml  # all of TOSCA VNFD types as defined in ETSI GS NFV-SOL 001
+  - example_A.3.2-02.yaml # contains the VNF node type definition
+### fixed imports
+
+topology_template:
+#...
+
+  substitution_mappings:
+    node_type: tosca.nodes.nfv.exampleVNF
+    substitution_filter:
+      properties:  
+        - flavour_id: { equal: simple }
+    requirements:
+      virtual_link: [myMRFExtCp, external_virtual_link]
+
+  node_templates:
+    ExampleVNF:
+      type: tosca.nodes.nfv.exampleVNF
+      properties:
+        flavour_description: A simple flavour
+      interfaces:
+        Vnflcm:
+          operations:
+            instantiate:
+              implementation: instantiate.workbook.mistral.yaml
+            terminate:
+              implementation: terminate.workbook.mistral.yaml
+
+    myMRFExtCp:
+      type: tosca.nodes.nfv.VnfExtCp
+      properties: 
+        layer_protocols: [ ipv4 ]
+      # other properties omitted for brevity
+    #     ...
+      requirements:
+        # - external_virtual_link: # mapped to virtual_link requirement of VNF node
+        - internal_virtual_link: intVL-A
+              
+
+    intVL-A:
+      type: tosca.nodes.nfv.VnfVirtualLink
+      properties:
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+          flow_pattern: mesh
+        description: Internal VL
+        vl_profile:
+          max_bitrate_requirements:
+            root: 1000000
+            leaf: 100000
+          min_bitrate_requirements:
+            root: 100000
+            leaf: 10000
+          qos:
+            latency: 100 ms
+            packet_delay_variation: 80 ms
+            packet_loss_ratio: 0.00001
+
+
+  # Other node templates e.g. VDU-A, VDU-B, VduCP_A, etc.:
+#...
+

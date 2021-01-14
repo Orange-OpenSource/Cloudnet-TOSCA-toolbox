@@ -1,0 +1,74 @@
+# A.7.3-01.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+imports:
+  - etsi_nfv_sol001_nsd_types.yaml  # all of TOSCA NSD types as defined in ETSI GS NFVSOL 001
+
+node_types:
+  tosca.nodes.nfv.exampleNS:
+    derived_from: tosca.nodes.nfv.NS
+    properties: ### added to simplify substitution mappings
+      descriptor_id:
+        type: string
+        constraints: [ valid_values: [ b1bb0ce7-ebca-4fa7-95ed-4840d70a1177 ] ]
+        default: b1bb0ce7-ebca-4fa7-95ed-4840d70a1177
+      designer:
+        type: string
+        constraints: [ valid_values: [ MyCompany] ]
+        default: MyCompany
+      name:
+        type: string
+        constraints: [ valid_values: [ ExampleService ] ]
+        default: ExampleService
+      version:
+        type: string
+        constraints: [ valid_values: [ '1.0' ] ]
+        default: '1.0'
+      invariant_id:
+        type: string
+        constraints: [ valid_values: [ 1111-2222-aaaa-bbbb ] ]
+        default: 1111-2222-aaaa-bbbb
+      flavour_id:
+        type: string
+        constraints: [ valid_values: [ small, big ] ]
+        default: small
+    requirements:
+       - virtual_link:
+           capability:
+#            tosca.capabilitites.nfv.VirtualLinkable # ERROR: typo!
+             tosca.capabilities.nfv.VirtualLinkable
+
+topology_template:
+#...
+
+  substitution_mappings:
+    node_type: tosca.nodes.nfv.exampleNS
+    requirements:
+      virtual_link: [SAP_1, external_virtual_link] #SAP_1 is the Sap of the NS
+
+  node_templates:
+
+    SAP_1:
+      type: tosca.nodes.nfv.Sap
+      properties:
+        protocol: [ associated_layer_protocol: ipv4 ]
+        trunk_mode: false
+        layer_protocols: [ ipv4 ]
+      # other properties omitted for brevity
+      requirements:
+       - internal_virtual_link: NsVirtualLink_1
+       # - external_virtual_link: # map to virtual_link requirement of the NS node
+
+    NsVirtualLink_1:
+      type: tosca.nodes.nfv.NsVirtualLink
+      properties:
+        vl_profile:
+          min_bitrate_requirements:
+            root: 100000
+          max_bitrate_requirements:
+            root: 200000
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+
+
+ # Other node templates
+ #...

@@ -1,0 +1,25 @@
+# ERROR: added because missed!
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  MyCompany.VNF.CentralProcess_1_0:
+    derived_from: tosca.nodes.nfv.VNF
+    properties:
+      descriptor_id:
+        default: ...
+      descriptor_version:
+        default: ...
+      provider:
+        default: ...
+      product_name:
+        default: ...
+      software_version:
+        default: ...
+      vnfm_info:
+        default: []
+      flavour_description:
+        default: ...
+    requirements:
+      - virtual_link_1:
+          capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo

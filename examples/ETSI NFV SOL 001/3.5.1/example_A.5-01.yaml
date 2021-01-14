@@ -1,0 +1,222 @@
+# A.5-01.yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: Relational database, simple
+
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml  # all of TOSCA VNFD types as defined in ETSI GS NFV-SOL 001 for a VNFD
+
+data_types:
+  MyCompany.datatypes.nfv.VnfInstantiateAdditionalParameters:
+    derived_from: tosca.datatypes.nfv.VnfOperationAdditionalParameters
+    properties:
+      segmentation_id_of_internalVl:
+        type: string
+        required: true
+        default: 1-4095
+      parameter_2:
+        type: string
+        required: true
+        default: value_2
+
+  MyCompany.datatypes.nfv.AuxVnfcConfigurableProperties:
+    derived_from: tosca.datatypes.nfv.VnfcConfigurableProperties
+    properties:
+      additional_vnfc_configurable_properties:
+        type: MyCompany.datatypes.nfv.AuxVnfcAdditionalConfigurableProperties
+        required: true
+
+  MyCompany.datatypes.nfv.AuxVnfcAdditionalConfigurableProperties:
+    derived_from: tosca.datatypes.nfv.VnfcAdditionalConfigurableProperties
+    properties:
+      name_prefix_in_vim:
+        type: string
+        required: true
+        default: "MyCustomer"
+      dns_server:
+        type: string
+        required: true
+        default: "90.200.250.57"
+
+node_types:
+  MyCompany.SunshineDB.1_0.1_0:
+    derived_from: tosca.nodes.nfv.VNF
+    properties:
+      descriptor_id:
+        type: string
+        constraints: [ equal: b1bb0ce7-ebca-4fa7-95ed-4840d70a1177 ]
+        default: b1bb0ce7-ebca-4fa7-95ed-4840d70a1177
+      provider:
+        type: string
+        constraints: [ equal: MyCompany ]
+        default: MyCompany
+      product_name:
+        type: string
+        constraints: [ equal: SunshineDB ]
+        default: SunshineDB
+      software_version:
+        type: string
+        constraints: [ equal: '1.0' ]
+        default: '1.0'
+      descriptor_version:
+        type: string
+        constraints: [ equal: '1.0' ]
+        default: '1.0'
+      flavour_id: 
+        type: string
+        constraints: [ equal: simple ]
+        default: simple
+      flavour_description: 
+        type: string
+        default: ""
+      vnfm_info:
+        type: list
+        entry_schema:
+          type: string
+          constraints: [ equal: '0:MyCompany-1.0.0' ]
+        default: [ '0:MyCompany-1.0.0' ]
+    interfaces:
+      Vnflcm:
+        type: tosca.interfaces.nfv.Vnflcm
+        operations:
+          instantiate:
+            inputs:
+              additional_parameters:
+                 type: MyCompany.datatypes.nfv.VnfInstantiateAdditionalParameters
+          #terminate:
+    
+  MyCompany.nodes.nfv.Vdu.Aux:
+    derived_from: tosca.nodes.nfv.Vdu.Compute
+    properties:
+      configurable_properties:
+        type: MyCompany.datatypes.nfv.AuxVnfcConfigurableProperties
+        required: false
+
+topology_template:
+  substitution_mappings:
+    node_type: MyCompany.SunshineDB.1_0.1_0
+    requirements:
+      virtual_link: [ dbBackendIpv4, virtual_link ] # IPv4 for SQL
+
+  inputs:
+    segmentation_id_of_internalVl:
+      type: string
+      required: true
+
+  node_templates:
+    SunshineDB:
+      type: MyCompany.SunshineDB.1_0.1_0
+      properties:
+        descriptor_id: b1bb0ce7-ebca-4fa7-95ed-4840d70a1177
+        provider: MyCompany
+        product_name: SunshineDB
+        software_version: '1.0'
+        descriptor_version: '1.0'
+        vnfm_info:
+          - '0:MyCompany-1.0.0'
+        flavour_id: simple
+        flavour_description: 'vnf simple flavour description'
+      interfaces:
+        Vnflcm: 
+          operations:
+            instantiate:
+              implementation: instantiate.workbook.mistral.yaml
+            terminate:
+              implementation: terminate.workbook.mistral.yaml
+            heal:
+              implementation: heal.workbook.mistral.yaml
+    
+    dbBackend:
+      type: MyCompany.nodes.nfv.Vdu.Aux
+      properties:
+        name: dbbackend
+        description: dbBackend
+        nfvi_constraints: 
+          key_1: value_1
+          key_2: value_2
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 4
+      capabilities:
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 8192 MiB
+            virtual_cpu:
+              cpu_architecture: x86
+              num_virtual_cpu: 2
+              virtual_cpu_clock: 1800 MHz
+      requirements:
+        - virtual_storage: mariaDbStorage
+
+    mariaDbStorage:
+      type: tosca.nodes.nfv.Vdu.VirtualBlockStorage
+      properties:
+        virtual_block_storage_data:
+          size_of_storage: '200 GB'
+          rdma_enabled: true 
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: maria.db.image.v1.0.qcow2
+          properties:
+            name: Software of Maria Db
+            version: '1.0'
+            checksum: 
+              algorithm: sha-256
+              hash: b9c3036539fd7a5f87a1bf38eb05fdde8b556a1a7e664dbeda90ed3cd74b4f9d
+            container_format: bare
+            disk_format: qcow2
+            min_disk: 2 GB
+            min_ram: 8192 MiB
+            size: 2 GB
+            operating_system: Linux
+            supported_virtualisation_environments:
+              - KVM
+
+    dbBackendInternalCp:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        protocol: [associated_layer_protocol: ipv4 ]
+        trunk_mode: false
+        layer_protocols: [ ipv4 ]
+        role: leaf
+        description: Internal connection point on an VL
+      requirements:
+        - virtual_binding: dbBackend
+        - virtual_link: internalVl
+
+    internalVl:
+      type: tosca.nodes.nfv.VnfVirtualLink
+      properties:
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+          flow_pattern: mesh
+        test_access: []
+        description: Internal Virtual link in the VNF
+        vl_profile:
+          max_bitrate_requirements:
+            root: 100000
+            leaf: 20000
+          min_bitrate_requirements: 
+            root: 10000
+            leaf: 10000
+          virtual_link_protocol_data:
+            - associated_layer_protocol: ethernet
+              l2_protocol_data:
+                network_type: vlan
+                segmentation_id: { get_input: segmentation_id_of_internalVl }
+
+    dbBackendIpv4:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        protocol: [ associated_layer_protocol: ipv4 ]
+        trunk_mode: false
+        layer_protocols: [ ipv4 ]
+        role: leaf
+        description: External connection point to access the DB on IPv4
+      requirements:
+       #- virtual_link: # the target node is determined in the NSD
+        - virtual_binding: dbBackend
+  
+
