@@ -30,10 +30,12 @@ Help()
    echo "  With the -b option, it launches the whole process and store "
    echo "  the result in a log file located in logs/ directory"
    echo
-   echo "     Syntax: run.sh [-b|h]"
+   echo "     Syntax: run.sh -[b|h|s]"
    echo "     options:"
-   echo "     b     Global execution :"
+   echo "     b     Global execution (translate, diagrams generation, Alloy syntax checking)"
    echo "     h     Print this Help."
+   echo "     s     launch a TOSCA syntax checking on the file provided on the command line."
+   echo "           run.sh -s filename"
    echo
 }
 
@@ -64,6 +66,7 @@ NetworkDiagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
+       echo -e "\n${normal}${magenta}*** Generating network diagrams ***${reset}" | tee -a logs/${_LOG}
        generate_network_diagrams ${nwdiag_target_directory}/*.nwdiag 2>&1 |tee -a logs/${_LOG}
    else
        echo -e "${normal}${magenta}No generated nwdiag file found.${reset}"
@@ -78,6 +81,7 @@ TOSCADiagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
+       echo -e "\n${normal}${magenta}*** Generating TOSCA diagrams ***${reset}" | tee -a logs/${_LOG}
        generate_tosca_diagrams ${tosca_diagrams_target_directory}/*.dot 2>&1 |tee -a logs/${_LOG}
    else
        echo -e "${normal}${magenta}No generated dot file found.${reset}"
@@ -92,6 +96,7 @@ UML2Diagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
+       echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a logs/${_LOG}
        generate_uml2_diagrams ${UML2_target_directory}/*.plantuml 2>&1 |tee -a logs/${_LOG}
    else
        echo -e "${normal}${magenta}No generated plantuml file found.${reset}"
@@ -106,6 +111,7 @@ AlloySyntax()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
+       echo -e "\n${normal}${magenta}*** Checking ALLOY syntax ***${reset}" | tee -a logs/${_LOG}
        alloy_parse ${Alloy_target_directory}/*.als 2>&1 |tee -a logs/${_LOG}
    else
        echo -e "${normal}${magenta}No generated als file found.${reset}"
@@ -120,6 +126,7 @@ AlloySolve()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
+       echo -e "\n${normal}${magenta}*** Run the solver to verify the ability to deploy the description ***${reset}" | tee -a logs/${_LOG}
        (time alloy_execute -c "Show_.*_topology_template" ${Alloy_target_directory}/*.als 2>&1 |tee -a logs/${_LOG}) 2>>logs/${_LOG}
    else
        echo -e "${normal}${magenta}No generated als file found.${reset}"
@@ -212,7 +219,14 @@ read_options(){
            pause
            ;;
         l) # Show the log file
-           less -r logs/${_LOG}
+           # If logfilname is set : show it
+           # else, warn the user
+           if [ -z ${_LOG+x} ]; then
+             echo -e "\n\n"
+             read -p "          No log file created for this session, type any key to continue." choice
+           else
+             less -r logs/${_LOG}
+           fi
            ;;
         w) # Launch the whole process
            echo -e "\n TOSCA syntax checking"
@@ -230,6 +244,10 @@ read_options(){
            pause
            ;;
         x) # Exit with status code 0
+           if [ "$DIRVARS_GENERATED" = true ]; then 
+             # Remove generated configuration file
+             rm -f $TOSCA2CLOUDNET_CONF_FILE
+           fi
            echo -e "\nSee you soon ..."
            exit 0
            ;;
@@ -255,7 +273,7 @@ reset="\e[m"
 blink="5m"
 
 
-# Guess where are located the software
+# Guess where is located the software
 CLOUDNET_BINDIR="../"
 Continue=1
 while [ $Continue -eq 1 ]
@@ -301,7 +319,9 @@ if [ -f "${TOSCA2CLOUDNET_CONF_FILE}" ]; then
 fi
 
 # verify if the target directories are set, if not set default ones
-dirArray=( Alloy_target_directory nwdiag_target_directory tosca_diagrams_target_directory UML2_target_directory )
+##### TODO : HOT_target_directory (and maybe others) can be set in the TOSCA2CLOUDNET_CONF_FILE 
+#####        but are not used in this script currently, so we have to manage it
+dirArray=( Alloy_target_directory nwdiag_target_directory tosca_diagrams_target_directory UML2_target_directory)
 NBVARSSET=0
 for var in "${dirArray[@]}"
 do
@@ -330,7 +350,7 @@ fi
 
 if (( $NBVARSSET == 0 )); then
    DIRVARS_GENERATED=true
-   #create a config file
+   #create a config file which will be deleted at the exit of the script
    RESULT_DIR="RESULTS"
    echo "# Configuration of the Alloy generator." >> $TOSCA2CLOUDNET_CONF_FILE
    echo "Alloy:" >> $TOSCA2CLOUDNET_CONF_FILE
@@ -360,14 +380,14 @@ fi
 
 ################################################################################
 # Process the input options.
-# When called in batch mode, it launch the whole treatement and retur a code
+# When called in batch mode, it launch the whole treatement and return a code
 # indicating if the statys is OK, OK with warning or KO
 ################################################################################
 # Get the options
-optstring=":hb"
+optstring=":h:b:s:"
 
 while getopts ${optstring} option; do
-   case $option in
+   case ${option} in
       h) # display Help
          Help
          exit;;
@@ -382,7 +402,14 @@ while getopts ${optstring} option; do
 # take to much time and ressource, not necessary if used for regression testing in CI/CD
 #         AlloySolve 
          exit;;
-     ?) # incorrect option
+      s) # run syntax checking on a single file
+         echo -e "${normal}${magenta}  xxx  `echo ${OPTARG} | tr [a-z] [A-Z]` xxx ${reset}"
+         translate ${OPTARG}
+         if [ "$DIRVARS_GENERATED" = true ]; then 
+           rm -f $TOSCA2CLOUDNET_CONF_FILE
+         fi
+         exit;;
+      ?) # incorrect option
          Help
          echo -e "\n\n        ${bold}${red}Error${reset}: Invalid option -${OPTARG} ${reset}\n\n"
          exit;;
@@ -415,4 +442,4 @@ while true
 do
     show_menus
     read_options
-done
+ done
