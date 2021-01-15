@@ -2342,23 +2342,80 @@ class TypeChecker(Checker):
         self.current_targets_condition_type = previous_targets_condition_type
 
     def check_substitution_mapping(self, substitution_mapping, context_error_message):
+
+        def check_unmapped_definitions(node_type, keyword, kind_definition, evaluate_definition):
+            definitions = substitution_mapping.get(keyword, {})
+            for def_name, definition in node_type.get(keyword, {}).items():
+                if definitions.get(def_name) is None:
+                    logger, reason = evaluate_definition(def_name, definition)
+                    reason = ' (' + reason + ')' if reason != None else ''
+                    if logger != None:
+                        logger(context_error_message + ':' + keyword + ':' + def_name + ' - ' + kind_definition + ' unmapped' + reason)
+
         # check node_type
         checked, node_type_name, node_type = self.check_type_in_template('node', substitution_mapping, syntax.NODE_TYPE, context_error_message)
         # check substitution_filter
         substitution_filter = substitution_mapping.get('substitution_filter')
         if substitution_filter != None:
             self.check_node_filter_definition(substitution_filter, node_type_name, node_type, context_error_message + ':' + 'substitution_filter')
+        # check attributes - TODO check_attribute_mapping
+        self.unchecked(substitution_mapping, syntax.ATTRIBUTES, context_error_message)
+        # check that all attributes are mapped
+        def check_ummapped_attribute_definition(attribute_name, attribute_definition):
+            # produce an info message for each unmmapped attribute
+            return self.info, None
+        check_unmapped_definitions(node_type, syntax.ATTRIBUTES, 'attribute', check_ummapped_attribute_definition)
         # check properties - TODO check_property_assignment -> check_property_mapping
         self.iterate_over_map_of_assignments(self.check_property_assignment, syntax.PROPERTIES, substitution_mapping, node_type, node_type_name, context_error_message)
         self.check_required_properties(substitution_mapping, node_type, context_error_message)
+        # check that all properties are mapped
+        def check_ummapped_property_definition(property_name, property_definition):
+            if property_definition.get(syntax.REQUIRED, True) and property_definition.get(syntax.DEFAULT) is None:
+                # produce a warning for each unmmapped required property without default
+                return self.warning, 'required: true, no default value' #
+            return None, None
+        check_unmapped_definitions(node_type, syntax.PROPERTIES, 'property', check_ummapped_property_definition)
         # check capabilities
         self.iterate_over_map_of_assignments(self.check_capability_mapping, syntax.CAPABILITIES, substitution_mapping, node_type, node_type_name, context_error_message)
+        # check that all capabilities are mapped
+        def check_ummapped_capability_definition(capability_name, capability_definition):
+            occurrences = capability_definition.get(syntax.OCCURRENCES, [1, syntax.UNBOUNDED])
+            if capability_name == 'feature':
+                # produce an info message for the feature capability
+                return self.info, 'occurrences: ' + str(occurrences)
+            else:
+                # produce an error for each other unmapped capability
+                return self.error, 'occurrences: ' + str(occurrences)
+        check_unmapped_definitions(node_type, syntax.CAPABILITIES, 'capability', check_ummapped_capability_definition)
         # check requirements
         substitution_mapping_requirements = { syntax.REQUIREMENTS: syntax.get_requirements_dict(substitution_mapping) }
         self.iterate_over_map_of_assignments(self.check_requirement_mapping, syntax.REQUIREMENTS, substitution_mapping_requirements, node_type, node_type_name, context_error_message)
+        # check that all requirements are mapped
+        def check_ummapped_requirement_definition(requirement_name, requirement_definition):
+            occurrences = requirement_definition.get(syntax.OCCURRENCES, [1, 1])
+            if requirement_name == 'dependency':
+                # produce an info message for the dependency requirement
+                return self.info, 'occurrences: ' + str(occurrences)
+            if occurrences[1] == 0: # upper occurrence equals to 0
+                # produce an info message for each unboundable requirement
+                return self.info, 'occurrences: ' + str(occurrences)
+#TBR
+            elif occurrences[0] == 0: # lower occurrence equals to 0
+                # produce an info message for each optional requirement
+                return self.warning, 'occurrences: ' + str(occurrences)
+###
+            else:
+                # produce an error for each other unmapped requirement
+                return self.error, 'occurrences: ' + str(occurrences)
+        check_unmapped_definitions(node_type, syntax.REQUIREMENTS, 'requirement', check_ummapped_requirement_definition)
         # check interfaces - TODO
         self.iterate_over_map_of_assignments(None, syntax.INTERFACES, substitution_mapping, node_type, node_type_name, context_error_message)
         self.unchecked(substitution_mapping, syntax.INTERFACES, context_error_message)
+        # check that all interfaces are mapped
+        def check_ummapped_interface_definition(interface_name, interface_definition):
+            # produce an info message for each unmapped interface
+            return self.info, None
+        check_unmapped_definitions(node_type, syntax.INTERFACES, 'interface', check_ummapped_interface_definition)
 
     def check_capability_mapping(self, capability_name, capability_mapping, capability_definition, context_error_message):
         topology_template = self.get_topology_template()
