@@ -569,6 +569,18 @@ BASIC_CONSTRAINT_CLAUSES = {
 REFINE_OR_NEW = None
 PREVIOUSLY_UNDEFINED = {}
 
+class NodeTemplateRequirement(object):
+    def __init__(self, node_template_name, requirement_name, occurrences):
+        self.node_template_name = node_template_name
+        self.requirement_name = requirement_name
+        self.occurrences = occurrences
+        self.lower_bound = occurrences[0]
+        self.upper_bound = occurrences[1]
+        self.connections = 0
+
+    def connectIt(self):
+        self.connections += 1
+
 class TypeChecker(Checker):
     '''
         TOSCA type system checker
@@ -581,6 +593,7 @@ class TypeChecker(Checker):
         self.current_targets_condition_type = None
         self.current_imperative_workflow = None
         self.reserved_function_keywords = {}
+        self.all_the_node_template_requirements = {}
 
         self.info('TOSCA type checking...')
 
@@ -1554,6 +1567,13 @@ class TypeChecker(Checker):
         # check workflows
         iterate_over_map(self.check_imperative_workflow_definition, syntax.WORKFLOWS)
 
+        for req_id, requirement in self.all_the_node_template_requirements.items():
+            cem = 'topology_template:node_templates:' + requirement.node_template_name + ':requirements:' + requirement.requirement_name + ' - expected occurrences: ' + str(requirement.occurrences) + ' but ' + str(requirement.connections) + ' connections'
+            if requirement.connections < requirement.lower_bound:
+                self.error(cem + ' - not enough connections')
+            if requirement.upper_bound != syntax.UNBOUNDED and requirement.connections > requirement.upper_bound:
+                self.error(cem + ' - too many connections')
+
     def check_type_in_template(self, type_kinds, template, keyword, context_error_message):
         type_name = template.get(keyword)
         checked = self.check_type_existence(type_kinds, type_name, context_error_message + ':' + keyword)
@@ -1820,7 +1840,7 @@ class TypeChecker(Checker):
                               compatible_with_capability = True
                               break
                       if compatible_with_capability is False:
-                          self.error(context_error_message + ':' + syntax.NODE + ': ' + node + ' - ' + requirement_capability + ' capability expected')
+                          self.error(context_error_message + ':' + syntax.NODE + ': ' + requirement_assignment + ' - ' + requirement_capability + ' capability expected')
               else:
                   # check node_template type is compatible with requirement_definition node
                   if not self.type_system.is_derived_from(node_template.get(syntax.TYPE), requirement_node_type_name):
@@ -2064,6 +2084,10 @@ class TypeChecker(Checker):
         self.iterate_over_map_of_assignments(self.check_attribute_assignment, syntax.ATTRIBUTES, node_template, node_type, node_type_name, context_error_message)
         # check requirements
         node_type_requirements = syntax.get_requirements_dict(node_type)
+        if node_template.get(syntax.NODE_FILTER) is None:
+            # declare all the requirements of this node template
+            for requirement_name, requirement_definition in node_type_requirements.items():
+                self.all_the_node_template_requirements[node_name + '.' + requirement_name]= NodeTemplateRequirement(node_name, requirement_name, requirement_definition.get(syntax.OCCURRENCES, [ 1, 1]))
         idx = 0
         for requirement in node_template.get(syntax.REQUIREMENTS, []):
             cem1 = context_error_message + ':' + syntax.REQUIREMENTS + '[' + str(idx) + ']:'
@@ -2073,6 +2097,8 @@ class TypeChecker(Checker):
                     self.error(cem1 + requirement_name + ' - undefined in ' + node_type_name)
                 else:
                     self.check_requirement_assignment(requirement_name, requirement_assignment, requirement_definition, cem1 + requirement_name)
+                    # mark that the requirement <node_template_name>.<node_template_reference_name> is connected
+                    self.all_the_node_template_requirements.get(node_name + '.' + requirement_name).connectIt()
             idx += 1
         # check capabilities
         self.iterate_over_map_of_assignments(self.check_capability_assignment, syntax.CAPABILITIES, node_template, node_type, node_type_name, context_error_message)
@@ -2344,7 +2370,7 @@ class TypeChecker(Checker):
     def check_substitution_mapping(self, substitution_mapping, context_error_message):
 
         def check_unmapped_definitions(node_type, keyword, kind_definition, evaluate_definition):
-            definitions = substitution_mapping.get(keyword, {})
+            definitions = normalize_dict(substitution_mapping.get(keyword, {}))
             for def_name, definition in node_type.get(keyword, {}).items():
                 if definitions.get(def_name) is None:
                     logger, reason = evaluate_definition(def_name, definition)
@@ -2458,7 +2484,6 @@ class TypeChecker(Checker):
         def check_mapping_as_list(mapping, context_error_message):
             node_template_name = mapping[0]
             node_template_requirement_name = mapping[1]
-
             node_template = topology_template.get(syntax.NODE_TEMPLATES, {}).get(node_template_name)
             if node_template is None:
                 self.error(context_error_message + ': ' + str(mapping) + ' - ' + node_template_name + ' node template undefined')
@@ -2473,6 +2498,9 @@ class TypeChecker(Checker):
             requirement_capability = requirement_definition.get(syntax.CAPABILITY)
             if not self.type_system.is_derived_from(node_template_requirement_capability, requirement_capability):
                 self.error(context_error_message + ': ' + str(mapping) + ' - ' + requirement_capability + ' capability expected')
+
+            # mark that the requirement <node_template_name>.<node_template_reference_name> is connected
+            self.all_the_node_template_requirements.get(node_template_name + '.' + node_template_requirement_name).connectIt()
 
         # check the short notation
         if type(requirement_mapping) is list:
