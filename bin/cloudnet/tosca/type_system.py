@@ -2079,12 +2079,14 @@ class TypeChecker(Checker):
         self.unchecked(node_template, syntax.DIRECTIVES, context_error_message)
         # check properties
         self.iterate_over_map_of_assignments(self.check_property_assignment, syntax.PROPERTIES, node_template, node_type, node_type_name, context_error_message)
-        self.check_required_properties(node_template, node_type, context_error_message)
+        node_filter = node_template.get(syntax.NODE_FILTER)
+        if node_filter is None:
+            self.check_required_properties(node_template, node_type, context_error_message)
         # check attributes
         self.iterate_over_map_of_assignments(self.check_attribute_assignment, syntax.ATTRIBUTES, node_template, node_type, node_type_name, context_error_message)
         # check requirements
         node_type_requirements = syntax.get_requirements_dict(node_type)
-        if node_template.get(syntax.NODE_FILTER) is None:
+        if node_filter is None:
             # declare all the requirements of this node template
             for requirement_name, requirement_definition in node_type_requirements.items():
                 self.all_the_node_template_requirements[node_name + '.' + requirement_name]= NodeTemplateRequirement(node_name, requirement_name, requirement_definition.get(syntax.OCCURRENCES, [ 1, 1]))
@@ -2114,7 +2116,6 @@ class TypeChecker(Checker):
         # check artifacts
         self.iterate_over_map_of_definitions(self.check_artifact_definition, syntax.ARTIFACTS, node_template, {}, REFINE_OR_NEW, context_error_message)
         # check node_filter
-        node_filter = node_template.get(syntax.NODE_FILTER)
         if node_filter != None:
             self.check_node_filter_definition(node_filter, node_type_name, node_type, context_error_message + ':' + syntax.NODE_FILTER)
         # check copy - TODO
