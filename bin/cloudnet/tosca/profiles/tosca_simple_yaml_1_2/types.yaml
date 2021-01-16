@@ -707,9 +707,9 @@ node_types:
 #          capability: tosca.capabilities.Storage
       - network:
 #          capability: tosca.capabilities.EndPoint # ISSUE: EndPoint undefined.
-          capability: tosca.capabilities.Endpoint
-# ISSUE: relationship undefined.
-          relationship: tosca.relationships.ConnectsTo
+          # ISSUE: Linkable is more appropriate than Endpoint to link a container with a network!
+          capability: tosca.capabilities.network.Linkable
+          relationship: tosca.relationships.network.LinksTo
 
   # Section 5.9.14 tosca.nodes.LoadBalancer
   tosca.nodes.LoadBalancer:

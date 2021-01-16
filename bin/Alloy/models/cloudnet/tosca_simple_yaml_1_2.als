@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Software Name : Cloudnet TOSCA toolbox 
+ * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
  * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
  * SPDX-License-Identifier: Apache-2.0
@@ -2416,10 +2416,7 @@ sig tosca_nodes_Container_Application extends tosca_nodes_Root
   // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.Container.Runtime', 'relationship': 'tosca.relationships.HostedOn'}
   requirement_host: one TOSCA/Requirement,
 
-  // YAML storage: {'capability': 'tosca.capabilities.Storage', 'relationship': 'tosca.relationships.Root'}
-  requirement_storage: one TOSCA/Requirement,
-
-  // YAML network: {'capability': 'tosca.capabilities.Endpoint', 'relationship': 'tosca.relationships.Root'}
+  // YAML network: {'capability': 'tosca.capabilities.network.Linkable', 'relationship': 'tosca.relationships.network.LinksTo'}
   requirement_network: one TOSCA/Requirement,
 
 } {
@@ -2433,15 +2430,10 @@ sig tosca_nodes_Container_Application extends tosca_nodes_Root
   requirement_host.relationship[tosca_relationships_HostedOn]
   requirement_host.node[tosca_nodes_Container_Runtime]
 
-  // YAML storage: {'capability': 'tosca.capabilities.Storage', 'relationship': 'tosca.relationships.Root'}
-  requirement["storage", requirement_storage]
-  requirement_storage.capability[tosca_capabilities_Storage]
-  requirement_storage.relationship[tosca_relationships_Root]
-
-  // YAML network: {'capability': 'tosca.capabilities.Endpoint', 'relationship': 'tosca.relationships.Root'}
+  // YAML network: {'capability': 'tosca.capabilities.network.Linkable', 'relationship': 'tosca.relationships.network.LinksTo'}
   requirement["network", requirement_network]
-  requirement_network.capability[tosca_capabilities_Endpoint]
-  requirement_network.relationship[tosca_relationships_Root]
+  requirement_network.capability[tosca_capabilities_network_Linkable]
+  requirement_network.relationship[tosca_relationships_network_LinksTo]
 
 }
 
@@ -2453,9 +2445,9 @@ run Show_tosca_nodes_Container_Application {
   5 seq,
   // NOTE: Setting following scopes strongly reduces the research space.
   exactly 0 LocationGraphs/LocationGraph,
-  exactly 7 LocationGraphs/Location,
+  exactly 6 LocationGraphs/Location,
   exactly 35 LocationGraphs/Value,
-  exactly 7 LocationGraphs/Name,
+  exactly 6 LocationGraphs/Name,
   exactly 1 LocationGraphs/Sort,
   exactly 1 LocationGraphs/Process,
   exactly 0 TOSCA/Group,
@@ -2646,6 +2638,13 @@ sig tosca_nodes_network_Port extends tosca_nodes_Root
   property_ip_range_end: lone string,
 
   // --------------------------------------------------
+  // Attributes
+  // --------------------------------------------------
+
+  // YAML ip_address: {'type': 'string'}
+  attribute_ip_address: one TOSCA/Attribute,
+
+  // --------------------------------------------------
   // Requirements
   // --------------------------------------------------
 
@@ -2661,6 +2660,14 @@ sig tosca_nodes_network_Port extends tosca_nodes_Root
   // --------------------------------------------------
 
   property_order.greater_or_equal[0]
+
+  // --------------------------------------------------
+  // Attributes
+  // --------------------------------------------------
+
+  attribute[attribute_ip_address]
+  attribute_ip_address.name["ip_address"]
+  attribute_ip_address.type[string]
 
   // --------------------------------------------------
   // Requirements
@@ -2857,4 +2864,3 @@ run Show_tosca_policies_Performance {
   exactly 1 LocationGraphs/Sort,
   exactly 1 tosca_policies_Performance
   expect 1
-
