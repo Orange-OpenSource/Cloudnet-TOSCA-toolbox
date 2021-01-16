@@ -28,7 +28,7 @@ node_types:
         type: string
       db_endpoint_url:
         type: string
-        # ISSUE: added to resolve the inconsistency discuted further!
+        # added to resolve the inconsistency discuted further!
         required: false
     requirements:
       - database_endpoint:
@@ -40,8 +40,7 @@ node_types:
     derived_from: tosca.nodes.Database
     properties:
       db_version:
-#       type: string
-        type: version # ISSUE: version is more appropriate than string!
+        type: version
 
 topology_template:
   inputs:
