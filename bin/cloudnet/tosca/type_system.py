@@ -1727,6 +1727,11 @@ class TypeChecker(Checker):
                 if value_type != None and not self.type_system.is_derived_from(attribute_type, value_type):
                     self.error(context_error_message + ': ' + str(value) + ' - ' + attribute_type + ' type but ' + value_type + ' type expected')
                     return
+
+                # check if the assigned definition is required then the assigning attribute is required
+                if value_type != None and definition.get(syntax.REQUIRED, True) and attribute_definition.get(syntax.REQUIRED, True) is False:
+                    self.warning(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' not required but required value expected')
+
                 return
 
             if syntax.GET_PROPERTY in value:
@@ -1796,11 +1801,11 @@ class TypeChecker(Checker):
                     return
 
                 # check if the assigned definition is required then the assigning property is required
-                if definition.get(syntax.REQUIRED, True) and  property_definition.get(syntax.REQUIRED, True) is False:
+                if value_type != None and definition.get(syntax.REQUIRED, True) and property_definition.get(syntax.REQUIRED, True) is False:
                     if property_value is None and ( entity != None and entity.get(syntax.NODE_FILTER) is None ):
                         self.error(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' has no value but required value expected')
                     else:
-                        self.warning(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' not required property but required value expected')
+                        self.warning(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' not required but required value expected')
 
                 return
 
@@ -1818,6 +1823,10 @@ class TypeChecker(Checker):
                 if value_type != None and not self.type_system.is_derived_from(input_type, value_type):
                     self.error(context_error_message + ': ' + str(value) + ' - ' + input_type + ' type but ' + value_type + ' type expected')
                     return
+
+                # check if the assigned definition is required then the assigning input is required
+                if value_type != None and definition.get(syntax.REQUIRED, True) and input_definition.get(syntax.REQUIRED, True) is False:
+                    self.warning(context_error_message + ': ' + str(value) + ' - input ' + str(parameter) + ' not required but required value expected')
                 return
 
         self.check_value(value, definition, {}, context_error_message)
