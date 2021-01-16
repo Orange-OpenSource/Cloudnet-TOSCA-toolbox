@@ -1762,17 +1762,26 @@ class TypeChecker(Checker):
 
                 if len(parameters) == 2:
                     property_name = parameters[1]
+                    property_value = entity.get(syntax.PROPERTIES, {}).get(property_name)
                 elif len(parameters) == 3:
                     property_name = parameters[2]
-                    entity = entity_type.get(syntax.CAPABILITIES, {}).get(parameters[1])
-                    if entity != None:
-                        entity_type_name = entity.get(syntax.TYPE)
+                    entity_type_feature = entity_type.get(syntax.CAPABILITIES, {}).get(parameters[1])
+                    if entity_type_feature != None:
+                        entity_type_name = entity_type_feature.get(syntax.TYPE)
+                        property_value = entity.get(syntax.CAPABILITIES, {}).get(parameters[1]).get(syntax.PROPERTIES, {}).get(property_name)
                     else:
-                        entity = entity_type.get(syntax.REQUIREMENTS, {}).get(parameters[1])
-                        if entity is None:
+                        entity_type_feature = entity_type.get(syntax.REQUIREMENTS, {}).get(parameters[1])
+                        if entity_type_feature is None:
                             self.error(context_error_message + ': ' + str(value) + ' - ' + parameters[1] + ' capability or requirement undefined')
                             return
-                        entity_type_name = entity.get(syntax.CAPABILITY)
+                        requirement = syntax.get_requirements_dict(self.reserved_function_keywords.get('SELF')).get(parameters[1])
+                        template_name = syntax.get_requirement_node_template(requirement)
+                        entity = topology_template.get(syntax.NODE_TEMPLATES, {}).get(template_name)
+                        if entity is None:
+                            property_value = None
+                        else:
+                            property_value = entity.get(syntax.CAPABILITIES, {}).get(parameters[1], {}).get(syntax.PROPERTIES, {}).get(property_name)
+                        entity_type_name = entity_type_feature.get(syntax.CAPABILITY)
                     entity_type = self.type_system.merge_type(self.type_system.get_type_uri(entity_type_name))
 
                 property_definition = entity_type.get(syntax.PROPERTIES, {}).get(property_name)
@@ -1785,6 +1794,14 @@ class TypeChecker(Checker):
                 if value_type != None and not self.type_system.is_derived_from(entity_property_type, value_type):
                     self.error(context_error_message + ': ' + str(value) + ' - ' + entity_property_type + ' type but ' + value_type + ' type expected')
                     return
+
+                # check if the assigned definition is required then the assigning property is required
+                if definition.get(syntax.REQUIRED, True) and  property_definition.get(syntax.REQUIRED, True) is False:
+                    if property_value is None and ( entity != None and entity.get(syntax.NODE_FILTER) is None ):
+                        self.error(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' has no value but required value expected')
+                    else:
+                        self.warning(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' not required property but required value expected')
+
                 return
 
             if syntax.GET_INPUT in value:

@@ -28,6 +28,8 @@ node_types:
         type: string
       db_endpoint_url:
         type: string
+        # ISSUE: added to resolve the inconsistency discuted further!
+        required: false
     requirements:
       - database_endpoint:
           capability: tosca.capabilities.Endpoint.Database
@@ -56,6 +58,13 @@ topology_template:
       properties:
         admin_user: { get_input: admin_username }
         admin_password: { get_input: admin_password }
+        # ISSUE: potential inconsistency at runtime!
+        # property db_endpoint_url is required, i.e. a value must be set!
+        # property url_path of tosca.capabilities.Endpoint.Database is not required, i.e. could have no value!
+        # Setting a null value to a required property is an inconsistency!
+        # But here the value of url_path will be only known at runtime because
+        # the real my_abstract_database node will be determinated by the orchestrator at runtime!
+        # To correct this potential inconsistency, db_endpoint_url must be explicitly not required (required: false).
         db_endpoint_url: { get_property: [SELF, database_endpoint, url_path ] }
       requirements:
         - database_endpoint: my_abstract_database
@@ -68,3 +77,8 @@ topology_template:
       properties: # TODO: remove when node_filter will be supported
         name: my_abstract_database
         db_version: '1.0.0'
+      # ISSUE: added to resolve the inconsistency discuted previously!
+      capabilities:
+        database_endpoint:
+          properties:
+            url_path: /path
