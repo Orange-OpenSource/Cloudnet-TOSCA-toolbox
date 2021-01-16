@@ -120,7 +120,7 @@ AlloySolve()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then
-       (time alloy_execute -c "Show_.*_topology_template" ${Alloy_target_directory}/*.als 2>&1 |tee -a logs/${_LOG}) 2>>logs/${_LOG}
+       (time alloy_execute ${Alloy_target_directory}/*.als 2>&1 |tee -a logs/${_LOG}) 2>>logs/${_LOG}
    else
        echo -e "${normal}${magenta}No generated als file found.${reset}"
        echo "You need to run \"TOSCA syntax checking\" before launching the alloy solver"

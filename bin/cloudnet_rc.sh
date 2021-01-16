@@ -51,11 +51,18 @@ alloy_parse()
   done
 }
 
+# default options for the alloy_execute function
+# only execute commands related to topology templates
+ALLOY_EXECUTE_OPTS='-c "Show_.*_topology_template"'
+
 # Analyse generated Alloy files.
 alloy_execute()
 {
   echo Analysing generated Alloy files...
-  ${CLOUDNET_BINDIR}/Alloy/alloy.sh execute $@
+  for file in "$@"
+  do
+    ${CLOUDNET_BINDIR}/Alloy/alloy.sh execute $ALLOY_EXECUTE_OPTS "$file"
+  done
 }
 
 # Generate TOSCA diagrams.
