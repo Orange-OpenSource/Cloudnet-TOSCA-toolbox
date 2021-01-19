@@ -2343,6 +2343,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     artifact_type = TOSCA.Artifact
                 acs.update_sig_scope(self.alloy_sig(artifact_type))
                 # compute the scope required by artifact properties.
+                if not isinstance(artifact_yaml, dict):
+                    continue
                 merged_artifact_type = self.type_system.merge_type(artifact_yaml.get(TYPE))
                 self.compute_scope_properties(acs,
                                             get_dict(merged_artifact_type, PROPERTIES),

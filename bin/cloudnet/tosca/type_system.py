@@ -2046,7 +2046,10 @@ class TypeChecker(Checker):
             node_template_type_capabilities = node_template_type.get(syntax.CAPABILITIES,{})
             for node_filter_capability in node_filter.get(syntax.CAPABILITIES, []):
                 for capability_name, capability_filter in node_filter_capability.items():
-                    capability_type = self.type_system.merge_type(node_template_type_capabilities.get(capability_name, {}).get(syntax.TYPE))
+                    capability_type_name = node_template_type_capabilities.get(capability_name, {}).get(syntax.TYPE)
+                    if capability_type_name is None: # capability not found! so node_filter is incorrectly typed!
+                        return False
+                    capability_type = self.type_system.merge_type(capability_type_name)
                     if not eval_property_filters(capability_filter, \
                                                  node_template_capabilities.get(capability_name, {}), \
                                                  capability_type):
