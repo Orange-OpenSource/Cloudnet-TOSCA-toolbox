@@ -51,7 +51,7 @@ TOSCA_SyntaxCheck()
    # All description files translation
    echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/"${_LOG}"
    
-   for filename in $(find . -iname '*.yaml' -o -iname '*.yml' -print0 | xargs grep -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
+   for filename in $(find . -iname '*.yaml' -print0 -o -iname '*.yml' | xargs grep -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
      do 
        echo -e "\n${normal}${magenta}    $(echo $filename | tr [a-z] [A-Z]) ${reset}" | tee -a logs/"${_LOG}"
        translate "$filename" 2>&1 | tee -a logs/"${_LOG}"
@@ -289,7 +289,7 @@ do
 done
 
 # Load cloundnet commands.
-source "${CLOUDNET_BINDIR}"/cloudnet_rc.sh
+source "${CLOUDNET_BINDIR}/cloudnet_rc.sh"
 
 # Variable used to know if the Syntax checking has bee done
 SYNTAX_CHECK=False
@@ -310,7 +310,7 @@ if [ ! -f "${CLOUDNET_BINDIR}/yaml.sh" ]; then
   pause
   exit 1
 else
-  . "${CLOUDNET_BINDIR}"/yaml.sh
+  source "${CLOUDNET_BINDIR}/yaml.sh"
 fi
 
 # if tosca2cloudnet.yaml exists, parse it and extract variables
@@ -393,7 +393,7 @@ while getopts ${optstring} option; do
          Help
          exit;;
       b) # change the log file name to be identified executed in batch mode
-         _LOG=$(basename $PWD)_BATCH_MODE-$(date +%F_%H-%M-%S).log
+         _LOG=$(basename "$PWD")_BATCH_MODE-$(date +%F_%H-%M-%S).log
          # Launch the whole stuff process
          TOSCA_SyntaxCheck
          NetworkDiagrams
@@ -404,8 +404,8 @@ while getopts ${optstring} option; do
 #         AlloySolve 
          exit;;
       s) # run syntax checking on a single file
-         echo -e "${normal}${magenta}  xxx  `echo ${OPTARG} | tr [a-z] [A-Z]` xxx ${reset}"
-         translate ${OPTARG}
+         echo -e "${normal}${magenta}  xxx  $(echo "${OPTARG}" | tr [a-z] [A-Z]) xxx ${reset}"
+         translate "${OPTARG}"
          if [ "$DIRVARS_GENERATED" = true ]; then 
            rm -f $TOSCA2CLOUDNET_CONF_FILE
          fi
@@ -428,7 +428,7 @@ for var in "${dirArray[@]}"
 do
   echo -e "      ${var} : ${normal}${blue}${!var}${reset}"
 done
-echo -e "\nA log file will be also available here ${normal}${blue}logs/"${_LOG}"${reset}"
+echo -e "\nA log file will be also available here ${normal}${blue}logs/""${_LOG}""${reset}"
 pause
 
 ############################################################################
