@@ -50,7 +50,8 @@ node_types:
       - virtual_link_1:
           capability: tosca.capabilities.nfv.VirtualLinkable
           relationship: tosca.relationships.nfv.VirtualLinksTo
-          occurrences: [ 1, 1 ]
+#         occurrences: [ 1, 1 ] # PM: previously!
+          occurrences: [ 0, 1 ] # PM: make the requirement optional!
       - virtual_link_2:
           capability: tosca.capabilities.nfv.VirtualLinkable
           relationship: tosca.relationships.nfv.VirtualLinksTo

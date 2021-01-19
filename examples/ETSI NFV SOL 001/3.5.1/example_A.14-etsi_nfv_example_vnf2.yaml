@@ -55,9 +55,11 @@ node_types:
       - virtual_link_2:
           capability: tosca.capabilities.nfv.VirtualLinkable
           relationship: tosca.relationships.nfv.VirtualLinksTo
-          occurrences: [ 1, 1 ]
+#         occurrences: [ 1, 1 ] # PM: previously!
+          occurrences: [ 0, 1 ] # PM: make the requirement optional!
       # ERROR: added because used in example_A.14-01.yaml!
       - virtual_link_4:
           capability: tosca.capabilities.nfv.VirtualLinkable
           relationship: tosca.relationships.nfv.VirtualLinksTo
-          occurrences: [ 1, 1 ]
+#         occurrences: [ 1, 1 ] # PM: previously!
+          occurrences: [ 0, 1 ] # PM: make the requirement optional!

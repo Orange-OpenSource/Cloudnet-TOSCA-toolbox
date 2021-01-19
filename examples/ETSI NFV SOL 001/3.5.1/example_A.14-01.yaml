@@ -55,21 +55,30 @@ node_types:
       - virtual_link:
 #       capability: tosca.capabilitites.nfv.VirtualLinkable # ERROR: indentation and typo!
           capability: tosca.capabilities.nfv.VirtualLinkable
+          # Warning: three relationship types are compatible with tosca.capabilities.nfv.VirtualLinkable:
+          # - tosca.relationships.DependsOn because VirtualLinkable derived from tosca.capabilities.Node
+          # - tosca.relationships.nfv.VirtualLinksTo because VirtualLinkable is in valid_target_types of VirtualLinksTo
+          # - tosca.relationships.nfv.VipVirtualLinksTo because VirtualLinkable is in valid_target_types of VipVirtualLinksTo
+          # Then relationship must be explicity defined in order to be sure which relationship type will be used by the orchestrator!
+          relationship: tosca.relationships.nfv.VirtualLinksTo # Warning: added by PM
 #       occurrences: [ 0, 0 ] # ERROR: indentation!
           occurrences: [ 0, 0 ]
       - virtual_link_2:
 #       capability: tosca.capabilitites.nfv.VirtualLinkable # ERROR: indentation and typo!
           capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo # Warning: added by PM
 #       occurrences: [ 0, 1 ] # ERROR: indentation!
           occurrences: [ 0, 1 ]
       - virtual_link_3:
 #       capability: tosca.capabilitites.nfv.VirtualLinkable # ERROR: indentation and typo!
           capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo # Warning: added by PM
 #       occurrences: [ 0, 1 ]
           occurrences: [ 0, 1 ] # ERROR: indentation!
       - virtual_link_4:
 #       capability: tosca.capabilitites.nfv.VirtualLinkable # ERROR: indentation and typo!
           capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo # Warning: added by PM
 #       occurrences: [ 0, 1 ] # ERROR: indentation!
           occurrences: [ 0, 1 ]
 
@@ -79,7 +88,13 @@ topology_template:
     requirements:
       virtual_link_2: [ VNF_1_forward_2, virtual_link ] # the requirement of SAP_1
       virtual_link_3: [ VNF_3_forward_6, virtual_link ] # the requirement of SAP_2
-      virtual_link_4: [ VNF_2_forward_4, virtual_link ] # the requirement of SAP_3
+# ERROR-1: the virtual_link requirement of VNF_2_forward_4 is already fulfilled!
+#     virtual_link_4: [ VNF_2_forward_4, virtual_link ] # the requirement of SAP_3
+# the virtual_link requirement of VNF_2_forward_3 is not fulfilled, see the comment
+      virtual_link_4: [ VNF_2_forward_3, virtual_link ] # the requirement of SAP_3
+
+
+
 
   node_templates:
     my_service:
@@ -127,8 +142,9 @@ topology_template:
 
     VNF_1_forward_2:
       type: tosca.nodes.nfv.Forwarding
-      requirements:
-        - virtual_link: NsVirtualLink_1
+# ERROR-2: the virtual_link of VNF_1_forward_2 is already fulfilled by the substitution mapping!
+#     requirements:
+#       - virtual_link: NsVirtualLink_1
 
 
     VNF_2:
@@ -140,6 +156,7 @@ topology_template:
       requirements:
         - virtual_link: VNF_2_forward_3
         - virtual_link_4: VNF_2_forward_4
+
     VNF_2_forward_3:
       type: tosca.nodes.nfv.Forwarding
 # map to virtual_link requirement of the NS node
