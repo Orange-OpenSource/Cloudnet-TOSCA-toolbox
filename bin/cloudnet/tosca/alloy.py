@@ -1905,6 +1905,14 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     self.generate('    ', prefixed_artifact_name, '.file["', file, '"]', sep='')
                 else:
                     self.generate('    no ', prefixed_artifact_name, '.file', sep='')
+                # generate artifact properties
+                merged_artifact_type = self.type_system.merge_type(artifact_type)
+                self.generate_all_properties(get_dict(merged_artifact_type, PROPERTIES),
+                                             get_dict(artifact_yaml, PROPERTIES),
+                                             prefixed_artifact_name,
+                                             context_error_message + ':' + ARTIFACTS + ':' + artifact_name,
+                                             property_name_format = '%s')
+
                 self.generate('  }')
             # TODO: Need to deal with artifacts defined into the node type of this node template.
 
@@ -2334,8 +2342,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 if artifact_type == None:
                     artifact_type = TOSCA.Artifact
                 acs.update_sig_scope(self.alloy_sig(artifact_type))
+                # compute the scope required by artifact properties.
+                merged_artifact_type = self.type_system.merge_type(artifact_yaml.get(TYPE))
+                self.compute_scope_properties(acs,
+                                            get_dict(merged_artifact_type, PROPERTIES),
+                                            get_dict(artifact_yaml, PROPERTIES))
 
-                # TODO properties
 
             # Compute the scope for node template interfaces.
             self.compute_scope_interfaces(acs, template_type, merged_template_type, template_yaml)
