@@ -3,7 +3,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -17,29 +17,24 @@
 # Check that the argument is correct.
 if [ ! -f ${CLOUDNET_BINDIR}/cloudnet_rc.sh ]
 then
-  echo "Invalid argument ${CLOUDNET_BINDIR}!"
+  echo CLOUDNET_BINDIR environment variable incorrectly set!
 fi
+
+export CLOUDNET_BINDIR
 
 # Generate Alloy and diagram files.
 translate()
 {
-  echo Translate $1...
-  run_toscaware $1
+  echo Translate TOSCA files...
+  for file in "$@"
+  do
+    echo "-" $file
+    ${CLOUDNET_BINDIR}/toscaware/toscaware ${TOSCA_TOOLBOX_OPTS} "$file"
+  done
 }
 
-run_toscaware()
-{
-  local container_dest_volume="/work"
-  docker run \
-    --user $(id -u):$(id -g) \
-    --volume="${PWD}:${container_dest_volume}" \
-    --volume="${CLOUDNET_BINDIR}/cloudnet:/cloudnet" \
-    --workdir="${container_dest_volume}" \
-    --rm \
-    --attach=stdin --attach=stdout --attach=stderr \
-    toscaware/toscaware \
-    python /cloudnet/tosca/tosca2cloudnet.py --template-file $1
-}
+# To configure Alloy Parse options, e.g.:
+# ALLOY_PARSE_OPTS="options"
 
 # Parse and type check generated Alloy files.
 alloy_parse()
@@ -47,11 +42,12 @@ alloy_parse()
   echo Parsing and type checking generated Alloy files...
   for file in "$@"
   do
-    ${CLOUDNET_BINDIR}/Alloy/alloy.sh parse "$file"
+    echo "-" $file
+    ${CLOUDNET_BINDIR}/Alloy/alloy.sh parse ${ALLOY_PARSE_OPTS} "$file"
   done
 }
 
-# default options for the alloy_execute function
+# To configure Alloy Execute options
 # only execute commands related to topology templates
 ALLOY_EXECUTE_OPTS='-c "Show_.*_topology_template"'
 
@@ -61,9 +57,13 @@ alloy_execute()
   echo Analysing generated Alloy files...
   for file in "$@"
   do
-    ${CLOUDNET_BINDIR}/Alloy/alloy.sh execute $ALLOY_EXECUTE_OPTS "$file"
+    echo "-" $file
+    ${CLOUDNET_BINDIR}/Alloy/alloy.sh execute ${ALLOY_EXECUTE_OPTS} "$file"
   done
 }
+
+# To configure dot options, e.g.:
+# DOT_OPTS="options"
 
 # Generate TOSCA diagrams.
 generate_tosca_diagrams()
@@ -72,22 +72,18 @@ generate_tosca_diagrams()
   for file in "$@"
   do
     echo "-" $file
-    run_dot "$file"
+    filebase="$(dirname $file)/$(basename -s .dot $file)"
+    # generate TOSCA diagram as a PNG image
+    ${CLOUDNET_BINDIR}/dot/dot -o$filebase.png -Tpng "$file"
+    # generate TOSCA diagram as a SVG file
+    ${CLOUDNET_BINDIR}/dot/dot -o$filebase.svg -Tsvg "$file"
   done
 }
 
-run_dot()
-{
-  local container_dest_volume="/work"
-  docker run \
-	  --user $(id -u):$(id -g) \
-          --volume="${PWD}:${container_dest_volume}" \
-          --workdir="${container_dest_volume}" \
-          --rm \
-          --attach=stdin --attach=stdout --attach=stderr \
-          toscaware/dot \
-          -Tpng "$1" > $(dirname "$1")/"$(basename -s .dot "$1")".png
-}
+# To configure nwdiag options
+# By default, apply anti-alias filter to generated network diagrams.
+# This improves the graphical quality of generated network diagrams.
+# NWDIAG_OPTS="-a"
 
 # Generate network diagrams.
 generate_network_diagrams()
@@ -96,9 +92,16 @@ generate_network_diagrams()
   for file in "$@"
   do
     echo "-" $file
-    ${CLOUDNET_BINDIR}/nwdiag/nwdiag "$file"
+    # generate network diagram as a PNG image
+    ${CLOUDNET_BINDIR}/nwdiag/nwdiag -a -Tpng "$file"
+    # generate network diagram as a SVG file
+    ${CLOUDNET_BINDIR}/nwdiag/nwdiag -Tsvg "$file"
   done
 }
+
+# To configure PlantUML options, e.g.
+# - set the limit size of PlantUML diagrams
+#   PLANTUML_OPTS="-DPLANTUML_LIMIT_SIZE=50000"
 
 # Generate UML2 diagrams.
 generate_uml2_diagrams()
@@ -107,6 +110,9 @@ generate_uml2_diagrams()
   for file in "$@"
   do
     echo "-" $file
-    ${CLOUDNET_BINDIR}/plantuml/plantuml "$file"
+    # generate UML2 diagram as a PNG image
+    ${CLOUDNET_BINDIR}/plantuml/plantuml -Tpng "$file"
+    # generate UML2 diagram as a SVG file
+    ${CLOUDNET_BINDIR}/plantuml/plantuml -Tsvg "$file"
   done
 }
