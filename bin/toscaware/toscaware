@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: TOSCA to Cloudnet Translator
+######################################################################
+
+container_dest_volume="/work"
+exec docker ${DOCKER_OPTS} run \
+      --user $(id -u):$(id -g) \
+      --volume="${PWD}:${container_dest_volume}" \
+      --volume="${CLOUDNET_BINDIR}/cloudnet:/cloudnet" \
+      --workdir="${container_dest_volume}" \
+      --rm \
+      --attach=stdin --attach=stdout --attach=stderr \
+      cloudnet/toscaware \
+      python ${PYTHON_OPTS} \
+      /cloudnet/tosca/tosca2cloudnet.py \
+      --template-file $1
