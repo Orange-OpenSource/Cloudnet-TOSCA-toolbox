@@ -3,7 +3,7 @@
 #
 # Script to build Alloy.
 #
-# Copyright (c) 2019 Orange
+# Copyright (c) 2019-21 Orange
 #
 # Author(s):
 # - Philippe Merle <philippe.merle@inria.fr>
@@ -24,5 +24,4 @@
 
 DIR=`dirname $0`
 
-#javac -cp $DIR/Alloy-5.0.0.1.jar cloudnet/*.java org/alloytools/nativecode/util/NativeCode.java
 javac -cp $DIR/org.alloytools.alloy.dist.jar:$DIR/commons-cli-1.4.jar cloudnet/*.java org/alloytools/nativecode/util/NativeCode.java
