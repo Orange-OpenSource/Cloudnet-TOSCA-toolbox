@@ -1,5 +1,4 @@
 # Cloudnet TOSCA Toolbox Usage
-=
 
 ## Commands
 
@@ -74,7 +73,6 @@ $ generate_uml2_diagrams <filename>.plantuml
 ```
 
 ## Environment variables
--
 
 Following environment variables are used to configure default command line options of Cloudnet TOSCA Toolbox tools.
 
