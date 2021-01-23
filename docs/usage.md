@@ -185,7 +185,7 @@ export TOSCAWARE_OPTS=" TBC "
 
 TBC
 
-# External used software tools
+## External used software tools
 
 Cloudnet TOSCA Toolbox reuses the following set of external software tools:
 
