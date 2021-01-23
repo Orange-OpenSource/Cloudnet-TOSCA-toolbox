@@ -1586,7 +1586,7 @@ class TypeChecker(Checker):
             if property_definition.get(syntax.REQUIRED, True) \
                and property_definition.get(syntax.DEFAULT) is None \
                and properties.get(property_name) is None:
-               self.error(context_error_message + ':' + syntax.PROPERTIES + ':' + property_name + ' - required property unassigned')
+               self.error(context_error_message + ' - ' + property_name + ' required property unassigned')
 
     def check_parameter_definition(self, parameter_name, parameter_definition, context_error_message):
         # check type
