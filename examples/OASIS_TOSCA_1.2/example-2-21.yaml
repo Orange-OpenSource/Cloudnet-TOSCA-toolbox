@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -60,6 +60,23 @@ topology_template:
                     properties:
                       - architecture: x86_64
                       - type: linux
+
+    # NOTE: node templates added to fill node_filter
+
+    compute_not_matching_both_node_filters:
+      type: tosca.nodes.Compute
+
+    compute_matching_both_node_filters:
+      type: tosca.nodes.Compute
+      capabilities:
+        host:
+          properties:
+            disk_size: 100 GB
+            mem_size: 64 GB
+        os:
+          properties:
+            type: linux
+            architecture: x86_64
 
   groups:
     my_co_location_group:
