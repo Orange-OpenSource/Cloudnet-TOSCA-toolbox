@@ -25,6 +25,7 @@ export CLOUDNET_BINDIR
 # Generate Alloy and diagram files.
 translate()
 {
+  local file
   echo Translate TOSCA files...
   for file in "$@"
   do
@@ -39,6 +40,7 @@ translate()
 # Parse and type check generated Alloy files.
 alloy_parse()
 {
+  local file
   echo Parsing and type checking generated Alloy files...
   for file in "$@"
   do
@@ -55,6 +57,7 @@ ALLOY_EXECUTE_OPTS='-c "Show_.*_topology_template"'
 alloy_execute()
 {
   echo Analysing generated Alloy files...
+  local file
   for file in "$@"
   do
     echo "-" $file
@@ -68,6 +71,7 @@ alloy_execute()
 # Generate TOSCA diagrams.
 generate_tosca_diagrams()
 {
+  local file
   echo Generating TOSCA diagrams...
   for file in "$@"
   do
@@ -88,14 +92,19 @@ generate_tosca_diagrams()
 # Generate network diagrams.
 generate_network_diagrams()
 {
+  local file
+  local current_directory
   echo Generating network diagrams...
   for file in "$@"
   do
     echo "-" $file
+    current_directory=$PWD # store current directory
+    cd $(dirname $file) # go to directory containing generated network diagrams
     # generate network diagram as a PNG image
-    ${CLOUDNET_BINDIR}/nwdiag/nwdiag -a -Tpng "$file"
+    ${CLOUDNET_BINDIR}/nwdiag/nwdiag -a -Tpng "$(basename $file)"
     # generate network diagram as a SVG file
-    ${CLOUDNET_BINDIR}/nwdiag/nwdiag -Tsvg "$file"
+    ${CLOUDNET_BINDIR}/nwdiag/nwdiag -Tsvg "$(basename $file)"
+    cd ${current_directory} # back to current directory
   done
 }
 
@@ -106,6 +115,7 @@ generate_network_diagrams()
 # Generate UML2 diagrams.
 generate_uml2_diagrams()
 {
+  local file
   echo Generating UML2 diagrams...
   for file in "$@"
   do
