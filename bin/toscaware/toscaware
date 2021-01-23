@@ -25,4 +25,5 @@ exec docker ${DOCKER_OPTS} run \
       cloudnet/toscaware \
       python ${PYTHON_OPTS} \
       /cloudnet/tosca/tosca2cloudnet.py \
+      ${TOSCAWARE_OPTS} \
       --template-file $1

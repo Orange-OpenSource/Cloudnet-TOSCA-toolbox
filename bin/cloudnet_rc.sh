@@ -29,7 +29,7 @@ translate()
   for file in "$@"
   do
     echo "-" $file
-    ${CLOUDNET_BINDIR}/toscaware/toscaware ${TOSCA_TOOLBOX_OPTS} "$file"
+    ${CLOUDNET_BINDIR}/toscaware/toscaware "$file"
   done
 }
 
