@@ -15,6 +15,7 @@
 ######################################################################
 
 container_dest_volume="/work"
+
 exec docker ${DOCKER_OPTS} run \
             --user $(id -u):$(id -g) \
             --volume="${PWD}:${container_dest_volume}" \
@@ -22,6 +23,7 @@ exec docker ${DOCKER_OPTS} run \
             --rm \
             --attach=stdin --attach=stdout --attach=stderr \
             cloudnet/plantuml \
-            ${JAVA_OPTS} \
+            java ${JAVA_OPTS} \
+            -jar /plantuml.jar \
             ${PLANTUML_OPTS} \
             "$@"
