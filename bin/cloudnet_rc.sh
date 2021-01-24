@@ -110,7 +110,7 @@ generate_network_diagrams()
 
 # To configure PlantUML options, e.g.
 # - set the limit size of PlantUML diagrams
-#   PLANTUML_OPTS="-DPLANTUML_LIMIT_SIZE=50000"
+export PLANTUML_OPTS="-DPLANTUML_LIMIT_SIZE=50000"
 
 # Generate UML2 diagrams.
 generate_uml2_diagrams()
