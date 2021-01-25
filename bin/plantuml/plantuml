@@ -17,7 +17,7 @@
 __run_plantuml() {
     local container_dest_volume="/work"
     exec docker run \
-            --user $(id -u):$(id -g) \
+            --user "$(id -u)":"$(id -g)" \
             --volume="${PWD}:${container_dest_volume}" \
             --workdir="${container_dest_volume}" \
             --rm \

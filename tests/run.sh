@@ -16,20 +16,21 @@
 
 # Load cloudnet commands.
 CLOUDNET_BINDIR=../bin
-. ${CLOUDNET_BINDIR}/cloudnet_rc.sh
+. "${CLOUDNET_BINDIR}"/cloudnet_rc.sh
 
 exit_code=0
 
 check_regression()
 {
-  translate $1 2> /tmp/cloudnet_translate.log
-  expected_errors="`grep ERROR $1 | wc -l`"
-  generated_errors="`grep ERROR /tmp/cloudnet_translate.log | wc -l`"
-  if [[ ${expected_errors} == ${generated_errors} ]]
-  then
-    echo No regression on $1
+  translate "$1" 2> /tmp/cloudnet_translate.log
+  expected_errors="$(grep -c ERROR "$1")"
+  echo "expected : $expected_errors"
+  generated_errors="$(grep -c ERROR /tmp/cloudnet_translate.log )"
+  echo "generated : $generated_errors"
+  if [ "${expected_errors}" -eq "${generated_errors}" ]; then
+    echo No regression on "$1"
   else
-    echo Regression on $1!
+    echo Regression on "$1"!
     exit_code=1
   fi
 }

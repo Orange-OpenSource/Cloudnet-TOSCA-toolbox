@@ -16,9 +16,9 @@
 
 docker_build()
 {
-  echo -------------------- $1 Docker image --------------------
-  echo Building $1 Docker image...
-  docker build -t $1 $2
+  echo -------------------- "$1" Docker image --------------------
+  echo Building "$1" Docker image...
+  docker build -t "$1" "$2"
   echo
 }
 
