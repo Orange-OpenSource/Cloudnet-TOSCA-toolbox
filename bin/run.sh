@@ -53,7 +53,7 @@ TOSCA_SyntaxCheck()
    
    for filename in $(grep -r --include=*.{yaml,yml} -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
      do 
-       echo -e "\n${normal}${magenta}    `echo $filename | tr [a-z] [A-Z]` ${reset}" | tee -a logs/"${_LOG}"
+       echo -e "\n${normal}${magenta}    $(echo "$filename" | tr [a-z] [A-Z]) ${reset}" | tee -a logs/"${_LOG}"
        translate "$filename" 2>&1 | tee -a logs/"${_LOG}"
      done
    SYNTAX_CHECK=true
