@@ -139,7 +139,7 @@ AlloySolve()
 ################################################################################
 pause(){
   echo 
-  read -p "         Press [Enter] key to continue..." fackEnterKey
+  read -rp "         Press [Enter] key to continue..." fackEnterKey
 }
 
 ################################################################################
@@ -168,7 +168,7 @@ show_menus() {
 ################################################################################
 read_options(){
     local choice
-    read -p "Enter choice [ 1-5 clwx ] " choice
+    read -rp "Enter choice [ 1-5 clwx ] " choice
     case $choice in
         1) # Launch TOSCA syntax checking
            echo -e "\n"
@@ -223,7 +223,7 @@ read_options(){
            # else, warn the user
            if [ -z ${_LOG+x} ]; then
              echo -e "\n\n"
-             read -p "          No log file created for this session, type any key to continue." choice
+             read -rp "          No log file created for this session, type any key to continue." choice
            else
              less -r logs/"${_LOG}"
            fi
@@ -321,29 +321,31 @@ if [ ! -f "${TOSCA2CLOUDNET_CONF_FILE}" ]; then
    DIRVARS_GENERATED=true
    #create a config file which will be deleted at the exit of the script
    RESULT_DIR="RESULTS"
-   echo "# Configuration of the Alloy generator." >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "Alloy:" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "  # Target directory where Alloy files are generated." >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "  target-directory: ${RESULT_DIR}/Alloy" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "# Configuration of the network diagram generator." >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "nwdiag:" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "  # Target directory where network diagrams are generated." >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "  target-directory: ${RESULT_DIR}/NetworkDiagrams" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "# Configuration of the TOSCA diagram generator." >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "tosca_diagrams:" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "  # Target directory where network diagrams are generated." >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "  target-directory: ${RESULT_DIR}/ToscaDiagrams" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "# Configuration of the UML2 diagram generator." >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "UML2:" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "  # Target directory where UML2 diagrams are generated." >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "  target-directory: ${RESULT_DIR}/Uml2Diagrams" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "HOT:" >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "  # Target directory where HOT templates are generated." >> $TOSCA2CLOUDNET_CONF_FILE
-   echo "  target-directory: ${RESULT_DIR}/HOT" >> $TOSCA2CLOUDNET_CONF_FILE
+   {
+     echo "# Configuration of the Alloy generator."
+     echo "Alloy:"
+     echo "  # Target directory where Alloy files are generated."
+     echo "  target-directory: ${RESULT_DIR}/Alloy"
+     echo ""
+     echo "# Configuration of the network diagram generator."
+     echo "nwdiag:"
+     echo "  # Target directory where network diagrams are generated."
+     echo "  target-directory: ${RESULT_DIR}/NetworkDiagrams"
+     echo ""
+     echo "# Configuration of the TOSCA diagram generator."
+     echo "tosca_diagrams:"
+     echo "  # Target directory where network diagrams are generated."
+     echo "  target-directory: ${RESULT_DIR}/ToscaDiagrams"
+     echo ""
+     echo "# Configuration of the UML2 diagram generator."
+     echo "UML2:"
+     echo "  # Target directory where UML2 diagrams are generated."
+     echo "  target-directory: ${RESULT_DIR}/Uml2Diagrams"
+     echo ""
+     echo "HOT:"
+     echo "  # Target directory where HOT templates are generated."
+     echo "  target-directory: ${RESULT_DIR}/HOT"
+   } >> $TOSCA2CLOUDNET_CONF_FILE
    create_variables $TOSCA2CLOUDNET_CONF_FILE
 fi
 # Parse tosca2cloudnet.yaml and extract variables
@@ -371,7 +373,7 @@ if (( NBVARSSET > 0 )) && (( NBVARSSET < ${#dirArray[@]} )); then
   do
     echo "      ${var} : ${!var}"
   done
-  read -p "Enter choice [ O|n ] " choice
+  read -rp "Enter choice [ O|n ] " choice
   case $choice in
         n) # exit
            exit 0
