@@ -1,8 +1,8 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -13,9 +13,7 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
-
-
 # Required Python packages
-jsonschema[format]      # JSON schema validation.
-PyYAML==5.3.1		# YAML parser
-requests		# HTTP requests
+jsonschema[format] # JSON schema validation
+PyYAML==5.4.1      # YAML parser
+requests           # HTTP requests

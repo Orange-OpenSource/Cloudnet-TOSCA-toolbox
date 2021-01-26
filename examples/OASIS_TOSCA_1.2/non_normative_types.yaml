@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -42,7 +42,8 @@ capability_types:
 
   # Section 9.2.1 tosca.capabilities.Container.Docker
   tosca.capabilities.Container.Docker:
-    derived_from: tosca.capabilities.Container
+#   derived_from: tosca.capabilities.Container
+    derived_from: tosca.capabilities.Compute
     properties:
       version:
         type: list
@@ -64,6 +65,10 @@ capability_types:
         type: list
         entry_schema: string
         required: false
+
+  # ISSUE: added as used into Container-1!
+  tosca.capabilities.Docker.Link:
+    derived_from: tosca.capabilities.network.Linkable
 
 node_types:
 
@@ -124,10 +129,29 @@ node_types:
   # Section 9.3.6 tosca.nodes.Container.Application.Docker
   tosca.nodes.Container.Application.Docker:
     derived_from: tosca.nodes.Container.Application
-# ISSUE: No node has a capability of type tosca.capabilities.Container.Docker
-# ISSUE:    requirements:
-# ISSUE:     - host:
-# ISSUE:         capability: tosca.capabilities.Container.Docker
+
+    capabilities:
+      database_link: # ISSUE: added as useful in Container-1.yaml!
+        type: tosca.capabilities.Docker.Link
+        valid_source_types: [ tosca.nodes.Container.Application.Docker ]
+    requirements:
+      - database_link: # ISSUE: added as useful in Container-1.yaml!
+          capability: tosca.capabilities.Docker.Link
+# TODO: bug in Alloy generator
+#          node: tosca.nodes.Container.Application.Docker
+          relationship: tosca.relationships.network.LinksTo
+          occurrences: [ 0, UNBOUNDED ]
+      - host:
+          capability: tosca.capabilities.Container.Docker
+          # ISSUE: this is better to explicitly define which relationship type to use
+          relationship: tosca.relationships.HostedOn
+
+  # ISSUE: added as useful in Container-1.yaml!
+  tosca.nodes.Container.Runtime.Docker:
+    derived_from: tosca.nodes.Container.Runtime
+    capabilities:
+      container:
+        type: tosca.capabilities.Container.Docker
 
   tosca.nodes.WebApplication.PayPalPizzaStore:
     derived_from: tosca.nodes.WebApplication

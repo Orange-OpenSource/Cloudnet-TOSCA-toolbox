@@ -1,7 +1,7 @@
 
 #####################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -10,7 +10,7 @@
 # the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
 # or see the "LICENSE-2.0.txt" file for more details.
 #
-# Author: 
+# Author:
 #   - Philippe Merle <philippe.merle@inria.fr>
 #   - Frédéric Klamm <frederic.klamm@orange.com>
 #
@@ -194,7 +194,7 @@ artifact_types:
     description: Artifact for the interpreted Python language
     mime_type: application/x-python
     file_ext: [ py ]
-    
+
   # Section 5.4.5 tosca.artifacts.template   1.3->
   tosca.artifacts.template:
     derived_from: tosca.artifacts.Root
@@ -710,16 +710,15 @@ node_types:
           capability: tosca.capabilities.Compute
           node: tosca.nodes.Container.Runtime
           relationship: tosca.relationships.HostedOn
-      - storage:
-          capability: tosca.capabilities.Storage
 # ISSUE: relationship undefined.
 # ISSUE: no relationship type has tosca.capabilities.Storage as valid_target_types.
 # ISSUE: no node type has tosca.capabilities.Storage as capabilities.
-          relationship: tosca.relationships.Root
+#      - storage:
+#          capability: tosca.capabilities.Storage
       - network:
           capability: tosca.capabilities.Endpoint
 # ISSUE: relationship undefined.
-          relationship: tosca.relationships.Root
+          relationship: tosca.relationships.ConnectsTo
 
   # Section 5.9.14 tosca.nodes.LoadBalancer
   tosca.nodes.LoadBalancer:

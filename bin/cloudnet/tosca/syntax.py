@@ -128,6 +128,25 @@ URL = 'url'
 
 NAMESPACE_PREFIX = 'namespace_prefix'
 
+OPERATIONS = 'operations'
+
+PRIMARY = 'primary'
+DEPENDENCIES = 'dependencies'
+
+WORKFLOWS = 'workflows'
+
+DIRECTIVES = 'directives'
+
+COPY = 'copy'
+
+TRIGGERS = 'triggers'
+
+MAPPING = 'mapping'
+
+KEY_SCHEMA = 'key_schema'
+
+NOTIFICATIONS = 'notifications'
+
 #
 # Getter functions.
 #
@@ -468,6 +487,15 @@ def get_artifact_type(yaml):
         return yaml.get(TYPE)
     return None
 
+def get_operations(definition):
+    operations = definition.get(OPERATIONS)
+    if operations is None:
+        operations = {}
+        for operation_name, operation_definition in definition.items():
+            if operation_name not in [ DERIVED_FROM, DESCRIPTION, TYPE, INPUTS, NOTIFICATIONS ]:
+                operations[operation_name] = operation_definition
+    return { OPERATIONS: operations }
+
 class SyntaxChecker(Checker):
     '''
         TOSCA syntax checker
@@ -525,14 +553,17 @@ class SyntaxChecker(Checker):
             if error_message.startswith('Additional'):
                 error_message = error_message[error_message.find('(')+1:-1]
             elif error_message.startswith("None is not of type 'object'"):
-                error_message = 'can not be empty'
+                error_message = 'null unexpected'
             elif error_message.endswith(" is not of type 'object'"):
                 value = error_message[: error_message.index(" is not of type 'object'")]
-                error_message = value + ' was unexpected'
+                error_message = value + ' unexpected'
             error_path = ''
             for value in error.path:
-                error_path += value + ':'
-            self.error(error_path + ' ' + error_message)
+                if type(value) is int:
+                    error_path = error_path[:-1] + '[' + str(value) + ']:'
+                else:
+                    error_path += str(value) + ':'
+            self.error(error_path + ' - ' + error_message)
             is_validated = False
 
         return is_validated

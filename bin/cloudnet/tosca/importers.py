@@ -214,11 +214,13 @@ class UrlImporter(Importer):
         '''
             Loads a YAML file.
         '''
-        response = requests.get(filename)
+        try:
+            response = requests.get(filename)
+        except requests.exceptions.ConnectionError:
+            raise FileNotFoundError(filename)
         if response.status_code == 404:
             raise FileNotFoundError(filename)
         return yaml.safe_load(response.text)
-
 
 class ArchiveImporter(Importer):
     '''

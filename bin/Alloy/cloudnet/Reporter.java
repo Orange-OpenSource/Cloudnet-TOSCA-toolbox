@@ -1,6 +1,6 @@
-/* Copyright (c) 2019, Orange
+/* Copyright (c) 2019-21, Orange
  *
- * Software Name : Cloudnet TOSCA toolbox 
+ * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
  *
  * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
@@ -26,6 +26,12 @@ public final class Reporter extends A4Reporter {
 
     static public String RED = "\33[31m";
     static public String BLACK = "\33[0m";
+
+    /**
+     * true when Kodkod successes to translate Alloy into CNF.
+     * false when Kodkod does not success to translate Alloy into CNF.
+     */
+    static public boolean is_solved;
 
     void trace(String method, String msg) {
         //                System.out.println("[" + method + "] " + msg);
@@ -70,6 +76,8 @@ public final class Reporter extends A4Reporter {
     @Override
     public void solve(int primaryVars, int totalVars, int clauses) {
         trace("solve", totalVars + " vars. " + primaryVars + " primary vars. " + clauses + " clauses.");
+        is_solved = (primaryVars != 0) || (totalVars != 0) || (clauses != 0);
+        // is_solved is false when primaryVars == 0 and totalVars == 0 and clauses == 0
     }
 
     @Override

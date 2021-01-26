@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -30,8 +30,6 @@ topology_template:
   node_templates:
     my_virtual_machine:
       type: SoftwareComponent
-# TODO: This is a bug with previous line!
-      type: tosca.nodes.SoftwareComponent
       artifacts:
         my_vm_image:
           file: images/fedora-18-x86_64.qcow2
