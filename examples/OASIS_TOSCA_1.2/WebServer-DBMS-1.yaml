@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -41,12 +41,15 @@ topology_template:
     db_port:
       type: PortDef
       description: Port for the MySQL database
+    context_root: # ISSUE: added as { get_input: context_root } used!
+      type: string
+      description: The context root for WordPress.
 
   node_templates:
     wordpress:
       type: tosca.nodes.WebApplication.WordPress
       properties:
-        context_root: { get_input: context_root }
+        context_root: { get_input: context_root } # ISSUE: context_root input undefined!
         admin_user: admin # ISSUE: added because required property
         admin_password: password # ISSUE: added because required property
         db_host: db_host # ISSUE: added because required property

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -14,16 +14,16 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
-__run_plantuml() {
-    local container_dest_volume="/work"
-    exec docker run \
+container_dest_volume="/work"
+
+exec docker ${DOCKER_OPTS} run \
             --user $(id -u):$(id -g) \
             --volume="${PWD}:${container_dest_volume}" \
             --workdir="${container_dest_volume}" \
             --rm \
             --attach=stdin --attach=stdout --attach=stderr \
-            toscaware/plantuml \
+            cloudnet/plantuml \
+            java ${JAVA_OPTS} \
+            -jar /plantuml.jar \
+            ${PLANTUML_OPTS} \
             "$@"
-}
-
-__run_plantuml "$@"

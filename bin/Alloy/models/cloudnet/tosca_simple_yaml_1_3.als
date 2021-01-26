@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Software Name : Cloudnet TOSCA toolbox 
+ * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
  * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
  * SPDX-License-Identifier: Apache-2.0
@@ -1431,17 +1431,75 @@ sig tosca_interfaces_node_lifecycle_Standard extends tosca_interfaces_Root
   // Operations
   // --------------------------------------------------
 
-  // YAML operations: {'create': {'description': 'Standard lifecycle create operation.'}, 'configure': {'description': 'Standard lifecycle configure operation.'}, 'start': {'description': 'Standard lifecycle start operation.'}, 'stop': {'description': 'Standard lifecycle stop operation.'}, 'delete': {'description': 'Standard lifecycle delete operation.'}}
-  operation_operations: one TOSCA/Operation,
+  // YAML create: {'description': 'Standard lifecycle create operation.'}
+  //
+  // Standard lifecycle create operation.
+  //
+  operation_create: one TOSCA/Operation,
+
+  // YAML configure: {'description': 'Standard lifecycle configure operation.'}
+  //
+  // Standard lifecycle configure operation.
+  //
+  operation_configure: one TOSCA/Operation,
+
+  // YAML start: {'description': 'Standard lifecycle start operation.'}
+  //
+  // Standard lifecycle start operation.
+  //
+  operation_start: one TOSCA/Operation,
+
+  // YAML stop: {'description': 'Standard lifecycle stop operation.'}
+  //
+  // Standard lifecycle stop operation.
+  //
+  operation_stop: one TOSCA/Operation,
+
+  // YAML delete: {'description': 'Standard lifecycle delete operation.'}
+  //
+  // Standard lifecycle delete operation.
+  //
+  operation_delete: one TOSCA/Operation,
 
 } {
   // --------------------------------------------------
   // Operations
   // --------------------------------------------------
 
-  // YAML operations: {'create': {'description': 'Standard lifecycle create operation.'}, 'configure': {'description': 'Standard lifecycle configure operation.'}, 'start': {'description': 'Standard lifecycle start operation.'}, 'stop': {'description': 'Standard lifecycle stop operation.'}, 'delete': {'description': 'Standard lifecycle delete operation.'}}
-  operation_operations.name["operations"]
-  operation[operation_operations]
+  // YAML create: {'description': 'Standard lifecycle create operation.'}
+  //
+  // Standard lifecycle create operation.
+  //
+  operation_create.name["create"]
+  operation[operation_create]
+
+  // YAML configure: {'description': 'Standard lifecycle configure operation.'}
+  //
+  // Standard lifecycle configure operation.
+  //
+  operation_configure.name["configure"]
+  operation[operation_configure]
+
+  // YAML start: {'description': 'Standard lifecycle start operation.'}
+  //
+  // Standard lifecycle start operation.
+  //
+  operation_start.name["start"]
+  operation[operation_start]
+
+  // YAML stop: {'description': 'Standard lifecycle stop operation.'}
+  //
+  // Standard lifecycle stop operation.
+  //
+  operation_stop.name["stop"]
+  operation[operation_stop]
+
+  // YAML delete: {'description': 'Standard lifecycle delete operation.'}
+  //
+  // Standard lifecycle delete operation.
+  //
+  operation_delete.name["delete"]
+  operation[operation_delete]
 
 }
 
@@ -1471,17 +1529,114 @@ sig tosca_interfaces_relationship_Configure extends tosca_interfaces_Root
   // Operations
   // --------------------------------------------------
 
-  // YAML operations: {'pre_configure_source': {'description': 'Operation to pre-configure the source endpoint.'}, 'pre_configure_target': {'description': 'Operation to pre-configure the target endpoint.'}, 'post_configure_source': {'description': 'Operation to post-configure the source endpoint.'}, 'post_configure_target': {'description': 'Operation to post-configure the target endpoint.'}, 'add_target': {'description': 'Operation to notify the source node of a target node being added via a relationship.'}, 'add_source': {'description': 'Operation to notify the target node of a source node which is now available via a relationship.'}, 'target_changed': {'description': 'Operation to notify source some property or attribute of the target changed'}, 'remove_target': {'description': 'Operation to remove a target node.'}}
-  operation_operations: one TOSCA/Operation,
+  // YAML pre_configure_source: {'description': 'Operation to pre-configure the source endpoint.'}
+  //
+  // Operation to pre-configure the source endpoint.
+  //
+  operation_pre_configure_source: one TOSCA/Operation,
+
+  // YAML pre_configure_target: {'description': 'Operation to pre-configure the target endpoint.'}
+  //
+  // Operation to pre-configure the target endpoint.
+  //
+  operation_pre_configure_target: one TOSCA/Operation,
+
+  // YAML post_configure_source: {'description': 'Operation to post-configure the source endpoint.'}
+  //
+  // Operation to post-configure the source endpoint.
+  //
+  operation_post_configure_source: one TOSCA/Operation,
+
+  // YAML post_configure_target: {'description': 'Operation to post-configure the target endpoint.'}
+  //
+  // Operation to post-configure the target endpoint.
+  //
+  operation_post_configure_target: one TOSCA/Operation,
+
+  // YAML add_target: {'description': 'Operation to notify the source node of a target node being added via a relationship.'}
+  //
+  // Operation to notify the source node of a target node being added via a relationship.
+  //
+  operation_add_target: one TOSCA/Operation,
+
+  // YAML add_source: {'description': 'Operation to notify the target node of a source node which is now available via a relationship.'}
+  //
+  // Operation to notify the target node of a source node which is now available via a relationship.
+  //
+  operation_add_source: one TOSCA/Operation,
+
+  // YAML target_changed: {'description': 'Operation to notify source some property or attribute of the target changed'}
+  //
+  // Operation to notify source some property or attribute of the target changed
+  //
+  operation_target_changed: one TOSCA/Operation,
+
+  // YAML remove_target: {'description': 'Operation to remove a target node.'}
+  //
+  // Operation to remove a target node.
+  //
+  operation_remove_target: one TOSCA/Operation,
 
 } {
   // --------------------------------------------------
   // Operations
   // --------------------------------------------------
 
-  // YAML operations: {'pre_configure_source': {'description': 'Operation to pre-configure the source endpoint.'}, 'pre_configure_target': {'description': 'Operation to pre-configure the target endpoint.'}, 'post_configure_source': {'description': 'Operation to post-configure the source endpoint.'}, 'post_configure_target': {'description': 'Operation to post-configure the target endpoint.'}, 'add_target': {'description': 'Operation to notify the source node of a target node being added via a relationship.'}, 'add_source': {'description': 'Operation to notify the target node of a source node which is now available via a relationship.'}, 'target_changed': {'description': 'Operation to notify source some property or attribute of the target changed'}, 'remove_target': {'description': 'Operation to remove a target node.'}}
-  operation_operations.name["operations"]
-  operation[operation_operations]
+  // YAML pre_configure_source: {'description': 'Operation to pre-configure the source endpoint.'}
+  //
+  // Operation to pre-configure the source endpoint.
+  //
+  operation_pre_configure_source.name["pre_configure_source"]
+  operation[operation_pre_configure_source]
+
+  // YAML pre_configure_target: {'description': 'Operation to pre-configure the target endpoint.'}
+  //
+  // Operation to pre-configure the target endpoint.
+  //
+  operation_pre_configure_target.name["pre_configure_target"]
+  operation[operation_pre_configure_target]
+
+  // YAML post_configure_source: {'description': 'Operation to post-configure the source endpoint.'}
+  //
+  // Operation to post-configure the source endpoint.
+  //
+  operation_post_configure_source.name["post_configure_source"]
+  operation[operation_post_configure_source]
+
+  // YAML post_configure_target: {'description': 'Operation to post-configure the target endpoint.'}
+  //
+  // Operation to post-configure the target endpoint.
+  //
+  operation_post_configure_target.name["post_configure_target"]
+  operation[operation_post_configure_target]
+
+  // YAML add_target: {'description': 'Operation to notify the source node of a target node being added via a relationship.'}
+  //
+  // Operation to notify the source node of a target node being added via a relationship.
+  //
+  operation_add_target.name["add_target"]
+  operation[operation_add_target]
+
+  // YAML add_source: {'description': 'Operation to notify the target node of a source node which is now available via a relationship.'}
+  //
+  // Operation to notify the target node of a source node which is now available via a relationship.
+  //
+  operation_add_source.name["add_source"]
+  operation[operation_add_source]
+
+  // YAML target_changed: {'description': 'Operation to notify source some property or attribute of the target changed'}
+  //
+  // Operation to notify source some property or attribute of the target changed
+  //
+  operation_target_changed.name["target_changed"]
+  operation[operation_target_changed]
+
+  // YAML remove_target: {'description': 'Operation to remove a target node.'}
+  //
+  // Operation to remove a target node.
+  //
+  operation_remove_target.name["remove_target"]
+  operation[operation_remove_target]
 
 }
 
@@ -2291,10 +2446,7 @@ sig tosca_nodes_Container_Application extends tosca_nodes_Root
   // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.Container.Runtime', 'relationship': 'tosca.relationships.HostedOn'}
   requirement_host: one TOSCA/Requirement,
 
-  // YAML storage: {'capability': 'tosca.capabilities.Storage', 'relationship': 'tosca.relationships.Root'}
-  requirement_storage: one TOSCA/Requirement,
-
-  // YAML network: {'capability': 'tosca.capabilities.Endpoint', 'relationship': 'tosca.relationships.Root'}
+  // YAML network: {'capability': 'tosca.capabilities.Endpoint', 'relationship': 'tosca.relationships.ConnectsTo'}
   requirement_network: one TOSCA/Requirement,
 
 } {
@@ -2308,15 +2460,10 @@ sig tosca_nodes_Container_Application extends tosca_nodes_Root
   requirement_host.relationship[tosca_relationships_HostedOn]
   requirement_host.node[tosca_nodes_Container_Runtime]
 
-  // YAML storage: {'capability': 'tosca.capabilities.Storage', 'relationship': 'tosca.relationships.Root'}
-  requirement["storage", requirement_storage]
-  requirement_storage.capability[tosca_capabilities_Storage]
-  requirement_storage.relationship[tosca_relationships_Root]
-
-  // YAML network: {'capability': 'tosca.capabilities.Endpoint', 'relationship': 'tosca.relationships.Root'}
+  // YAML network: {'capability': 'tosca.capabilities.Endpoint', 'relationship': 'tosca.relationships.ConnectsTo'}
   requirement["network", requirement_network]
   requirement_network.capability[tosca_capabilities_Endpoint]
-  requirement_network.relationship[tosca_relationships_Root]
+  requirement_network.relationship[tosca_relationships_ConnectsTo]
 
 }
 
@@ -2328,9 +2475,9 @@ run Show_tosca_nodes_Container_Application {
   5 seq,
   // NOTE: Setting following scopes strongly reduces the research space.
   exactly 0 LocationGraphs/LocationGraph,
-  exactly 7 LocationGraphs/Location,
+  exactly 6 LocationGraphs/Location,
   exactly 35 LocationGraphs/Value,
-  exactly 7 LocationGraphs/Name,
+  exactly 6 LocationGraphs/Name,
   exactly 1 LocationGraphs/Sort,
   exactly 1 LocationGraphs/Process,
   exactly 0 TOSCA/Group,
@@ -2747,4 +2894,3 @@ run Show_tosca_policies_Performance {
   exactly 1 LocationGraphs/Sort,
   exactly 1 tosca_policies_Performance
   expect 1
-

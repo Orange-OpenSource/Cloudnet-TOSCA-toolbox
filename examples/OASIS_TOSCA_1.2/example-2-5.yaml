@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -23,7 +23,7 @@ imports:
 topology_template:
   inputs:
     # omitted here for brevity
-    # NOTE: following inputs must be defined
+    # ISSUE: following inputs must be defined as used
     database_name:
       type: string
     database_user:
@@ -32,9 +32,9 @@ topology_template:
       type: string
     database_port:
       type: integer
-    my_mysql_rootpw:
+    mysql_rootpw:
       type: string
-    my_mysql_port:
+    mysql_port:
       type: integer
 
   node_templates:

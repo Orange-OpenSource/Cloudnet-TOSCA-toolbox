@@ -1,8 +1,8 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -178,13 +178,11 @@ class PlantUMLGenerator(Generator):
                 self.generate('--')
                 for interface_name, interface_yaml in interfaces.items():
                     self.generate('.. interface', interface_name, '..')
-                    for key, value in interface_yaml.items():
-                        if key not in ['type', 'description']:
-                            self.generate('+', key, '()', sep='')
-            if class_kind == 'I':
-                for key, value in type_yaml.items():
-                    if key not in ['derived_from', 'description']:
+                    for key, value in syntax.get_operations(interface_yaml).get(OPERATIONS).items():
                         self.generate('+', key, '()', sep='')
+            if class_kind == 'I':
+                for key, value in syntax.get_operations(type_yaml).get(OPERATIONS).items():
+                    self.generate('+', key, '()', sep='')
             self.generate('}')
             for attribute_name, attribute_yaml in attributes.items():
                 attribute_type = attribute_yaml.get(TYPE)
