@@ -205,9 +205,24 @@ topology_template:
           with_actions:
             event: EventName
             action:
+              - delegate: { } # ERROR: workflow expected!
               - delegate: workflow # ERROR: workflow undefined!
+              - delegate:
+                  workflow: workflow # ERROR: workflow undefined!
               - delegate: deploy # workflow defined
+              - delegate:
+                  workflow: deploy # workflow defined
+              - delegate:
+                  workflow: deploy # workflow defined
+                  inputs:
+                    undefined_input: '' # ERROR: input undefined in deploy workflow!
               - delegate: undeploy # workflow defined
+              - delegate:
+                  workflow: undeploy # workflow defined
+              - delegate:
+                  workflow: undeploy # workflow defined
+                  inputs:
+                    undefined_input: '' # ERROR: input undefined in undeploy workflow!
               - set_state: some_state # TODO: constraints the state attribute in TOSCA 2.0!
               - call_operation: xxx # ERROR: <interface_name>.<operation_name> expected!
               - call_operation: xxx.yyy.zzz # ERROR: <interface_name>.<operation_name> expected!
@@ -224,10 +239,33 @@ topology_template:
                   operation: Standard.start
                   inputs:
                     parameter: true # ERROR: boolean but string expected!
+              - inline: { } # ERROR: workflow expected!
               - inline: workflow # ERROR: workflow undefined!
-              - inline: wf1 # workflow defined
+              - inline:
+                  workflow: workflow # ERROR: workflow undefined!
+              - inline: wf1 # workflow defined but ERROR: input_mandatory expected!
+              - inline:
+                  workflow: wf1 # workflow defined
+                  # ERROR: input_mandatory expected!
+              - inline:
+                  workflow: wf1 # workflow defined
+                  inputs:
+                    input_mandatory: '' # input expected
+                    undefined_input: '' # ERROR: input undefined!
               - inline: deploy # workflow pre-defined
+              - inline:
+                  workflow: deploy # workflow pre-defined
+              - inline:
+                  workflow: deploy # workflow defined
+                  inputs:
+                    undefined_input: '' # ERROR: input undefined in deploy workflow!
               - inline: undeploy # workflow pre-defined
+              - inline:
+                  workflow: undeploy # workflow pre-defined
+              - inline:
+                  workflow: undeploy # workflow defined
+                  inputs:
+                    undefined_input: '' # ERROR: input undefined in undeploy workflow!
           target_filter_node_with_condition_and_actions:
             event: EventName
             target_filter:
@@ -298,7 +336,7 @@ topology_template:
               - call_operation: Standard.start # correct
 
   workflows:
-    wf1:
+    wf0:
       inputs:
         in1: {} # ERROR: type missed!
         in2:
@@ -306,6 +344,16 @@ topology_template:
         in3:
           type: tosca.interfaces.Root # ERROR: data type expected!
 
+    wf1:
+      inputs:
+        input_mandatory:
+          type: string
+        input_required_but_default_value:
+          type: string
+          default: 'a string'
+        input_optional:
+          type: string
+          required: false
       preconditions:
         - target: node1 # ERROR: node1 undefined!
         - target: compute # node template defined
@@ -399,9 +447,24 @@ topology_template:
         with_activities:
           target: compute
           activities:
+            - delegate: { } # ERROR: workflow expected!
             - delegate: workflow # ERROR: workflow undefined!
+            - delegate:
+                workflow: workflow # ERROR: workflow undefined!
             - delegate: deploy # workflow defined
+            - delegate:
+                workflow: deploy # workflow defined
+            - delegate:
+                workflow: deploy # workflow defined
+                inputs:
+                  undefined_input: '' # ERROR: input undefined in deploy workflow!
             - delegate: undeploy # workflow defined
+            - delegate:
+                workflow: undeploy # workflow defined
+            - delegate:
+                workflow: undeploy # workflow defined
+                inputs:
+                  undefined_input: '' # ERROR: input undefined in undeploy workflow!
             - set_state: some_state # TODO: constraints the state attribute in TOSCA 2.0!
             - call_operation: xxx # ERROR: <interface_name>.<operation_name> expected!
             - call_operation: xxx.yyy.zzz # ERROR: <interface_name>.<operation_name> expected!
@@ -418,10 +481,33 @@ topology_template:
                 operation: Standard.start
                 inputs:
                   parameter: true # ERROR: boolean but string expected!
+            - inline: { } # ERROR: workflow expected!
             - inline: workflow # ERROR: workflow undefined!
-            - inline: wf1 # workflow defined
+            - inline:
+                workflow: workflow # ERROR: workflow undefined!
+            - inline: wf1 # workflow defined and required input_mandatory defined in wf1:inputs:input_mandatory
+            - inline:
+                workflow: wf1 # workflow defined
+                # required input_mandatory defined in wf1:inputs:input_mandatory
+            - inline:
+                workflow: wf1 # workflow defined
+                inputs:
+                  input_mandatory: 10 # ERROR: string expected!
+                  undefined_input: '' # ERROR: input undefined!
             - inline: deploy # workflow pre-defined
+            - inline:
+                workflow: deploy # workflow pre-defined
+            - inline:
+                workflow: deploy # workflow defined
+                inputs:
+                  undefined_input: '' # ERROR: input undefined in deploy workflow!
             - inline: undeploy # workflow pre-defined
+            - inline:
+                workflow: undeploy # workflow pre-defined
+            - inline:
+                workflow: undeploy # workflow defined
+                inputs:
+                  undefined_input: '' # ERROR: input undefined in undeploy workflow!
 
       outputs: {} # ERROR: currently unchecked!
 

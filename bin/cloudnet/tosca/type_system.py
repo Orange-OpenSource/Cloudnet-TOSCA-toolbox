@@ -64,6 +64,12 @@ configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
         'tosca.nodes.ObjectStorage': 'tosca.nodes.Storage.ObjectStorage',  # TODO remove later
         'tosca.nodes.BlockStorage': 'tosca.nodes.Storage.BlockStorage',  # TODO remove later
     },
+
+    # predefined workflows
+    'predefined_workflows': {
+        'deploy': {},
+        'undeploy': {},
+    }
 }
 
 configuration.DEFAULT_CONFIGURATION['logging']['loggers'][__name__] = {
@@ -591,6 +597,8 @@ class TypeChecker(Checker):
         self.current_targets = None
         self.current_targets_activity_type = None
         self.current_targets_condition_type = None
+        self.current_default_inputs = {}
+        self.current_default_inputs_location = None
         self.current_imperative_workflow = None
         self.reserved_function_keywords = {}
         self.all_the_node_template_requirements = {}
@@ -1369,8 +1377,24 @@ class TypeChecker(Checker):
             ACTIVITY_CHECKERS[activity_name](activity, context_error_message + ':' + activity_name)
 
     def check_delegate_activity(self, delegate, context_error_message):
-        if delegate not in [ 'deploy', 'undeploy']:
-            self.error(context_error_message + ': ' + delegate + ' - workflow undefined')
+        def check_workflow_and_inputs(workflow_name, delegate_definition):
+            workflow_definition = self.configuration.get(TYPE_SYSTEM, 'predefined_workflows').get(workflow_name)
+            if workflow_definition is None:
+                self.error(context_error_message + ': ' + workflow_name + ' - workflow undefined')
+            else:
+                self.iterate_over_map_of_assignments(self.check_parameter_assignment, syntax.INPUTS, delegate_definition, workflow_definition, workflow_name, context_error_message)
+                self.check_required_parameters(delegate_definition, workflow_definition, context_error_message)
+
+        # check the short notation
+        if isinstance(delegate, str):
+            check_workflow_and_inputs(delegate, {})
+            return
+        # check the extended notation
+        workflow_name = delegate.get('workflow')
+        if workflow_name is None:
+            self.error(context_error_message + ' - workflow name expected')
+        else:
+            check_workflow_and_inputs(workflow_name, delegate)
 
     def check_set_state_activity(self, set_state, context_error_message):
         current_target_type = self.current_targets_activity_type[0]
@@ -1406,7 +1430,7 @@ class TypeChecker(Checker):
         # check the short notation
         if type(call_operation) is str:
             operation_definition = check_operation(call_operation, context_error_message)
-            self.check_required_properties({}, operation_definition, context_error_message)
+            self.check_required_parameters({}, operation_definition, context_error_message)
             return
         # check the extended notation
         # check operation
@@ -1416,13 +1440,30 @@ class TypeChecker(Checker):
             return
         operation_definition = check_operation(operation_name, context_error_message + ':operation')
         # check inputs
-        self.iterate_over_map_of_assignments(self.check_property_assignment, syntax.INPUTS, call_operation, operation_definition, operation_name, context_error_message)
-        self.check_required_properties(call_operation, operation_definition, context_error_message)
+        self.iterate_over_map_of_assignments(self.check_parameter_assignment, syntax.INPUTS, call_operation, operation_definition, operation_name, context_error_message)
+        self.check_required_parameters(call_operation, operation_definition, context_error_message)
 
     def check_inline_activity(self, inline, context_error_message):
-        workflow = self.get_topology_template().get(syntax.WORKFLOWS, {}).get(inline)
-        if workflow is None and inline not in ['deploy', 'undeploy']:
-            self.error(context_error_message + ': ' + inline + ' - workflow undefined')
+        def check_workflow_and_inputs(workflow_name, delegate_definition):
+            workflow_definition = self.get_topology_template().get(syntax.WORKFLOWS, {}).get(workflow_name)
+            if workflow_definition is None:
+                workflow_definition = self.configuration.get(TYPE_SYSTEM, 'predefined_workflows').get(workflow_name)
+            if workflow_definition is None:
+                self.error(context_error_message + ': ' + workflow_name + ' - workflow undefined')
+            else:
+                self.iterate_over_map_of_assignments(self.check_parameter_assignment, syntax.INPUTS, delegate_definition, workflow_definition, workflow_name, context_error_message)
+                self.check_required_parameters(delegate_definition, workflow_definition, context_error_message)
+
+        # check the short notation
+        if isinstance(inline, str):
+            check_workflow_and_inputs(inline, {})
+            return
+        # check the extended notation
+        workflow_name = inline.get('workflow')
+        if workflow_name is None:
+            self.error(context_error_message + ' - workflow name expected')
+        else:
+            check_workflow_and_inputs(workflow_name, inline)
 
     def check_artifact_type(self, artifact_type_name, artifact_type, derived_from_artifact_type, context_error_message):
         # check version - nothing to do
@@ -1580,13 +1621,29 @@ class TypeChecker(Checker):
         the_type = self.type_system.merge_type(self.type_system.get_type_uri(type_name))
         return checked, type_name, the_type
 
+    def check_required_fields(self, keyword, kind, definition, definition_type, default_fields_definition, default_fields_definition_location, context_error_message):
+        fields = definition.get(keyword, {})
+        for field_name, field_definition in definition_type.get(keyword, {}).items():
+            if field_definition.get(syntax.REQUIRED, True) \
+               and field_definition.get(syntax.DEFAULT) is None \
+               and fields.get(field_name) is None:
+                default_field_definition = default_fields_definition.get(field_name)
+                if default_field_definition is None:
+                    self.error(context_error_message + ' - ' + field_name + ' required ' + kind + ' unassigned')
+                else:
+                    self.info(context_error_message + ' - required ' + field_name + ' ' + kind + ' found in ' + default_fields_definition_location)
+                    if default_field_definition.get(syntax.REQUIRED, True) is False:
+                        self.warning(context_error_message + ' - ' + default_fields_definition_location + ':' + field_name + ' not required but required ' + kind + ' expected')
+                    expected_type_name = field_definition.get(syntax.TYPE, 'string')
+                    default_field_type = default_field_definition.get(syntax.TYPE, 'string')
+                    if not self.type_system.is_derived_from(expected_type_name, default_field_type):
+                        self.error(context_error_message + ' - ' + default_fields_definition_location + ':' + field_name + ' of type ' + default_field_type + ' found but type ' + expected_type_name + ' expected')
+
     def check_required_properties(self, definition, definition_type, context_error_message):
-        properties = definition.get(syntax.PROPERTIES, {})
-        for property_name, property_definition in definition_type.get(syntax.PROPERTIES, {}).items():
-            if property_definition.get(syntax.REQUIRED, True) \
-               and property_definition.get(syntax.DEFAULT) is None \
-               and properties.get(property_name) is None:
-               self.error(context_error_message + ' - ' + property_name + ' required property unassigned')
+        self.check_required_fields(syntax.PROPERTIES, 'property', definition, definition_type, {}, None, context_error_message)
+
+    def check_required_parameters(self, definition, definition_type, context_error_message):
+        self.check_required_fields(syntax.INPUTS, 'input', definition, definition_type, self.current_default_inputs, self.current_default_inputs_location, context_error_message)
 
     def check_parameter_definition(self, parameter_name, parameter_definition, context_error_message):
         # check type
@@ -1834,6 +1891,14 @@ class TypeChecker(Checker):
     def check_property_assignment(self, property_name, property_assignment, property_definition, context_error_message):
         self.check_value_assignment(property_name, property_assignment, property_definition, context_error_message)
 
+    def check_parameter_assignment(self, parameter_name, parameter_assignment, parameter_definition, context_error_message):
+        if isinstance(parameter_assignment, dict):
+            value = parameter_assignment.get('value')
+            if value != None:
+                parameter_assignment = value
+            # TODO: check other keynames like type, etc.
+        self.check_value_assignment(parameter_name, parameter_assignment, parameter_definition, context_error_message)
+
     def check_attribute_assignment(self, attribute_name, attribute_assignment, attribute_definition, context_error_message):
         self.check_value_assignment(attribute_name, attribute_assignment, attribute_definition, context_error_message)
 
@@ -2072,7 +2137,7 @@ class TypeChecker(Checker):
         checked, interface_type_name, interface_type = self.check_type_in_definition('interface', syntax.TYPE, interface_assignment, interface_definition, context_error_message)
         # check inputs
         self.iterate_over_map_of_assignments(self.check_property_assignment, syntax.INPUTS, interface_assignment, interface_type, REFINE_OR_NEW, context_error_message)
-        self.check_required_properties(interface_assignment, interface_type, context_error_message)
+        self.check_required_parameters(interface_assignment, interface_type, context_error_message)
         # check operations
         operations = syntax.get_operations(interface_assignment)
         type_operations = syntax.get_operations(interface_type)
@@ -2093,7 +2158,7 @@ class TypeChecker(Checker):
             self.check_operation_implementation_definition(implementation, context_error_message + ':' + syntax.IMPLEMENTATION)
         # check inputs
         self.iterate_over_map_of_assignments(self.check_property_assignment, syntax.INPUTS, operation_assignment, operation_definition, REFINE_OR_NEW, context_error_message)
-        self.check_required_properties(operation_assignment, operation_definition, context_error_message)
+        self.check_required_parameters(operation_assignment, operation_definition, context_error_message)
 
     def check_node_template(self, node_name, node_template, context_error_message):
         # set values of reserved function keywords
@@ -2548,6 +2613,9 @@ class TypeChecker(Checker):
     def check_imperative_workflow_definition(self, workflow_name, workflow_definition, context_error_message):
         # store the current imperative workflow used in check_step() to find current steps
         self.current_imperative_workflow = workflow_definition
+        # store the current imperative workflow inputs used in check_required_parameters() to find current default inputs
+        self.current_default_inputs = workflow_definition.get(syntax.INPUTS, {})
+        self.current_default_inputs_location = 'workflows:' + workflow_name + ':inputs'
         # check description - nothing to do
         # check metadata - nothing to do
         # check inputs
@@ -2562,6 +2630,8 @@ class TypeChecker(Checker):
         self.unchecked(workflow_definition, syntax.OUTPUTS, context_error_message)
         # unset the current imperative workflow
         self.current_imperative_workflow = None
+        self.current_default_inputs = {}
+        self.current_default_inputs_location = None
 
     def check_workflow_precondition_definition(self, workflow_precondition_definition, context_error_message):
         # check target
