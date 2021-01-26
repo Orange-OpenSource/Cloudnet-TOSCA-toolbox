@@ -338,6 +338,19 @@ definitions:
         $ref: "#/definitions/value"
     additionalProperties: false
 
+  # The specification is not clear on what parameter assignment is.
+  # Following implements lines 1643 and 1644 of Section 3.6.14.2.
+  parameter_assignment:
+    anyOf:
+      - $ref: "#/definitions/value"
+      - type: object
+        properties:
+          value:
+            $ref: "#/definitions/value"
+        minProperties: 1
+        maxProperties: 1
+        additionalProperties: false
+
   # Section 3.6.15
   attribute_mapping_definition:
       type: array
@@ -573,7 +586,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_assignment"  # ~ parameter assignment, which is not explicitly defined.
+              $ref: "#/definitions/parameter_assignment"
         additionalProperties: false
 
   set_state_activity_definition:
@@ -589,7 +602,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_assignment"  # parameter_assignment, which is not explicitly defined.
+              $ref: "#/definitions/parameter_assignment"
         additionalProperties: false
 
   inline_workflow_activity_definition:
@@ -602,7 +615,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_assignment"
+              $ref: "#/definitions/parameter_assignment"
         additionalProperties: false
 
   # Section 3.6.24
@@ -1193,7 +1206,7 @@ definitions:
   # Section 3.8.7
   imperative_workflow_definition:
     type: object
-    oneOf:
+    anyOf: # in certain cases both following properties could match
       - properties:
           description:
             $ref: "#/definitions/description"
