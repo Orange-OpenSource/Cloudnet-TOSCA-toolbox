@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -47,21 +47,21 @@ topology_template:
       type: tosca.nodes.Compute
       # properties: # omitted for brevity # ISSUE: can't be empty
       # requirements: # ISSUE: can't be empty
-# ISSUE: unknown references.
+# ISSUE: undefined requirements!
 #        - network_oam: oam_network
 #        - network_admin: admin_network
     backend:
       type: tosca.nodes.Compute
       # properties: # omitted for brevity # ISSUE: can't be empty
       # requirements: # ISSUE: can't be empty
-# ISSUE: unknown references.
+# ISSUE: undefined requirements!
 #        - network_admin: admin_network
 #        - network_data: data_network
     database:
       type: tosca.nodes.Compute
       # properties: # omitted for brevity # ISSUE: can't be empty
       # requirements: # ISSUE: can't be empty
-# ISSUE: unknown references.
+# ISSUE: undefined requirements!
 #        - network_data: data_network
 
     oam_network:
@@ -83,3 +83,35 @@ topology_template:
       properties:
         ip_version:  { get_input: data_network_ip_version }
         cidr: { get_input: data_network_cidr }
+
+    # ISSUE: added ports to connect computes to networks.
+
+    frontend_oam_network_port:
+      type: tosca.nodes.network.Port
+      requirements:
+        - link: oam_network
+        - binding: frontend
+
+    frontend_admin_network_port:
+      type: tosca.nodes.network.Port
+      requirements:
+        - link: admin_network
+        - binding: frontend
+
+    backend_admin_network_port:
+      type: tosca.nodes.network.Port
+      requirements:
+        - link: admin_network
+        - binding: backend
+
+    backend_data_network_port:
+      type: tosca.nodes.network.Port
+      requirements:
+        - link: data_network
+        - binding: backend
+
+    database_data_network_port:
+      type: tosca.nodes.network.Port
+      requirements:
+        - link: data_network
+        - binding: database

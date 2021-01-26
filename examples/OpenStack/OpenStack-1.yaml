@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -25,38 +25,46 @@ topology_template:
 
     facts:
       type: openstack.nodes.Facts
+      requirements:
+        - host: compute
 
     common:
       type: openstack.nodes.Common
       requirements:
         - facts: facts
+        - host: compute
 
     haproxy:
       type: openstack.nodes.HAProxy
       requirements:
         - facts: facts
+        - host: compute
 
     memcached:
       type: openstack.nodes.MemCached
       requirements:
         - facts: facts
+        - host: compute
 
     rabbitmq:
       type: openstack.nodes.RabbitMQ
       requirements:
         - facts: facts
+        - host: compute
 
     mariadb:
       type: openstack.nodes.MariaDB
       requirements:
         - com: common
         - ha: haproxy
+        - host: compute
 
     keystone:
       type: openstack.nodes.Keystone
       requirements:
         - facts: facts # NOTE: Is it needed?
         - mdb: mariadb
+        - host: compute
 
     glance:
       type: openstack.nodes.Glance
@@ -64,6 +72,7 @@ topology_template:
         - facts: facts
         - kst: keystone
         - mdb: mariadb
+        - host: compute
 
     nova:
       type: openstack.nodes.Nova
@@ -71,11 +80,13 @@ topology_template:
         - facts: facts
         - kst: keystone
         - mdb: mariadb
+        - host: compute
 
     openvswitch:
       type: openstack.nodes.OpenVSwitch
       requirements:
         - facts: facts
+        - host: compute
 
     neutron:
       type: openstack.nodes.Neutron
@@ -85,3 +96,7 @@ topology_template:
         - mdb: mariadb
         # NOTE: Is neutron would be connected to openvswitch?
         - openvswitch: openvswitch
+        - host: compute
+
+    compute:
+      type: tosca.nodes.Compute

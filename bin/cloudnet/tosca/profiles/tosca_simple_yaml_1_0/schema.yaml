@@ -43,20 +43,20 @@ definitions:
     type: object
     properties:
       equal:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       greater_than:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       greater_or_equal:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       less_than:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       less_or_equal:
-        $ref: "#/definitions/scalar"
+        $ref: "#/definitions/value"
       in_range:
         type: array
         items:
-          - type: number
-          - type: number
+          - $ref: "#/definitions/value"
+          - $ref: "#/definitions/value"
         maxItems: 2
       valid_values:
         type: array # of any values
@@ -206,7 +206,8 @@ definitions:
           metadata:
             $ref: "#/definitions/metadata"
         additionalProperties: false
-        required: [ type ] # ISSUE: Some examples don't define type
+#       required: [ type ] # type is required but can be set into the parent definition.
+        # So type requirement is checked by TypeChecker.
 
   status:
     type: string
@@ -418,15 +419,18 @@ definitions:
           occurrences:
             $ref: "#/definitions/occurrences"
         additionalProperties: false
-#        required: [ type ] # ISSUE: some examples don't define type
+#       required: [ type ] # type is required but can be set into the parent definition.
+        # So type requirement is checked by TypeChecker.
 
   occurrences:
     type: array
     items:
       - type: integer
-      - anyOf:
+        minimum: 0 # must be positive
+      - oneOf: # the second item is either a positive integer or the UNBOUNDED constant
           - type: integer
-          - const: UNBOUNDED
+            minimum: 0 # must be positive
+          - enum: [ UNBOUNDED ] # const: UNBOUNDED does not work!
     minItems: 2
     maxItems: 2
 
@@ -454,11 +458,13 @@ definitions:
                     additionalProperties:
                       $ref: "#/definitions/interface_definition_in_types"
                 additionalProperties: false
-                required: [ type ]
+#               required: [ type ] # type is required but can be set into the parent definition.
+                # So type requirement is checked by TypeChecker.
           occurrences:
             $ref: "#/definitions/occurrences"
         additionalProperties: false
-#        required: [ capability ] # ISSUE: some examples don't define capability
+#       required: [ capability ] # type is required but can be set into the parent definition.
+        # So type requirement is checked by TypeChecker.
 
   # Section 3.7.4
   artifact_type:
@@ -503,7 +509,7 @@ definitions:
             additionalProperties:
               $ref: "#/definitions/property_definition"
       additionalProperties:
-        $ref: "#/definitions/operation_definition"
+        $ref: "#/definitions/operation_definition_in_types"
 
   # Section 3.7.6
   data_type:
@@ -799,7 +805,7 @@ definitions:
       attributes:
         type: object
         additionalProperties:
-          $ref: "#/definitions/attribute_assigment"
+          $ref: "#/definitions/attribute_assignment"
       interfaces:
         type: object
         additionalProperties:
@@ -825,7 +831,7 @@ definitions:
           $ref: "#/definitions/property_assignment"
       members:
         type: array
-        additionalProperties:
+        items:
           type: string
       interfaces:
         type: object
@@ -850,7 +856,7 @@ definitions:
           $ref: "#/definitions/property_assignment"
       targets:
         type: array
-        additionalProperties:
+        items:
           type: string
     additionalProperties: false
     required: [ type ]
@@ -899,7 +905,7 @@ definitions:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/property_assignment"
-              attribute:
+              attributes:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/attribute_assignment"
@@ -927,7 +933,7 @@ definitions:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/property_assignment"
-              attribute:
+              attributes:
                 type: object
                 additionalProperties:
                   $ref: "#/definitions/attribute_assignment"
@@ -988,8 +994,10 @@ definitions:
           $ref: "#/definitions/group_definition"
       policies:
         type: array
-        additionalProperties:
-          $ref: "#/definitions/policy_definition"
+        items:
+          type: object
+          additionalProperties:
+            $ref: "#/definitions/policy_definition"
       outputs:
         anyOf:
           - type: 'null'

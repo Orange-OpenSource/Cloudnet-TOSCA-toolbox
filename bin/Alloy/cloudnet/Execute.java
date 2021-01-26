@@ -1,6 +1,6 @@
-/* Copyright (c) 2019, Orange
+/* Copyright (c) 2019-21, Orange
  *
- * Software Name : Cloudnet TOSCA toolbox 
+ * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
  *
  * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
@@ -75,6 +75,12 @@ public final class Execute extends Parse {
                         // Execute the command
                         System.out.println("Executing " + ( command.check ? "check" : "run" ) + " " + command.label + "...");
                         A4Solution ans = TranslateAlloyToKodkod.execute_command(reporter, world.getAllReachableSigs(), command, a4options);
+                        if (! reporter.is_solved) {
+                          System.err.println(Reporter.RED);
+                          System.err.println("  Execution failed because the scope is certainly too small!");
+                          System.err.println(Reporter.BLACK);
+                          continue; // go to next command
+                        }
                         if (! ans.satisfiable()) {
                             A4Options a4options_unsat = new A4Options();
                             a4options_unsat.solver = A4Options.SatSolver.MiniSatProverJNI;
