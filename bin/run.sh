@@ -15,6 +15,8 @@
 # Software description: Use case for TOSCA to Cloudnet Translator
 ######################################################################
 
+# shellcheck source=./lib.sh
+
 ################################################################################
 # Help                                                                         #
 ################################################################################
@@ -44,7 +46,7 @@ Help()
 ################################################################################
 TOSCA_SyntaxCheck()
 {
-   # Configure0 a log file
+   # Configure a log file
    _LOG=$(basename "${PWD}")-$(date +%F_%H-%M-%S).log
    mkdir -p logs 2>/dev/null
 
@@ -53,7 +55,7 @@ TOSCA_SyntaxCheck()
    
    for filename in $(grep -r --include=*.{yaml,yml} -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
      do 
-       echo -e "\n${normal}${magenta}    $(echo "$filename" | tr [a-z] [A-Z]) ${reset}" | tee -a logs/"${_LOG}"
+       echo -e "\n${normal}${magenta}    $(echo "$filename" | tr "[a-z]" "[A-Z]") ${reset}" | tee -a logs/"${_LOG}"
        translate "$filename" 2>&1 | tee -a logs/"${_LOG}"
      done
    SYNTAX_CHECK=true
@@ -126,8 +128,8 @@ AlloySolve()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Run the solver to verify the ability to deploy the description ***${reset}" | tee -a logs/"${_LOG}"
-       (time alloy_execute -c "Show_.*_topology_template" "${Alloy_target_directory}"/*.als 2>&1 |tee -a logs/"${_LOG}") 2>>logs/"${_LOG}"
+      echo -e "\n${normal}${magenta}*** Run the solver to verify the ability to deploy the description ***${reset}" | tee -a logs/"${_LOG}"
+      /usr/bin/time --output=logs/"${_LOG}" alloy_execute -c "Show_.*_topology_template" "${Alloy_target_directory}"/*.als 2>&1 |tee -a logs/"${_LOG}"
    else
        echo -e "${normal}${magenta}No generated als file found.${reset}"
        echo "You need to run \"TOSCA syntax checking\" before launching the alloy solver"
@@ -406,7 +408,7 @@ while getopts ${optstring} option; do
 #         AlloySolve 
          exit;;
       s) # run syntax checking on a single file
-         echo -e "${normal}${magenta}  xxx  $(echo "${OPTARG}" | tr [a-z] [A-Z]) xxx ${reset}"
+         echo -e "${normal}${magenta}  xxx  $(echo "${OPTARG}" | tr "[a-z]" "[A-Z]") xxx ${reset}"
          translate "${OPTARG}"
          if [ "$DIRVARS_GENERATED" = true ]; then 
            rm -f $TOSCA2CLOUDNET_CONF_FILE
