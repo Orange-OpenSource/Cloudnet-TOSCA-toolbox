@@ -3,7 +3,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -16,7 +16,7 @@
 
 # Load cloudnet commands.
 CLOUDNET_BINDIR=../bin
-. "${CLOUDNET_BINDIR}"/cloudnet_rc.sh
+. "${CLOUDNET_BINDIR}/cloudnet_rc.sh"
 
 exit_code=0
 
@@ -24,9 +24,7 @@ check_regression()
 {
   translate "$1" 2> /tmp/cloudnet_translate.log
   expected_errors="$(grep -c ERROR "$1")"
-  echo "expected : $expected_errors"
   generated_errors="$(grep -c ERROR /tmp/cloudnet_translate.log )"
-  echo "generated : $generated_errors"
   if [ "${expected_errors}" -eq "${generated_errors}" ]; then
     echo No regression on "$1"
   else
@@ -35,6 +33,16 @@ check_regression()
   fi
 }
 
-check_regression syntax_checking.yaml
+# TOSCA syntax checking
+check_regression syntax_checking-1.2.yaml # tosca_definitions_version: tosca_simple_yaml_1_2
+check_regression syntax_checking-1.3.yaml # tosca_definitions_version: tosca_simple_yaml_1_3
+
+# TOSCA type checking
+translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_0/types.yaml
+translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_1/types.yaml
+translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_2/types.yaml
+translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_3/types.yaml
+check_regression type_checking.yaml
+check_regression type_checking-1.3.yaml
 
 exit ${exit_code}

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -23,7 +23,7 @@
 Help()
 {
    # Display Help
-   echo 
+   echo
    echo "                TOSCA Toolbox"
    echo "  This script demonstrate how to use the TOSCA toolbox tools."
    echo
@@ -129,7 +129,7 @@ AlloySolve()
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
       echo -e "\n${normal}${magenta}*** Run the solver to verify the ability to deploy the description ***${reset}" | tee -a logs/"${_LOG}"
-      /usr/bin/time --output=logs/"${_LOG}" alloy_execute -c "Show_.*_topology_template" "${Alloy_target_directory}"/*.als 2>&1 |tee -a logs/"${_LOG}"
+      /usr/bin/time --output=logs/"${_LOG}" alloy_execute "${Alloy_target_directory}"/*.als 2>&1 |tee -a logs/"${_LOG}"
    else
        echo -e "${normal}${magenta}No generated als file found.${reset}"
        echo "You need to run \"TOSCA syntax checking\" before launching the alloy solver"
@@ -149,7 +149,7 @@ pause(){
 ################################################################################
 show_menus() {
     clear
-    echo "      ~~~~~~~~~~~~~~~~~~~~~~~~~"    
+    echo "      ~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo "       TOSCA Toolbox - M E N U "
     echo "      ~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo "      1. TOSCA syntax checking"
@@ -161,11 +161,11 @@ show_menus() {
     echo "      l. Show the log file (type q to leave)"
     echo "      w. Launch the whole process"
     echo "      x. Exit"
-    echo 
+    echo
 }
 
 ################################################################################
-# Read input from the keyboard and take the corresponding action defined in the 
+# Read input from the keyboard and take the corresponding action defined in the
 # case statement
 ################################################################################
 read_options(){
@@ -213,7 +213,7 @@ read_options(){
              echo " delete ${var} (${!var})"
              rm -rf "${!var}"
            done
-           if [ "$DIRVARS_GENERATED" = true ]; then 
+           if [ "$DIRVARS_GENERATED" = true ]; then
              echo -e "\nRemove generated configuration file"
              rm -f "$TOSCA2CLOUDNET_CONF_FILE"
              rm -rf "$RESULT_DIR"
@@ -275,15 +275,15 @@ reset="\e[m"
 blink="5m"
 
 
-# Guess where is located the software
-CLOUDNET_BINDIR="../"
+# Guess where are located the software
+CLOUDNET_BINDIR="$PWD/.."
 Continue=1
 while [ $Continue -eq 1 ]
 do
   CLOUDNET_RC=$(find $CLOUDNET_BINDIR -name cloudnet_rc.sh)
   if [ -z "${CLOUDNET_RC}" ]
   then
-    CLOUDNET_BINDIR="../${CLOUDNET_BINDIR}"
+    CLOUDNET_BINDIR="${CLOUDNET_BINDIR}/.."
   else
     CLOUDNET_BINDIR="$(dirname "${CLOUDNET_RC}")"
     Continue=0
@@ -291,7 +291,7 @@ do
 done
 
 # Load cloundnet commands.
-source "$CLOUDNET_BINDIR"/cloudnet_rc.sh
+source "${CLOUDNET_BINDIR}/cloudnet_rc.sh"
 
 # Variable used to know if the Syntax checking has bee done
 SYNTAX_CHECK=False
@@ -312,7 +312,7 @@ if [ ! -f "${CLOUDNET_BINDIR}/yaml.sh" ]; then
   pause
   exit 1
 else
-  source "${CLOUDNET_BINDIR}"/yaml.sh
+  source "${CLOUDNET_BINDIR}/yaml.sh"
 fi
 
 # if tosca2cloudnet.yaml does'nt exist, create a default one
@@ -368,7 +368,7 @@ done
 if (( NBVARSSET > 0 )) && (( NBVARSSET < ${#dirArray[@]} )); then
 #  echo "Nombre de variables ${#dirArray[@]}"
 #  echo "${NBVARSSET} positionnées"
-  echo "All the directries are not set."
+  echo -e "All the directries are not set."
   echo -e "Would you like to continue as is or correct the $TOSCA2CLOUDNET_CONF_FILE configuration file ?\n"
   echo -e "    Values for target directories:"
   for var in "${dirArray[@]}"
@@ -405,7 +405,7 @@ while getopts ${optstring} option; do
          UML2Diagrams
          AlloySyntax
 # take to much time and ressource, not necessary if used for regression testing in CI/CD
-#         AlloySolve 
+#         AlloySolve
          exit;;
       s) # run syntax checking on a single file
          echo -e "${normal}${magenta}  xxx  $(echo "${OPTARG}" | tr "[a-z]" "[A-Z]") xxx ${reset}"
@@ -432,11 +432,11 @@ for var in "${dirArray[@]}"
 do
   echo -e "      ${var} : ${normal}${blue}${!var}${reset}"
 done
-echo -e "\nA log file will be also available here ${normal}${blue}logs/${_LOG}${reset}"
+echo -e "\nA log file will be also available here ${normal}${blue}logs/""${_LOG}""${reset}"
 pause
 
 ############################################################################
-#  Trap CTRL+Z 
+#  Trap CTRL+Z
 ################################################################################
 trap '' SIGTSTP
 

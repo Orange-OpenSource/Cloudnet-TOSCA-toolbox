@@ -46,6 +46,7 @@ class Processor(object):
             self.type_system = type_system
         self.nb_errors = 0
         self.nb_warnings = 0
+        self.logger = logging.getLogger(self.__class__.__module__)
 
     def get_mapping(self, key, mappings):
         previous = None
@@ -104,7 +105,7 @@ class Processor(object):
         self.nb_warnings += 1
 
     def info(self, message):
-        if LOGGER.isEnabledFor(logging.INFO):
+        if self.logger.isEnabledFor(logging.INFO):
             print('[Info] ', self.tosca_service_template.get_fullname(), ': ', message, sep='', file=stderr)
 
     def process(self):
@@ -129,7 +130,6 @@ class Generator(Processor):
             self.file = generator.file
         else:
             self.file = None
-        self.logger = LOGGER
 
     def generator_configuration_id(self):
         raise Error('generator_configuration_id must be overloaded!')

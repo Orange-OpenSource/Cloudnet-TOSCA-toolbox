@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -77,7 +77,4 @@ topology_template:
       value: { get_attribute: [my_server, private_address] }
     volume_id:
       description: The volume id of the block storage instance.
-# ISSUE: volume_id is a property not an attribute or the name of get_attribute function does not correctly reflect its meaning.
-# ISSUE:      value: { get_attribute: [my_storage, volume_id] }
-# In fact this is not an issue! the spec says that all properties are reflected by attributes
-      value: { get_property: [my_storage, volume_id] }
+      value: { get_attribute: [my_storage, volume_id] }

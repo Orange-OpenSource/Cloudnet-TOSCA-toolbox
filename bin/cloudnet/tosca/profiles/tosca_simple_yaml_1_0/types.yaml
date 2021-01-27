@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -701,17 +701,16 @@ node_types:
           capability: tosca.capabilities.Compute
           node: tosca.nodes.Container.Runtime
           relationship: tosca.relationships.HostedOn
-      - storage:
-          capability: tosca.capabilities.Storage
 # ISSUE: relationship undefined.
 # ISSUE: no relationship type has tosca.capabilities.Storage as valid_target_types.
 # ISSUE: no node type has tosca.capabilities.Storage as capabilities.
-          relationship: tosca.relationships.Root
+#      - storage:
+#          capability: tosca.capabilities.Storage
       - network:
 #          capability: tosca.capabilities.EndPoint # ISSUE: EndPoint undefined.
           capability: tosca.capabilities.Endpoint
 # ISSUE: relationship undefined.
-          relationship: tosca.relationships.Root
+          relationship: tosca.relationships.ConnectsTo
 
   # Section 5.9.14 tosca.nodes.LoadBalancer
   tosca.nodes.LoadBalancer:

@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -74,8 +74,6 @@ topology_template:
   relationship_templates:
     my_custom_database_connection:
       type: ConnectsTo
-# TODO: This is a bug with previous line!
-      type: tosca.relationships.ConnectsTo
       interfaces:
         Configure:
           pre_configure_source: scripts/wp_db_configure.sh

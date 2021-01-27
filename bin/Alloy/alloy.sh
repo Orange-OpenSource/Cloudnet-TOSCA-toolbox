@@ -3,7 +3,7 @@
 #
 # Script to execute Alloy.
 #
-# Copyright (c) 2019 Orange
+# Copyright (c) 2019-21 Orange
 #
 # Author(s):
 # - Philippe Merle <philippe.merle@inria.fr>
@@ -47,5 +47,5 @@ else
 fi
 
 shift
-#java -cp $DIR:$DIR/Alloy-5.0.0.1.jar $MAIN_CLASS $@
-java -Xmx3G -cp "$DIR":"$DIR"/org.alloytools.alloy.dist.jar:"$DIR"/commons-cli-1.4.jar "$MAIN_CLASS" "$@"
+
+java ${JAVA_OPTS} -cp "$DIR":"$DIR"/org.alloytools.alloy.dist.jar:"$DIR"/commons-cli-1.4.jar "$MAIN_CLASS" "$@"
