@@ -40,6 +40,7 @@ check_regression missed_quote_error.yaml
 check_regression incorrect_indentation_in_definition.yaml
 check_regression incorrect_indentation_in_mapping.yaml
 check_regression incorrect_indentation_in_sequence.yaml
+check_regression string_must_be_quoted.yaml
 
 # TOSCA syntax checking
 check_regression syntax_checking-1.2.yaml # tosca_definitions_version: tosca_simple_yaml_1_2
