@@ -37,6 +37,7 @@ check_regression()
 
 # YAML parsing
 check_regression missed_quote_error.yaml
+check_regression incorrect_indentation_in_definition.yaml
 check_regression incorrect_indentation_in_mapping.yaml
 check_regression incorrect_indentation_in_sequence.yaml
 
