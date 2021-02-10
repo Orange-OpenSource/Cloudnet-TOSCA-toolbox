@@ -142,10 +142,18 @@ class Importer(object):
         LOGGER.debug('Loads ' + importer.base_path + filename + ' from ' + str(importer))
         try:
             yaml_content = importer.load_yaml(importer.base_path + filename)
+        except FileNotFoundError:
+            raise FileNotFoundError('No such file: ' + filename)
         except yaml.YAMLError as exc:
-            if hasattr(exc, 'problem_mark'):
-                mark = exc.problem_mark
-                raise ValueError("(1) Yaml error line %s column %s" % (mark.line+1, mark.column+1))
+            problem = exc.problem
+            if problem.startswith('found unexpected end of stream'):
+                raise ValueError("missed quote at the end of the string at line %s column %s" % (exc.context_mark.line+1, exc.context_mark.column+1))
+            if problem.startswith('expected <block end>, but found'):
+                raise ValueError("incorrect indentation at line %s column %s" % (exc.problem_mark.line+1, exc.problem_mark.column+1))
+            if exc.context is None:
+                raise ValueError("%s at line %s column %s" % (exc.problem, exc.problem_mark.line+1, exc.problem_mark.column+1))
+            else:
+                raise ValueError("%s at line %s column %s %s at line %s column %s" % (exc.problem, exc.problem_mark.line+1, exc.problem_mark.column+1, exc.context, exc.context_mark.line+1, exc.context_mark.column+1))
 
         # Create the TOSCA service template.
         tosca_service_template = ToscaServiceTemplate(filename, yaml_content, importer)
@@ -168,7 +176,6 @@ class Importer(object):
         '''
         pass
 
-
 class FilesystemImporter(Importer):
     '''
         Importer of TOSCA service templates as files.
@@ -184,20 +191,8 @@ class FilesystemImporter(Importer):
         '''
             Loads a YAML file.
         '''
-
-        # load yaml descriptor and raise an error with line and column
-        # if this appens
-        template = ""
         with open(filename, 'r') as stream:
-            try:
-                template = yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                if hasattr(exc, 'problem_mark'):
-                    mark = exc.problem_mark
-                    raise ValueError("Yaml error line %s column %s" % (mark.line+1, mark.column+1))
-
-        return template
-
+            return yaml.safe_load(stream)
 
 class UrlImporter(Importer):
     '''
@@ -261,7 +256,6 @@ class ArchiveImporter(Importer):
                 return yaml.safe_load(stream)
         except KeyError:
             raise FileNotFoundError(filename)
-
 
 def imports(tosca_service_template_path, alias={}):
     # Inits the root loader of TOSCA service templates.
