@@ -150,6 +150,8 @@ class Importer(object):
                 raise ValueError("missed quote at the end of the string at line %s column %s" % (exc.context_mark.line+1, exc.context_mark.column+1))
             if problem.startswith('expected <block end>, but found'):
                 raise ValueError("incorrect indentation at line %s column %s" % (exc.problem_mark.line+1, exc.problem_mark.column+1))
+            if problem == 'mapping values are not allowed here':
+                raise ValueError('incorrect indentation or string must be quoted at line %s column %s' % (exc.problem_mark.line+1, exc.problem_mark.column+1))
             if exc.context is None:
                 raise ValueError("%s at line %s column %s" % (exc.problem, exc.problem_mark.line+1, exc.problem_mark.column+1))
             else:
