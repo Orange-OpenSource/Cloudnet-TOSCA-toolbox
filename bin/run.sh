@@ -49,12 +49,12 @@ TOSCA_SyntaxCheck()
    mkdir -p logs 2>/dev/null
 
    # All description files translation
-   echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/"${_LOG}"
-   
-   for filename in $(find . -iname '*.yaml' -print0 -o -iname '*.yml' | xargs grep -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
-     do 
-       echo -e "\n${normal}${magenta}    $(echo $filename | tr [a-z] [A-Z]) ${reset}" | tee -a logs/"${_LOG}"
-       translate "$filename" 2>&1 | tee -a logs/"${_LOG}"
+   echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/${_LOG}
+
+   for filename in $(find . -iname '*.yaml' -o -iname '*.yml' | xargs grep -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
+     do
+       echo -e "\n${normal}${magenta}    `echo $filename | tr [a-z] [A-Z]` ${reset}" | tee -a logs/${_LOG}
+       translate $filename 2>&1 | tee -a logs/${_LOG}
      done
    SYNTAX_CHECK=true
 }
@@ -66,8 +66,8 @@ NetworkDiagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Generating network diagrams ***${reset}" | tee -a logs/"${_LOG}"
-       generate_network_diagrams "${nwdiag_target_directory}"/*.nwdiag 2>&1 |tee -a logs/"${_LOG}"
+       echo -e "\n${normal}${magenta}*** Generating network diagrams ***${reset}" | tee -a logs/${_LOG}
+       generate_network_diagrams ${nwdiag_target_directory}/*.nwdiag 2>&1 |tee -a logs/${_LOG}
    else
        echo -e "${normal}${magenta}No generated nwdiag file found.${reset}"
        echo "Be sure to run \"TOSCA syntax checking\" before generating diagrams"
@@ -81,8 +81,8 @@ TOSCADiagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Generating TOSCA diagrams ***${reset}" | tee -a logs/"${_LOG}"
-       generate_tosca_diagrams "${tosca_diagrams_target_directory}"/*.dot 2>&1 |tee -a logs/"${_LOG}"
+       echo -e "\n${normal}${magenta}*** Generating TOSCA diagrams ***${reset}" | tee -a logs/${_LOG}
+       generate_tosca_diagrams ${tosca_diagrams_target_directory}/*.dot 2>&1 |tee -a logs/${_LOG}
    else
        echo -e "${normal}${magenta}No generated dot file found.${reset}"
        echo "Be sure to run \"TOSCA syntax checking\" before generating diagrams"
@@ -96,8 +96,8 @@ UML2Diagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a logs/"${_LOG}"
-       generate_uml2_diagrams "${UML2_target_directory}"/*.plantuml 2>&1 |tee -a logs/"${_LOG}"
+       echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a logs/${_LOG}
+       generate_uml2_diagrams ${UML2_target_directory}/*.plantuml 2>&1 |tee -a logs/${_LOG}
    else
        echo -e "${normal}${magenta}No generated plantuml file found.${reset}"
        echo "Be sure to run \"TOSCA syntax checking\" before generating diagrams"
@@ -111,8 +111,8 @@ AlloySyntax()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Checking ALLOY syntax ***${reset}" | tee -a logs/"${_LOG}"
-       alloy_parse "${Alloy_target_directory}"/*.als 2>&1 |tee -a logs/"${_LOG}"
+       echo -e "\n${normal}${magenta}*** Checking ALLOY syntax ***${reset}" | tee -a logs/${_LOG}
+       alloy_parse ${Alloy_target_directory}/*.als 2>&1 |tee -a logs/${_LOG}
    else
        echo -e "${normal}${magenta}No generated als file found.${reset}"
        echo "You need to run \"TOSCA syntax checking\" before launching the alloy syntax checking"
@@ -209,12 +209,12 @@ read_options(){
            for var in "${dirArray[@]}"
            do
              echo " delete ${var} (${!var})"
-             rm -rf "${!var}"
+             rm -rf ${!var}
            done
            if [ "$DIRVARS_GENERATED" = true ]; then
              echo -e "\nRemove generated configuration file"
-             rm -f "$TOSCA2CLOUDNET_CONF_FILE"
-             rm -rf "$RESULT_DIR"
+             rm -f $TOSCA2CLOUDNET_CONF_FILE
+             rm -rf $RESULT_DIR
            fi
            pause
            ;;
@@ -225,7 +225,7 @@ read_options(){
              echo -e "\n\n"
              read -p "          No log file created for this session, type any key to continue." choice
            else
-             less -r logs/"${_LOG}"
+             less -r logs/${_LOG}
            fi
            ;;
         w) # Launch the whole process
@@ -246,7 +246,7 @@ read_options(){
         x) # Exit with status code 0
            if [ "$DIRVARS_GENERATED" = true ]; then 
              # Remove generated configuration file
-             rm -f "$TOSCA2CLOUDNET_CONF_FILE"
+             rm -f $TOSCA2CLOUDNET_CONF_FILE
            fi
            echo -e "\nSee you soon ..."
            exit 0
@@ -278,18 +278,18 @@ CLOUDNET_BINDIR="$PWD/.."
 Continue=1
 while [ $Continue -eq 1 ]
 do
-  CLOUDNET_RC=$(find $CLOUDNET_BINDIR -name cloudnet_rc.sh)
-  if [ -z "${CLOUDNET_RC}" ]
+  CLOUDNET_RC=`find $CLOUDNET_BINDIR -name cloudnet_rc.sh`
+  if [ -z ${CLOUDNET_RC} ]
   then
     CLOUDNET_BINDIR="${CLOUDNET_BINDIR}/.."
   else
-    CLOUDNET_BINDIR="$(dirname "${CLOUDNET_RC}")"
+    CLOUDNET_BINDIR="`dirname ${CLOUDNET_RC}`"
     Continue=0
   fi
 done
 
 # Load cloundnet commands.
-source "${CLOUDNET_BINDIR}/cloudnet_rc.sh"
+. $CLOUDNET_BINDIR/cloudnet_rc.sh
 
 # Variable used to know if the Syntax checking has bee done
 SYNTAX_CHECK=False
@@ -310,7 +310,7 @@ if [ ! -f "${CLOUDNET_BINDIR}/yaml.sh" ]; then
   pause
   exit 1
 else
-  source "${CLOUDNET_BINDIR}/yaml.sh"
+  . ${CLOUDNET_BINDIR}/yaml.sh
 fi
 
 # if tosca2cloudnet.yaml exists, parse it and extract variables
@@ -330,11 +330,11 @@ do
   fi
 done
 
-if (( NBVARSSET > 0 )) && (( NBVARSSET < ${#dirArray[@]} )); then
+if (( $NBVARSSET > 0 )) && (( $NBVARSSET < ${#dirArray[@]} )); then
 #  echo "Nombre de variables ${#dirArray[@]}"
 #  echo "${NBVARSSET} positionnées"
-  echo -e "All the directries are not set."
-  echo -e "Would you like to continue as is or correct the $TOSCA2CLOUDNET_CONF_FILE configuration file ?\n"
+  echo "All the directries are not set."
+  echo "Would you like to continue as is or correct the $TOSCA2CLOUDNET_CONF_FILE configuration file ?\n"
   echo -e "    Values for target directories:"
   for var in "${dirArray[@]}"
   do
@@ -348,8 +348,7 @@ if (( NBVARSSET > 0 )) && (( NBVARSSET < ${#dirArray[@]} )); then
   esac
 fi
 
-# Either the TOSCA2CLOUDNET_CONF_FILE does not exist or did not provide the target diretories
-if (( NBVARSSET == 0 )); then
+if (( $NBVARSSET == 0 )); then
    DIRVARS_GENERATED=true
    #create a config file which will be deleted at the exit of the script
    RESULT_DIR="RESULTS"
@@ -393,7 +392,7 @@ while getopts ${optstring} option; do
          Help
          exit;;
       b) # change the log file name to be identified executed in batch mode
-         _LOG=$(basename "$PWD")_BATCH_MODE-$(date +%F_%H-%M-%S).log
+         _LOG=$(basename $PWD)_BATCH_MODE-$(date +%F_%H-%M-%S).log
          # Launch the whole stuff process
          TOSCA_SyntaxCheck
          NetworkDiagrams
@@ -404,8 +403,8 @@ while getopts ${optstring} option; do
 #         AlloySolve
          exit;;
       s) # run syntax checking on a single file
-         echo -e "${normal}${magenta}  xxx  $(echo "${OPTARG}" | tr [a-z] [A-Z]) xxx ${reset}"
-         translate "${OPTARG}"
+         echo -e "${normal}${magenta}  xxx  `echo ${OPTARG} | tr [a-z] [A-Z]` xxx ${reset}"
+         translate ${OPTARG}
          if [ "$DIRVARS_GENERATED" = true ]; then 
            rm -f $TOSCA2CLOUDNET_CONF_FILE
          fi
@@ -428,7 +427,7 @@ for var in "${dirArray[@]}"
 do
   echo -e "      ${var} : ${normal}${blue}${!var}${reset}"
 done
-echo -e "\nA log file will be also available here ${normal}${blue}logs/""${_LOG}""${reset}"
+echo -e "\nA log file will be also available here ${normal}${blue}logs/${_LOG}${reset}"
 pause
 
 ############################################################################
