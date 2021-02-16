@@ -15,8 +15,6 @@
 # Software description: Use case for TOSCA to Cloudnet Translator
 ######################################################################
 
-# shellcheck source=./lib.sh
-
 ################################################################################
 # Help                                                                         #
 ################################################################################
@@ -52,10 +50,9 @@ TOSCA_SyntaxCheck()
 
    # All description files translation
    echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/"${_LOG}"
-   
    for filename in $(grep -r --include=*.{yaml,yml} -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
      do 
-       echo -e "\n${normal}${magenta}    $(echo "$filename" | tr "[a-z]" "[A-Z]") ${reset}" | tee -a logs/"${_LOG}"
+       echo -e "\n${normal}${magenta}    ${filename^^} ${reset}" | tee -a logs/"${_LOG}"
        translate "$filename" 2>&1 | tee -a logs/"${_LOG}"
      done
    SYNTAX_CHECK=true
@@ -68,11 +65,34 @@ NetworkDiagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Generating network diagrams ***${reset}" | tee -a logs/"${_LOG}"
-       generate_network_diagrams "${nwdiag_target_directory}"/*.nwdiag 2>&1 |tee -a logs/"${_LOG}"
+      echo -e "\n${normal}${magenta}*** Generating network diagrams ***${reset}" | tee -a logs/"${_LOG}"
+      generate_network_diagrams "${nwdiag_target_directory}"/*.nwdiag 2>&1 |tee -a logs/"${_LOG}"
    else
-       echo -e "${normal}${magenta}No generated nwdiag file found.${reset}"
-       echo "Be sure to run \"TOSCA syntax checking\" before generating diagrams"
+      # TODO : convert in a function to use it also for TOSCA, UML2, Alloy syntax and solve
+      # If not, ask if we create diagrams with older generated files if they exist 
+      if [ -d "${nwdiag_target_directory}" ] && test -n "$(find "${nwdiag_target_directory}" -maxdepth 1 -name '*.nwdiag' -print -quit)"
+      then
+         # 'old' files found
+         echo -e "${normal}${red}DEBUG${reset} :\n    NWDIAG_OPTS : ${NWDIAG_OPTS}\n    DOCKER_OPTS : ${DOCKER_OPTS}"
+         echo -e "${normal}${magenta}Previous generated nwdiag files found.${reset}"
+         echo -e "Would you like to Generate diagrams whith them or generate Newer ones ? [Gg|Nn]" gn
+         while true; do
+             read -rs -n 1 gn
+             case $gn in
+                 [Gg]* ) 
+                     generate_network_diagrams "${nwdiag_target_directory}"/*.nwdiag 2>&1 |tee -a logs/"${_LOG}";
+                     break;;
+                 [Nn]* ) 
+                     echo -e "\n         So run \"TOSCA syntax checking\" option before generating diagrams.\n"
+                     break;;
+                 * ) echo "Please answer [Gg]enerate or [Nn]ew.";;
+             esac
+         done
+      else
+         # no files found
+         echo -e "${normal}${magenta}No generated nwdiag file found.${reset}"
+         echo -e "\n      Be sure  to run \"TOSCA syntax checking\" before generating diagrams\n"
+      fi
    fi
 }
 
@@ -86,8 +106,29 @@ TOSCADiagrams()
        echo -e "\n${normal}${magenta}*** Generating TOSCA diagrams ***${reset}" | tee -a logs/"${_LOG}"
        generate_tosca_diagrams "${tosca_diagrams_target_directory}"/*.dot 2>&1 |tee -a logs/"${_LOG}"
    else
+      # If not, ask if we create diagrams with older generated files if they exist 
+      if [ -d "${tosca_diagrams_target_directory}" ] &&  test -n "$(find "${tosca_diagrams_target_directory}" -maxdepth 1 -name '*.dot' -print -quit)"
+      then
+         # 'old' files found
+         echo -e "${normal}${magenta}Previous generated TOSCA files found.${reset}"
+         echo -e "Would you like to Generate diagrams whith them or generate Newer ones ? [Gg|Nn]" gn
+         while true; do
+             read -rs -n 1 gn
+             case $gn in
+                 [Gg]* )
+                     generate_tosca_diagrams "${tosca_diagrams_target_directory}"/*.dot 2>&1 |tee -a logs/"${_LOG}";
+                     break;;
+                 [Nn]* )
+                     echo -e "\n         So run \"TOSCA syntax checking\" option before generating diagrams.\n"
+                     break;;
+                 * ) echo "Please answer [Gg]enerate or [Nn]ew.";;
+             esac
+         done
+      else
+         # no files found
        echo -e "${normal}${magenta}No generated dot file found.${reset}"
-       echo "Be sure to run \"TOSCA syntax checking\" before generating diagrams"
+       echo -e "\n      Be sure  to run \"TOSCA syntax checking\" before generating diagrams\n"
+      fi
    fi
 }
 
@@ -101,8 +142,29 @@ UML2Diagrams()
        echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a logs/"${_LOG}"
        generate_uml2_diagrams "${UML2_target_directory}"/*.plantuml 2>&1 |tee -a logs/"${_LOG}"
    else
-       echo -e "${normal}${magenta}No generated plantuml file found.${reset}"
-       echo "Be sure to run \"TOSCA syntax checking\" before generating diagrams"
+      # If not, ask if we create diagrams with older generated files if they exist 
+      if [ -d "${UML2_target_directory}" ] && test -n "$(find "${UML2_target_directory}" -maxdepth 1 -name '*.plantuml' -print -quit)"
+      then
+         # 'old' files found
+         echo -e "${normal}${magenta}Previous generated plantuml files found.${reset}"
+         echo -e "Would you like to Generate diagrams whith them or generate Newer ones ? [Gg|Nn]" gn
+         while true; do
+             read -rs -n 1 gn
+             case $gn in
+                 [Gg]* ) 
+                     generate_uml2_diagrams "${UML2_target_directory}"/*.plantuml 2>&1 |tee -a logs/"${_LOG}";
+                     break;;
+                 [Nn]* ) 
+                     echo -e "\n         So run \"TOSCA syntax checking\" option before generating diagrams.\n"
+                     break;;
+                 * ) echo "Please answer [Gg]enerate or [Nn]ew.";;
+             esac
+         done
+      else
+         # no files found
+         echo -e "${normal}${magenta}No generated plantuml file found.${reset}"
+         echo -e "\n      Be sure  to run \"TOSCA syntax checking\" before generating diagrams\n"
+      fi
    fi
 }
 
@@ -116,8 +178,29 @@ AlloySyntax()
        echo -e "\n${normal}${magenta}*** Checking ALLOY syntax ***${reset}" | tee -a logs/"${_LOG}"
        alloy_parse "${Alloy_target_directory}"/*.als 2>&1 |tee -a logs/"${_LOG}"
    else
-       echo -e "${normal}${magenta}No generated als file found.${reset}"
-       echo "You need to run \"TOSCA syntax checking\" before launching the alloy syntax checking"
+      # If not, ask if we create diagrams with older generated files if they exist 
+      if [ -d "${Alloy_target_directory}" ] && test -n "$(find "${Alloy_target_directory}" -maxdepth 1 -name '*.als' -print -quit)"
+      then
+         # 'old' files found
+         echo -e "${normal}${magenta}Previous generated Alloy files found.${reset}"
+         echo -e "Would you like to Generate diagrams whith them or generate Newer ones ? [Gg|Nn]" gn
+         while true; do
+             read -rs -n 1 gn
+             case $gn in
+                 [Gg]* )
+                     alloy_parse "${Alloy_target_directory}"/*.als 2>&1 |tee -a logs/"${_LOG}";
+                     break;;
+                 [Nn]* )
+                     echo -e "\n         So run \"TOSCA syntax checking\" option before generating diagrams.\n"
+                     break;;
+                 * ) echo "Please answer [Gg]enerate or [Nn]ew.";;
+             esac
+         done
+      else
+         # no files found
+         echo -e "${normal}${magenta}No generated Alloy file found.${reset}"
+         echo "You need to run \"TOSCA syntax checking\" before launching the alloy syntax checking"
+      fi
    fi
 }
 
@@ -129,8 +212,31 @@ AlloySolve()
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
       echo -e "\n${normal}${magenta}*** Run the solver to verify the ability to deploy the description ***${reset}" | tee -a logs/"${_LOG}"
-      /usr/bin/time --output=logs/"${_LOG}" alloy_execute "${Alloy_target_directory}"/*.als 2>&1 |tee -a logs/"${_LOG}"
+      /usr/bin/time -o logs/"${_LOG}" --append /bin/sh -c ". '${CLOUDNET_BINDIR}/cloudnet_rc.sh'; alloy_execute '${Alloy_target_directory}'/*.als 2>&1 |tee -a 'logs/${_LOG}'"
    else
+      # If not, ask if we create diagrams with older generated files if they exist
+      if [ -d "${Alloy_target_directory}" ] && test -n "$(find ${Alloy_target_directory} -maxdepth 1 -name '*.als' -print -quit)"
+      then
+         # 'old' files found
+         echo -e "${normal}${magenta}Previous generated Alloy files found.${reset}"
+         echo -e "Would you like to Generate diagrams whith them or generate Newer ones ? [Gg|Nn]" gn
+         while true; do
+             read -rs -n 1 gn
+             case $gn in
+                 [Gg]* )
+                     /usr/bin/time -o logs/"${_LOG}" --append /bin/sh -c ". '${CLOUDNET_BINDIR}/cloudnet_rc.sh'; alloy_execute '${Alloy_target_directory}'/*.als 2>&1 |tee -a 'logs/${_LOG}'"
+                     break;;
+                 [Nn]* )
+                     echo -e "\n         So run \"TOSCA syntax checking\" option before generating diagrams.\n"
+                     break;;
+                 * ) echo "Please answer [Gg]enerate or [Nn]ew.";;
+             esac
+         done
+      else
+         # no files found
+         echo -e "${normal}${magenta}No generated Alloy file found.${reset}"
+         echo "You need to run \"TOSCA syntax checking\" before launching the alloy syntax checking"
+      fi
        echo -e "${normal}${magenta}No generated als file found.${reset}"
        echo "You need to run \"TOSCA syntax checking\" before launching the alloy solver"
    fi
@@ -280,7 +386,7 @@ CLOUDNET_BINDIR="$PWD/.."
 Continue=1
 while [ $Continue -eq 1 ]
 do
-  CLOUDNET_RC=$(find $CLOUDNET_BINDIR -name cloudnet_rc.sh)
+  CLOUDNET_RC=$(find "$CLOUDNET_BINDIR" -name cloudnet_rc.sh)
   if [ -z "${CLOUDNET_RC}" ]
   then
     CLOUDNET_BINDIR="${CLOUDNET_BINDIR}/.."
@@ -291,6 +397,7 @@ do
 done
 
 # Load cloundnet commands.
+# shellcheck source=./bin/cloudnet_rc.sh
 source "${CLOUDNET_BINDIR}/cloudnet_rc.sh"
 
 # Variable used to know if the Syntax checking has bee done
@@ -312,6 +419,7 @@ if [ ! -f "${CLOUDNET_BINDIR}/yaml.sh" ]; then
   pause
   exit 1
 else
+# shellcheck source=./bin/yaml.sh
   source "${CLOUDNET_BINDIR}/yaml.sh"
 fi
 
@@ -408,7 +516,7 @@ while getopts ${optstring} option; do
 #         AlloySolve
          exit;;
       s) # run syntax checking on a single file
-         echo -e "${normal}${magenta}  xxx  $(echo "${OPTARG}" | tr "[a-z]" "[A-Z]") xxx ${reset}"
+         echo -e "${normal}${magenta}  xxx  ${OPTARG^^} xxx ${reset}"
          translate "${OPTARG}"
          if [ "$DIRVARS_GENERATED" = true ]; then 
            rm -f $TOSCA2CLOUDNET_CONF_FILE
@@ -425,6 +533,9 @@ done
 ################################################################################
 # We enter here the interactive mode
 ################################################################################
+# Create a _LOG variable in case we have privious results we want to reuse
+_LOG=$(basename "${PWD}")-$(date +%F_%H-%M-%S).log
+
 clear
 
 echo -e "\n\nGenerated files will be placed in the following directories"

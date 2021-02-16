@@ -48,4 +48,4 @@ fi
 
 shift
 
-java ${JAVA_OPTS} -cp "$DIR":"$DIR"/org.alloytools.alloy.dist.jar:"$DIR"/commons-cli-1.4.jar "$MAIN_CLASS" "$@"
+java ${JAVA_OPTS} -cp "$DIR":"$DIR"/org.alloytools.alloy.dist.jar:"$DIR"/commons-cli-1.4.jar "$MAIN_CLASS" $@

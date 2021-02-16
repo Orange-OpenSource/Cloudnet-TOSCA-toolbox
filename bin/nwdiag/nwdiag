@@ -15,12 +15,12 @@
 ######################################################################
 
 container_dest_volume="/work"
-exec docker "${DOCKER_OPTS}" run \
+exec docker ${DOCKER_OPTS} run \
             --user "$(id -u)":"$(id -g)" \
             --volume="${PWD}:${container_dest_volume}" \
             --workdir="${container_dest_volume}" \
             --rm \
             --attach=stdin --attach=stdout --attach=stderr \
             cloudnet/nwdiag \
-            "${NWDIAG_OPTS}" \
+            ${NWDIAG_OPTS} \
             "$@"

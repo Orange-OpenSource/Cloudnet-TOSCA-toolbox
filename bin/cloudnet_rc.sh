@@ -76,7 +76,7 @@ generate_tosca_diagrams()
   for file in "$@"
   do
     echo "- $file"
-    filebase="$(dirname $file)/$(basename -s .dot $file)"
+    filebase="$(dirname "$file")/$(basename -s .dot "$file")"
     # generate TOSCA diagram as a PNG image
     "${CLOUDNET_BINDIR}"/dot/dot -o"$filebase.png" -Tpng "$file"
     # generate TOSCA diagram as a SVG file
@@ -99,11 +99,11 @@ generate_network_diagrams()
   do
     echo "- $file"
     current_directory="$PWD" # store current directory
-    cd $(dirname $file) # go to directory containing generated network diagrams
+    cd "$(dirname "$file")" # go to directory containing generated network diagrams
     # generate network diagram as a PNG image
-    "${CLOUDNET_BINDIR}"/nwdiag/nwdiag -a -Tpng "$(basename $file)"
+    "${CLOUDNET_BINDIR}"/nwdiag/nwdiag -a -Tpng "$(basename "$file")"
     # generate network diagram as a SVG file
-    "${CLOUDNET_BINDIR}"/nwdiag/nwdiag -Tsvg "$(basename $file)"
+    "${CLOUDNET_BINDIR}"/nwdiag/nwdiag -Tsvg "$(basename "$file")"
     cd "${current_directory}" # back to current directory
   done
 }
