@@ -1049,7 +1049,10 @@ class TypeChecker(Checker):
         if type(type_kinds) == str:
             type_kinds = [type_kinds]
         for type_kind in type_kinds:
-            if getattr(self.type_system, type_kind + "_types").get(type_name) is not None:
+            if (
+                getattr(self.type_system, type_kind + "_types").get(type_name)
+                is not None
+            ):
                 return True
         if self.type_system.types.get(type_name) is None:
             self.error(
@@ -1890,7 +1893,7 @@ class TypeChecker(Checker):
             # check that capability is compatible with requirement type valid target types
             valid_target_types = merged_definition.get(syntax.VALID_TARGET_TYPES)
             if requirement_capability is not None and valid_target_types is not None:
-                # Check that requirement_capability is compatible with at least one 
+                # Check that requirement_capability is compatible with at least one
                 # requirement_relationship valid target type
                 capability_not_compatible = True
                 for valid_target_type in valid_target_types:
@@ -5040,7 +5043,7 @@ class TypeChecker(Checker):
             self.check_keyword(condition, "evaluations", check_evaluations, cem)
             remove_keyword("evaluations")
             # check method
-            
+
             def check_method(method, cem):
                 self.warning(cem + ": " + str(method) + " - unchecked")
 
@@ -5128,7 +5131,7 @@ class TypeChecker(Checker):
             substitution_mapping, node_type, context_error_message
         )
         # check that all properties are mapped
-        
+
         def check_ummapped_property_definition(property_name, property_definition):
             if (
                 property_definition.get(syntax.REQUIRED, True)

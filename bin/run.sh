@@ -91,7 +91,7 @@ NetworkDiagrams()
       else
          # no files found
          echo -e "${normal}${magenta}No generated nwdiag file found.${reset}"
-         echo -e "\n      Be sure  to run \"TOSCA syntax checking\" before generating diagrams\n"
+         echo -e "      Be sure  to run \"TOSCA syntax checking\" before generating diagrams\n"
       fi
    fi
 }
@@ -103,8 +103,8 @@ TOSCADiagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Generating TOSCA diagrams ***${reset}" | tee -a logs/${_LOG}
-       generate_tosca_diagrams ${tosca_diagrams_target_directory}/*.dot 2>&1 |tee -a logs/${_LOG}
+       echo -e "\n${normal}${magenta}*** Generating TOSCA diagrams ***${reset}" | tee -a "logs/${_LOG}"
+       generate_tosca_diagrams ${tosca_diagrams_target_directory}/*.dot 2>&1 |tee -a "logs/${_LOG}"
    else
       # If not, ask if we create diagrams with older generated files if they exist 
       if [ -d "${tosca_diagrams_target_directory}" ] &&  test -n "$(find "${tosca_diagrams_target_directory}" -maxdepth 1 -name '*.dot' -print -quit)"
@@ -139,8 +139,8 @@ UML2Diagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a logs/${_LOG}
-       generate_uml2_diagrams ${UML2_target_directory}/*.plantuml 2>&1 |tee -a logs/${_LOG}
+       echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a "logs/${_LOG}"
+       generate_uml2_diagrams ${UML2_target_directory}/*.plantuml 2>&1 |tee -a "logs/${_LOG}"
    else
       # If not, ask if we create diagrams with older generated files if they exist 
       if [ -d "${UML2_target_directory}" ] && test -n "$(find "${UML2_target_directory}" -maxdepth 1 -name '*.plantuml' -print -quit)"
@@ -176,7 +176,7 @@ AlloySyntax()
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
        echo -e "\n${normal}${magenta}*** Checking ALLOY syntax ***${reset}" | tee -a "logs/${_LOG}"
-       alloy_parse "${Alloy_target_directory}/*.als" 2>&1 |tee -a logs/${_LOG}
+       alloy_parse "${Alloy_target_directory}/*.als" 2>&1 |tee -a "logs/${_LOG}"
    else
       # If not, ask if we create diagrams with older generated files if they exist 
       if [ -d "${Alloy_target_directory}" ] && test -n "$(find "${Alloy_target_directory}" -maxdepth 1 -name '*.als' -print -quit)"
@@ -397,7 +397,7 @@ do
 done
 
 # Load cloundnet commands.
-# shellcheck source=./bin/cloudnet_rc.sh
+# shellcheck source=bin/cloudnet_rc.sh
 source "${CLOUDNET_BINDIR}/cloudnet_rc.sh"
 
 # Variable used to know if the Syntax checking has bee done
@@ -419,7 +419,7 @@ if [ ! -f "${CLOUDNET_BINDIR}/yaml.sh" ]; then
   pause
   exit 1
 else
-# shellcheck source=./bin/yaml.sh
+# shellcheck source=bin/yaml.sh
   source "${CLOUDNET_BINDIR}/yaml.sh"
 fi
 

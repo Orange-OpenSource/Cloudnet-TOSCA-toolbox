@@ -103,7 +103,10 @@ class Alloy(object):
 
     def is_signature_declared(signature_name):
         """ Is an Alloy signature declared. """
-        return Alloy.the_extends_relation_between_signatures.get(signature_name) is not None
+        return (
+            Alloy.the_extends_relation_between_signatures.get(signature_name)
+            is not None
+        )
 
     def get_superset(signature_name):
         """ Get the Alloy extends signature of a given Alloy signature. """
@@ -2949,7 +2952,10 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             + " - node or node_filter expected"
                         )
                         continue
-                    if requirement_node is not None and requirement_node_filter is not None:
+                    if (
+                        requirement_node is not None
+                        and requirement_node_filter is not None
+                    ):
                         self.error(
                             context_error_message
                             + ":"
