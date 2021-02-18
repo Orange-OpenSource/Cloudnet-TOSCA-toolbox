@@ -6,6 +6,14 @@ This set of tools is intended for syntax and type checking of any service templa
 It also allows for visualizing the associated architecture in different ways (UML, TOSCA, network diagrams).  
 A web portal based on this code is available at this url: [https://toscatoolbox.noprod-b.kmt.orange.com](https://toscatoolbox.noprod-b.kmt.orange.com).
 
+## Table of contents
+
+- [Prerequisites](#prerequisites)<br />
+- [How to use it?](#how-to-use-it)<br />
+- [Network diagrams generation](#then-to-generate-network-diagrams-type)<br />
+- [TOSCA diagrams generation](#to-get-tosca-diagrams-use-the-command)<br />
+- [UML diagrams generation](#and-to-generate-uml-diagrams)<br />
+
 ## Prerequisites
 
 To use this toolset, you'll need Docker, Python, PlantUML, nwdiag and dot.
@@ -17,7 +25,7 @@ cd bin/
 ./build.sh
 ```
 
-## How to use it?
+## How to use it?
 
 If you get some TOSCA
 [1.0](http://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.0/os/TOSCA-Simple-Profile-YAML-v1.0-os.pdf),
@@ -54,20 +62,26 @@ will :
 - translate it into the MIT Alloy language,  
 - generate .dot, .nwdiag and .plantuml templates.  
 
-Then to generate network diagrams, type:  
+## Then to generate network diagrams, type:  
 
 ```sh
 generate_network_diagrams nwdiag/*.nwdiag  
 ```
 
-To get TOSCA diagrams, use the command:  
+![Network diagram example](/docs/pictures/OASIS-TOSCA-1.3_example-8.6.1_nw.png)
+
+## To get TOSCA diagrams, use the command:  
 
 ```sh
 generate_tosca_diagrams tosca_diagrams/*.dot  
 ```
 
-And to generate UML diagrams:  
+![TOSCA diagram example](/docs/pictures/OASIS-TOSCA-1.3_example-8.6.1_tosca.png)
+
+## And to generate UML diagrams:  
 
 ```sh
 generate_uml2_diagrams uml2/*.plantuml  
 ```
+
+![UML diagram example](/docs/pictures/OASIS-TOSCA-1.3_example-8.6.1_uml2.png)

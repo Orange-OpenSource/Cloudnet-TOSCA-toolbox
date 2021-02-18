@@ -103,8 +103,8 @@ TOSCADiagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Generating TOSCA diagrams ***${reset}" | tee -a logs/"${_LOG}"
-       generate_tosca_diagrams "${tosca_diagrams_target_directory}"/*.dot 2>&1 |tee -a logs/"${_LOG}"
+       echo -e "\n${normal}${magenta}*** Generating TOSCA diagrams ***${reset}" | tee -a logs/${_LOG}
+       generate_tosca_diagrams ${tosca_diagrams_target_directory}/*.dot 2>&1 |tee -a logs/${_LOG}
    else
       # If not, ask if we create diagrams with older generated files if they exist 
       if [ -d "${tosca_diagrams_target_directory}" ] &&  test -n "$(find "${tosca_diagrams_target_directory}" -maxdepth 1 -name '*.dot' -print -quit)"
@@ -139,8 +139,8 @@ UML2Diagrams()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a logs/"${_LOG}"
-       generate_uml2_diagrams "${UML2_target_directory}"/*.plantuml 2>&1 |tee -a logs/"${_LOG}"
+       echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a logs/${_LOG}
+       generate_uml2_diagrams ${UML2_target_directory}/*.plantuml 2>&1 |tee -a logs/${_LOG}
    else
       # If not, ask if we create diagrams with older generated files if they exist 
       if [ -d "${UML2_target_directory}" ] && test -n "$(find "${UML2_target_directory}" -maxdepth 1 -name '*.plantuml' -print -quit)"
@@ -175,8 +175,8 @@ AlloySyntax()
 {
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
-       echo -e "\n${normal}${magenta}*** Checking ALLOY syntax ***${reset}" | tee -a logs/"${_LOG}"
-       alloy_parse "${Alloy_target_directory}"/*.als 2>&1 |tee -a logs/"${_LOG}"
+       echo -e "\n${normal}${magenta}*** Checking ALLOY syntax ***${reset}" | tee -a "logs/${_LOG}"
+       alloy_parse "${Alloy_target_directory}/*.als" 2>&1 |tee -a logs/${_LOG}
    else
       # If not, ask if we create diagrams with older generated files if they exist 
       if [ -d "${Alloy_target_directory}" ] && test -n "$(find "${Alloy_target_directory}" -maxdepth 1 -name '*.als' -print -quit)"
@@ -333,7 +333,7 @@ read_options(){
              echo -e "\n\n"
              read -rp "          No log file created for this session, type any key to continue." choice
            else
-             less -r logs/"${_LOG}"
+             less -r "logs/${_LOG}"
            fi
            ;;
         w) # Launch the whole process
@@ -391,7 +391,7 @@ do
   then
     CLOUDNET_BINDIR="${CLOUDNET_BINDIR}/.."
   else
-    CLOUDNET_BINDIR="$(dirname "${CLOUDNET_RC}")"
+    CLOUDNET_BINDIR=$(dirname "${CLOUDNET_RC}")
     Continue=0
   fi
 done
@@ -491,6 +491,38 @@ if (( NBVARSSET > 0 )) && (( NBVARSSET < ${#dirArray[@]} )); then
   esac
 fi
 
+if (( NBVARSSET == 0 )); then
+   DIRVARS_GENERATED=true
+   #create a config file which will be deleted at the exit of the script
+   RESULT_DIR="RESULTS"
+   {
+     echo -e "# Configuration of the Alloy generator." 
+     echo -e "Alloy:" 
+     echo -e "  # Target directory where Alloy files are generated." 
+     echo -e "  target-directory: ${RESULT_DIR}/Alloy" 
+     echo -e "" 
+     echo -e "# Configuration of the network diagram generator." 
+     echo -e "nwdiag:" 
+     echo -e "  # Target directory where network diagrams are generated." 
+     echo -e "  target-directory: ${RESULT_DIR}/NetworkDiagrams" 
+     echo -e "" 
+     echo -e "# Configuration of the TOSCA diagram generator." 
+     echo -e "tosca_diagrams:" 
+     echo -e "  # Target directory where network diagrams are generated." 
+     echo -e "  target-directory: ${RESULT_DIR}/ToscaDiagrams" 
+     echo -e "" 
+     echo -e "# Configuration of the UML2 diagram generator." 
+     echo -e "UML2:" 
+     echo -e "  # Target directory where UML2 diagrams are generated." 
+     echo -e "  target-directory: ${RESULT_DIR}/Uml2Diagrams" 
+     echo -e "" 
+     echo -e "HOT:" 
+     echo -e "  # Target directory where HOT templates are generated." 
+     echo -e "  target-directory: ${RESULT_DIR}/HOT" 
+   } >> "$TOSCA2CLOUDNET_CONF_FILE"
+   create_variables "$TOSCA2CLOUDNET_CONF_FILE"
+fi
+
 ################################################################################
 # Process the input options.
 # When called in batch mode, it launch the whole treatement and return a code
@@ -543,7 +575,7 @@ for var in "${dirArray[@]}"
 do
   echo -e "      ${var} : ${normal}${blue}${!var}${reset}"
 done
-echo -e "\nA log file will be also available here ${normal}${blue}logs/""${_LOG}""${reset}"
+echo -e "\nA log file will be also available here ${normal}${blue}logs/${_LOG}${reset}"
 pause
 
 ############################################################################
