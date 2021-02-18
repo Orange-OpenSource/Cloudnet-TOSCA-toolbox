@@ -140,7 +140,7 @@ UML2Diagrams()
    # Verify if Syntax checking has been done
    if [ "$SYNTAX_CHECK" = true ]; then 
        echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a "logs/${_LOG}"
-       generate_uml2_diagrams ${UML2_target_directory}/*.plantuml" 2>&1 |tee -a "logs/${_LOG}"
+       generate_uml2_diagrams "${UML2_target_directory}/*.plantuml" 2>&1 |tee -a "logs/${_LOG}"
    else
       # If not, ask if we create diagrams with older generated files if they exist 
       if [ -d "${UML2_target_directory}" ] && test -n "$(find "${UML2_target_directory}" -maxdepth 1 -name '*.plantuml' -print -quit)"
@@ -430,7 +430,7 @@ if [ ! -f "${TOSCA2CLOUDNET_CONF_FILE}" ]; then
 
    DIRVARS_GENERATED=true
    #create a config file which will be deleted at the exit of the script
-   RESULT_DIR="RESULTS"
+   RESULT_DIR="RESULTS-$(date +%F_%H-%M-%S)"
    {
      echo "# Configuration of the Alloy generator."
      echo "Alloy:"
@@ -489,38 +489,6 @@ if (( NBVARSSET > 0 )) && (( NBVARSSET < ${#dirArray[@]} )); then
            exit 0
            ;;
   esac
-fi
-
-if (( NBVARSSET == 0 )); then
-   DIRVARS_GENERATED=true
-   #create a config file which will be deleted at the exit of the script
-   RESULT_DIR="RESULTS"
-   {
-     echo -e "# Configuration of the Alloy generator." 
-     echo -e "Alloy:" 
-     echo -e "  # Target directory where Alloy files are generated." 
-     echo -e "  target-directory: ${RESULT_DIR}/Alloy" 
-     echo -e "" 
-     echo -e "# Configuration of the network diagram generator." 
-     echo -e "nwdiag:" 
-     echo -e "  # Target directory where network diagrams are generated." 
-     echo -e "  target-directory: ${RESULT_DIR}/NetworkDiagrams" 
-     echo -e "" 
-     echo -e "# Configuration of the TOSCA diagram generator." 
-     echo -e "tosca_diagrams:" 
-     echo -e "  # Target directory where network diagrams are generated." 
-     echo -e "  target-directory: ${RESULT_DIR}/ToscaDiagrams" 
-     echo -e "" 
-     echo -e "# Configuration of the UML2 diagram generator." 
-     echo -e "UML2:" 
-     echo -e "  # Target directory where UML2 diagrams are generated." 
-     echo -e "  target-directory: ${RESULT_DIR}/Uml2Diagrams" 
-     echo -e "" 
-     echo -e "HOT:" 
-     echo -e "  # Target directory where HOT templates are generated." 
-     echo -e "  target-directory: ${RESULT_DIR}/HOT" 
-   } >> "$TOSCA2CLOUDNET_CONF_FILE"
-   create_variables "$TOSCA2CLOUDNET_CONF_FILE"
 fi
 
 ################################################################################
