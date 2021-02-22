@@ -16,7 +16,7 @@
 
 # Load cloudnet commands.
 # shellcheck source=./bin/cloudnet_rc.sh
-CLOUDNET_BINDIR=../bin
+CLOUDNET_BINDIR="$PWD/../bin"
 . "${CLOUDNET_BINDIR}/cloudnet_rc.sh"
 
 exit_code=0
