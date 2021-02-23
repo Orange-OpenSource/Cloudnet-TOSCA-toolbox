@@ -663,6 +663,8 @@ class TypeChecker(Checker):
                 # This case occurs when a file imported is not present
                 # JLC 20201126
                 self.error('imports[' + str(index) + ']:file: ' + import_filepath + ' - file not found')
+            except ValueError as exc:
+                self.error('imports[' + str(index) + ']:file: ' + import_filepath + ' - ' + str(exc))
             index = index + 1
 
         # Put all types of the loaded template into the type system.
