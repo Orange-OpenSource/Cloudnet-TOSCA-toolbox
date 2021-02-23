@@ -215,7 +215,8 @@ AlloySolve()
       /usr/bin/time -o logs/"${_LOG}" --append /bin/sh -c ". '${CLOUDNET_BINDIR}/cloudnet_rc.sh'; alloy_execute '${Alloy_target_directory}'/*.als 2>&1 |tee -a 'logs/${_LOG}'"
    else
       # If not, ask if we create diagrams with older generated files if they exist
-      if [ -d "${Alloy_target_directory}" ] && test -n "$(find ${Alloy_target_directory} -maxdepth 1 -name '*.als' -print -quit)"
+      # if [ -d "${Alloy_target_directory}" ] && test -n "$(find ${Alloy_target_directory} -maxdepth 1 -name '*.als' -print -quit)"
+      if [ -d "${Alloy_target_directory}" ] && find "${Alloy_target_directory}" -maxdepth 1 -name '*.als' -print -quit
       then
          # 'old' files found
          echo -e "${normal}${magenta}Previous generated Alloy files found.${reset}"
