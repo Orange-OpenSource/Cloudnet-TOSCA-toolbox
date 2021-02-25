@@ -73,7 +73,7 @@ generate_tosca_diagrams()
 {
   local file
   echo Generating TOSCA diagrams...
-  for file in $@
+  for file in "$@"
   do
     echo "- $file"
     filebase="$(dirname "$file")/$(basename -s .dot "$file")"
