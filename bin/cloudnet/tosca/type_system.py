@@ -70,7 +70,7 @@ configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
         "tosca.nodes.BlockStorage": "tosca.nodes.Storage.BlockStorage",  # TODO remove later
     },
     # predefined workflows
-    "predefined_workflows": {"deploy": {},"undeploy": {},},
+    "predefined_workflows": {"deploy": {}, "undeploy": {},},
 }
 
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {

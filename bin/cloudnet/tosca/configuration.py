@@ -81,6 +81,6 @@ DEFAULT_CONFIGURATION = {
             },
         },
         "loggers": {__name__: {"level": "INFO",},},
-        "root": {"level": "DEBUG","handlers": ["console"],},
+        "root": {"level": "DEBUG", "handlers": ["console"],},
     },
 }
