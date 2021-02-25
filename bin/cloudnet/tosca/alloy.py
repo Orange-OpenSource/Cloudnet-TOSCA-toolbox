@@ -26,7 +26,7 @@ SCOPE = "scope"
 configuration.DEFAULT_CONFIGURATION[ALLOY] = {
     # Target directory where Alloy files are generated.
     Generator.TARGET_DIRECTORY: "Alloy",
-    SCOPE: {"for": 5, "Int": 8, "seq": 5,},
+    SCOPE: {"for": 5, "Int": 8, "seq": 5, },
     "scalar-mapping": {
         "0.1 GHz": "1 Hz",  # for tosca_simple_yaml_1_2
         "8096 MB": "8 GB",  # for ETSI NFV SOL 001 Annex A examples

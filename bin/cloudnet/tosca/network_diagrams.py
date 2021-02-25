@@ -32,7 +32,7 @@ DEFAULT_CONFIGURATION[NWDIAG] = {
     # Representation of node templates.
     "node_types": {
         "tosca.nodes.network.Network": {
-            "label": ["properties.network_name",],
+            "label": ["properties.network_name", ],
             "address": [
                 "properties.cidr",
                 #                'properties.start_ip',
@@ -44,7 +44,7 @@ DEFAULT_CONFIGURATION[NWDIAG] = {
             # no shape as it is a network
         },
         "tosca.nodes.network.Port": {
-            "address": ["properties.ip_address",],
+            "address": ["properties.ip_address", ],
             # no graphical attributes as it is a port
         },
     },
@@ -216,7 +216,7 @@ class NwdiagGenerator(Generator):
                     )
                     network_address = self.resolve_attribute(
                         network_node, network_repr, "address", "\n"
-                    )  #'', ')
+                    )  # '', ')
                 # generate the graphical attributes of the network
                 # TODO: add other graphical attributes font, etc.
                 self.generate('    label = "%s"' % network_label)

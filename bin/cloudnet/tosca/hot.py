@@ -13,6 +13,8 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
+import logging  # for logging purposes.
+
 import cloudnet.tosca.configuration as configuration
 import cloudnet.tosca.syntax as syntax
 from cloudnet.tosca.processors import Generator
@@ -47,8 +49,6 @@ configuration.DEFAULT_CONFIGURATION[HOT] = {
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
 }
-
-import logging  # for logging purposes.
 
 LOGGER = logging.getLogger(__name__)
 

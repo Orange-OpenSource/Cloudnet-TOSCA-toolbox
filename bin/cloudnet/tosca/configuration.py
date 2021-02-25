@@ -80,7 +80,7 @@ DEFAULT_CONFIGURATION = {
                 "stream": "ext://sys.stdout",
             },
         },
-        "loggers": {__name__: {"level": "INFO",},},
-        "root": {"level": "DEBUG", "handlers": ["console"],},
+        "loggers": {__name__: {"level": "INFO", }, },
+        "root": {"level": "DEBUG", "handlers": ["console"], },
     },
 }
