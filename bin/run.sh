@@ -498,7 +498,7 @@ fi
 # indicating if the statys is OK, OK with warning or KO
 ################################################################################
 # Get the options
-optstring=":h:b:s:"
+optstring=":hbs"
 
 while getopts ${optstring} option; do
    case ${option} in
