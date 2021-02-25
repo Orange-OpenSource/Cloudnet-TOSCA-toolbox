@@ -567,7 +567,6 @@ class AbstractAlloySigGenerator(Generator):
             not_an_integer = False
             scalar_value, scalar_unit = utils.split_scalar_unit(scalar)
         except ValueError:
-            self.error(' invalid scalar ' + str(scalar))
             not_an_integer = True
             scalar_unit = 'UNKNOWN' # TODO
         MAX_INT = self.get_max_int()
