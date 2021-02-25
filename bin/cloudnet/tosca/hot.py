@@ -199,8 +199,8 @@ class HOTGenerator(Generator):
         # Generate parameters:
         inputs = get_dict(topology_template, INPUTS)
         substitution_mappings = topology_template.get(SUBSTITUTION_MAPPINGS, {})
-        substitution_mappings_requirements = (
-            syntax.get_substitution_mappings_requirements(substitution_mappings)
+        substitution_mappings_requirements = syntax.get_substitution_mappings_requirements(
+            substitution_mappings
         )
         if len(inputs) or len(substitution_mappings_requirements):
 
@@ -785,15 +785,15 @@ class HOTGenerator(Generator):
             "max_bitrate_requirements"
         )
         if network_vl_profile_max_bitrate_requirements:
-            network_vl_profile_max_bitrate_requirements_root = (
-                network_vl_profile_max_bitrate_requirements.get("root")
+            network_vl_profile_max_bitrate_requirements_root = network_vl_profile_max_bitrate_requirements.get(
+                "root"
             )
             self.generate(
                 "      vl_profile.max_bitrate_requirements.root:",
                 network_vl_profile_max_bitrate_requirements_root,
             )
-            network_vl_profile_max_bitrate_requirements_leaf = (
-                network_vl_profile_max_bitrate_requirements.get("leaf")
+            network_vl_profile_max_bitrate_requirements_leaf = network_vl_profile_max_bitrate_requirements.get(
+                "leaf"
             )
             if network_vl_profile_max_bitrate_requirements_leaf is not None:
                 self.generate(
@@ -807,15 +807,15 @@ class HOTGenerator(Generator):
             "min_bitrate_requirements"
         )
         if network_vl_profile_min_bitrate_requirements:
-            network_vl_profile_min_bitrate_requirements_root = (
-                network_vl_profile_min_bitrate_requirements.get("root")
+            network_vl_profile_min_bitrate_requirements_root = network_vl_profile_min_bitrate_requirements.get(
+                "root"
             )
             self.generate(
                 "      vl_profile.min_bitrate_requirements.root:",
                 network_vl_profile_min_bitrate_requirements_root,
             )
-            network_vl_profile_min_bitrate_requirements_leaf = (
-                network_vl_profile_min_bitrate_requirements.get("leaf")
+            network_vl_profile_min_bitrate_requirements_leaf = network_vl_profile_min_bitrate_requirements.get(
+                "leaf"
             )
             if network_vl_profile_min_bitrate_requirements_leaf is not None:
                 self.generate(
@@ -860,8 +860,8 @@ class HOTGenerator(Generator):
             "service_availability"
         )
         if network_vl_profile_service_availability is not None:
-            network_vl_profile_service_availability_level = (
-                network_vl_profile_service_availability.get("level")
+            network_vl_profile_service_availability_level = network_vl_profile_service_availability.get(
+                "level"
             )
             if network_vl_profile_service_availability_level is not None:
                 self.generate(
