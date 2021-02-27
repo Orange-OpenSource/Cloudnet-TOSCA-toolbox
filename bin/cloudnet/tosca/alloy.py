@@ -1313,15 +1313,36 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                             prefixed_operation = self.prefix_name('interface', interface_name) + '.' + self.prefix_name('operation', operation_name)
                             implementation = self.get_operation_implementation(operation_yaml)
                             if implementation:
-                                if type(implementation) != str:
-                                    self.error(' implementation ' + str(implementation) + ' unsupported by Alloy generator')
-                                    continue
-                                artifacts = syntax.get_dict(yaml, ARTIFACTS)
-                                if artifacts != None and artifacts.get(implementation):
-                                    self.generate('  ', prefixed_operation, '.implementation = ' + self.prefix_name('artifact', implementation), sep='')
+                                def generate_implementation_fact(implementation):
+                                    artifacts = syntax.get_dict(yaml, ARTIFACTS)
+                                    if artifacts != None and artifacts.get(implementation):
+                                        self.generate('  ', prefixed_operation, '.implementation = ' + self.prefix_name('artifact', implementation), sep='')
+                                    else:
+                                        artifact_type_sig = self.alloy_sig(self.get_implementation_artifact_type(implementation))
+                                        self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "', implementation, '"]', sep='')
+                                if isinstance(implementation, str):
+                                    # Short notation
+                                    generate_implementation_fact(implementation)
                                 else:
-                                    artifact_type_sig = self.alloy_sig(self.get_implementation_artifact_type(implementation))
-                                    self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "',implementation, '"]', sep='')
+                                    # Extended notation
+                                    # some keynames are not supported currently!
+                                    for unsupported_key in ['dependencies', 'timeout', 'operation_host']:
+                                        if implementation.get(unsupported_key) != None:
+                                            self.warning(' implementation ' + str(implementation) + ' - ' + unsupported_key + ' unsupported by Alloy generator')
+                                    # only primary is supported currently!
+                                    primary = implementation.get('primary')
+                                    if primary is None:
+                                        self.error(' implementation ' + str(implementation) + ' - primary artifact missed')
+                                        continue
+                                    # generate the Alloy fact
+                                    if isinstance(primary, str):
+                                        # Short notation
+                                        generate_implementation_fact(primary)
+                                    else:
+                                        # Extended notation
+                                        artifact_type_sig = self.alloy_sig(primary.get('type'))
+                                        artifact_file = primary.get('file')
+                                        self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "',artifact_file, '"]', sep='')
 
                 self.generate()
 
@@ -1766,14 +1787,35 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         prefixed_operation = prefixed_template_name + '.' + self.prefix_name('interface', interface_name) + '.' + self.prefix_name('operation', operation_name)
                         implementation = self.get_operation_implementation(operation_yaml)
                         if implementation:
-                            if type(implementation) != str:
-                                self.error(' implementation ' + str(implementation) + ' unsupported by Alloy generator')
-                                continue
-                            if get_dict(template_yaml, ARTIFACTS).get(implementation) or merged_template_type.get(ARTIFACTS,{}).get(implementation):
-                                self.generate('  ', prefixed_operation, '.implementation = ', utils.normalize_name(template_name), '.artifact["', implementation, '"]', sep='')
+                            def generate_implementation_fact(implementation):
+                                if get_dict(template_yaml, ARTIFACTS).get(implementation) or merged_template_type.get(ARTIFACTS,{}).get(implementation):
+                                    self.generate('  ', prefixed_operation, '.implementation = ', utils.normalize_name(template_name), '.artifact["', implementation, '"]', sep='')
+                                else:
+                                    artifact_type_sig = self.alloy_sig(self.get_implementation_artifact_type(implementation))
+                                    self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "', implementation, '"]', sep='')
+                            if isinstance(implementation, str):
+                                # Short notation
+                                generate_implementation_fact(implementation)
                             else:
-                                artifact_type_sig = self.alloy_sig(self.get_implementation_artifact_type(implementation))
-                                self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "',implementation, '"]', sep='')
+                                # Extended notation
+                                # some keynames are not supported currently!
+                                for unsupported_key in ['dependencies', 'timeout', 'operation_host']:
+                                    if implementation.get(unsupported_key) != None:
+                                        self.warning(' implementation ' + str(implementation) + ' - ' + unsupported_key + ' unsupported by Alloy generator')
+                                # only primary is supported currently!
+                                primary = implementation.get('primary')
+                                if primary is None:
+                                    self.error(' implementation ' + str(implementation) + ' - primary artifact missed')
+                                    continue
+                                # generate the Alloy fact
+                                if isinstance(primary, str):
+                                    # Short notation
+                                    generate_implementation_fact(primary)
+                                else:
+                                    # Extended notation
+                                    artifact_type_sig = self.alloy_sig(primary.get('type'))
+                                    artifact_file = primary.get('file')
+                                    self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "',artifact_file, '"]', sep='')
                         else:
                             self.generate('  no ', prefixed_operation, '.implementation', sep='')
                         mnt = self.type_system.merge_node_type(template_yaml.get(TYPE))
@@ -2267,13 +2309,25 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         acs.update_sig_scope(interface_sig)
                         acs.update_sig_scope(TOSCA.Operation)
                         is_new_operation = True
-                        if type(implementation) != str:
-                            self.error(' implementation ' + str(implementation) + ' unsupported by Alloy generator')
-                            continue
-                        if get_dict(node_template, ARTIFACTS).get(implementation) == None and get_dict(node_template_type, ARTIFACTS).get(implementation) == None:
-                            artifact_type_sig = self.alloy_sig(self.get_implementation_artifact_type(implementation))
-                            acs.update_sig_scope(artifact_type_sig)
-
+                        def update_sig_scope_implementation_short_notation(implementation):
+                            if get_dict(node_template, ARTIFACTS).get(implementation) is None and get_dict(node_template_type, ARTIFACTS).get(implementation) is None:
+                                artifact_type_sig = self.alloy_sig(self.get_implementation_artifact_type(implementation))
+                                acs.update_sig_scope(artifact_type_sig)
+                        if isinstance(implementation, str):
+                            # Short notation
+                            update_sig_scope_implementation_short_notation(implementation)
+                        else:
+                            # Extended notation
+                            primary = implementation.get('primary')
+                            if primary is None:
+                                continue
+                            if isinstance(primary, str):
+                                # Short notation
+                                update_sig_scope_implementation_short_notation(primary)
+                            else:
+                                # Extended notation
+                                artifact_type_sig = self.alloy_sig(primary.get('type'))
+                                acs.update_sig_scope(artifact_type_sig)
                     # Iterate over all inputs.
                     for input_name, input_yaml in get_dict(operation_yaml, INPUTS).items():
                         # Compute the scope required by each operation.
