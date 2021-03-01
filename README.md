@@ -4,7 +4,7 @@ Cloudnet TOSCA toolbox is an OASIS TOSCA processor for checking and adjusting TO
 TOSCA templates specify service structure and the procedure governing their life cycle. Services are typically application, infrastructure or network services.  
 This set of tools is intended for syntax and type checking of any service templates written in TOSCA, including e.g. [NFV descriptors](https://forge.etsi.org/rep/nfv/SOL001).  
 It also allows for visualizing the associated architecture in different ways (UML, TOSCA, network diagrams).  
-A web portal based on this code is available at this url: [https://toscatoolbox.noprod-b.kmt.orange.com](https://toscatoolbox.noprod-b.kmt.orange.com).
+A web portal based on this code is available at this url: [https://toscatoolbox.orange.com](https://toscatoolbox.orange.com).
 
 ## Table of contents
 

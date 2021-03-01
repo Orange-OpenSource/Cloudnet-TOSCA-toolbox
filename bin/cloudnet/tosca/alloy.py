@@ -543,7 +543,12 @@ class AbstractAlloySigGenerator(Generator):
                             + " - four or more parameters unsupported by Alloy generator"
                         )
 
-                elif key in [GET_ARTIFACT, GET_ATTRIBUTE]:
+                elif key == GET_ATTRIBUTE:
+                    node_name = v[0]
+                    if node_name == "SELF":
+                      node_name = self.SELF
+                    result += node_name + ".attribute_" + v[1]
+                elif key == GET_ARTIFACT:
                     node_name = v[0]
                     if node_name == "SELF":
                         node_name = self.SELF
@@ -666,7 +671,6 @@ class AbstractAlloySigGenerator(Generator):
             not_an_integer = False
             scalar_value, scalar_unit = utils.split_scalar_unit(scalar)
         except ValueError:
-            self.error(" invalid scalar " + str(scalar))
             not_an_integer = True
             scalar_unit = "UNKNOWN"  # TODO
         MAX_INT = self.get_max_int()
@@ -1348,36 +1352,34 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
                 if self.is_property_defined(type_yaml.get(DERIVED_FROM), property_name):
                     self.generate("  // NOTE:", property_name, "overloaded")
                 else:
-                    if type(property_yaml) == dict:
-                        self.generate_description(property_yaml, "  ")
-                        if is_property_required(property_yaml):
-                            property_cardinality = Alloy.ONE
-                        else:
-                            property_cardinality = Alloy.LONE
-                        property_type = property_yaml.get(TYPE)
-                        if property_type is None:
-                            self.error("type required for property " + property_name)
-                            continue
-                        property_sig = self.alloy_sig(property_type)
-                        if property_sig == "list":
-                            property_cardinality = Alloy.SEQ
-                            entry_schema_type = get_entry_schema_type(property_yaml)
-                            if entry_schema_type is None:
-                                self.error(
-                                    " entry schema type required for property "
-                                    + property_name
-                                )
-                                continue
-                            property_sig = self.alloy_sig(entry_schema_type)
-                        elif property_sig == "map":
-                            property_sig = self.get_map_signature(property_yaml)
-                    else:
-                        property_cardinality = Alloy.LONE
-                        property_sig = property_yaml
-                    self.generate_sig_field(
-                        None, property_name, property_cardinality, property_sig
-                    )
-                    self.generate()
+                    self.generate_field('property', None, property_name, property_yaml)
+                self.generate()
+
+    def generate_field(self, field_kind, field_prefix, field_name, field_yaml):
+        if isinstance(field_yaml, dict):
+            self.generate_description(field_yaml, '  ')
+            if is_property_required(field_yaml):
+                field_cardinality = Alloy.ONE
+            else:
+                field_cardinality = Alloy.LONE
+            field_type = field_yaml.get(TYPE)
+            if field_type is None:
+                self.error('type required for ' + field_kind + ' ' + field_name)
+                return
+            field_sig = self.alloy_sig(field_type)
+            if field_sig == 'list':
+                field_cardinality = Alloy.SEQ
+                entry_schema_type = get_entry_schema_type(field_yaml)
+                if entry_schema_type is None:
+                    self.error(' entry schema type required for ' + field_kind + ' ' + field_name)
+                    return
+                field_sig = self.alloy_sig(entry_schema_type)
+            elif field_sig == 'map':
+                field_sig = self.get_map_signature(field_yaml)
+        else:
+            field_cardinality = Alloy.LONE
+            field_sig = self.alloy_sig(field_yaml)
+        self.generate_sig_field(field_prefix, field_name, field_cardinality, field_sig)
 
     def generate_attributes_fields(self, type_name, type_yaml):
         if type_yaml is None:
@@ -1395,11 +1397,7 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
                 ):
                     self.generate("  // NOTE:", attribute_name, "overloaded")
                 else:
-                    if type(attribute_yaml) == dict:
-                        self.generate_description(attribute_yaml, "  ")
-                    self.generate_sig_field(
-                        "attribute", attribute_name, Alloy.ONE, TOSCA.Attribute
-                    )
+                    self.generate_field("attribute", "attribute", attribute_name, attribute_yaml)
                 self.generate()
 
     def generate_facts(self, type_name, type_yaml):
@@ -1428,63 +1426,11 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
         if attributes:
             self.generate_header("Attributes", "  ")
             for (attribute_name, attribute_yaml) in attributes.items():
-                self.generate_description(attribute_yaml, "  ")
-                if self.is_attribute_defined(
-                    type_yaml.get(DERIVED_FROM), attribute_name
-                ):
+                self.generate_description(attribute_yaml, '  ')
+                if self.is_attribute_defined(type_yaml.get(DERIVED_FROM), attribute_name):
                     self.generate("  // NOTE:", attribute_name, "overloaded")
-                else:
-                    self.generate("  attribute[attribute_", attribute_name, "]", sep="")
-                    self.generate(
-                        "  attribute_",
-                        attribute_name,
-                        '.name["',
-                        attribute_name,
-                        '"]',
-                        sep="",
-                    )
-                if type(attribute_yaml) == dict:
-                    attribute_type = attribute_yaml.get(TYPE)
-                    if attribute_type is None:
-                        attribute_sig = "string"
-                    elif attribute_type == "list":
-                        entry_schema_type = get_entry_schema_type(attribute_yaml)
-                        if entry_schema_type is None:
-                            attribute_sig = "unknown"
-                        else:
-                            attribute_sig = self.alloy_sig(entry_schema_type)
-                    elif attribute_type == "map":
-                        attribute_sig = self.get_map_signature(attribute_yaml)
-                    else:
-                        attribute_sig = self.alloy_sig(attribute_type)
-                else:
-                    attribute_sig = attribute_yaml
-                if (
-                    attribute_type == "list"
-                ):  # TODO: attribute of type list currently unsupported!
-                    self.error(
-                        type_name
-                        + ":attributes:"
-                        + attribute_name
-                        + ":type: list - unsupported by Alloy generator"
-                    )
-                    self.generate(
-                        "  // TODO: attribute_",
-                        attribute_name,
-                        ".type[LIST OF ",
-                        attribute_sig,
-                        "]",
-                        sep="",
-                    )
-                else:
-                    self.generate(
-                        "  attribute_",
-                        attribute_name,
-                        ".type[",
-                        attribute_sig,
-                        "]",
-                        sep="",
-                    )
+                if isinstance(attribute_yaml, dict):
+                    self.generate_constraints_facts(self.prefix_name("attribute", attribute_name), attribute_yaml, self.get_kind() + '_types:' + type_name + ':attributes:' + attribute_name)
                 self.generate()
 
 
@@ -1862,63 +1808,46 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                         sep="",
                     )
                 if interface_yaml:
-                    for (operation_name, operation_yaml) in (
-                        syntax.get_operations(interface_yaml).get("operations").items()
-                    ):
-                        self.generate("  // YAML   ", operation_name, ":", sep="")
-                        if type(operation_yaml) == dict:
-                            # Translate inputs.
-                            self.generate_inputs_facts(
-                                self.prefix_name("interface", interface_name)
-                                + "."
-                                + self.prefix_name("operation", operation_name)
-                                + ".",
-                                operation_yaml,
-                                "???",
-                            )
+                    for (operation_name, operation_yaml) in syntax.get_operations(interface_yaml).get('operations').items():
+                            self.generate('  // YAML   ', operation_name, ':', sep='')
+                            if type(operation_yaml) == dict:
+                                # Translate inputs.
+                                self.generate_inputs_facts(self.prefix_name('interface', interface_name) + '.' + self.prefix_name('operation', operation_name) + '.', operation_yaml, '???')
 
-                        # Generate implementation.
-                        prefixed_operation = (
-                            self.prefix_name("interface", interface_name)
-                            + "."
-                            + self.prefix_name("operation", operation_name)
-                        )
-                        implementation = self.get_operation_implementation(
-                            operation_yaml
-                        )
-                        if implementation:
-                            if type(implementation) != str:
-                                self.error(
-                                    " implementation "
-                                    + str(implementation)
-                                    + " unsupported by Alloy generator"
-                                )
-                                continue
-                            artifacts = syntax.get_dict(yaml, ARTIFACTS)
-                            if artifacts is not None and artifacts.get(implementation):
-                                self.generate(
-                                    "  ",
-                                    prefixed_operation,
-                                    ".implementation = "
-                                    + self.prefix_name("artifact", implementation),
-                                    sep="",
-                                )
-                            else:
-                                artifact_type_sig = self.alloy_sig(
-                                    self.get_implementation_artifact_type(
-                                        implementation
-                                    )
-                                )
-                                self.generate(
-                                    "  ",
-                                    prefixed_operation,
-                                    ".implementation[",
-                                    artifact_type_sig,
-                                    ', "',
-                                    implementation,
-                                    '"]',
-                                    sep="",
-                                )
+                            # Generate implementation.
+                            prefixed_operation = self.prefix_name('interface', interface_name) + '.' + self.prefix_name('operation', operation_name)
+                            implementation = self.get_operation_implementation(operation_yaml)
+                            if implementation:
+                                def generate_implementation_fact(implementation):
+                                    artifacts = syntax.get_dict(yaml, ARTIFACTS)
+                                    if artifacts != None and artifacts.get(implementation):
+                                        self.generate('  ', prefixed_operation, '.implementation = ' + self.prefix_name('artifact', implementation), sep='')
+                                    else:
+                                        artifact_type_sig = self.alloy_sig(self.get_implementation_artifact_type(implementation))
+                                        self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "', implementation, '"]', sep='')
+                                if isinstance(implementation, str):
+                                    # Short notation
+                                    generate_implementation_fact(implementation)
+                                else:
+                                    # Extended notation
+                                    # some keynames are not supported currently!
+                                    for unsupported_key in ['dependencies', 'timeout', 'operation_host']:
+                                        if implementation.get(unsupported_key) != None:
+                                            self.warning(' implementation ' + str(implementation) + ' - ' + unsupported_key + ' unsupported by Alloy generator')
+                                    # only primary is supported currently!
+                                    primary = implementation.get('primary')
+                                    if primary is None:
+                                        self.error(' implementation ' + str(implementation) + ' - primary artifact missed')
+                                        continue
+                                    # generate the Alloy fact
+                                    if isinstance(primary, str):
+                                        # Short notation
+                                        generate_implementation_fact(primary)
+                                    else:
+                                        # Extended notation
+                                        artifact_type_sig = self.alloy_sig(primary.get('type'))
+                                        artifact_file = primary.get('file')
+                                        self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "',artifact_file, '"]', sep='')
 
                 self.generate()
 
@@ -2512,20 +2441,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 
         # TODO: generate workflows
 
-    def generate_attributes_cardinality_fact(self, instance_name, merged_type):
-        self.generate_cardinality_fact(
-            instance_name + "." + ATTRIBUTES, len(get_dict(merged_type, ATTRIBUTES))
-        )
-
-    def generate_interfaces_facts(
-        self,
-        template_name,
-        template_yaml,
-        prefixed_template_name,
-        merged_template_type,
-        context_error_message,
-    ):
-        self.generate("  // YAML ", INTERFACES, ":", sep="")
+    def generate_interfaces_facts(self, template_name, template_yaml, prefixed_template_name, merged_template_type, context_error_message):
+        self.generate('  // YAML ', INTERFACES, ':', sep='')
         interfaces = get_dict(merged_template_type, INTERFACES)
         self.generate_cardinality_fact(
             prefixed_template_name + "." + INTERFACES, len(interfaces)
@@ -2533,45 +2450,49 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         for (interface_name, interface_yaml) in interfaces.items():
             self.generate("  // YAML ", interface_name, ":", sep="")
             nb_operations = 0
-            for (operation_name, operation_yaml) in (
-                syntax.get_operations(interface_yaml).get(OPERATIONS).items()
-            ):
-                self.generate(
-                    "  // YAML ", operation_name, ": ", operation_yaml, sep=""
-                )
-                nb_operations = nb_operations + 1
-                if operation_yaml:
-                    prefixed_operation = (
-                        prefixed_template_name
-                        + "."
-                        + self.prefix_name("interface", interface_name)
-                        + "."
-                        + self.prefix_name("operation", operation_name)
-                    )
-                    implementation = self.get_operation_implementation(operation_yaml)
-                    if implementation:
-                        if type(implementation) != str:
-                            self.error(
-                                " implementation "
-                                + str(implementation)
-                                + " unsupported by Alloy generator"
-                            )
-                            continue
-                        if get_dict(template_yaml, ARTIFACTS).get(
-                            implementation
-                        ) or merged_template_type.get(ARTIFACTS, {}).get(
-                            implementation
-                        ):
-                            self.generate(
-                                "  ",
-                                prefixed_operation,
-                                ".implementation = ",
-                                utils.normalize_name(template_name),
-                                '.artifact["',
-                                implementation,
-                                '"]',
-                                sep="",
-                            )
+            for (operation_name, operation_yaml) in syntax.get_operations(interface_yaml).get(OPERATIONS).items():
+                    self.generate('  // YAML ', operation_name, ': ', operation_yaml, sep='')
+                    nb_operations = nb_operations + 1
+                    if operation_yaml:
+                        prefixed_operation = prefixed_template_name + '.' + self.prefix_name('interface', interface_name) + '.' + self.prefix_name('operation', operation_name)
+                        implementation = self.get_operation_implementation(operation_yaml)
+                        if implementation:
+                            def generate_implementation_fact(implementation):
+                                if get_dict(template_yaml, ARTIFACTS).get(implementation) or merged_template_type.get(ARTIFACTS,{}).get(implementation):
+                                    self.generate('  ', prefixed_operation, '.implementation = ', utils.normalize_name(template_name), '.artifact["', implementation, '"]', sep='')
+                                else:
+                                    artifact_type_sig = self.alloy_sig(self.get_implementation_artifact_type(implementation))
+                                    self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "', implementation, '"]', sep='')
+                            if isinstance(implementation, str):
+                                # Short notation
+                                generate_implementation_fact(implementation)
+                            else:
+                                # Extended notation
+                                # some keynames are not supported currently!
+                                for unsupported_key in ['dependencies', 'timeout', 'operation_host']:
+                                    if implementation.get(unsupported_key) != None:
+                                        self.warning(' implementation ' + str(implementation) + ' - ' + unsupported_key + ' unsupported by Alloy generator')
+                                # only primary is supported currently!
+                                primary = implementation.get('primary')
+                                if primary is None:
+                                    self.error(' implementation ' + str(implementation) + ' - primary artifact missed')
+                                    continue
+                                # generate the Alloy fact
+                                if isinstance(primary, str):
+                                    # Short notation
+                                    generate_implementation_fact(primary)
+                                else:
+                                    # Extended notation
+                                    artifact_type_sig = self.alloy_sig(primary.get('type'))
+                                    artifact_file = primary.get('file')
+                                    self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "',artifact_file, '"]', sep='')
+                        else:
+                            self.generate('  no ', prefixed_operation, '.implementation', sep='')
+                        mnt = self.type_system.merge_node_type(template_yaml.get(TYPE))
+                        inputs = utils.get_path(mnt, INTERFACES, interface_name, operation_name, INPUTS, default={})
+                        template_operation =  utils.get_path(template_yaml, INTERFACES, interface_name, operation_name, default={})
+                        if type(template_operation) == dict:
+                            inputs_values = get_dict(template_operation, INPUTS)
                         else:
                             artifact_type_sig = self.alloy_sig(
                                 self.get_implementation_artifact_type(implementation)
@@ -2694,12 +2615,6 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     + '"',
                     sep="",
                 )
-
-            # Constraint the cardinality of attributes
-            self.generate("  // YAML ", ATTRIBUTES, ":", sep="")
-            self.generate_attributes_cardinality_fact(
-                prefixed_template_name, merged_template_type
-            )
 
             # Generate node template properties
             self.generate("  // YAML ", PROPERTIES, ":", sep="")
@@ -2870,24 +2785,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     )
                     if capability_value is None:
                         capability_value = {}
-                    merged_capability_type = self.type_system.merge_type(
-                        get_capability_type(capability_yaml)
-                    )
-                    self.generate_all_properties(
-                        get_dict(merged_capability_type, PROPERTIES),
-                        get_dict(capability_value, PROPERTIES),
-                        prefixed_capability_name,
-                        context_error_message
-                        + ":"
-                        + CAPABILITIES
-                        + ":"
-                        + capability_name,
-                        property_name_format="property_%s",
-                    )
-
-                    self.generate_attributes_cardinality_fact(
-                        prefixed_capability_name, merged_capability_type
-                    )
+                    merged_capability_type = self.type_system.merge_type(get_capability_type(capability_yaml))
+                    self.generate_all_properties(get_dict(merged_capability_type, PROPERTIES),
+                                                 get_dict(capability_value, PROPERTIES),
+                                                 prefixed_capability_name,
+                                                 context_error_message + ':' + CAPABILITIES + ':' + capability_name,
+                                                 property_name_format='property_%s')
 
             # Generate node template requirements
 
@@ -3510,20 +3413,43 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 # Iterate over all inputs.
                 for input_name, input_yaml in get_dict(operation_yaml, INPUTS).items():
                     # Compute the scope required by each operation.
-                    acs.update_sig_scope(TOSCA.Parameter)
-                    is_new_operation = True
-                    # Compute the scope of the input value.
-                    self.compute_scope_property(
-                        acs,
-                        input_yaml,
-                        node_template.get(INTERFACES, {})
-                        .get(operation_name, {})
-                        .get(input_name),
-                    )
+                    is_new_operation = is_new_interface
 
-                if is_new_operation:
-                    acs.update_sig_scope(TOSCA.Operation)
-                    is_new_interface = True
+                    implementation = self.get_operation_implementation(operation_yaml)
+                    if implementation:
+                        acs.update_sig_scope(interface_sig)
+                        acs.update_sig_scope(TOSCA.Operation)
+                        is_new_operation = True
+                        def update_sig_scope_implementation_short_notation(implementation):
+                            if get_dict(node_template, ARTIFACTS).get(implementation) is None and get_dict(node_template_type, ARTIFACTS).get(implementation) is None:
+                                artifact_type_sig = self.alloy_sig(self.get_implementation_artifact_type(implementation))
+                                acs.update_sig_scope(artifact_type_sig)
+                        if isinstance(implementation, str):
+                            # Short notation
+                            update_sig_scope_implementation_short_notation(implementation)
+                        else:
+                            # Extended notation
+                            primary = implementation.get('primary')
+                            if primary is None:
+                                continue
+                            if isinstance(primary, str):
+                                # Short notation
+                                update_sig_scope_implementation_short_notation(primary)
+                            else:
+                                # Extended notation
+                                artifact_type_sig = self.alloy_sig(primary.get('type'))
+                                acs.update_sig_scope(artifact_type_sig)
+                    # Iterate over all inputs.
+                    for input_name, input_yaml in get_dict(operation_yaml, INPUTS).items():
+                        # Compute the scope required by each operation.
+                        acs.update_sig_scope(TOSCA.Parameter)
+                        is_new_operation = True
+                        # Compute the scope of the input value.
+                        self.compute_scope_property(acs, input_yaml, node_template.get(INTERFACES,{}).get(operation_name,{}).get(input_name))
+
+                    if is_new_operation:
+                        acs.update_sig_scope(TOSCA.Operation)
+                        is_new_interface = True
 
             if is_new_interface:
                 # Compute the scope required by each interface.
@@ -3552,10 +3478,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             )
 
             # Iterate over all attributes.
-            for attribute_name, attribute_yaml in get_dict(
-                merged_template_type, ATTRIBUTES
-            ).items():
-                acs.update_sig_scope(TOSCA.Attribute)
+            for attribute_name, attribute_yaml in get_dict(merged_template_type, ATTRIBUTES).items():
                 # Compute the scope required by the attribute value.
                 self.compute_scope_property(acs, attribute_yaml, None)
 
@@ -3657,10 +3580,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 )
 
                 # Iterate over all capability attributes.
-                for attribute_name, attribute_yaml in get_dict(
-                    merged_capability_type, ATTRIBUTES
-                ).items():
-                    acs.update_sig_scope(TOSCA.Attribute)
+                for attribute_name, attribute_yaml in get_dict(merged_capability_type, ATTRIBUTES).items():
                     # Compute the scope required by the attribute value.
                     self.compute_scope_property(acs, attribute_yaml, None)
 
@@ -3668,135 +3588,69 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             if node_template_requirements is None:  # TODO: Factorize this code pattern.
                 node_template_requirements = []
             # Iterate over all node template requirements.
-            for (requirement_name, requirement_yaml) in get_dict(
-                merged_node_template_type, REQUIREMENTS
-            ).items():
-                requirement_capability = syntax.get_requirement_capability(
-                    requirement_yaml
-                )
-                if requirement_capability is None:
-                    self.error(
-                        context_message
-                        + ":"
-                        + REQUIREMENTS
-                        + ":"
-                        + requirement_name
-                        + ": capability type undefined"
-                    )
-                    continue
-                requirement_capability_sig = self.alloy_sig(requirement_capability)
-                requirement_relationship = syntax.get_requirement_relationship(
-                    requirement_yaml
-                )
-                requirement_relationship_type = syntax.get_relationship_type(
-                    requirement_relationship
-                )
-                if requirement_relationship_type is None:
-                    self.error(
-                        context_message
-                        + ":"
-                        + REQUIREMENTS
-                        + ":"
-                        + requirement_name
-                        + ": relationship type undefined"
-                    )
-                    continue
-                requirement_relationship_type_sig = self.alloy_sig(
-                    requirement_relationship_type
-                )
-                merged_requirement_relationship_type = self.type_system.merge_node_type(
-                    requirement_relationship_type
-                )
+            for (requirement_name, requirement_yaml) in get_dict(merged_node_template_type, REQUIREMENTS).items():
+                    requirement_capability = syntax.get_requirement_capability(requirement_yaml)
+                    if requirement_capability == None:
+                        self.error(context_message + ':' + REQUIREMENTS + ':' + requirement_name + ': capability type undefined')
+                        continue
+                    requirement_capability_sig = self.alloy_sig(requirement_capability)
+                    requirement_relationship = syntax.get_requirement_relationship(requirement_yaml)
+                    requirement_relationship_type = syntax.get_relationship_type(requirement_relationship)
+                    if requirement_relationship_type == None:
+                        self.error(context_message + ':' + REQUIREMENTS + ':' + requirement_name + ': relationship type undefined')
+                        continue
+                    requirement_relationship_type_sig = self.alloy_sig(requirement_relationship_type)
+                    merged_requirement_relationship_type = self.type_system.merge_node_type(requirement_relationship_type)
 
-                nb_requirements = 0
-                for node_template_requirement in node_template_requirements:
-                    for (
-                        node_template_requirement_name,
-                        node_template_requirement_yaml,
-                    ) in node_template_requirement.items():
-                        # TODO : take occurrences into account
-                        if node_template_requirement_name == requirement_name:
-                            if node_template_requirement_yaml:
-                                requirement_relationship_properties = {}
-                                if type(node_template_requirement_yaml) == dict:
-                                    requirement_relationship = syntax.get_requirement_relationship(
-                                        node_template_requirement_yaml
-                                    )
-                                    if type(requirement_relationship) == dict:
-                                        relationship_type = requirement_relationship.get(
-                                            TYPE
-                                        )
-                                        requirement_relationship_properties = get_dict(
-                                            requirement_relationship, PROPERTIES
-                                        )
-                                    elif type(requirement_relationship) == str:
-                                        if all_relationship_templates.get(
-                                            requirement_relationship
-                                        ):
-                                            acs.update_sig_scope(TOSCA.Requirement)
-                                            acs.update_sig_scope(
-                                                requirement_capability_sig
-                                            )
-                                            continue
-                                        relationship_type = requirement_relationship
-                                    else:
-                                        relationship_type = None
-                                    if relationship_type:
-                                        requirement_relationship_type = (
-                                            relationship_type
-                                        )
-                                        requirement_relationship_type_sig = self.alloy_sig(
-                                            relationship_type
-                                        )
-                                        merged_requirement_relationship_type = self.type_system.merge_node_type(
-                                            relationship_type
-                                        )
+                    nb_requirements = 0
+                    for node_template_requirement in node_template_requirements:
+                        for node_template_requirement_name, node_template_requirement_yaml in node_template_requirement.items():
+                            # TODO : take occurrences into account
+                            if node_template_requirement_name == requirement_name:
+                                if node_template_requirement_yaml:
+                                    requirement_relationship_properties = {}
+                                    if type(node_template_requirement_yaml) == dict:
+                                        requirement_relationship = syntax.get_requirement_relationship(node_template_requirement_yaml)
+                                        if type(requirement_relationship) == dict:
+                                            relationship_type = requirement_relationship.get(TYPE)
+                                            requirement_relationship_properties = get_dict(requirement_relationship, PROPERTIES)
+                                        elif type(requirement_relationship) == str:
+                                            if all_relationship_templates.get(requirement_relationship):
+                                                acs.update_sig_scope(TOSCA.Requirement)
+                                                acs.update_sig_scope(requirement_capability_sig)
+                                                continue
+                                            relationship_type = requirement_relationship
+                                        else:
+                                            relationship_type = None
+                                        if relationship_type:
+                                            requirement_relationship_type = relationship_type
+                                            requirement_relationship_type_sig = self.alloy_sig(relationship_type)
+                                            merged_requirement_relationship_type = self.type_system.merge_node_type(relationship_type)
 
-                                acs.update_sig_scope(TOSCA.Requirement)
-                                acs.update_sig_scope(requirement_relationship_type_sig)
-                                acs.update_sig_scope(LocationGraphs.Name)
-                                acs.update_sig_scope(requirement_capability_sig)
+                                    acs.update_sig_scope(TOSCA.Requirement)
+                                    acs.update_sig_scope(requirement_relationship_type_sig)
+                                    acs.update_sig_scope(LocationGraphs.Name)
+                                    acs.update_sig_scope(requirement_capability_sig)
 
-                                # Compute the scope required by relationship properties.
-                                self.compute_scope_properties(
-                                    acs,
-                                    get_dict(
-                                        merged_requirement_relationship_type, PROPERTIES
-                                    ),
-                                    requirement_relationship_properties,
-                                )
+                                    # Compute the scope required by relationship properties.
+                                    self.compute_scope_properties(acs,
+                                                                  get_dict(merged_requirement_relationship_type, PROPERTIES),
+                                                                  requirement_relationship_properties)
 
-                                # Iterate over all relationship attributes.
-                                for attribute_name, attribute_yaml in get_dict(
-                                    merged_requirement_relationship_type, ATTRIBUTES
-                                ).items():
-                                    acs.update_sig_scope(TOSCA.Attribute)
-                                    # Compute the scope required by the attribute value.
-                                    self.compute_scope_property(
-                                        acs, attribute_yaml, None
-                                    )
-                                # Compute the scope for relationship interfaces.
-                                self.compute_scope_interfaces(
-                                    acs,
-                                    requirement_relationship_type,
-                                    merged_requirement_relationship_type,
-                                    {},
-                                )
-                                nb_requirements = nb_requirements + 1
+                                    # Iterate over all relationship attributes.
+                                    for attribute_name, attribute_yaml in get_dict(merged_requirement_relationship_type, ATTRIBUTES).items():
+                                        # Compute the scope required by the attribute value.
+                                        self.compute_scope_property(acs, attribute_yaml, None)
+                                    # Compute the scope for relationship interfaces.
+                                    self.compute_scope_interfaces(acs, requirement_relationship_type, merged_requirement_relationship_type, {})
+                                    nb_requirements = nb_requirements + 1
 
-                requirement_lower_occurrences = get_requirement_occurrences(
-                    requirement_yaml
-                )[0]
-                unfilled_requirements = requirement_lower_occurrences - nb_requirements
-                if unfilled_requirements > 0:
-                    acs.update_sig_scope(TOSCA.Requirement, unfilled_requirements)
+                    requirement_lower_occurrences = get_requirement_occurrences(requirement_yaml)[0]
+                    unfilled_requirements = requirement_lower_occurrences - nb_requirements
+                    if unfilled_requirements > 0:
+                        acs.update_sig_scope(TOSCA.Requirement, unfilled_requirements)
 
-        self.compute_scope_templates(
-            acs,
-            topology_template_yaml,
-            NODE_TEMPLATES,
-            compute_scope_capabilities_requirements,
-        )
+        self.compute_scope_templates(acs, topology_template_yaml, NODE_TEMPLATES, compute_scope_capabilities_requirements)
 
         # Iterate over all relationships.
         self.compute_scope_templates(

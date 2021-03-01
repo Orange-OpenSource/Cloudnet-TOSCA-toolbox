@@ -965,14 +965,23 @@ class TypeChecker(Checker):
             except FileNotFoundError:
                 # It seems that we get a program crash here but I didn't figure out
                 # how to deal with yet !
-                #  This case occurs when a file imported is not present
-                #  JLC 20201126
+                # This case occurs when a file imported is not present
+                # JLC 20201126
                 self.error(
                     "imports["
                     + str(index)
                     + "]:file: "
                     + import_filepath
-                    + " - file not found"
+                    + " - file not found
+                )
+            except ValueError as exc:
+                self.error(
+                    "imports["
+                    + str(index)
+                    + "]:file: "
+                    + import_filepath
+                    + " - "
+                    + str(exc)
                 )
             index = index + 1
 
@@ -4580,8 +4589,8 @@ class TypeChecker(Checker):
                             cem
                             + ":"
                             + property_name
-                            + " - property undefined in "
-                            + node_type_name
+                            + " - property undefined in %s"
+                            % node_type_name
                         )
                     else:
                         self.check_property_filter_definition(
@@ -4605,8 +4614,8 @@ class TypeChecker(Checker):
                         self.error(
                             cem1
                             + capability_name
-                            + " - capability undefined in "
-                            + node_type_name
+                            + " - capability undefined in %s"
+                            % node_type_name
                         )
                     else:
                         cem1 += capability_name + ":properties"
