@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Software Name : Cloudnet TOSCA toolbox 
+ * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
  * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
  * SPDX-License-Identifier: Apache-2.0
@@ -257,7 +257,9 @@ abstract sig ToscaComponent extends LG/Location
   // Each interface has a distinct name.
   distinct_names[interfaces]
 
-  one attribute["tosca_name"] implies attribute["tosca_name"].value = _name_
+// TBR
+// Commented because a TOSCA profile could have no tosca_name attribute.
+// one attribute["tosca_name"] implies attribute["tosca_name"].value = _name_
 }
 
 pred ToscaComponent.no_name[]

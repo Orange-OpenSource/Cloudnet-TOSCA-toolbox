@@ -494,7 +494,7 @@ definitions:
       inputs:
         type: object
         additionalProperties:
-          $ref: "#/definitions/property_definition"
+          $ref: "#/definitions/property_assignment"
       operations:
         type: object
         additionalProperties:
