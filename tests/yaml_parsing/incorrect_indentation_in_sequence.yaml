@@ -1,0 +1,3 @@
+sequence:
+    - s1
+  - s2: # ERROR: incorrect indentation!

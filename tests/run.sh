@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 ######################################################################
 #
 # Software Name : Cloudnet TOSCA toolbox
@@ -28,12 +28,19 @@ check_regression()
   echo ${expected_errors} expected errors and ${generated_errors} generated errors
   if [[ ${expected_errors} == ${generated_errors} ]]
   then
-    echo No regression on $1
+    echo No regression in $1
   else
-    echo Regression on $1!
+    echo Regression in $1!
     exit_code=1
   fi
 }
+
+# YAML parsing
+check_regression yaml_parsing/incorrect_indentation_in_definition.yaml
+check_regression yaml_parsing/incorrect_indentation_in_mapping.yaml
+check_regression yaml_parsing/incorrect_indentation_in_sequence.yaml
+check_regression yaml_parsing/missed_quote_error.yaml
+check_regression yaml_parsing/string_must_be_quoted.yaml
 
 # TOSCA syntax checking
 check_regression syntax_checking-1.2.yaml # tosca_definitions_version: tosca_simple_yaml_1_2

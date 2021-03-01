@@ -663,6 +663,8 @@ class TypeChecker(Checker):
                 # This case occurs when a file imported is not present
                 # JLC 20201126
                 self.error('imports[' + str(index) + ']:file: ' + import_filepath + ' - file not found')
+            except ValueError as exc:
+                self.error('imports[' + str(index) + ']:file: ' + import_filepath + ' - ' + str(exc))
             index = index + 1
 
         # Put all types of the loaded template into the type system.
@@ -2228,7 +2230,7 @@ class TypeChecker(Checker):
                 for property_name, property_filter_definition in property.items():
                     property_definition = node_type_properties.get(property_name)
                     if property_definition is None:
-                        self.error(cem + ':' + property_name + ' - property undefined in ' + node_type_name)
+                        self.error(cem + ':' + property_name + ' - property undefined in %s' % node_type_name)
                     else:
                         self.check_property_filter_definition(property_name, property_filter_definition, property_definition, cem + ':' + property_name)
             idx += 1
@@ -2243,7 +2245,7 @@ class TypeChecker(Checker):
                 for capability_name, capability_value in capability.items():
                     capability_definition = node_type_capabilities.get(capability_name)
                     if capability_definition is None:
-                        self.error(cem1 + capability_name + ' - capability undefined in ' + node_type_name)
+                        self.error(cem1 + capability_name + ' - capability undefined in %s' % node_type_name)
                     else:
                         cem1 += capability_name + ':properties'
                         if type(capability_definition) is str:
