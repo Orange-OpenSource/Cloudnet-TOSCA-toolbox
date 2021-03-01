@@ -4,6 +4,7 @@
 ## Linter GitHub Actions ##
 ###########################
 ###########################
+##
 name: Lint Code Base
 
 #
