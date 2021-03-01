@@ -14,12 +14,11 @@
 ######################################################################
 
 import logging  # for logging purposes.
-import requests  # for HTTP GET requests.
-import yaml  # for parsing YAML.
 import zipfile  # for reading ZIP files.
 
 import cloudnet.tosca.configuration as configuration
 import requests  # for HTTP GET requests.
+import yaml  # for parsing YAML.
 
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
