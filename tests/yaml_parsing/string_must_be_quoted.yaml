@@ -1,0 +1,5 @@
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+data_types:
+  DataType:
+    description: this string containing a : must be quoted # ERROR: string must be quoted!
