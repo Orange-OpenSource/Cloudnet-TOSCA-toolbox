@@ -972,7 +972,7 @@ class TypeChecker(Checker):
                     + str(index)
                     + "]:file: "
                     + import_filepath
-                    + " - file not found
+                    + " - file not found"
                 )
             except ValueError as exc:
                 self.error(

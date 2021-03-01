@@ -99,15 +99,12 @@ generate_network_diagrams()
   do
     echo "- $file"
     current_directory="$PWD" # store current directory
-    if [ -d "${nwdiag_target_directory}" ]
-    then
-      cd "$(dirname "$file")" || exit # go to directory containing generated network diagrams
-      # generate network diagram as a PNG image
-      "${CLOUDNET_BINDIR}"/nwdiag/nwdiag -a -Tpng "$(basename "$file")"
-      # generate network diagram as a SVG file
-      "${CLOUDNET_BINDIR}"/nwdiag/nwdiag -Tsvg "$(basename "$file")"
-      cd "${current_directory}" || exit  # back to current directory
-    fi
+    cd "$(dirname "$file")" || exit # go to directory containing generated network diagrams
+    # generate network diagram as a PNG image
+    "${CLOUDNET_BINDIR}"/nwdiag/nwdiag -a -Tpng "$(basename "$file")"
+    # generate network diagram as a SVG file
+    "${CLOUDNET_BINDIR}"/nwdiag/nwdiag -Tsvg "$(basename "$file")"
+    cd "${current_directory}" || exit  # back to current directory
   done
 }
 

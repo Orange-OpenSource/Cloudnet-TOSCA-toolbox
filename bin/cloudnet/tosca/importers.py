@@ -13,14 +13,13 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
-import logging   # for logging purposes.
+import logging  # for logging purposes.
 import requests  # for HTTP GET requests.
-import yaml      # for parsing YAML.
-import zipfile   # for reading ZIP files.
+import yaml  # for parsing YAML.
+import zipfile  # for reading ZIP files.
 
 import cloudnet.tosca.configuration as configuration
 import requests  # for HTTP GET requests.
-import yaml  # for parsing YAML.
 
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
@@ -28,6 +27,7 @@ configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
 
 # init logger
 LOGGER = logging.getLogger(__name__)
+
 
 class ToscaServiceTemplate(object):
     """
@@ -41,15 +41,15 @@ class ToscaServiceTemplate(object):
         self.filename = filename
         self.yaml_content = yaml_content
         self.importer = importer
-        LOGGER.debug('%r created' % self)
+        LOGGER.debug("%r created" % self)
 
     def __repr__(self):
-        '''
-            Textual representation.
-        '''
-        return (
-            "<ToscaServiceTemplate filename=%s importer=%r>"
-            % (self.filename, self.importer)
+        """
+        Textual representation.
+        """
+        return "<ToscaServiceTemplate filename=%s importer=%r>" % (
+            self.filename,
+            self.importer,
         )
 
     def get_filename(self):
@@ -66,6 +66,7 @@ class ToscaServiceTemplate(object):
         Imports a TOSCA service template from the importer of this template.
         """
         return self.importer.imports(path)
+
 
 class Importer(object):
     """
@@ -88,21 +89,21 @@ class Importer(object):
         # Store the first created imported as the root importer.
         if Importer.root_importer is None:
             Importer.root_importer = self
-        LOGGER.debug('%r created' % self)
+        LOGGER.debug("%r created" % self)
 
     def __repr__(self):
-        '''
-            Textual representation.
-        '''
+        """
+        Textual representation.
+        """
         return "<%s base_path=%s>" % (type(self).__name__, self.base_path)
 
     def get_fullname(self):
         return self.base_path
 
     def imports(self, path):
-        '''
-            Imports a TOSCA service template.
-        '''
+        """
+        Imports a TOSCA service template.
+        """
         LOGGER.debug("import %s from %r" % (path, self))
 
         # Try to resolve aliased files.
@@ -138,18 +139,20 @@ class Importer(object):
                 self.children_importers[base_path] = importer
 
         # Is this tosca service template already loaded?
-        tosca_service_template = \
-            importer.already_loaded_tosca_service_templates.get(filename)
+        tosca_service_template = importer.already_loaded_tosca_service_templates.get(
+            filename
+        )
         if tosca_service_template is not None:
             return tosca_service_template  # then return it.
 
         # Load the YAML content.
-        LOGGER.debug("load_yaml %s%s from %r" \
-                     % (importer.base_path, filename, importer))
+        LOGGER.debug(
+            "load_yaml %s%s from %r" % (importer.base_path, filename, importer)
+        )
         try:
             yaml_content = importer.load_yaml(importer.base_path + filename)
         except FileNotFoundError:
-            raise FileNotFoundError('No such file: ' + filename)
+            raise FileNotFoundError("No such file: " + filename)
         except yaml.YAMLError as exc:
             problem = exc.problem
             if problem.startswith("found unexpected end of stream"):
@@ -159,18 +162,22 @@ class Importer(object):
             elif problem == "mapping values are not allowed here":
                 problem = "incorrect indentation or string must be quoted"
             if exc.context is None:
-                raise ValueError("%s at line %s column %s" \
-                                 % ( problem, \
-                                     exc.problem_mark.line+1, \
-                                     exc.problem_mark.column+1) )
+                raise ValueError(
+                    "%s at line %s column %s"
+                    % (problem, exc.problem_mark.line + 1, exc.problem_mark.column + 1)
+                )
             else:
-                raise ValueError("%s at line %s column %s %s at line %s column %s"
-                                  % ( problem, \
-                                      exc.problem_mark.line+1, \
-                                      exc.problem_mark.column+1, \
-                                      exc.context, \
-                                      exc.context_mark.line+1, \
-                                      exc.context_mark.column+1) )
+                raise ValueError(
+                    "%s at line %s column %s %s at line %s column %s"
+                    % (
+                        problem,
+                        exc.problem_mark.line + 1,
+                        exc.problem_mark.column + 1,
+                        exc.context,
+                        exc.context_mark.line + 1,
+                        exc.context_mark.column + 1,
+                    )
+                )
 
         # Create the TOSCA service template.
         tosca_service_template = ToscaServiceTemplate(filename, yaml_content, importer)
@@ -185,15 +192,16 @@ class Importer(object):
 
     def new_importer(self, path):
         """
-            Creates a new importer.
+        Creates a new importer.
         """
         raise NotImplementedError()
 
     def load_yaml(self, filename):
         """
-            Loads a YAML file.
+        Loads a YAML file.
         """
         raise NotImplementedError()
+
 
 class FilesystemImporter(Importer):
     """
@@ -208,10 +216,11 @@ class FilesystemImporter(Importer):
 
     def load_yaml(self, filename):
         """
-            Loads a YAML file.
+        Loads a YAML file.
         """
         with open(filename, "r") as stream:
             return yaml.safe_load(stream)
+
 
 class UrlImporter(Importer):
     """
@@ -239,12 +248,12 @@ class UrlImporter(Importer):
 
 class ArchiveImporter(Importer):
     """
-        Importer of TOSCA service templates as archive resources.
+    Importer of TOSCA service templates as archive resources.
     """
 
     def __init__(self, zipFile, base_path="", alias={}):
         """
-            Constructor.
+        Constructor.
         """
         if isinstance(zipFile, zipfile.ZipFile):
             self.zipfile = zipFile
@@ -254,10 +263,12 @@ class ArchiveImporter(Importer):
 
     def __repr__(self):
         """
-            Textual representation.
+        Textual representation.
         """
-        return "<ArchiveImporter zipfile=%r base_path=%s>" \
-               % (self.zipfile, self.base_path)
+        return "<ArchiveImporter zipfile=%r base_path=%s>" % (
+            self.zipfile,
+            self.base_path,
+        )
 
     def get_fullname(self):
         return self.zipfile.filename + ":" + self.base_path
@@ -278,13 +289,14 @@ class ArchiveImporter(Importer):
         except KeyError:
             raise FileNotFoundError(filename)
 
+
 def imports(tosca_service_template_path, alias={}):
     # Inits the root loader of TOSCA service templates.
     importer = FilesystemImporter("", alias)
 
     if not (
-           tosca_service_template_path.endswith(".csar")
-           or tosca_service_template_path.endswith("".zip")
+        tosca_service_template_path.endswith(".csar")
+        or tosca_service_template_path.endswith(".zip")
     ):
         return importer.imports(tosca_service_template_path)
     else:
