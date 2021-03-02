@@ -70,7 +70,7 @@ configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
         "tosca.nodes.BlockStorage": "tosca.nodes.Storage.BlockStorage",  # TODO remove later
     },
     # predefined workflows
-    "predefined_workflows": {"deploy": {}, "undeploy": {},},
+    "predefined_workflows": {"deploy": {}, "undeploy": {}, },
 }
 
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
@@ -965,8 +965,8 @@ class TypeChecker(Checker):
             except FileNotFoundError:
                 # It seems that we get a program crash here but I didn't figure out
                 # how to deal with yet !
-                #  This case occurs when a file imported is not present
-                #  JLC 20201126
+                #   This case occurs when a file imported is not present
+                #   JLC 20201126
                 self.error(
                     "imports["
                     + str(index)
@@ -1769,7 +1769,7 @@ class TypeChecker(Checker):
             previous_requirement_definition,
             context_error_message,
         )
-        if checked == False:
+        if checked is False:
             # capability undefined or not a capability type
             requirement_capability = None
         else:
@@ -4613,8 +4613,7 @@ class TypeChecker(Checker):
                         self.error(
                             cem1
                             + capability_name
-                            + " - capability undefined in %s"
-                            % node_type_name
+                            + " - capability undefined in %s" % node_type_name
                         )
                     else:
                         cem1 += capability_name + ":properties"
@@ -5467,6 +5466,7 @@ class TypeChecker(Checker):
         self.current_targets = [target]
         self.current_targets_activity_type = [target_type]
         self.current_targets_condition_type = [target_type]
+
         # check target_relationship
         def check_target_relationship(target_relationship, cem):
             requirement_definition = syntax.get_requirements_dict(target_type).get(
@@ -5551,6 +5551,7 @@ class TypeChecker(Checker):
         self.current_targets = [target]
         self.current_targets_activity_type = [target_type]
         self.current_targets_condition_type = [target_type]
+
         # check target_relationship
         def check_target_relationship(target_relationship, cem):
             requirement_definition = syntax.get_requirements_dict(target_type).get(

@@ -107,7 +107,7 @@ class Importer(object):
 
         # Try to resolve aliased files.
         filepath = Importer.root_importer.alias.get(path)
-        if filepath != None:
+        if filepath is not None:
             return Importer.root_importer.imports(filepath)
 
         # Cut the path into its base path and file name.
