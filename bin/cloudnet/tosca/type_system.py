@@ -1832,7 +1832,9 @@ class TypeChecker(Checker):
         if requirement_relationship is None:
             # relationship undefined
             if requirement_capability is not None:
-                # Check that there is one relationship where requirement_capability is compatible with at least one valid target type
+                # Check that there is one relationship where
+                # requirement_capability is compatible with at least one
+                # valid target type
                 found_relationship_types = []
                 for relationship_type_name in list(self.type_system.relationship_types):
                     relationship_type = self.type_system.merge_type(
@@ -2047,7 +2049,8 @@ class TypeChecker(Checker):
 
             def check_valid_source_type(valid_source_type, context_error_message):
                 node_type = self.type_system.merge_type(valid_source_type)
-                # check each valid_source_type has at least a requirement with capability compatible with capability_type_name
+                # check each valid_source_type has at least a requirement with
+                # capability compatible with capability_type_name
                 requirement_not_found = True
                 for (
                     requirement_name,
@@ -5399,7 +5402,7 @@ class TypeChecker(Checker):
     ):
         # store the current imperative workflow used in check_step() to find current steps
         self.current_imperative_workflow = workflow_definition
-        # store the current imperative workflow inputs used 
+        # store the current imperative workflow inputs used
         # in check_required_parameters() to find current default inputs
         self.current_default_inputs = workflow_definition.get(syntax.INPUTS, {})
         self.current_default_inputs_location = "workflows:" + workflow_name + ":inputs"
