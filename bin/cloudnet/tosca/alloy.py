@@ -17,7 +17,7 @@ import copy  # for deepcopy
 import logging  # for logging purposes.
 
 import cloudnet.tosca.configuration as configuration
-from cloudnet.tosca.processors import Generator, CRED, CEND
+from cloudnet.tosca.processors import CEND, CRED, Generator
 import cloudnet.tosca.syntax as syntax
 from cloudnet.tosca.syntax import *  # TODO to be removed
 import cloudnet.tosca.utils as utils
