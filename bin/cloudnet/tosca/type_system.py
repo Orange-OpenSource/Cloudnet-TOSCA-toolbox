@@ -4929,6 +4929,7 @@ class TypeChecker(Checker):
                     ]
 
             self.check_keyword(target_filter, "node", check_node, cem)
+
             # check requirement
             def check_requirement(requirement, cem):
                 requirement_definition = (
@@ -4963,6 +4964,7 @@ class TypeChecker(Checker):
                 self.current_targets_condition_type = [node_type]
 
             self.check_keyword(target_filter, "requirement", check_requirement, cem)
+
             # check capability
             def check_capability(capability, cem):
                 capability_definition = (
@@ -5157,6 +5159,7 @@ class TypeChecker(Checker):
             node_type_name,
             context_error_message,
         )
+
         # check that all capabilities are mapped
         def check_ummapped_capability_definition(
             capability_name, capability_definition
@@ -5189,6 +5192,7 @@ class TypeChecker(Checker):
             node_type_name,
             context_error_message,
         )
+
         # check that all requirements are mapped
         def check_ummapped_requirement_definition(
             requirement_name, requirement_definition
@@ -5225,6 +5229,7 @@ class TypeChecker(Checker):
             context_error_message,
         )
         self.unchecked(substitution_mapping, syntax.INTERFACES, context_error_message)
+
         # check that all interfaces are mapped
         def check_ummapped_interface_definition(interface_name, interface_definition):
             # produce an info message for each unmapped interface
@@ -5394,7 +5399,8 @@ class TypeChecker(Checker):
     ):
         # store the current imperative workflow used in check_step() to find current steps
         self.current_imperative_workflow = workflow_definition
-        # store the current imperative workflow inputs used in check_required_parameters() to find current default inputs
+        # store the current imperative workflow inputs used 
+        # in check_required_parameters() to find current default inputs
         self.current_default_inputs = workflow_definition.get(syntax.INPUTS, {})
         self.current_default_inputs_location = "workflows:" + workflow_name + ":inputs"
         # check description - nothing to do
