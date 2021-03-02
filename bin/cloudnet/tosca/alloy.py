@@ -28,11 +28,7 @@ SCOPE = "scope"
 configuration.DEFAULT_CONFIGURATION[ALLOY] = {
     # Target directory where Alloy files are generated.
     Generator.TARGET_DIRECTORY: "Alloy",
-    SCOPE: {
-        "for": 5,
-        "Int": 8,
-        "seq": 5,
-    },
+    SCOPE: {"for": 5, "Int": 8, "seq": 5,},
     "scalar-mapping": {
         "0.1 GHz": "1 Hz",  # for tosca_simple_yaml_1_2
         "8096 MB": "8 GB",  # for ETSI NFV SOL 001 Annex A examples
@@ -3107,10 +3103,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         requirement_relationship
                     )
                     if requirement_relationship_type is not None:
-                        merged_requirement_relationship_type = (
-                            self.type_system.merge_node_type(
-                                requirement_relationship_type
-                            )
+                        merged_requirement_relationship_type = self.type_system.merge_node_type(
+                            requirement_relationship_type
                         )
                     prefixed_relationship = (
                         prefixed_node_template_name
@@ -3127,10 +3121,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             tmp = syntax.get_type(requirement_relationship)
                             if tmp is not None:
                                 requirement_relationship_type = tmp
-                                merged_requirement_relationship_type = (
-                                    self.type_system.merge_node_type(
-                                        requirement_relationship_type
-                                    )
+                                merged_requirement_relationship_type = self.type_system.merge_node_type(
+                                    requirement_relationship_type
                                 )
                                 requirement_relationship_properties = get_dict(
                                     requirement_relationship, PROPERTIES
@@ -3157,10 +3149,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                 )
                                 continue
                             requirement_relationship_type = requirement_relationship
-                            merged_requirement_relationship_type = (
-                                self.type_system.merge_node_type(
-                                    requirement_relationship_type
-                                )
+                            merged_requirement_relationship_type = self.type_system.merge_node_type(
+                                requirement_relationship_type
                             )
                             requirement_relationship_properties = {}
                             self.generate(
@@ -3782,14 +3772,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             if node_template_requirement_yaml:
                                 requirement_relationship_properties = {}
                                 if type(node_template_requirement_yaml) == dict:
-                                    requirement_relationship = (
-                                        syntax.get_requirement_relationship(
-                                            node_template_requirement_yaml
-                                        )
+                                    requirement_relationship = syntax.get_requirement_relationship(
+                                        node_template_requirement_yaml
                                     )
                                     if type(requirement_relationship) == dict:
-                                        relationship_type = (
-                                            requirement_relationship.get(TYPE)
+                                        relationship_type = requirement_relationship.get(
+                                            TYPE
                                         )
                                         requirement_relationship_properties = get_dict(
                                             requirement_relationship, PROPERTIES
@@ -3810,13 +3798,11 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                         requirement_relationship_type = (
                                             relationship_type
                                         )
-                                        requirement_relationship_type_sig = (
-                                            self.alloy_sig(relationship_type)
+                                        requirement_relationship_type_sig = self.alloy_sig(
+                                            relationship_type
                                         )
-                                        merged_requirement_relationship_type = (
-                                            self.type_system.merge_node_type(
-                                                relationship_type
-                                            )
+                                        merged_requirement_relationship_type = self.type_system.merge_node_type(
+                                            relationship_type
                                         )
 
                                 acs.update_sig_scope(TOSCA.Requirement)
