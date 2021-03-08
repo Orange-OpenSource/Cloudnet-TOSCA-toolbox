@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -34,6 +34,7 @@ for tosca_definitions_version in [
         'tosca_simple_yaml_1_1',
         'tosca_simple_yaml_1_2',
         'tosca_simple_yaml_1_3',
+        'tosca_2_0',
         'alien_dsl_1_2_0',
         'alien_dsl_1_4_0',
         'alien_dsl_2_0_0']:
