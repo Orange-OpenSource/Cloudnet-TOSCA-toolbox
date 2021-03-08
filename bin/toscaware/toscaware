@@ -16,7 +16,7 @@
 
 container_dest_volume="/work"
 exec docker ${DOCKER_OPTS} run \
-      --user $(id -u):$(id -g) \
+      --user "$(id -u)":"$(id -g)" \
       --volume="${PWD}:${container_dest_volume}" \
       --volume="${CLOUDNET_BINDIR}/cloudnet:/cloudnet" \
       --workdir="${container_dest_volume}" \
@@ -25,5 +25,5 @@ exec docker ${DOCKER_OPTS} run \
       cloudnet/toscaware \
       python ${PYTHON_OPTS} \
       /cloudnet/tosca/tosca2cloudnet.py \
-      ${TOSCAWARE_OPTS} \
-      --template-file $1
+      "${TOSCAWARE_OPTS}" \
+      --template-file "$1"

@@ -16,7 +16,7 @@
 
 container_dest_volume="/work"
 exec docker ${DOCKER_OPTS} run \
-            --user $(id -u):$(id -g) \
+            --user "$(id -u)":"$(id -g)" \
             --volume="${PWD}:${container_dest_volume}" \
             --workdir="${container_dest_volume}" \
             --rm \

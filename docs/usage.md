@@ -103,7 +103,7 @@ $ export DOCKER_OPTS="--debug --log-level debug"
 ```
 to run Docker containers in debug mode and set the log level to debug.
 
-See https://docs.docker.com/engine/reference/commandline/cli/ for more details.
+See (https://docs.docker.com/engine/reference/commandline/cli/)[https://docs.docker.com/engine/reference/commandline/cli/] for more details.
 
 ### ```DOT_OPTS```
 
@@ -116,8 +116,7 @@ $ export DOT_OPTS="-Tpng"
 
 to set the output format to PNG format.
 
-See
-http://graphviz.org/doc/info/command.html for more details.
+See (http://graphviz.org/doc/info/command.html)[http://graphviz.org/doc/info/command.html] for more details.
 
 ### ```JAVA_OPTS```
 
@@ -130,8 +129,7 @@ $ export JAVA_OPTS="-Xms4g -XshowSettings:vm"
 ```
 to set the maximum size of the memory allocation pool of launched JVMs to 4 Gb.
 
-See
-https://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html for more details.
+See (https://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html)[https://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html] for more details.
 
 ### ```NWDIAG_OPTS```
 
@@ -144,8 +142,7 @@ $ export NWDIAG_OPTS="-Tsvg"
 
 to set the output format to SVG format.
 
-See
-http://blockdiag.com/en/nwdiag/introduction.html#usage for more details.
+See (http://blockdiag.com/en/nwdiag/introduction.html#usage)[http://blockdiag.com/en/nwdiag/introduction.html#usage] for more details.
 
 ### ```PLANTUML_OPTS```
 
@@ -158,8 +155,7 @@ export PLANTUML_OPTS="-DPLANTUML_LIMIT_SIZE=50000"
 
 to set the limit size of generated PlantUML diagrams.
 
-See
-https://plantuml.com for more details.
+See (https://plantuml.com)[https://plantuml.com] for more details.
 
 ### ```PYTHON_OPTS```
 
@@ -172,7 +168,7 @@ export PYTHON_OPTS=" TBC "
 
 TBC
 
-See https://docs.python.org/3/using/cmdline.html for more details.
+See (https://docs.python.org/3/using/cmdline.html)[https://docs.python.org/3/using/cmdline.html] for more details.
 
 ### ```TOSCAWARE_OPTS```
 
