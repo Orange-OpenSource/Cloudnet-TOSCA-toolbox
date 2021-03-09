@@ -121,6 +121,10 @@ Enter choice [ 1-5 clwx ]
 ## Examples description
 | Example file name  | Description                                         |
 |--------------------|-----------------------------------------------------|
+| etsi_nfv_sol001_common_types.yaml | ETSI NFV SOL 001 common types definitions |
+| etsi_nfv_sol001_nsd_types.yaml | ETSI NFV SOL 001 nsd types definitions |
+| etsi_nfv_sol001_pnfd_types.yaml | ETSI NFV SOL 001 pnfd types definitions |
+| etsi_nfv_sol001_vnfd_types.yaml | ETSI NFV SOL 001 vnfd types definitions |
 | TopologyNSD.yaml | An example of a Network Service topology |
 | TopologyVNFD.yaml | An example of a Virtual Network Fonction topology |
 
