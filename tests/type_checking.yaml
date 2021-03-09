@@ -1,0 +1,4699 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Tests for Cloudnet TOSCA toolbox
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_2
+
+description: Tests related to TOSCA type checking done by TypeChecker component.
+
+imports:
+  - one_file.yaml # ERROR: file not found!
+  - file: http://www.google.org/one_file.yaml # ERROR: file not found!
+  - file: http://unknown.site.org/one_file.yaml # ERROR: file not found!
+
+repositories:
+  repo1: http://repo1.org
+  repo2:
+    url: http://repo2.org
+
+artifact_types:
+  # CORRECT: artifact type
+  ArtifactType:
+    # CORRECT: derived from a defined artifact type.
+    derived_from: tosca.artifacts.Root
+    properties:
+      p1:
+        # CORRECT: YAML type.
+        type: string
+        required: false
+      p2:
+        # CORRECT: TOSCA type.
+        type: range
+        required: false
+      p3:
+        # CORRECT: data type.
+        type: DataType
+        required: false
+
+  # ERROR: already defined artifact type!
+  tosca.artifacts.Root:
+    description: ''
+
+  ArtifactTypeDerivedFromUndefinedType:
+    # ERROR: must be a type defined!
+    derived_from: UndefinedType
+
+  ArtifactTypeDerivedFromIncorrectType:
+    # ERROR: must be an artifact type!
+    derived_from: tosca.datatypes.Root
+
+  ArtifactTypeDerivedFromCyclicType:
+    # ERROR: cyclic derived from!
+    derived_from: ArtifactTypeDerivedFromCyclicType
+
+  ArtifactTypeDerivedFromCyclicType1:
+    # ERROR: cyclic derived from!
+    derived_from: ArtifactTypeDerivedFromCyclicType3
+
+  ArtifactTypeDerivedFromCyclicType2:
+    # ERROR: cyclic derived from!
+    derived_from: ArtifactTypeDerivedFromCyclicType1
+
+  ArtifactTypeDerivedFromCyclicType3:
+    # ERROR: cyclic derived from!
+    derived_from: ArtifactTypeDerivedFromCyclicType2
+
+  ArtifactTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
+
+  ArtifactTypePropertiesUndefinedType:
+    properties:
+      p1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  ArtifactTypePropertiesIncorrectType:
+    properties:
+      p1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  ArtifactTypePropertiesIncompatibleType:
+    derived_from: ArtifactType
+    properties:
+      p1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  ArtifactTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  ArtifactTypePropertiesRequiredFalse:
+    derived_from: ArtifactTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
+
+data_types:
+  # CORRECT: data type
+  DataType:
+    # CORRECT: derived from a defined data type.
+    derived_from: tosca.datatypes.Root
+    properties:
+      p1:
+        # CORRECT: YAML type.
+        type: string
+        required: false
+      p2:
+        # CORRECT: TOSCA type.
+        type: range
+        required: false
+      p3:
+        # CORRECT: data type.
+        type: DataType
+        required: false
+      p4:
+        # CORRECT: type.
+        type: list
+        # CORRECT: type.
+        entry_schema: string
+        required: false
+      p5:
+        # CORRECT: map type.
+        type: map
+        # CORRECT: type.
+        entry_schema:
+          type: string
+        required: false
+
+  # ERROR: already defined data type!
+  tosca.datatypes.Root:
+    description: ''
+
+  DataTypeDerivedFromUndefinedType:
+    # ERROR: must be a type defined!
+    derived_from: UndefinedType
+
+  DataTypeDerivedFromIncorrectType:
+    # ERROR: must be a data type!
+    derived_from: tosca.capabilities.Root
+
+  DataTypeDerivedFromCyclicType:
+    # ERROR: cyclic derived from!
+    derived_from: DataTypeDerivedFromCyclicType
+
+  DataTypeDerivedFromCyclicType1:
+    # ERROR: cyclic derived from!
+    derived_from: DataTypeDerivedFromCyclicType3
+
+  DataTypeDerivedFromCyclicType2:
+    # ERROR: cyclic derived from!
+    derived_from: DataTypeDerivedFromCyclicType1
+
+  DataTypeDerivedFromCyclicType3:
+    # ERROR: cyclic derived from!
+    derived_from: DataTypeDerivedFromCyclicType2
+
+  DataTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
+
+  DataTypePropertiesUndefinedType:
+    properties:
+      p1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  DataTypePropertiesIncorrectType:
+    properties:
+      p1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  DataTypePropertiesIncompatibleType:
+    derived_from: DataType
+    properties:
+      p1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  DataTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  DataTypePropertiesRequiredFalse:
+    derived_from: DataTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
+
+  DataTypePropertiesEntrySchemaUnexpected:
+    properties:
+      p1:
+        type: integer
+        # ERROR: unexpected because type is not list or map!
+        entry_schema: string
+      p2:
+        type: integer
+        # ERROR: unexpected because type is not list or map!
+        entry_schema:
+          type: string
+
+  DataTypePropertiesEntrySchemaUndefinedType:
+    properties:
+      p1:
+        type: list
+        # ERROR: undefined data type!
+        entry_schema: UndefinedType
+      p2:
+        type: map
+        # ERROR: undefined data type!
+        entry_schema:
+          type: UndefinedType
+
+  DataTypePropertiesEntrySchemaIncorrectType:
+    properties:
+      p1:
+        type: list
+        # ERROR: data type required!
+        entry_schema: tosca.interfaces.Root
+      p2:
+        type: map
+        # ERROR: data type required!
+        entry_schema:
+          type: tosca.interfaces.Root
+
+  DataTypePropertiesEntrySchemaIncompatibleType:
+    derived_from: DataType
+    properties:
+      p4:
+        type: list
+        # ERROR: incompatible type with previous declared type!
+        entry_schema: integer
+      p5:
+        type: map
+        entry_schema:
+          # ERROR: incompatible type with previous declared type!
+          type: integer
+
+  DataTypePropertiesDefaultIncompatibleWithType:
+    properties:
+      p-string-0:
+        type: string
+        default: a string # CORRECT
+      p-string-1:
+        type: string
+        default: 1 # ERROR: string expected!
+      p-integer-0:
+        type: integer
+        default: 100 # CORRECT
+      p-integer-1:
+        type: integer
+        default: true # ERROR: integer expected!
+      p-float-0:
+        type: float
+        default: 3.14 # CORRECT
+      p-float-1:
+        type: float
+        default: false # ERROR: float expected!
+      p-boolean-0:
+        type: boolean
+        default: false # CORRECT
+      p-boolean-1:
+        type: boolean
+        default: 1 # ERROR: boolean expected!
+      p-timestamp-0:
+        type: timestamp
+        default: 2001-12-14t21:59:43.10-05:00 # CORRECT
+      p-timestamp-1:
+        type: timestamp
+        default: abcdef # ERROR: timestamp expected!
+      p-timestamp-2:
+        type: timestamp
+        default: false # ERROR: timestamp expected!
+      p-null-0:
+        type: 'null'
+        default: null # CORRECT
+      p-null-1:
+        type: 'null'
+        default: false # ERROR: null expected!
+      p-version-0:
+        type: version
+        default: 1.0 # CORRECT
+      p-version-01:
+        type: version
+        default: '1.0' # CORRECT
+      p-version-02:
+        type: version
+        default: '1.0.0' # CORRECT
+      p-version-03:
+        type: version
+        default: '1.0.0.build' # CORRECT
+      p-version-04:
+        type: version
+        default: '1.0.0.build-1' # CORRECT
+      p-version-1:
+        type: version
+        default: false # ERROR: version expected!
+      p-version-2:
+        type: version
+        default: abcde # ERROR: <major_version>.<minor_version>[.<fix_version>[.<qualifier>[-<build_version>]]] expected!
+      p-version-3:
+        type: version
+        default: '1' # ERROR: .<minor_version>[.<fix_version>[.<qualifier>[-<build_version>]]] missed!
+      p-version-4:
+        type: version
+        default: '1.' # ERROR: <minor_version>[.<fix_version>[.<qualifier>[-<build_version>]]] missed!
+      p-version-5:
+        type: version
+        default: '1.2.' # ERROR: <fix_version>[.<qualifier>[-<build_version>]] missed!
+      p-version-6:
+        type: version
+        default: '1.2.3.' # ERROR: <qualifier>[-<build_version>] missed!
+      p-version-7:
+        type: version
+        default: '1.2.3.build-' # ERROR: <build_version> missed!
+      p-range-0:
+        type: range
+        default: [1, 1000] # CORRECT
+      p-range-1:
+        type: range
+        default: 1 # ERROR: range expected!
+      p-range-2:
+        type: range
+        default: [] # ERROR: range expected!
+      p-range-3:
+        type: range
+        default: [1, 2, 3] # ERROR: range expected!
+      p-range-4:
+        type: range
+        default: [false, true] # ERROR: range expected!
+      p-range-5:
+        type: range
+        default: [1, false] # ERROR: range expected!
+      p-list-0:
+        type: list
+        entry_schema: integer
+        default: [1, 2, 3, 4, 5] # CORRECT
+      p-list-1:
+        type: list
+        entry_schema: integer
+        default: 10 # ERROR: list expected!
+      p-list-2:
+        type: list
+        entry_schema: integer
+        default:
+        - false # ERROR: integer expected!
+        - a string # ERROR: integer expected!
+      p-map-0:
+        type: map
+        entry_schema: string
+        default:
+          v1: a string  # CORRECT
+      p-map-1:
+        type: map
+        entry_schema: string
+        default: 20 # ERROR: map expected!
+      p-map-2:
+        type: map
+        entry_schema: string
+        default:
+          v1: false # ERROR: string expected!
+          v2: 1 # ERROR: string expected!
+      p-scalar-unit.size-01:
+        type: scalar-unit.size
+        default: 100 MB # CORRECT
+      p-scalar-unit.size-02:
+        type: scalar-unit.size
+        default: 100MB # CORRECT: spaces between <scalar> and <unit> are optional.
+      p-scalar-unit.size-1:
+        type: scalar-unit.size
+        default: 20 # ERROR: scalar-unit.size expected!
+      p-scalar-unit.size-2:
+        type: scalar-unit.size
+        default: '20' # ERROR: <scalar> <unit> expected!
+      p-scalar-unit.size-3:
+        type: scalar-unit.size
+        default: 'x MB' # ERROR: <scalar> expected!
+      p-scalar-unit.size-4:
+        type: scalar-unit.size
+        default: '-1 MB' # ERROR: positive <scalar> expected!
+      p-scalar-unit.size-5:
+        type: scalar-unit.size
+        default: '1 Xy' # ERROR: <unit.size> expected!
+      p-scalar-unit.time-01:
+        type: scalar-unit.time
+        default: 100 ms # CORRECT
+      p-scalar-unit.time-02:
+        type: scalar-unit.time
+        default: 100ms # CORRECT: spaces between <scalar> and <unit> are optional.
+      p-scalar-unit.time-1:
+        type: scalar-unit.time
+        default: 20 # ERROR: scalar-unit.time expected!
+      p-scalar-unit.time-2:
+        type: scalar-unit.time
+        default: '20' # ERROR: <scalar> <unit> expected!
+      p-scalar-unit.time-3:
+        type: scalar-unit.time
+        default: 'x s' # ERROR: <scalar> expected!
+      p-scalar-unit.time-4:
+        type: scalar-unit.time
+        default: '-1 s' # ERROR: positive <scalar> expected!
+      p-scalar-unit.time-5:
+        type: scalar-unit.time
+        default: '1 Xy' # ERROR: <unit.time> expected!
+      p-scalar-unit.frequency-01:
+        type: scalar-unit.frequency
+        default: 8 GHz # CORRECT
+      p-scalar-unit.frequency-02:
+        type: scalar-unit.frequency
+        default: 8GHz # CORRECT: spaces between <scalar> and <unit> are optional.
+      p-scalar-unit.frequency-1:
+        type: scalar-unit.frequency
+        default: 20 # ERROR: scalar-unit.frequency expected!
+      p-scalar-unit.frequency-2:
+        type: scalar-unit.frequency
+        default: '20' # ERROR: <scalar> <unit> expected!
+      p-scalar-unit.frequency-3:
+        type: scalar-unit.frequency
+        default: 'x Hz' # ERROR: <scalar> expected!
+      p-scalar-unit.frequency-4:
+        type: scalar-unit.frequency
+        default: '-1 Hz' # ERROR: positive <scalar> expected!
+      p-scalar-unit.frequency-5:
+        type: scalar-unit.frequency
+        default: '1 Xy' # ERROR: <unit.frequency> expected!
+      p-scalar-unit.bitrate-01:
+        type: scalar-unit.bitrate
+        default: 8 Gbps # CORRECT
+      p-scalar-unit.bitrate-02:
+        type: scalar-unit.bitrate
+        default: 8Gbps # CORRECT: spaces between <scalar> and <unit> are optional.
+      p-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 20 # ERROR: scalar-unit.bitrate expected!
+      p-scalar-unit.bitrate-2:
+        type: scalar-unit.bitrate
+        default: '20' # ERROR: <scalar> <unit> expected!
+      p-scalar-unit.bitrate-3:
+        type: scalar-unit.bitrate
+        default: 'x Gbps' # ERROR: <scalar> expected!
+      p-scalar-unit.bitrate-4:
+        type: scalar-unit.bitrate
+        default: '-1 Gbps' # ERROR: positive <scalar> expected!
+      p-scalar-unit.bitrate-5:
+        type: scalar-unit.bitrate
+        default: '1 Xy' # ERROR: <unit.bitrate> expected!
+      p-PortDef-0:
+        type: PortDef
+        default: 80 # CORRECT
+      p-PortDef-1:
+        type: PortDef
+        default: false # ERROR: integer expected!
+
+  DataTypePropertiesDefaultIncompatibleWithConstraints:
+    properties:
+      p-equal-string-0:
+        type: string
+        default: a string # CORRECT: equal succeeded.
+        constraints:
+          - equal: a string
+      p-equal-string-1:
+        type: string
+        default: a string # ERROR: equal failed!
+        constraints:
+          - equal: another string
+      p-equal-integer-0:
+        type: integer
+        default: 1 # CORRECT: equal succeeded.
+        constraints:
+          - equal: 1
+      p-equal-integer-1:
+        type: integer
+        default: 1 # ERROR: equal failed!
+        constraints:
+          - equal: 3
+      p-equal-float-0:
+        type: float
+        default: 1.2 # CORRECT: equal succeeded.
+        constraints:
+          - equal: 1.2
+      p-equal-float-1:
+        type: float
+        default: 1.2 # ERROR: equal failed!
+        constraints:
+          - equal: 3.14
+      p-equal-boolean-0:
+        type: boolean
+        default: true # CORRECT: equal succeeded.
+        constraints:
+          - equal: true
+      p-equal-boolean-1:
+        type: boolean
+        default: false # ERROR: equal failed!
+        constraints:
+          - equal: true
+      p-equal-timestamp-0:
+        type: timestamp
+        default: 2001-12-14t21:59:43.10-05:00 # CORRECT: equal succeeded.
+        constraints:
+          - equal: 2001-12-14t21:59:43.10-05:00
+      p-equal-timestamp-1:
+        type: timestamp
+        default: 2001-12-14t21:59:43.10-05:00 # ERROR: equal failed!
+        constraints:
+          - equal: 2020-12-14t21:59:43.10-05:00
+      p-equal-null-0:
+        type: 'null'
+        default: null # CORRECT: equal succeeded.
+        constraints:
+          - equal: null
+      p-equal-version-0:
+        type: version
+        default: 1.0 # CORRECT: equal succeeded.
+        constraints:
+          - equal: 1.0
+      p-equal-version-1:
+        type: version
+        default: 1.0 # ERROR: equal failed!
+        constraints:
+          - equal: 2.0
+      p-equal-range-0:
+        type: range
+        default: [1, 10] # CORRECT: equal succeeded.
+        constraints:
+          - equal: [1, 10]
+      p-equal-range-1:
+        type: range
+        default: [1, 10] # ERROR: equal failed!
+        constraints:
+          - equal: [10, 20]
+      p-equal-list-0:
+        type: list
+        entry_schema: string
+        default: [string1, string2] # CORRECT: equal succeeded.
+        constraints:
+          - equal: [string1, string2]
+      p-equal-list-1:
+        type: list
+        entry_schema: string
+        default: [string1, string2] # ERROR: equal failed!
+        constraints:
+          - equal: [string1, string2, string3]
+      p-equal-map-0:
+        type: map
+        entry_schema: string
+        default: { string1: string2, string3: string4 } # CORRECT: equal succeeded.
+        constraints:
+          - equal: { string1: string2, string3: string4 }
+      p-equal-map-1:
+        type: map
+        entry_schema: string
+        default: { string1: string2, string3: string4 } # ERROR: equal failed!
+        constraints:
+          - equal: { string1: string, string2: string }
+      p-equal-scalar-unit.size-0:
+        type: scalar-unit.size
+        default: 128 GB # CORRECT: equal succeeded.
+        constraints:
+          - equal: 128000 MB
+      p-equal-scalar-unit.size-1:
+        type: scalar-unit.size
+        default: 1 GB # ERROR: equal failed!
+        constraints:
+          - equal: 1 MB
+      p-equal-scalar-unit.time-0:
+        type: scalar-unit.time
+        default: 1 h # CORRECT: equal succeeded.
+        constraints:
+          - equal: 60 m
+      p-equal-scalar-unit.time-1:
+        type: scalar-unit.time
+        default: 1 ns # ERROR: equal failed!
+        constraints:
+          - equal: 1 s
+      p-equal-scalar-unit.frequency-0:
+        type: scalar-unit.frequency
+        default: 12 MHz # CORRECT: equal succeeded.
+        constraints:
+          - equal: 12000 kHz
+      p-equal-scalar-unit.frequency-1:
+        type: scalar-unit.frequency
+        default: 1 Hz # ERROR: equal failed!
+        constraints:
+          - equal: 1 GHz
+      p-equal-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 12 MBps # CORRECT: equal succeeded.
+        constraints:
+          - equal: 12000 KBps
+      p-equal-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 1 Bps # ERROR: equal failed!
+        constraints:
+          - equal: 1 GBps
+      p-greater_than-string-0:
+        type: string
+        default: bbbbb # CORRECT: greater_than succeeded.
+        constraints:
+          - greater_than: aaaaa
+      p-greater_than-string-1:
+        type: string
+        default: aaaaa # ERROR: greater_than failed!
+        constraints:
+          - greater_than: bbbbb
+      p-greater_than-integer-0:
+        type: integer
+        default: 2 # CORRECT: greater_than succeeded.
+        constraints:
+          - greater_than: 1
+      p-greater_than-integer-1:
+        type: integer
+        default: 1 # ERROR: greater_than failed!
+        constraints:
+          - greater_than: 2
+      p-greater_than-float-0:
+        type: float
+        default: 3.14 # CORRECT: greater_than succeeded.
+        constraints:
+          - greater_than: 1.0
+      p-greater_than-float-1:
+        type: float
+        default: 1.0 # ERROR: greater_than failed!
+        constraints:
+          - greater_than: 3.14
+      p-greater_than-timestamp-0:
+        type: timestamp
+        default: 2020-12-14t21:59:43.10-05:00 # CORRECT: greater_than succeeded.
+        constraints:
+          - greater_than: 2001-12-14t21:59:43.10-05:00
+      p-greater_than-timestamp-1:
+        type: timestamp
+        default: 2001-12-14t21:59:43.10-05:00 # ERROR: greater_than failed!
+        constraints:
+          - greater_than: 2020-12-14t21:59:43.10-05:00
+      p-greater_than-version-0:
+        type: version
+        default: 2.0 # CORRECT: greater_than succeeded.
+        constraints:
+          - greater_than: 1.0
+      p-greater_than-version-1:
+        type: version
+        default: 1.0 # ERROR: greater_than failed!
+        constraints:
+          - greater_than: 2.0
+      p-greater_than-scalar-unit.size-0:
+        type: scalar-unit.size
+        default: 128 GB # CORRECT: greater_than succeeded.
+        constraints:
+          - greater_than: 128 MB
+      p-greater_than-scalar-unit.size-1:
+        type: scalar-unit.size
+        default: 128 MB # ERROR: greater_than failed!
+        constraints:
+          - greater_than: 128 GB
+      p-greater_than-scalar-unit.time-0:
+        type: scalar-unit.time
+        default: 1 d # CORRECT: greater_than succeeded.
+        constraints:
+          - greater_than: 1 h
+      p-greater_than-scalar-unit.time-1:
+        type: scalar-unit.time
+        default: 1 ns # ERROR: greater_than failed!
+        constraints:
+          - greater_than: 1 s
+      p-greater_than-scalar-unit.frequency-0:
+        type: scalar-unit.frequency
+        default: 12 MHz # CORRECT: greater_than succeeded.
+        constraints:
+          - greater_than: 100 kHz
+      p-greater_than-scalar-unit.frequency-1:
+        type: scalar-unit.frequency
+        default: 1 Hz # ERROR: greater_than failed!
+        constraints:
+          - greater_than: 1 GHz
+      p-greater_than-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 12 MBps # CORRECT: greater_than succeeded.
+        constraints:
+          - greater_than: 100 KBps
+      p-greater_than-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 1 Bps # ERROR: greater_than failed!
+        constraints:
+          - greater_than: 1 GiBps
+      p-greater_or_equal-string-0:
+        type: string
+        default: bbbbb # CORRECT: greater_or_equal succeeded.
+        constraints:
+          - greater_or_equal: aaaaa
+      p-greater_or_equal-string-1:
+        type: string
+        default: aaaaa # ERROR: greater_or_equal failed!
+        constraints:
+          - greater_or_equal: bbbbb
+      p-greater_or_equal-integer-0:
+        type: integer
+        default: 2 # CORRECT: greater_or_equal succeeded.
+        constraints:
+          - greater_or_equal: 1
+      p-greater_or_equal-integer-1:
+        type: integer
+        default: 1 # ERROR: greater_or_equal failed!
+        constraints:
+          - greater_or_equal: 2
+      p-greater_or_equal-float-0:
+        type: float
+        default: 3.14 # CORRECT: greater_or_equal succeeded.
+        constraints:
+          - greater_or_equal: 1.0
+      p-greater_or_equal-float-1:
+        type: float
+        default: 1.0 # ERROR: greater_or_equal failed!
+        constraints:
+          - greater_or_equal: 3.14
+      p-greater_or_equal-timestamp-0:
+        type: timestamp
+        default: 2020-12-14t21:59:43.10-05:00 # CORRECT: greater_or_equal succeeded.
+        constraints:
+          - greater_or_equal: 2001-12-14t21:59:43.10-05:00
+      p-greater_or_equal-timestamp-1:
+        type: timestamp
+        default: 2001-12-14t21:59:43.10-05:00 # ERROR: greater_or_equal failed!
+        constraints:
+          - greater_or_equal: 2020-12-14t21:59:43.10-05:00
+      p-greater_or_equal-version-0:
+        type: version
+        default: 2.0 # CORRECT: greater_or_equal succeeded.
+        constraints:
+          - greater_or_equal: 1.0
+      p-greater_or_equal-version-1:
+        type: version
+        default: 1.0 # ERROR: greater_or_equal failed!
+        constraints:
+          - greater_or_equal: 2.0
+      p-greater_or_equal-scalar-unit.size-0:
+        type: scalar-unit.size
+        default: 128 GB # CORRECT: greater_or_equal succeeded.
+        constraints:
+          - greater_or_equal: 128 MB
+      p-greater_or_equal-scalar-unit.size-1:
+        type: scalar-unit.size
+        default: 128 MB # ERROR: greater_or_equal failed!
+        constraints:
+          - greater_or_equal: 128 GB
+      p-greater_or_equal-scalar-unit.time-0:
+        type: scalar-unit.time
+        default: 1 d # CORRECT: greater_or_equal succeeded.
+        constraints:
+          - greater_or_equal: 1 h
+      p-greater_or_equal-scalar-unit.time-1:
+        type: scalar-unit.time
+        default: 1 ns # ERROR: greater_or_equal failed!
+        constraints:
+          - greater_or_equal: 1 s
+      p-greater_or_equal-scalar-unit.frequency-0:
+        type: scalar-unit.frequency
+        default: 12 MHz # CORRECT: greater_or_equal succeeded.
+        constraints:
+          - greater_or_equal: 100 kHz
+      p-greater_or_equal-scalar-unit.frequency-1:
+        type: scalar-unit.frequency
+        default: 1 Hz # ERROR: greater_or_equal failed!
+        constraints:
+          - greater_or_equal: 1 GHz
+      p-greater_or_equal-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 12 MBps # CORRECT: greater_or_equal succeeded.
+        constraints:
+          - greater_or_equal: 100 KBps
+      p-greater_or_equal-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 1 Bps # ERROR: greater_or_equal failed!
+        constraints:
+          - greater_or_equal: 1 GiBps
+      p-less_than-string-0:
+        type: string
+        default: aaaaa # CORRECT: less_than succeeded.
+        constraints:
+          - less_than: bbbbb
+      p-less_than-string-1:
+        type: string
+        default: bbbbb # ERROR: less_than failed!
+        constraints:
+          - less_than: aaaaa
+      p-less_than-integer-0:
+        type: integer
+        default: 1 # CORRECT: less_than succeeded.
+        constraints:
+          - less_than: 100
+      p-less_than-integer-1:
+        type: integer
+        default: 100 # ERROR: less_than failed!
+        constraints:
+          - less_than: 50
+      p-less_than-float-0:
+        type: float
+        default: 1.0 # CORRECT: less_than succeeded.
+        constraints:
+          - less_than: 3.14
+      p-less_than-float-1:
+        type: float
+        default: 3.14 # ERROR: less_than failed!
+        constraints:
+          - less_than: 1.0
+      p-less_than-timestamp-0:
+        type: timestamp
+        default: 2001-12-14t21:59:43.10-05:00 # CORRECT: less_than succeeded.
+        constraints:
+          - less_than: 2020-12-14t21:59:43.10-05:00
+      p-less_than-timestamp-1:
+        type: timestamp
+        default: 2020-12-14t21:59:43.10-05:00 # ERROR: less_than failed!
+        constraints:
+          - less_than: 2001-12-14t21:59:43.10-05:00
+      p-less_than-version-0:
+        type: version
+        default: 1.0 # CORRECT: less_than succeeded.
+        constraints:
+          - less_than: 2.0
+      p-less_than-version-1:
+        type: version
+        default: 2.0 # ERROR: less_than failed!
+        constraints:
+          - less_than: 1.0
+      p-less_than-scalar-unit.size-0:
+        type: scalar-unit.size
+        default: 128 MB # CORRECT: less_than succeeded.
+        constraints:
+          - less_than: 128 GB
+      p-less_than-scalar-unit.size-1:
+        type: scalar-unit.size
+        default: 128 GB # ERROR: less_than failed!
+        constraints:
+          - less_than: 128 MB
+      p-less_than-scalar-unit.time-0:
+        type: scalar-unit.time
+        default: 1 h # CORRECT: less_than succeeded.
+        constraints:
+          - less_than: 1 d
+      p-less_than-scalar-unit.time-1:
+        type: scalar-unit.time
+        default: 1 s # ERROR: less_than failed!
+        constraints:
+          - less_than: 100 ms
+      p-less_than-scalar-unit.frequency-0:
+        type: scalar-unit.frequency
+        default: 12 kHz # CORRECT: less_than succeeded.
+        constraints:
+          - less_than: 100 MHz
+      p-less_than-scalar-unit.frequency-1:
+        type: scalar-unit.frequency
+        default: 1 GHz # ERROR: less_than failed!
+        constraints:
+          - less_than: 1 MHz
+      p-less_than-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 12 KBps # CORRECT: less_than succeeded.
+        constraints:
+          - less_than: 100 MBps
+      p-less_than-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 1 GiBps # ERROR: less_than failed!
+        constraints:
+          - less_than: 1 Bps
+      p-less_or_equal-string-0:
+        type: string
+        default: aaaaa # CORRECT: less_or_equal succeeded.
+        constraints:
+          - less_or_equal: bbbbb
+      p-less_or_equal-string-1:
+        type: string
+        default: bbbbb # ERROR: less_or_equal failed!
+        constraints:
+          - less_or_equal: aaaaa
+      p-less_or_equal-integer-0:
+        type: integer
+        default: 1 # CORRECT: less_or_equal succeeded.
+        constraints:
+          - less_or_equal: 100
+      p-less_or_equal-integer-1:
+        type: integer
+        default: 100 # ERROR: less_or_equal failed!
+        constraints:
+          - less_or_equal: 50
+      p-less_or_equal-float-0:
+        type: float
+        default: 1.0 # CORRECT: less_or_equal succeeded.
+        constraints:
+          - less_or_equal: 3.14
+      p-less_or_equal-float-1:
+        type: float
+        default: 3.14 # ERROR: less_or_equal failed!
+        constraints:
+          - less_or_equal: 1.0
+      p-less_or_equal-timestamp-0:
+        type: timestamp
+        default: 2001-12-14t21:59:43.10-05:00 # CORRECT: less_or_equal succeeded.
+        constraints:
+          - less_or_equal: 2020-12-14t21:59:43.10-05:00
+      p-less_or_equal-timestamp-1:
+        type: timestamp
+        default: 2020-12-14t21:59:43.10-05:00 # ERROR: less_or_equal failed!
+        constraints:
+          - less_or_equal: 2001-12-14t21:59:43.10-05:00
+      p-less_or_equal-version-0:
+        type: version
+        default: 1.0 # CORRECT: less_or_equal succeeded.
+        constraints:
+          - less_or_equal: 2.0
+      p-less_or_equal-version-1:
+        type: version
+        default: 2.0 # ERROR: less_or_equal failed!
+        constraints:
+          - less_or_equal: 1.0
+      p-less_or_equal-scalar-unit.size-0:
+        type: scalar-unit.size
+        default: 128 MB # CORRECT: less_or_equal succeeded.
+        constraints:
+          - less_or_equal: 128 GB
+      p-less_or_equal-scalar-unit.size-1:
+        type: scalar-unit.size
+        default: 128 GB # ERROR: less_or_equal failed!
+        constraints:
+          - less_or_equal: 128 MB
+      p-less_or_equal-scalar-unit.time-0:
+        type: scalar-unit.time
+        default: 1 h # CORRECT: less_or_equal succeeded.
+        constraints:
+          - less_or_equal: 1 d
+      p-less_or_equal-scalar-unit.time-1:
+        type: scalar-unit.time
+        default: 1 s # ERROR: less_or_equal failed!
+        constraints:
+          - less_or_equal: 100 ms
+      p-less_or_equal-scalar-unit.frequency-0:
+        type: scalar-unit.frequency
+        default: 12 kHz # CORRECT: less_or_equal succeeded.
+        constraints:
+          - less_or_equal: 100 MHz
+      p-less_or_equal-scalar-unit.frequency-1:
+        type: scalar-unit.frequency
+        default: 1 GHz # ERROR: less_or_equal failed!
+        constraints:
+          - less_or_equal: 1 MHz
+      p-less_or_equal-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 12 KBps # CORRECT: less_or_equal succeeded.
+        constraints:
+          - less_or_equal: 100 MBps
+      p-less_or_equal-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 1 GiBps # ERROR: less_or_equal failed!
+        constraints:
+          - less_or_equal: 1 MiBps
+      p-in_range-string-0:
+        type: string
+        default: blue # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ aaa, zzz ]
+      p-in_range-string-1:
+        type: string
+        default: BLUE # ERROR: in_range failed!
+        constraints:
+          - in_range: [ aaa, zzz ]
+      p-in_range-integer-0:
+        type: integer
+        default: 10 # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ 1, 100 ]
+      p-in_range-integer-1:
+        type: integer
+        default: -1 # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1, 100 ]
+      p-in_range-integer-2:
+        type: integer
+        default: 200 # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1, 100 ]
+      p-in_range-float-0:
+        type: float
+        default: 3.14 # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ 1, 100 ]
+      p-in_range-float-1:
+        type: float
+        default: -1 # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1, 100 ]
+      p-in_range-float-2:
+        type: float
+        default: 200.0 # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1, 100 ]
+      p-in_range-timestamp-0:
+        type: timestamp
+        default: 2010-12-14t21:59:43.10-05:00 # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ 2001-12-14t21:59:43.10-05:00, 2020-12-14t21:59:43.10-05:00 ]
+      p-in_range-timestamp-1:
+        type: timestamp
+        default: 1900-12-14t21:59:43.10-05:00 # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 2001-12-14t21:59:43.10-05:00, 2020-12-14t21:59:43.10-05:00 ]
+      p-in_range-timestamp-2:
+        type: timestamp
+        default: 3000-12-14t21:59:43.10-05:00 # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 2001-12-14t21:59:43.10-05:00, 2020-12-14t21:59:43.10-05:00 ]
+      p-in_range-version-0:
+        type: version
+        default: 3.0 # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ 1.0, 10.0 ]
+      p-in_range-version-1:
+        type: version
+        default: 0.9 # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1.0, 10.0 ]
+      p-in_range-version-2:
+        type: version
+        default: 15.5 # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1.0, 10.0 ]
+      p-in_range-range-0:
+        type: range
+        default: [1, 100] # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ 0, 200 ]
+      p-in_range-range-1:
+        type: range
+        default: [0, 100] # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 100, 200 ]
+      p-in_range-scalar-unit.size-0:
+        type: scalar-unit.size
+        default: 10 MB # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ 1 MB, 100 MB ]
+      p-in_range-scalar-unit.size-1:
+        type: scalar-unit.size
+        default: 10 kB # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1 MB, 100 MB ]
+      p-in_range-scalar-unit.size-2:
+        type: scalar-unit.size
+        default: 10 GB # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1 MB, 100 MB ]
+      p-in_range-scalar-unit.time-0:
+        type: scalar-unit.time
+        default: 10 s # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ 1 s, 100 s ]
+      p-in_range-scalar-time.size-1:
+        type: scalar-unit.time
+        default: 10 ms # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1 s, 100 s ]
+      p-in_range-scalar-unit.time-2:
+        type: scalar-unit.time
+        default: 10 d # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1 s, 100 s ]
+      p-in_range-scalar-unit.frequency-0:
+        type: scalar-unit.frequency
+        default: 10 MHz # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ 1 MHz, 100 MHz ]
+      p-in_range-scalar-time.frequency-1:
+        type: scalar-unit.frequency
+        default: 10 kHz # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1 MHz, 100 MHz ]
+      p-in_range-scalar-unit.frequency-2:
+        type: scalar-unit.frequency
+        default: 10 GHz # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1 MHz, 100 MHz ]
+      p-in_range-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 10 MBps # CORRECT: in_range succeeded.
+        constraints:
+          - in_range: [ 1 MBps, 100 MBps ]
+      p-in_range-scalar-time.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 10 KBps # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1 MBps, 100 MBps ]
+      p-in_range-scalar-unit.bitrate-2:
+        type: scalar-unit.bitrate
+        default: 10 GBps # ERROR: in_range failed!
+        constraints:
+          - in_range: [ 1 MBps, 100 MBps ]
+      p-valid_values-string-0:
+        type: string
+        default: blue # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ red, yellow, blue ]
+      p-valid_values-string-1:
+        type: string
+        default: white # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ red, yellow, blue ]
+      p-valid_values-integer-0:
+        type: integer
+        default: 2 # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ 2, 4, 6, 8, 10 ]
+      p-valid_values-integer-1:
+        type: integer
+        default: 5 # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ 2, 4, 6, 8, 10 ]
+      p-valid_values-float-0:
+        type: float
+        default: 2.0 # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ 2.0, 4.0, 6.0, 8.0, 10.0 ]
+      p-valid_values-float-1:
+        type: float
+        default: 5.0 # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ 2.0, 4.0, 6.0, 8.0, 10.0 ]
+      p-valid_values-boolean-0:
+        type: boolean
+        default: true # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ true ]
+      p-valid_values-boolean-1:
+        type: boolean
+        default: false # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ true ]
+      p-valid_values-timestamp-0:
+        type: timestamp
+        default: 2005-12-14t21:59:43.10-05:00 # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ 2001-12-14t21:59:43.10-05:00, 2002-12-14t21:59:43.10-05:00, 2003-12-14t21:59:43.10-05:00, 2004-12-14t21:59:43.10-05:00, 2005-12-14t21:59:43.10-05:00 ]
+      p-valid_values-timestamp-1:
+        type: timestamp
+        default: 2020-12-14t21:59:43.10-05:00 # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ 2001-12-14t21:59:43.10-05:00, 2002-12-14t21:59:43.10-05:00, 2003-12-14t21:59:43.10-05:00, 2004-12-14t21:59:43.10-05:00, 2005-12-14t21:59:43.10-05:00 ]
+      p-valid_values-null-0:
+        type: 'null'
+        default: null # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ null ]
+      p-valid_values-null-1:
+        type: 'null'
+        default: null # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ ]
+      p-valid_values-version-0:
+        type: version
+        default: 5.0 # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ 1.0, 2.0, 3.0, 4.0, 5.0 ]
+      p-valid_values-version-1:
+        type: version
+        default: 10.0 # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ 1.0, 2.0, 3.0, 4.0, 5.0 ]
+      p-valid_values-range-0:
+        type: range
+        default: [5, 10] # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ [1, 10], [2, 10], [3, 10], [4, 10], [5, 10] ]
+      p-valid_values-range-1:
+        type: range
+        default: [9, 10] # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ [1, 10], [2, 10], [3, 10], [4, 10], [5, 10] ]
+      p-valid_values-list-0:
+        type: list
+        default: [a, b, c] # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ [a, b, c] ]
+      p-valid_values-list-1:
+        type: list
+        default: [d, e, f] # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ [a, b, c] ]
+      p-valid_values-map-0:
+        type: map
+        default: {a: a, b: b, c: c} # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ {a: a, b: b, c: c} ]
+      p-valid_values-map-1:
+        type: map
+        default: {d: d, e: e, f: f} # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ {a: a, b: b, c: c} ]
+      p-valid_values-scalar-unit.size-0:
+        type: scalar-unit.size
+        default: 1 TB # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ 1 B, 1 kB, 1 MB, 1 GB, 1 TB ]
+      p-valid_values-scalar-unit.size-1:
+        type: scalar-unit.size
+        default: 100 B # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ 1 B, 1 kB, 1 MB, 1 GB, 1 TB ]
+      p-valid_values-scalar-unit.time-0:
+        type: scalar-unit.time
+        default: 1 d # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ 1 ns, 1 ms, 1 s, 1 m, 1 h, 1 d ]
+      p-valid_values-scalar-unit.time-1:
+        type: scalar-unit.time
+        default: 100 d # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ 1 ns, 1 ms, 1 s, 1 m, 1 h, 1 d ]
+      p-valid_values-scalar-unit.frequency-0:
+        type: scalar-unit.frequency
+        default: 1 GHz # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ 1 Hz, 1 kHz, 1 MHz, 1 GHz ]
+      p-valid_values-scalar-unit.frequency-1:
+        type: scalar-unit.frequency
+        default: 100 GHz # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ 1 Hz, 1 kHz, 1 MHz, 1 GHz ]
+      p-valid_values-scalar-unit.bitrate-0:
+        type: scalar-unit.bitrate
+        default: 1 GBps # CORRECT: valid_values succeeded.
+        constraints:
+          - valid_values: [ 1 Bps, 1 KBps, 1 MBps, 1 GBps ]
+      p-valid_values-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        default: 100 GBps # ERROR: valid_values failed!
+        constraints:
+          - valid_values: [ 1 Bps, 1 KBps, 1 MBps, 1 GBps ]
+      p-length-string-0:
+        type: string
+        default: abcde # CORRECT: length succeeded.
+        constraints:
+          - length: 5
+      p-length-string-1:
+        type: string
+        default: abcde # ERROR: length failed!
+        constraints:
+          - length: 10
+      p-length-list-0:
+        type: list
+        default: [ a, b, c, d, e ] # CORRECT: length succeeded.
+        constraints:
+          - length: 5
+      p-length-list-1:
+        type: list
+        default: [ a, b, c, d, e ] # ERROR: length failed!
+        constraints:
+          - length: 10
+      p-length-map-0:
+        type: map
+        default: { a: a, b: b, c: c, d: d, e: e } # CORRECT: length succeeded.
+        constraints:
+          - length: 5
+      p-length-map-1:
+        type: map
+        default: { a: a, b: b, c: c, d: d, e: e } # ERROR: length failed!
+        constraints:
+          - length: 10
+      p-min_length-string-0:
+        type: string
+        default: abcde # CORRECT: min_length succeeded.
+        constraints:
+          - min_length: 5
+      p-min_length-string-1:
+        type: string
+        default: abcde # ERROR: min_length failed!
+        constraints:
+          - min_length: 10
+      p-min_length-list-0:
+        type: list
+        default: [ a, b, c, d, e ] # CORRECT: min_length succeeded.
+        constraints:
+          - min_length: 5
+      p-min_length-list-1:
+        type: list
+        default: [ a, b, c, d, e ] # ERROR: min_length failed!
+        constraints:
+          - min_length: 10
+      p-min_length-map-0:
+        type: map
+        default: { a: a, b: b, c: c, d: d, e: e } # CORRECT: min_length succeeded.
+        constraints:
+          - length: 5
+      p-min_length-map-1:
+        type: map
+        default: { a: a, b: b, c: c, d: d, e: e } # ERROR: min_length failed!
+        constraints:
+          - min_length: 10
+      p-max_length-string-0:
+        type: string
+        default: abcde # CORRECT: max_length succeeded.
+        constraints:
+          - max_length: 5
+      p-max_length-string-1:
+        type: string
+        default: abcde # ERROR: max_length failed!
+        constraints:
+          - max_length: 3
+      p-max_length-list-0:
+        type: list
+        default: [ a, b, c, d, e ] # CORRECT: max_length succeeded.
+        constraints:
+          - max_length: 5
+      p-max_length-list-1:
+        type: list
+        default: [ a, b, c, d, e ] # ERROR: max_length failed!
+        constraints:
+          - max_length: 3
+      p-max_length-map-0:
+        type: map
+        default: { a: a, b: b, c: c, d: d, e: e } # CORRECT: max_length succeeded.
+        constraints:
+          - max_length: 5
+      p-max_length-map-1:
+        type: map
+        default: { a: a, b: b, c: c, d: d, e: e } # ERROR: max_length failed!
+        constraints:
+          - max_length: 3
+      p-pattern-string-0:
+        type: string
+        default: HelloWorld # CORRECT: pattern succeeded.
+        constraints:
+          - pattern: '([a-z]|[A-Z])*'
+      p-pattern-string-1:
+        type: string
+        default: Hello World # ERROR: pattern failed!
+        constraints:
+          - pattern: '([a-z]|[A-Z])*'
+      p-schema-string-0:
+        type: string
+        default: TODO # CORRECT: schema succeeded.
+        constraints:
+          - schema: TODO
+      p-schema-string-1:
+        type: string
+        default: TODO # ER TODO ROR: schema failed!
+        constraints:
+          - schema: TODO
+
+      p-PortDef-0:
+        type: PortDef
+        default: 80 # CORRECT: in_range: [ 1, 65535 ]
+      p-PortDef-1:
+        type: PortDef
+        default: 0 # ERROR: in_range: [ 1, 65535 ] failed!
+      p-PortDef-2:
+        type: PortDef
+        default: 66000 # ERROR: in_range: [ 1, 65535 ] failed!
+
+  DataTypePropertiesConstraintsOperatorIncompatibleWithType:
+    properties:
+      p-greater_than-boolean:
+        type: boolean
+        constraints:
+          - greater_than: true # ERROR: greater_than operator unallowed on type boolean!
+      p-greater_than-null:
+        type: 'null'
+        constraints:
+          - greater_than: true # ERROR: greater_than operator unallowed on type null!
+      p-greater_than-range:
+        type: range
+        constraints:
+          - greater_than: [1, 100] # ERROR: greater_than operator unallowed on type range!
+      p-greater_than-list:
+        type: list
+        constraints:
+          - greater_than: [] # ERROR: greater_than operator unallowed on type list!
+      p-greater_than-map:
+        type: map
+        constraints:
+          - greater_than: {} # ERROR: greater_than operator unallowed on type map!
+      p-greater_or_equal-boolean:
+        type: boolean
+        constraints:
+          - greater_or_equal: true # ERROR: greater_or_equal operator unallowed on type boolean!
+      p-greater_or_equal-null:
+        type: 'null'
+        constraints:
+          - greater_or_equal: true # ERROR: greater_or_equal operator unallowed on type null!
+      p-greater_or_equal-range:
+        type: range
+        constraints:
+          - greater_or_equal: [1, 100] # ERROR: greater_or_equal operator unallowed on type range!
+      p-greater_or_equal-list:
+        type: list
+        constraints:
+          - greater_or_equal: [] # ERROR: greater_or_equal operator unallowed on type list!
+      p-greater_or_equal-map:
+        type: map
+        constraints:
+          - greater_or_equal: {} # ERROR: greater_or_equal operator unallowed on type map!
+      p-less_than-boolean:
+        type: boolean
+        constraints:
+          - less_than: true # ERROR: less_than operator unallowed on type boolean!
+      p-less_than-null:
+        type: 'null'
+        constraints:
+          - less_than: true # ERROR: less_than operator unallowed on type null!
+      p-less_than-range:
+        type: range
+        constraints:
+          - less_than: [1, 100] # ERROR: less_than operator unallowed on type range!
+      p-less_than-list:
+        type: list
+        constraints:
+          - less_than: [] # ERROR: less_than operator unallowed on type list!
+      p-less_than-map:
+        type: map
+        constraints:
+          - less_than: {} # ERROR: less_than operator unallowed on type map!
+      p-less_or_equal-boolean:
+        type: boolean
+        constraints:
+          - less_or_equal: true # ERROR: less_or_equal operator unallowed on type boolean!
+      p-less_or_equal-null:
+        type: 'null'
+        constraints:
+          - less_or_equal: true # ERROR: less_or_equal operator unallowed on type null!
+      p-less_or_equal-range:
+        type: range
+        constraints:
+          - less_or_equal: [1, 100] # ERROR: less_or_equal operator unallowed on type range!
+      p-less_or_equal-list:
+        type: list
+        constraints:
+          - less_or_equal: [] # ERROR: less_or_equal operator unallowed on type list!
+      p-less_or_equal-map:
+        type: map
+        constraints:
+          - less_or_equal: {} # ERROR: less_or_equal operator unallowed on type map!
+      p-in_range-boolean:
+        type: boolean
+        constraints:
+          - in_range: [ true, false ] # ERROR: in_range operator unallowed on type boolean!
+      p-in_range-null:
+        type: 'null'
+        constraints:
+          - in_range: [ null, null ] # ERROR: in_range operator unallowed on type null!
+      p-in_range-list:
+        type: list
+        constraints:
+          - in_range: [ [], []] # ERROR: in_range operator unallowed on type list!
+      p-in_range-map:
+        type: map
+        constraints:
+          - in_range: [ {}, {} ] # ERROR: in_range operator unallowed on type map!
+      p-length-integer:
+        type: integer
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type integer!
+      p-length-float:
+        type: float
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type float!
+      p-length-boolean:
+        type: boolean
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type boolean!
+      p-length-timestamp:
+        type: timestamp
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type timestamp!
+      p-length-null:
+        type: 'null'
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type null!
+      p-length-version:
+        type: version
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type version!
+      p-length-range:
+        type: range
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type range!
+      p-length-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type scalar-unit.size!
+      p-length-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type scalar-unit.time!
+      p-length-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type scalar-unit.frequency!
+      p-length-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+          - length: 10 # ERROR: length operator unallowed on type scalar-unit.bitrate!
+      p-min_length-integer:
+        type: integer
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type integer!
+      p-min_length-float:
+        type: float
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type float!
+      p-min_length-boolean:
+        type: boolean
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type boolean!
+      p-min_length-timestamp:
+        type: timestamp
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type timestamp!
+      p-min_length-null:
+        type: 'null'
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type null!
+      p-min_length-version:
+        type: version
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type version!
+      p-min_length-range:
+        type: range
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type range!
+      p-min_length-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type scalar-unit.size!
+      p-min_length-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type scalar-unit.time!
+      p-min_length-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type scalar-unit.frequency!
+      p-min_length-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+          - min_length: 10 # ERROR: min_length operator unallowed on type scalar-unit.bitrate!
+      p-max_length-integer:
+        type: integer
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type integer!
+      p-max_length-float:
+        type: float
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type float!
+      p-max_length-boolean:
+        type: boolean
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type boolean!
+      p-max_length-timestamp:
+        type: timestamp
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type timestamp!
+      p-max_length-null:
+        type: 'null'
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type null!
+      p-max_length-version:
+        type: version
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type version!
+      p-max_length-range:
+        type: range
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type range!
+      p-max_length-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type scalar-unit.size!
+      p-max_length-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type scalar-unit.time!
+      p-max_length-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type scalar-unit.frequency!
+      p-max_length-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+          - max_length: 10 # ERROR: max_length operator unallowed on type scalar-unit.bitrate!
+      p-pattern-integer:
+        type: integer
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type integer!
+      p-pattern-float:
+        type: float
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type float!
+      p-pattern-boolean:
+        type: boolean
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type boolean!
+      p-pattern-timestamp:
+        type: timestamp
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type timestamp!
+      p-pattern-null:
+        type: 'null'
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type null!
+      p-pattern-version:
+        type: version
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type version!
+      p-pattern-range:
+        type: range
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type range!
+      p-pattern-list:
+        type: list
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type list!
+      p-pattern-map:
+        type: map
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type map!
+      p-pattern-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type scalar-unit.size!
+      p-pattern-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type scalar-unit.time!
+      p-pattern-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type scalar-unit.frequency!
+      p-pattern-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+          - pattern: '' # ERROR: pattern operator unallowed on type scalar-unit.bitrate!
+      p-schema-integer:
+        type: integer
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type integer!
+      p-schema-float:
+        type: float
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type float!
+      p-schema-boolean:
+        type: boolean
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type boolean!
+      p-schema-timestamp:
+        type: timestamp
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type timestamp!
+      p-schema-null:
+        type: 'null'
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type null!
+      p-schema-version:
+        type: version
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type version!
+      p-schema-range:
+        type: range
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type range!
+      p-schema-list:
+        type: list
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type list!
+      p-schema-map:
+        type: map
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type map!
+      p-schema-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type scalar-unit.size!
+      p-schema-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type scalar-unit.time!
+      p-schema-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type scalar-unit.frequency!
+      p-schema-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+          - schema: '' # ERROR: schema operator unallowed on type scalar-unit.frequency!
+
+  DataTypePropertiesConstraintsOperandIncompatibleWithType:
+    properties:
+      p-equal-string:
+        type: string
+        constraints:
+        - equal: false # ERROR: string expected!
+      p-equal-integer:
+        type: integer
+        constraints:
+        - equal: false # ERROR: integer expected!
+      p-equal-float:
+        type: float
+        constraints:
+        - equal: false # ERROR: float expected!
+      p-equal-boolean:
+        type: boolean
+        constraints:
+        - equal: 10 # ERROR: boolean expected!
+      p-equal-timestamp:
+        type: timestamp
+        constraints:
+        - equal: false # ERROR: timestamp expected!
+      p-equal-null:
+        type: 'null'
+        constraints:
+        - equal: false # ERROR: null expected!
+      p-equal-version:
+        type: version
+        constraints:
+        - equal: false # ERROR: version expected!
+      p-equal-range:
+        type: range
+        constraints:
+        - equal: false # ERROR: range expected!
+      p-equal-list:
+        type: list
+        constraints:
+        - equal: false # ERROR: list expected!
+      p-equal-map:
+        type: map
+        constraints:
+        - equal: false # ERROR: map expected!
+      p-equal-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+        - equal: false # ERROR: scalar-unit.size expected!
+      p-equal-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+        - equal: false # ERROR: scalar-unit.time expected!
+      p-equal-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+        - equal: false # ERROR: scalar-unit.frequency expected!
+      p-equal-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - equal: false # ERROR: scalar-unit.bitrate expected!
+      p-greater_than-string:
+        type: string
+        constraints:
+        - greater_than: false # ERROR: string expected!
+      p-greater_than-integer:
+        type: integer
+        constraints:
+        - greater_than: false # ERROR: integer expected!
+      p-greater_than-float:
+        type: float
+        constraints:
+        - greater_than: false # ERROR: float expected!
+      p-greater_than-timestamp:
+        type: timestamp
+        constraints:
+        - greater_than: false # ERROR: timestamp expected!
+      p-greater_than-version:
+        type: version
+        constraints:
+        - greater_than: false # ERROR: version expected!
+      p-greater_than-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+        - greater_than: false # ERROR: scalar-unit.size expected!
+      p-greater_than-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+        - greater_than: false # ERROR: scalar-unit.time expected!
+      p-greater_than-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+        - greater_than: false # ERROR: scalar-unit.frequency expected!
+      p-greater_than-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - greater_than: false # ERROR: scalar-unit.bitrate expected!
+      p-greater_or_equal-string:
+        type: string
+        constraints:
+        - greater_or_equal: false # ERROR: string expected!
+      p-greater_or_equal-integer:
+        type: integer
+        constraints:
+        - greater_or_equal: false # ERROR: integer expected!
+      p-greater_or_equal-float:
+        type: float
+        constraints:
+        - greater_or_equal: false # ERROR: float expected!
+      p-greater_or_equal-timestamp:
+        type: timestamp
+        constraints:
+        - greater_or_equal: false # ERROR: timestamp expected!
+      p-greater_or_equal-version:
+        type: version
+        constraints:
+        - greater_or_equal: false # ERROR: version expected!
+      p-greater_or_equal-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+        - greater_or_equal: false # ERROR: scalar-unit.size expected!
+      p-greater_or_equal-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+        - greater_or_equal: false # ERROR: scalar-unit.time expected!
+      p-greater_or_equal-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+        - greater_or_equal: false # ERROR: scalar-unit.frequency expected!
+      p-greater_or_equal-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - greater_or_equal: false # ERROR: scalar-unit.bitrate expected!
+      p-less_than-string:
+        type: string
+        constraints:
+        - less_than: false # ERROR: string expected!
+      p-less_than-integer:
+        type: integer
+        constraints:
+        - less_than: false # ERROR: integer expected!
+      p-less_than-float:
+        type: float
+        constraints:
+        - less_than: false # ERROR: float expected!
+      p-less_than-timestamp:
+        type: timestamp
+        constraints:
+        - less_than: false # ERROR: timestamp expected!
+      p-less_than-version:
+        type: version
+        constraints:
+        - less_than: false # ERROR: version expected!
+      p-less_than-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+        - less_than: false # ERROR: scalar-unit.size expected!
+      p-less_than-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+        - less_than: false # ERROR: scalar-unit.time expected!
+      p-less_than-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+        - less_than: false # ERROR: scalar-unit.frequency expected!
+      p-less_than-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - less_than: false # ERROR: scalar-unit.bitrate expected!
+      p-less_or_equal-string:
+        type: string
+        constraints:
+        - less_or_equal: false # ERROR: string expected!
+      p-less_or_equal-integer:
+        type: integer
+        constraints:
+        - less_or_equal: false # ERROR: integer expected!
+      p-less_or_equal-float:
+        type: float
+        constraints:
+        - less_or_equal: false # ERROR: float expected!
+      p-less_or_equal-timestamp:
+        type: timestamp
+        constraints:
+        - less_or_equal: false # ERROR: timestamp expected!
+      p-less_or_equal-version:
+        type: version
+        constraints:
+        - less_or_equal: false # ERROR: version expected!
+      p-less_or_equal-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+        - less_or_equal: false # ERROR: scalar-unit.size expected!
+      p-less_or_equal-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+        - less_or_equal: false # ERROR: scalar-unit.time expected!
+      p-less_or_equal-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+        - less_or_equal: false # ERROR: scalar-unit.frequency expected!
+      p-less_or_equal-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - less_or_equal: false # ERROR: scalar-unit.bitrate expected!
+      p-in_range-string-1:
+        type: string
+        constraints:
+        - in_range: [ aaa, false ] # ERROR: string expected!
+      p-in_range-string-2:
+        type: string
+        constraints:
+        - in_range: [ false, zzz ] # ERROR: string expected!
+      p-in_range-integer-1:
+        type: integer
+        constraints:
+        - in_range: [ 1, false ] # ERROR: integer expected!
+      p-in_range-integer-2:
+        type: integer
+        constraints:
+        - in_range: [ false, 1 ] # ERROR: integer expected!
+      p-in_range-float-1:
+        type: float
+        constraints:
+        - in_range: [ 1.0, false ] # ERROR: float expected!
+      p-in_range-float-2:
+        type: float
+        constraints:
+        - in_range: [ false, 1.0 ] # ERROR: float expected!
+      p-in_range-timestamp-1:
+        type: timestamp
+        constraints:
+        - in_range: [ 2001-12-14t21:59:43.10-05:00, false ] # ERROR: timestamp expected!
+      p-in_range-timestamp-2:
+        type: timestamp
+        constraints:
+        - in_range: [ false, 2001-12-14t21:59:43.10-05:00 ] # ERROR: timestamp expected!
+      p-in_range-version-1:
+        type: version
+        constraints:
+        - in_range: [ 1.0, false ] # ERROR: version expected!
+      p-in_range-version-2:
+        type: version
+        constraints:
+        - in_range: [ false, 1.0 ] # ERROR: version expected!
+      p-in_range-scalar-unit.size-1:
+        type: scalar-unit.size
+        constraints:
+        - in_range: [ 1 MB, false ] # ERROR: scalar-unit.size expected!
+      p-in_scalar-unit.size-2:
+        type: scalar-unit.size
+        constraints:
+        - in_range: [ false, 1 MB ] # ERROR: scalar-unit.size expected!
+      p-in_range-scalar-unit.time-1:
+        type: scalar-unit.time
+        constraints:
+        - in_range: [ 1 s, false ] # ERROR: scalar-unit.time expected!
+      p-in_scalar-unit.time-2:
+        type: scalar-unit.time
+        constraints:
+        - in_range: [ false, 1 s ] # ERROR: scalar-unit.time expected!
+      p-in_range-scalar-unit.frequency-1:
+        type: scalar-unit.frequency
+        constraints:
+        - in_range: [ 1 MHz, false ] # ERROR: scalar-unit.frequency expected!
+      p-in_scalar-unit.frequency-2:
+        type: scalar-unit.frequency
+        constraints:
+        - in_range: [ false, 1 MHz ] # ERROR: scalar-unit.frequency expected!
+      p-in_range-scalar-unit.bitrate-1:
+        type: scalar-unit.bitrate
+        constraints:
+        - in_range: [ 1 Mbps, false ] # ERROR: scalar-unit.bitrate expected!
+      p-in_scalar-unit.bitrate-2:
+        type: scalar-unit.bitrate
+        constraints:
+        - in_range: [ false, 1 Mbps ] # ERROR: scalar-unit.bitrate expected!
+      p-valid_values-string:
+        type: string
+        constraints:
+        - valid_values: [ aaa, false ] # ERROR: string expected!
+      p-valid_values-integer:
+        type: integer
+        constraints:
+        - valid_values: [ 1, false ] # ERROR: integer expected!
+      p-valid_values-float:
+        type: float
+        constraints:
+        - valid_values: [ 1.0, false ] # ERROR: float expected!
+      p-valid_values-boolean:
+        type: boolean
+        constraints:
+        - valid_values: [ false, 1.0 ] # ERROR: boolean expected!
+      p-valid_values-timestamp:
+        type: timestamp
+        constraints:
+        - valid_values: [ 2001-12-14t21:59:43.10-05:00, false ] # ERROR: timestamp expected!
+      p-valid_values-null:
+        type: 'null'
+        constraints:
+        - valid_values: [ null, false ] # ERROR: null expected!
+      p-valid_values-version:
+        type: version
+        constraints:
+        - valid_values: [ 1.0, false ] # ERROR: version expected!
+      p-valid_values-range:
+        type: range
+        constraints:
+        - valid_values: [ [1, 10], false ] # ERROR: range expected!
+      p-valid_values-list:
+        type: list
+        constraints:
+        - valid_values: [ [], false ] # ERROR: list expected!
+      p-valid_values-map:
+        type: map
+        constraints:
+        - valid_values: [ {}, false ] # ERROR: map expected!
+      p-valid_values-scalar-unit.size:
+        type: scalar-unit.size
+        constraints:
+        - valid_values: [ 1 B, false ] # ERROR: scalar-unit.size expected!
+      p-valid_values-scalar-unit.time:
+        type: scalar-unit.time
+        constraints:
+        - valid_values: [ 1 s, false ] # ERROR: scalar-unit.time expected!
+      p-valid_values-scalar-unit.frequency:
+        type: scalar-unit.frequency
+        constraints:
+        - valid_values: [ 1 Hz, false ] # ERROR: scalar-unit.frequency expected!
+      p-valid_values-scalar-unit.bitrate:
+        type: scalar-unit.bitrate
+        constraints:
+        - valid_values: [ 1 bps, false ] # ERROR: scalar-unit.bitrate expected!
+
+  DataTypePropertiesExternalSchemaUnchecked:
+    properties:
+      p1:
+        type: string
+        external_schema: 'an external schema' # ERROR: external_schema currently unchecked!
+
+capability_types:
+  # CORRECT: capability type
+  CapabilityType:
+    # CORRECT: derived from a defined capability type.
+    derived_from: tosca.capabilities.Root
+    properties:
+      p1:
+        # CORRECT: yaml type.
+        type: string
+        required: false
+      p2:
+        # CORRECT: tosca type.
+        type: range
+        required: false
+      p3:
+        # CORRECT: data type.
+        type: DataType
+        required: false
+    attributes:
+      a1:
+        # CORRECT: yaml type.
+        type: string
+      a2:
+        # CORRECT: tosca type.
+        type: range
+      a3:
+        # CORRECT: data type.
+        type: DataType
+
+  # CORRECT: capability type
+  CapabilityTypeValidSourceNodeType:
+    # CORRECT: derived from a defined capability type.
+    derived_from: CapabilityType
+    # CORRECT: valid node types.
+    valid_source_types: [ NodeType ]
+
+  # ERROR: already defined capability type!
+  tosca.capabilities.Root:
+    description: ''
+
+  CapabilityTypeDerivedFromUndefinedType:
+    # ERROR: must be a type defined!
+    derived_from: UndefinedType
+
+  CapabilityTypeDerivedFromIncorrectType:
+    # ERROR: must be a capability type!
+    derived_from: tosca.interfaces.Root
+
+  CapabilityTypeDerivedFromCyclicType:
+    # ERROR: cyclic derived from!
+    derived_from: CapabilityTypeDerivedFromCyclicType
+
+  CapabilityTypeDerivedFromCyclicType1:
+    # ERROR: cyclic derived from!
+    derived_from: CapabilityTypeDerivedFromCyclicType3
+
+  CapabilityTypeDerivedFromCyclicType2:
+    # ERROR: cyclic derived from!
+    derived_from: CapabilityTypeDerivedFromCyclicType1
+
+  CapabilityTypeDerivedFromCyclicType3:
+    # ERROR: cyclic derived from!
+    derived_from: CapabilityTypeDerivedFromCyclicType2
+
+  CapabilityTypeValidSourceTypesUndefinedType:
+    # ERROR: must be defined types!
+    valid_source_types: [ UndefinedType ]
+
+  CapabilityTypeValidSourceTypesIncorrectType:
+    # ERROR: must be node types!
+    valid_source_types: [ tosca.policies.Root ]
+
+  CapabilityTypeValidSourceTypesIncompatibleType:
+    derived_from: CapabilityTypeValidSourceNodeType
+    # ERROR: must be compatible with derived_from valid_source_types!
+    # Here tosca.nodes.Compute doesn't derived from NodeType.
+    valid_source_types: [ tosca.nodes.Compute ]
+
+  CapabilityTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
+
+  CapabilityTypePropertiesUndefinedType:
+    properties:
+      p1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  CapabilityTypePropertiesIncorrectType:
+    properties:
+      p1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  CapabilityTypePropertiesIncompatibleType:
+    derived_from: CapabilityType
+    properties:
+      p1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  CapabilityTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  CapabilityTypePropertiesRequiredFalse:
+    derived_from: CapabilityTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
+
+  CapabilityTypeAttributesUndefinedType:
+    attributes:
+      a1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  CapabilityTypeAttributesIncorrectType:
+    attributes:
+      a1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  CapabilityTypeAttributesIncompatibleType:
+    derived_from: CapabilityType
+    attributes:
+      a1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+interface_types:
+  # CORRECT: interface type
+  InterfaceType:
+    # CORRECT: derived from a defined interface type.
+    derived_from: tosca.interfaces.Root
+    inputs:
+      i1:
+        # CORRECT: YAML type.
+        type: string
+      i2:
+        # CORRECT: TOSCA type.
+        type: range
+      i3:
+        # CORRECT: data type.
+        type: DataType
+    op1:
+      inputs:
+        i1:
+          # CORRECT: YAML type.
+          type: string
+        i2:
+          # CORRECT: TOSCA type.
+          type: range
+        i3:
+          # CORRECT: data type.
+          type: DataType
+
+  # ERROR: already defined interface type!
+  tosca.interfaces.Root:
+    description: ''
+
+  InterfaceTypeDerivedFromUndefinedType:
+    # ERROR: must be a type defined!
+    derived_from: UndefinedType
+
+  InterfaceTypeDerivedFromIncorrectType:
+    # ERROR: must be an interface type!
+    derived_from: tosca.nodes.Root
+
+  InterfaceTypeDerivedFromCyclicType:
+    # ERROR: cyclic derived from!
+    derived_from: InterfaceTypeDerivedFromCyclicType
+
+  InterfaceTypeDerivedFromCyclicType1:
+    # ERROR: cyclic derived from!
+    derived_from: InterfaceTypeDerivedFromCyclicType3
+
+  InterfaceTypeDerivedFromCyclicType2:
+    # ERROR: cyclic derived from!
+    derived_from: InterfaceTypeDerivedFromCyclicType1
+
+  InterfaceTypeDerivedFromCyclicType3:
+    # ERROR: cyclic derived from!
+    derived_from: InterfaceTypeDerivedFromCyclicType2
+
+  InterfaceTypeInputsUndefinedType:
+    inputs:
+      i1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  InterfaceTypeInputsIncorrectType:
+    inputs:
+      i1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  InterfaceTypeInputsIncompatibleType:
+    derived_from: InterfaceType
+    inputs:
+      i1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  InterfaceTypeInputsRequiredTrue:
+    inputs:
+      p1:
+        type: string
+        # required: true by default
+
+  InterfaceTypeInputsRequiredFalse:
+    derived_from: InterfaceTypeInputsRequiredTrue
+    inputs:
+      p1:
+        required: false # ERROR: previous declared as required!
+
+  InterfaceTypeOperationsInputsUndefinedType:
+    op1:
+      inputs:
+        i1:
+          # ERROR: undefined data type!
+          type: UndefinedType
+
+  InterfaceTypeOperationsInputsIncorrectType:
+    op1:
+      inputs:
+        i1:
+          # ERROR: data type required!
+          type: tosca.interfaces.Root
+
+  InterfaceTypeOperationsInputsIncompatibleType:
+    derived_from: InterfaceType
+    op1:
+      inputs:
+        i1:
+          # ERROR: incompatible type with previous declared type!
+          type: integer
+
+  InterfaceTypeOperationsInputsRequiredTrue:
+    op1:
+      inputs:
+        i1:
+          type: string
+          # required: true by default
+
+  InterfaceTypeOperationsInputsRequiredFalse:
+    derived_from: InterfaceTypeOperationsInputsRequiredTrue
+    op1:
+      inputs:
+        i1:
+          required: false # ERROR: previous declared as required!
+
+node_types:
+  # CORRECT: node type
+  NodeType:
+    # CORRECT: derived from a defined node type.
+    derived_from: tosca.nodes.Root
+    capabilities:
+      c1:
+        # CORRECT: valid capability type.
+        type: CapabilityType
+        attributes:
+          a1:
+            # CORRECT: YAML type.
+            type: string
+          a2:
+            # CORRECT: TOSCA type.
+            type: range
+          a3:
+            # CORRECT: data type.
+            type: DataType
+        properties:
+          p1:
+            # CORRECT: YAML type.
+            type: string
+          p2:
+            # CORRECT: TOSCA type.
+            type: range
+          p3:
+            # CORRECT: data type.
+            type: DataType
+        # CORRECT: valid node type.
+        valid_source_types: [ NodeType ]
+        # CORRECT: valid occurrences.
+        occurrences: [ 1, 10 ]
+      feature:
+        # CORRECT: valid capability type.
+        type: tosca.capabilities.Node
+        # CORRECT: valid node type.
+        valid_source_types: [ NodeType ]
+    requirements:
+      - r1:
+          # CORRECT: valid capability type.
+          capability: CapabilityType
+          # CORRECT: valid node type.
+          node: NodeType
+          # CORRECT: valid relationship type.
+          relationship: RelationshipType
+    interfaces:
+      i1:
+        # CORRECT: valid interface type.
+        type: InterfaceType
+        inputs:
+          i1:
+            # CORRECT: YAML type.
+            type: string
+          i2:
+            # CORRECT: TOSCA type.
+            type: range
+          i3:
+            # CORRECT: data type.
+            type: DataType
+        op1:
+          inputs:
+            i1:
+              # CORRECT: YAML type.
+              type: string
+            i2:
+              # CORRECT: TOSCA type.
+              type: range
+            i3:
+              # CORRECT: data type.
+              type: DataType
+    artifacts:
+      a1:
+        # CORRECT: valid artifact type.
+        type: ArtifactType
+        # CORRECT: repository name.
+        repository: repo1
+        properties:
+          p1: "a string"
+    properties:
+      p1:
+        # CORRECT: YAML type.
+        type: string
+        required: false
+      p2:
+        # CORRECT: TOSCA type.
+        type: range
+        required: false
+      p3:
+        # CORRECT: data type.
+        type: DataType
+        required: false
+    attributes:
+      a1:
+        # CORRECT: YAML type.
+        type: string
+      a2:
+        # CORRECT: TOSCA type.
+        type: range
+      a3:
+        # CORRECT: data type.
+        type: DataType
+
+  # ERROR: already defined node type!
+  tosca.nodes.Root:
+    description: ''
+
+  NodeTypeDerivedFromUndefinedType:
+    # ERROR: must be a type defined!
+    derived_from: UndefinedType
+
+  NodeTypeDerivedFromIncorrectType:
+    # ERROR: must be a node type!
+    derived_from: tosca.relationships.Root
+
+  NodeTypeDerivedFromCyclicType:
+    # ERROR: cyclic derived from!
+    derived_from: NodeTypeDerivedFromCyclicType
+
+  NodeTypeDerivedFromCyclicType1:
+    # ERROR: cyclic derived from!
+    derived_from: NodeTypeDerivedFromCyclicType3
+
+  NodeTypeDerivedFromCyclicType2:
+    # ERROR: cyclic derived from!
+    derived_from: NodeTypeDerivedFromCyclicType1
+
+  NodeTypeDerivedFromCyclicType3:
+    # ERROR: cyclic derived from!
+    derived_from: NodeTypeDerivedFromCyclicType2
+
+  NodeTypeAttributesUndefinedType:
+    attributes:
+      a1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  NodeTypeAttributesIncorrectType:
+    attributes:
+      a1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  NodeTypeAttributesIncompatibleType:
+    derived_from: NodeType
+    attributes:
+      a1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  NodeTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
+
+  NodeTypePropertiesUndefinedType:
+    properties:
+      p1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  NodeTypePropertiesIncorrectType:
+    properties:
+      p1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  NodeTypePropertiesIncompatibleType:
+    derived_from: NodeType
+    properties:
+      p1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  NodeTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  NodeTypePropertiesRequiredFalse:
+    derived_from: NodeTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
+
+  NodeTypeCapabilitiesTypeMissed:
+    capabilities:
+      c1: {
+        # ERROR: type missed!
+      }
+
+  NodeTypeCapabilitiesUndefinedCapabilityType:
+    capabilities:
+      c1:
+        # ERROR: must be a defined type!
+        type: UndefinedType
+
+  NodeTypeCapabilitiesUndefinedCapabilityType2:
+    capabilities:
+      c1:
+        # ERROR: must be a defined type!
+        type: UndefinedType
+        # ERROR: tosca.nodes.Compute has no requirement compatible with UndefinedType!
+        valid_source_types: [ tosca.nodes.Compute ]
+
+  NodeTypeCapabilitiesIncorrectCapabilityType:
+    capabilities:
+      c1:
+        # ERROR: must be a capability type!
+        type: tosca.nodes.Root
+
+  NodeTypeCapabilitiesIncompatibleCapabilityType:
+    derived_from: NodeType
+    capabilities:
+      c1:
+        # ERROR: incompatible type with previous declared type!
+        type: tosca.capabilities.Root
+
+  NodeTypeCapabilitiesAttributesUndefinedInCapabilityType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a4: # ERROR: a4 undefined in CapabilityType
+            type: string
+
+  NodeTypeCapabilitiesAttributesUndefinedType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a1:
+            # ERROR: undefined data type!
+            type: UndefinedType
+
+  NodeTypeCapabilitiesAttributesIncorrectType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a1:
+            # ERROR: data type required!
+            type: tosca.interfaces.Root
+
+  NodeTypeCapabilitiesAttributesIncompatibleType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  NodeTypeCapabilitiesAttributesIncompatibleType2:
+    derived_from: NodeType
+    capabilities:
+      c1:
+        attributes:
+          a1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  NodeTypeCapabilitiesPropertiesUndefinedInCapabilityType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p4: # ERROR: p4 undefined in CapabilityType
+            type: string
+
+  NodeTypeCapabilitiesPropertiesTypeMissed:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1: {
+            # ER TODO ROR: type missed!
+          }
+
+  NodeTypeCapabilitiesPropertiesUndefinedType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1:
+            # ERROR: undefined data type!
+            type: UndefinedType
+
+  NodeTypeCapabilitiesPropertiesIncorrectType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1:
+            # ERROR: data type required!
+            type: tosca.interfaces.Root
+
+  NodeTypeCapabilitiesPropertiesIncompatibleType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  NodeTypeCapabilitiesPropertiesIncompatibleType2:
+    derived_from: NodeType
+    capabilities:
+      c1:
+        properties:
+          p1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  NodeTypeCapabilitiesPropertiesRequiredFalse:
+    capabilities:
+      c1:
+        type: CapabilityTypePropertiesRequiredTrue
+        properties:
+          p1:
+            required: false # ERROR: previous declared as required!
+
+  NodeTypeCapabilitiesValidSourceTypesUndefinedType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        # ERROR: must be a defined type!
+        valid_source_types: [ UndefinedType ]
+
+  NodeTypeCapabilitiesValidSourceTypesIncorrectType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        # ERROR: must be a node type!
+        valid_source_types: [ tosca.capabilities.Root ]
+
+  NodeTypeCapabilitiesValidSourceTypesIncompatibleType:
+    derived_from: NodeType
+    capabilities:
+      feature:
+        # ERROR: incompatible with previous valid source types!
+        valid_source_types: [ Compute ]
+
+  NodeTypeCapabilitiesValidSourceTypesIncompatibleWithCapabilityType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        # ERROR: tosca.nodes.Compute has no requirement compatible with CapabilityType!
+        valid_source_types: [ tosca.nodes.Compute ]
+
+  NodeTypeCapabilitiesOccurrences:
+    capabilities:
+      c1:
+        type: CapabilityType
+        # ERROR: lower occurrence can not be greater than upper occurrence!
+        occurrences: [ 1, 0 ]
+
+  NodeTypeCapabilitiesOccurrencesLessThanPreviousLowerOccurrence:
+    derived_from: NodeType
+    capabilities:
+      feature:
+        # ERROR: lower occurrence can not be less than previous lower occurrence!
+        occurrences: [ 0, UNBOUNDED ]
+
+  NodeTypeCapabilitiesOccurrencesGreaterThanPreviousUpperOccurrence:
+    derived_from: NodeType
+    capabilities:
+      c1:
+        # ERROR: upper occurrence can not be greater than previous upper occurrence!
+        occurrences: [ 1, 20 ]
+
+  NodeTypeRequirementsCapabilityMissed:
+    requirements:
+      - r1: {
+          # ERROR: capability missed!
+        }
+
+  NodeTypeRequirementsCapabilityUndefinedType:
+    requirements:
+      - r1:
+          # ERROR: must be a defined type!
+          capability: UndefinedType
+
+  NodeTypeRequirementsCapabilityIncorrectType:
+    requirements:
+      - r1:
+          # ERROR: must be a capability type!
+          capability: tosca.nodes.Root
+
+  NodeTypeRequirementsCapabilityIncompatibleType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          # ERROR: incompatible type with previous declared type!
+          capability: tosca.capabilities.Root
+
+  NodeTypeRequirementsCapabilityIncompatibleWithValidSourceTypes:
+    requirements:
+      - r1:
+          # ERROR: this node type is incompatible with valid source types of CapabilityTypeValidSourceNodeType
+          capability: CapabilityTypeValidSourceNodeType
+
+  NodeTypeRequirementsNodeUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: must be a defined type!
+          node: UndefinedType
+
+  NodeTypeRequirementsNodeIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: must be a node type!
+          node: tosca.datatypes.Root
+
+  NodeTypeRequirementsNodeIncompatibleType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          # ERROR: incompatible type with previous declared type!
+          node: tosca.nodes.Root
+
+  NodeTypeRequirementsNodeIncompatibleWithCapabilityType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: tosca.nodes.Compute has no capability compatible with CapabilityType!
+          node: tosca.nodes.Compute
+
+  NodeTypeRequirementsRelationshipUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: must be a defined type!
+          relationship: UndefinedType
+
+  NodeTypeRequirementsRelationshipIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: must be a relationship type!
+          relationship: tosca.datatypes.Root
+
+  NodeTypeRequirementsRelationshipIncompatibleType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          # ERROR: incompatible type with previous declared type!
+          relationship: tosca.relationships.Root
+
+  NodeTypeRequirementsRelationshipIncompatibleWithValidTargetTypes:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: no valid target type compatible with CapabilityType!
+          relationship: tosca.relationships.HostedOn
+
+  NodeTypeRequirementsRelationshipTypeMissed:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship: {
+            # ERROR: type missed
+            }
+
+  NodeTypeRequirementsRelationshipTypeUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  NodeTypeRequirementsRelationshipTypeIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            # ERROR: must be a relationship type!
+            type: tosca.datatypes.Root
+
+  NodeTypeRequirementsRelationshipTypeIncompatibleWithDerivedFromType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          relationship:
+            # ERROR: incompatible type with previous declared type!
+            type: tosca.relationships.Root
+
+  NodeTypeRequirementsRelationshipTypeIncompatibleWithCapabilityType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: no valid target type compatible with CapabilityType!
+          relationship: tosca.relationships.HostedOn
+
+  NodeTypeRequirementsRelationshipInterfacesUndefinedInRelationshipType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              undefined-interface: # ERROR: undefined in RelationshipType!
+                type: InterfaceType
+
+  NodeTypeRequirementsRelationshipInterfacesUndefinedInDerivedFromType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          relationship:
+            # type is set to RelationshipType into NodeType.
+            interfaces:
+              undefined-interface: # ERROR: undefined in RelationshipType!
+                type: InterfaceType
+
+  NodeTypeRequirementsRelationshipInterfacesUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                # ERROR: must be a defined type!
+                type: UndefinedType
+
+  NodeTypeRequirementsRelationshipInterfacesIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                # ERROR: must be an interface type!
+                type: tosca.nodes.Root
+
+  NodeTypeRequirementsRelationshipInterfacesIncompatibleType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          relationship:
+            interfaces:
+              i1:
+                # ERROR: incompatible type with previous declared type!
+                type: tosca.interfaces.Root
+
+  NodeTypeRequirementsRelationshipInterfacesInputsUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: must be a defined type!
+                    type: UndefinedType
+
+  NodeTypeRequirementsRelationshipInterfacesInputsIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: must be an interface type!
+                    type: tosca.nodes.Root
+
+  NodeTypeRequirementsRelationshipInterfacesInputsTypeIncompatibleWithDerivedFromType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: incompatible type with previous declared type!
+                    type: integer
+
+  NodeTypeRequirementsRelationshipInterfacesInputsTypeIncompatibleWithRelationshipType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: incompatible type with interface type!
+                    type: integer
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsInputsUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: must be a defined type!
+                      type: UndefinedType
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsInputsIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: must be an interface type!
+                      type: tosca.nodes.Root
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsInputsIncompatiblewithDerivedFromType:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          relationship:
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: incompatible type with previous declared type!
+                      type: integer
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsInputsIncompatiblewithRelationshipType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: incompatible type with previous declared type!
+                      type: integer
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsUndefinedInInterfaceType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                type: InterfaceType
+                op2: # ERROR: op2 undefined in InterfaceType
+                  description: new operation
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeUndefined:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    primary:
+                      # ERROR: must be a defined type!
+                      type: UndefinedType
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeIncorrect:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    primary:
+                      # ERROR: must be an artifact type!
+                      type: tosca.nodes.Root
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeUndefined:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    dependencies:
+                      -
+                        # ERROR: must be a defined type!
+                        type: UndefinedType
+
+  NodeTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeIncorrect:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    dependencies:
+                      - # ERROR: must be an artifact type!
+                        type: tosca.nodes.Root
+
+  NodeTypeRequirementsOccurrences:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: lower occurrence can not be greater than upper occurrence!
+          occurrences: [ 1, 0 ]
+
+  NodeTypeRequirementsOccurrencesLessThanPreviousLowerOccurrences:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          # ERROR: lower occurrence can not be less than previous lower occurrence!
+          occurrences: [ 0, 1 ]
+
+  NodeTypeRequirementsOccurrencesGreaterThanPreviousUpperOccurrences:
+    derived_from: NodeType
+    requirements:
+      - r1:
+          # ERROR: upper occurrence can not be greater than previous upper occurrence!
+          occurrences: [ 1, UNBOUNDED ]
+
+  NodeTypeInterfacesTypeMissed:
+    interfaces:
+      i1: {
+        # ERROR: type missed!
+      }
+
+  NodeTypeInterfacesUndefinedType:
+    interfaces:
+      i1:
+        # ERROR: must be a defined type!
+        type: UndefinedType
+
+  NodeTypeInterfacesIncorrectType:
+    interfaces:
+      i1:
+        # ERROR: must be an interface type!
+        type: tosca.nodes.Root
+
+  NodeTypeInterfacesIncompatibleType:
+    derived_from: NodeType
+    interfaces:
+      i1:
+        # ERROR: incompatible type with previous declared type!
+        type: tosca.interfaces.Root
+
+  NodeTypeInterfacesInputsUndefinedType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  NodeTypeInterfacesInputsIncorrectType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: must be an interface type!
+            type: tosca.nodes.Root
+
+  NodeTypeInterfacesInputsTypeIncompatibleWithDerivedFromType:
+    derived_from: NodeType
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  NodeTypeInterfacesInputsTypeIncompatibleWithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: incompatible type with interface type!
+            type: integer
+
+  NodeTypeInterfacesInputsRequiredTrue:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            type: string
+            # required: true by default
+
+  NodeTypeInterfacesInputsRequiredFalse:
+    derived_from: NodeTypeInterfacesInputsRequiredTrue
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            required: false # ERROR: previous declared as required!
+
+  NodeTypeInterfacesOperationsInputsUndefinedType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  NodeTypeInterfacesOperationsInputsIncorrectType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be an interface type!
+              type: tosca.nodes.Root
+
+  NodeTypeInterfacesOperationsInputsIncompatiblewithDerivedFromType:
+    derived_from: NodeType
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  NodeTypeInterfacesOperationsInputsIncompatiblewithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  NodeTypeInterfacesOperationsUndefinedInInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op2: # ERROR: op2 undefined in InterfaceType
+          description: new operation
+
+  NodeTypeInterfacesOperationsImplementationPrimaryTypeMissed:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            primary: {
+              # ERROR: type missed!
+            }
+
+  NodeTypeInterfacesOperationsImplementationPrimaryTypeUndefined:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  NodeTypeInterfacesOperationsImplementationPrimaryTypeIncorrect:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be an artifact type!
+              type: tosca.nodes.Root
+
+  NodeTypeInterfacesOperationsImplementationDependenciesTypeMissed:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            dependencies:
+              - {
+                  # ERROR: type missed!
+                }
+
+  NodeTypeInterfacesOperationsImplementationDependenciesTypeUndefined:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be a defined type!
+                type: UndefinedType
+
+  NodeTypeInterfacesOperationsImplementationDependenciesTypeIncorrect:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be an artifact type!
+                type: tosca.nodes.Root
+
+  NodeTypeArtifactsTypeMissed:
+    artifacts:
+      a1: {
+        # ERROR: type missed!
+      }
+
+  NodeTypeArtifactsUndefinedType:
+    artifacts:
+      a1:
+        # ERROR: must be a defined type!
+        type: UndefinedType
+
+  NodeTypeArtifactsIncorrectType:
+    artifacts:
+      a1:
+        # ERROR: must be an artifact type!
+        type: tosca.nodes.Root
+
+  NodeTypeArtifactsIncompatibleType:
+    derived_from: NodeType
+    artifacts:
+      a1:
+        # ERROR: incompatible type with previous declared type!
+        type: tosca.artifacts.File
+
+  NodeTypeArtifactsFileUnchecked:
+    artifacts:
+      a1:
+        type: ArtifactType
+        file: 'the file of this artifact' # WARNING: file currently unchecked!
+
+  NodeTypeArtifactsFileNoArtifactTypeFound:
+    artifacts:
+      a1: script.py # CORRECT: tosca.artifacts.Implementation.Python found!
+      a2: script.xyz # WARNING: no artifact type found for 'xyz' file extension!
+
+  NodeTypeArtifactsFileIncompatibleWithArtifactTypeFileExt:
+    artifacts:
+      a1:
+        type: tosca.artifacts.Implementation.Bash # file_ext: [ sh ]
+        file: script.py # ERROR: file extension incompatible with artifact type file_ext!
+
+  NodeTypeArtifactsRepositoryUndefined:
+    artifacts:
+      a1:
+        type: ArtifactType
+        # ERROR: repository not found.
+        repository: undefined_repository
+
+  NodeTypeArtifactsPropertiesValueExpected:
+    artifacts:
+      a1:
+        type: ArtifactType
+        properties:
+          p1: true # ERROR: string expected!
+
+  NodeTypeArtifactsPropertiesUndefinedInArtifactType:
+    artifacts:
+      a1:
+        type: ArtifactType
+        properties:
+          undefined-property: {} # ERROR: undefined in ArtifactType!
+
+relationship_types:
+  # CORRECT: relationship type
+  RelationshipType:
+    # CORRECT: derived from a defined relationship type.
+    derived_from: tosca.relationships.Root
+    # CORRECT: valid target capability types!
+    valid_target_types: [ CapabilityType ]
+    interfaces:
+      i1:
+        # CORRECT: valid interface type.
+        type: InterfaceType
+        inputs:
+          i1:
+            # CORRECT: YAML type.
+            type: string
+          i2:
+            # CORRECT: TOSCA type.
+            type: range
+          i3:
+            # CORRECT: data type.
+            type: DataType
+        op1:
+          inputs:
+            i1:
+              # CORRECT: YAML type.
+              type: string
+            i2:
+              # CORRECT: TOSCA type.
+              type: range
+            i3:
+              # CORRECT: data type.
+              type: DataType
+    properties:
+      p1:
+        # CORRECT: YAML type.
+        type: string
+        required: false
+      p2:
+        # CORRECT: TOSCA type.
+        type: range
+        required: false
+      p3:
+        # CORRECT: data type.
+        type: DataType
+        required: false
+    attributes:
+      a1:
+        # CORRECT: YAML type.
+        type: string
+      a2:
+        # CORRECT: TOSCA type.
+        type: range
+      a3:
+        # CORRECT: data type.
+        type: DataType
+
+  # ERROR: already defined relationship type!
+  tosca.relationships.Root:
+    description: ''
+
+  RelationshipTypeDerivedFromUndefinedType:
+    # ERROR: must be a type defined!
+    derived_from: UndefinedType
+
+  RelationshipTypeDerivedFromIncorrectType:
+    # ERROR: must be a relationship type!
+    derived_from: tosca.policies.Root
+
+  RelationshipTypeDerivedFromCyclicType:
+    # ERROR: cyclic derived from!
+    derived_from: RelationshipTypeDerivedFromCyclicType
+
+  RelationshipTypeDerivedFromCyclicType1:
+    # ERROR: cyclic derived from!
+    derived_from: RelationshipTypeDerivedFromCyclicType3
+
+  RelationshipTypeDerivedFromCyclicType2:
+    # ERROR: cyclic derived from!
+    derived_from: RelationshipTypeDerivedFromCyclicType1
+
+  RelationshipTypeDerivedFromCyclicType3:
+    # ERROR: cyclic derived from!
+    derived_from: RelationshipTypeDerivedFromCyclicType2
+
+  RelationshipTypeValidTargetTypesUndefinedType:
+    # ERROR: must be defined types!
+    valid_target_types: [ UndefinedType ]
+
+  RelationshipTypeValidTargetTypesIncorrectType:
+    # ERROR: must be capability types!
+    valid_target_types: [ tosca.policies.Root ]
+
+  RelationshipTypeValidTargetTypesIncompatibleType:
+    derived_from: RelationshipType
+    # ERROR: must be compatible with derived_from valid_target_types!
+    # Here tosca.capabilities.Compute doesn't derived from CapabilityType.
+    valid_target_types: [ tosca.capabilities.Compute ]
+
+  RelationshipTypeInterfacesTypeMissed:
+    interfaces:
+      i1: {
+        # ERROR: type missed!
+      }
+
+  RelationshipTypeInterfacesUndefinedType:
+    interfaces:
+      i1:
+        # ERROR: must be a defined type!
+        type: UndefinedType
+
+  RelationshipTypeInterfacesIncorrectType:
+    interfaces:
+      i1:
+        # ERROR: must be an interface type!
+        type: tosca.nodes.Root
+
+  RelationshipTypeInterfacesIncompatibleType:
+    derived_from: RelationshipType
+    interfaces:
+      i1:
+        # ERROR: incompatible type with previous declared type!
+        type: tosca.interfaces.Root
+
+  RelationshipTypeInterfacesInputsUndefinedType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  RelationshipTypeInterfacesInputsIncorrectType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: must be an interface type!
+            type: tosca.nodes.Root
+
+  RelationshipTypeInterfacesInputsTypeIncompatibleWithDerivedFromType:
+    derived_from: RelationshipType
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  RelationshipTypeInterfacesInputsTypeIncompatibleWithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: incompatible type with interface type!
+            type: integer
+
+  RelationshipTypeInterfacesOperationsInputsUndefinedType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  RelationshipTypeInterfacesOperationsInputsIncorrectType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be an interface type!
+              type: tosca.nodes.Root
+
+  RelationshipTypeInterfacesOperationsInputsIncompatibleWithDerivedFromType:
+    derived_from: RelationshipType
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  RelationshipTypeInterfacesOperationsInputsIncompatibleWithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  RelationshipTypeInterfacesOperationsUndefinedInInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op2: # ERROR: op2 undefined in InterfaceType
+          description: new operation
+
+  RelationshipTypeInterfacesOperationsImplementationPrimaryTypeUndefined:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  RelationshipTypeInterfacesOperationsImplementationPrimaryTypeIncorrect:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be an artifact type!
+              type: tosca.nodes.Root
+
+  RelationshipTypeInterfacesOperationsImplementationDependenciesTypeUndefined:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be a defined type!
+                type: UndefinedType
+
+  RelationshipTypeInterfacesOperationsImplementationDependenciesTypeIncorrect:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be an artifact type!
+                type: tosca.nodes.Root
+
+  RelationshipTypeAttributesUndefinedType:
+    attributes:
+      a1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  RelationshipTypeAttributesIncorrectType:
+    attributes:
+      a1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  RelationshipTypeAttributesIncompatibleType:
+    derived_from: RelationshipType
+    attributes:
+      a1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  RelationshipTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
+
+  RelationshipTypePropertiesUndefinedType:
+    properties:
+      p1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  RelationshipTypePropertiesIncorrectType:
+    properties:
+      p1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  RelationshipTypePropertiesIncompatibleType:
+    derived_from: RelationshipType
+    properties:
+      p1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  RelationshipTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  RelationshipTypePropertiesRequiredFalse:
+    derived_from: RelationshipTypePropertiesRequiredTrue
+    properties:
+      p1:
+        type: string
+        required: false # ERROR: previous declared as required!
+
+group_types:
+  # CORRECT: group type
+  GroupType:
+    # CORRECT: derived from a defined group type.
+    derived_from: tosca.groups.Root
+    # CORRECT: valid node types.
+    members: [ NodeType, tosca.nodes.SoftwareComponent ]
+    capabilities:
+      c1:
+        # CORRECT: valid capability type.
+        type: CapabilityType
+        attributes:
+          a1:
+            # CORRECT: YAML type.
+            type: string
+          a2:
+            # CORRECT: TOSCA type.
+            type: range
+          a3:
+            # CORRECT: data type.
+            type: DataType
+        properties:
+          p1:
+            # CORRECT: YAML type.
+            type: string
+          p2:
+            # CORRECT: TOSCA type.
+            type: range
+          p3:
+            # CORRECT: data type.
+            type: DataType
+        # CORRECT: valid node types.
+        valid_source_types: [ NodeType ]
+      c2:
+        # CORRECT: valid capability type.
+        type: tosca.capabilities.Node
+        # CORRECT: valid node type.
+        valid_source_types: [ NodeType ]
+        # CORRECT: valid occurrences.
+        occurrences: [ 1, 10 ]
+    requirements:
+      - r1:
+          # CORRECT: valid capability type.
+          capability: CapabilityType
+          # CORRECT: valid relationship type.
+          relationship: RelationshipType
+    interfaces:
+      i1:
+        # CORRECT: valid interface type.
+        type: InterfaceType
+        inputs:
+          i1:
+            # CORRECT: YAML type.
+            type: string
+          i2:
+            # CORRECT: TOSCA type.
+            type: range
+          i3:
+            # CORRECT: data type.
+            type: DataType
+        op1:
+          inputs:
+            i1:
+              # CORRECT: YAML type.
+              type: string
+            i2:
+              # CORRECT: TOSCA type.
+              type: range
+            i3:
+              # CORRECT: data type.
+              type: DataType
+    properties:
+      p1:
+        # CORRECT: YAML type.
+        type: string
+        required: false
+      p2:
+        # CORRECT: TOSCA type.
+        type: range
+        required: false
+      p3:
+        # CORRECT: data type.
+        type: DataType
+        required: false
+    attributes:
+      a1:
+        # CORRECT: YAML type.
+        type: string
+      a2:
+        # CORRECT: TOSCA type.
+        type: range
+      a3:
+        # CORRECT: data type.
+        type: DataType
+
+  # ERROR: already defined group type!
+  tosca.groups.Root:
+    description: ''
+
+  GroupTypeDerivedFromUndefinedType:
+    # ERROR: must be a type defined!
+    derived_from: UndefinedType
+
+  GroupTypeDerivedFromIncorrectType:
+    # ERROR: must be a group type!
+    derived_from: tosca.artifacts.Root
+
+  GroupTypeDerivedFromCyclicType:
+    # ERROR: cyclic derived from!
+    derived_from: GroupTypeDerivedFromCyclicType
+
+  GroupTypeDerivedFromCyclicType1:
+    # ERROR: cyclic derived from!
+    derived_from: GroupTypeDerivedFromCyclicType3
+
+  GroupTypeDerivedFromCyclicType2:
+    # ERROR: cyclic derived from!
+    derived_from: GroupTypeDerivedFromCyclicType1
+
+  GroupTypeDerivedFromCyclicType3:
+    # ERROR: cyclic derived from!
+    derived_from: GroupTypeDerivedFromCyclicType2
+
+  GroupTypeAttributesUndefinedType:
+    attributes:
+      a1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  GroupTypeAttributesIncorrectType:
+    attributes:
+      a1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  GroupTypeAttributesIncompatibleType:
+    derived_from: GroupType
+    attributes:
+      a1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  GroupTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
+
+  GroupTypePropertiesUndefinedType:
+    properties:
+      p1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  GroupTypePropertiesIncorrectType:
+    properties:
+      p1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  GroupTypePropertiesIncompatibleType:
+    derived_from: GroupType
+    properties:
+      p1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  GroupTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  GroupTypePropertiesRequiredFalse:
+    derived_from: GroupTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
+
+  GroupTypeMembersUndefinedType:
+    # ERROR: must be defined types!
+    members: [ UndefinedType ]
+
+  GroupTypeMembersIncorrectType:
+    # ERROR: must be a node type!
+    members: [ tosca.policies.Root ]
+
+  GroupTypeMembersIncompatibleType:
+    derived_from: GroupType
+    # ERROR: must be compatible with derived_from members types!
+    # Here tosca.nodes.Compute doesn't derived from NodeType or SoftwareComponent.
+    members: [ tosca.nodes.Compute ]
+
+  GroupTypeCapabilitiesTypeMissed:
+    capabilities:
+      c1: {
+        # ERROR: type missed!
+      }
+
+  GroupTypeCapabilitiesUndefinedType:
+    capabilities:
+      c1:
+        # ERROR: must be a defined type.
+        type: UndefinedType
+
+  GroupTypeCapabilitiesUndefinedType2:
+    capabilities:
+      c1:
+        # ERROR: must be a defined type!
+        type: UndefinedType
+        # NOTE: tosca.nodes.Compute has no requirement compatible with UndefinedType
+        # but no error produced because previous error already produced.
+        valid_source_types: [ tosca.nodes.Compute ]
+
+  GroupTypeCapabilitiesIncorrectType:
+    capabilities:
+      c1:
+        # ERROR: must be a capability type!
+        type: tosca.nodes.Root
+
+  GroupTypeCapabilitiesIncompatibleType:
+    derived_from: GroupType
+    capabilities:
+      c1:
+        # ERROR: incompatible type with previous declared type!
+        type: tosca.capabilities.Root
+
+  GroupTypeCapabilitiesAttributesUndefinedInCapabilityType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a4: # ERROR: a4 undefined in CapabilityType
+            type: string
+
+  GroupTypeCapabilitiesAttributesUndefinedType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a1:
+            # ERROR: undefined data type!
+            type: UndefinedType
+
+  GroupTypeCapabilitiesAttributesIncorrectType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a1:
+            # ERROR: data type required!
+            type: tosca.interfaces.Root
+
+  GroupTypeCapabilitiesAttributesIncompatibleType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        attributes:
+          a1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  GroupTypeCapabilitiesAttributesIncompatibleType2:
+    derived_from: GroupType
+    capabilities:
+      c1:
+        attributes:
+          a1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  GroupTypeCapabilitiesPropertiesUndefinedInCapabilityType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p4: # ERROR: p4 undefined in CapabilityType
+            type: string
+
+  GroupTypeCapabilitiesPropertiesTypeMissed:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1: {
+            # ERROR: type missed!
+          }
+
+  GroupTypeCapabilitiesPropertiesUndefinedType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1:
+            # ERROR: undefined data type!
+            type: UndefinedType
+
+  GroupTypeCapabilitiesPropertiesIncorrectType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1:
+            # ERROR: data type required!
+            type: tosca.interfaces.Root
+
+  GroupTypeCapabilitiesPropertiesIncompatibleType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        properties:
+          p1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  GroupTypeCapabilitiesPropertiesIncompatibleType2:
+    derived_from: GroupType
+    capabilities:
+      c1:
+        properties:
+          p1:
+            # ERROR: incompatible type refinement!
+            type: integer
+
+  GroupTypeCapabilitiesValidSourceTypesUndefinedType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        # ERROR: must be a defined type.
+        valid_source_types: [ UndefinedType ]
+
+  GroupTypeCapabilitiesValidSourceTypesIncorrectType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        # ERROR: must be a node type!
+        valid_source_types: [ tosca.capabilities.Root ]
+
+  GroupTypeCapabilitiesValidSourceTypesIncompatibleType:
+    capabilities:
+      c1:
+        type: CapabilityType
+        # ERROR: tosca.nodes.Compute has no requirement compatible with CapabilityType!
+        valid_source_types: [ tosca.nodes.Compute ]
+
+  GroupTypeCapabilitiesOccurrences:
+    capabilities:
+      c1:
+        type: CapabilityType
+        # ERROR: lower occurrence can not be greater than upper occurrence!
+        occurrences: [ 1, 0 ]
+
+  GroupTypeCapabilitiesOccurrencesLessThanPreviousLowerOccurrence:
+    derived_from: GroupType
+    capabilities:
+      c1:
+        # ERROR: lower occurrence can not be less than previous lower occurrence!
+        occurrences: [ 0, UNBOUNDED ]
+
+  GroupTypeCapabilitiesOccurrencesGreaterThanPreviousUpperOccurrence:
+    derived_from: GroupType
+    capabilities:
+      c2:
+        # ERROR: upper occurrence can not be greater than previous upper occurrence!
+        occurrences: [ 1, 20 ]
+
+  GroupTypeRequirementsCapabilityMissed:
+    requirements:
+      - r1: {
+          # ERROR: capability missed!
+        }
+
+  GroupTypeRequirementsCapabilityUndefinedType:
+    requirements:
+      - r1:
+          # ERROR: must be a defined type!
+          capability: UndefinedType
+
+  GroupTypeRequirementsCapabilityIncorrectType:
+    requirements:
+      - r1:
+          # ERROR: must be a capability type!
+          capability: tosca.nodes.Root
+
+  GroupTypeRequirementsCapabilityIncompatibleType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          # ERROR: incompatible type with previous declared type!
+          capability: tosca.capabilities.Root
+
+  GroupTypeRequirementsCapabilityIncompatibleWithValidSourceTypes:
+    requirements:
+      - r1:
+          # ERROR: this group type is incompatible with valid source types of CapabilityTypeValidSourceNodeType
+          capability: CapabilityTypeValidSourceNodeType
+
+  GroupTypeRequirementsNodeUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: must be a defined type!
+          node: UndefinedType
+
+  GroupTypeRequirementsNodeIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: must be a node type!
+          node: tosca.datatypes.Root
+
+  GroupTypeRequirementsNodeIncompatibleWithCapabilityType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: tosca.nodes.Compute has no capability compatible with CapabilityType!
+          node: tosca.nodes.Compute
+
+  GroupTypeRequirementsNodeIncompatibleWithCapabilityValidSourceTypes:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: NodeType has a capability compatible with CapabilityType but
+          # GroupTypeRequirementsNodeIncompatibleWithCapabilityValidSourceTypes is not compatible with valid_source_types!
+          node: NodeType
+
+  GroupTypeRequirementsRelationshipUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: must be a defined type!
+          relationship: UndefinedType
+
+  GroupTypeRequirementsRelationshipIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: must be a relationship type!
+          relationship: tosca.datatypes.Root
+
+  GroupTypeRequirementsRelationshipIncompatibleWithDerivedFromType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          # ERROR: incompatible type with previous declared type!
+          relationship: tosca.relationships.Root
+
+  GroupTypeRequirementsRelationshipIncompatibleWithCapabilityType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: no valid target type compatible with CapabilityType!
+          relationship: tosca.relationships.HostedOn
+
+  GroupTypeRequirementsRelationshipTypeMissed:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship: {
+            # ERROR: type missed
+            }
+
+  GroupTypeRequirementsRelationshipTypeUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  GroupTypeRequirementsRelationshipTypeIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            # ERROR: must be a relationship type!
+            type: tosca.datatypes.Root
+
+  GroupTypeRequirementsRelationshipTypeIncompatibleWithDerivedFromType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          relationship:
+            # ERROR: incompatible type with previous declared type!
+            type: tosca.relationships.Root
+
+  GroupTypeRequirementsRelationshipTypeIncompatibleWithCapabilityType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: no valid target type compatible with CapabilityType!
+          relationship: tosca.relationships.HostedOn
+
+  GroupTypeRequirementsRelationshipInterfacesUndefinedInRelationshipType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              undefined-interface: # ERROR: undefined in RelationshipType!
+                type: InterfaceType
+
+  GroupTypeRequirementsRelationshipInterfacesUndefinedInDerivedFromType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          relationship:
+            # type is set to RelationshipType into GroupType.
+            interfaces:
+              undefined-interface: # ERROR: undefined in RelationshipType!
+                type: InterfaceType
+
+  GroupTypeRequirementsRelationshipInterfacesUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                # ERROR: must be a defined type!
+                type: UndefinedType
+
+  GroupTypeRequirementsRelationshipInterfacesIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                # ERROR: must be an interface type!
+                type: tosca.nodes.Root
+
+  GroupTypeRequirementsRelationshipInterfacesIncompatibleType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          relationship:
+            interfaces:
+              i1:
+                # ERROR: incompatible type with previous declared type!
+                type: tosca.interfaces.Root
+
+  GroupTypeRequirementsRelationshipInterfacesInputsUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: must be a defined type!
+                    type: UndefinedType
+
+  GroupTypeRequirementsRelationshipInterfacesInputsIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: must be an interface type!
+                    type: tosca.nodes.Root
+
+  GroupTypeRequirementsRelationshipInterfacesInputsTypeIncompatibleWithDerivedFromType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: incompatible type with previous declared type!
+                    type: integer
+
+  GroupTypeRequirementsRelationshipInterfacesInputsTypeIncompatibleWithRelationshipType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                inputs:
+                  i1:
+                    # ERROR: incompatible type with interface type!
+                    type: integer
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsInputsUndefinedType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: must be a defined type!
+                      type: UndefinedType
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsInputsIncorrectType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: must be an interface type!
+                      type: tosca.nodes.Root
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsInputsIncompatiblewithDerivedFromType:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          relationship:
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: incompatible type with previous declared type!
+                      type: integer
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsInputsIncompatiblewithRelationshipType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  inputs:
+                    i1:
+                      # ERROR: incompatible type with previous declared type!
+                      type: integer
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsUndefinedInInterfaceType:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                type: InterfaceType
+                op2: # ERROR: op2 undefined in InterfaceType
+                  description: new operation
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeUndefined:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    primary:
+                      # ERROR: must be a defined type!
+                      type: UndefinedType
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsImplementationPrimaryTypeIncorrect:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    primary:
+                      # ERROR: must be an artifact type!
+                      type: tosca.nodes.Root
+
+  GroupTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeUndefined:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    dependencies:
+                      -
+                        # ERROR: must be a defined type!
+                        type: UndefinedType
+
+  GroupTypeDerivedFromCyclicTypeRequirementsRelationshipInterfacesOperationsImplementationDependenciesTypeIncorrect:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          relationship:
+            type: RelationshipType
+            interfaces:
+              i1:
+                op1:
+                  implementation:
+                    dependencies:
+                      - # ERROR: must be an artifact type!
+                        type: tosca.nodes.Root
+
+  GroupTypeRequirementsOccurrences:
+    requirements:
+      - r1:
+          capability: CapabilityType
+          # ERROR: lower occurrence can not be greater than upper occurrence!
+          occurrences: [ 1, 0 ]
+
+  GroupTypeRequirementsOccurrencesLessThanPreviousLowerOccurrences:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          # ERROR: lower occurrence can not be less than previous lower occurrence!
+          occurrences: [ 0, 1 ]
+
+  GroupTypeRequirementsOccurrencesGreaterThanPreviousUpperOccurrences:
+    derived_from: GroupType
+    requirements:
+      - r1:
+          # ERROR: upper occurrence can not be greater than previous upper occurrence!
+          occurrences: [ 1, UNBOUNDED ]
+
+  GroupTypeInterfacesTypeMissed:
+    interfaces:
+      i1: {
+        # ERROR: type missed!
+      }
+
+  GroupTypeInterfacesUndefinedType:
+    interfaces:
+      i1:
+        # ERROR: must be a defined type!
+        type: UndefinedType
+
+  GroupTypeInterfacesIncorrectType:
+    interfaces:
+      i1:
+        # ERROR: must be an interface type!
+        type: tosca.nodes.Root
+
+  GroupTypeInterfacesIncompatibleType:
+    derived_from: GroupType
+    interfaces:
+      i1:
+        # ERROR: incompatible type with previous declared type!
+        type: tosca.interfaces.Root
+
+  GroupTypeInterfacesInputsUndefinedType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: must be a defined type!
+            type: UndefinedType
+
+  GroupTypeInterfacesInputsIncorrectType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: must be an interface type!
+            type: tosca.nodes.Root
+
+  GroupTypeInterfacesInputsTypeIncompatibleWithDerivedFromType:
+    derived_from: GroupType
+    interfaces:
+      i1:
+        inputs:
+          i1:
+            # ERROR: incompatible type with previous declared type!
+            type: integer
+
+  GroupTypeInterfacesInputsTypeIncompatibleWithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        inputs:
+          i1:
+            # ERROR: incompatible type with interface type!
+            type: integer
+
+  GroupTypeInterfacesOperationsInputsUndefinedType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  GroupTypeInterfacesOperationsInputsIncorrectType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: must be an interface type!
+              type: tosca.nodes.Root
+
+  GroupTypeInterfacesOperationsInputsIncompatibleWithDerivedFromType:
+    derived_from: GroupType
+    interfaces:
+      i1:
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  GroupTypeInterfacesOperationsInputsIncompatibleWithInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          inputs:
+            i1:
+              # ERROR: incompatible type with previous declared type!
+              type: integer
+
+  GroupTypeInterfacesOperationsUndefinedInInterfaceType:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op2: # ERROR: op2 undefined in InterfaceType
+          description: new operation
+
+  GroupTypeInterfacesOperationsImplementationPrimaryTypeUndefined:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be a defined type!
+              type: UndefinedType
+
+  GroupTypeInterfacesOperationsImplementationPrimaryTypeIncorrect:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            primary:
+              # ERROR: must be an artifact type!
+              type: tosca.nodes.Root
+
+  GroupTypeInterfacesOperationsImplementationDependenciesTypeUndefined:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be a defined type!
+                type: UndefinedType
+
+  GroupTypeInterfacesOperationsImplementationDependenciesTypeIncorrect:
+    interfaces:
+      i1:
+        type: InterfaceType
+        op1:
+          implementation:
+            dependencies:
+              -
+                # ERROR: must be an artifact type!
+                type: tosca.nodes.Root
+
+policy_types:
+  # CORRECT: policy type
+  PolicyType:
+    # CORRECT: derived from a defined policy type.
+    derived_from: tosca.policies.Root
+    # CORRECT: valid node or group types.
+    targets: [ NodeType, GroupType ]
+    properties:
+      p1:
+        # CORRECT: YAML type.
+        type: string
+        required: false
+      p2:
+        # CORRECT: TOSCA type.
+        type: range
+        required: false
+      p3:
+        # CORRECT: data type.
+        type: DataType
+        required: false
+
+  # ERROR: already defined policy type!
+  tosca.policies.Root:
+    description: ''
+
+  PolicyTypeDerivedFromUndefinedType:
+    # ERROR: must be a type defined!
+    derived_from: UndefinedType
+
+  PolicyTypeDerivedFromIncorrectType:
+    # ERROR: must be a policy type!
+    derived_from: tosca.groups.Root
+
+  PolicyTypeDerivedFromCyclicType:
+    # ERROR: cyclic derived from!
+    derived_from: PolicyTypeDerivedFromCyclicType
+
+  PolicyTypeDerivedFromCyclicType1:
+    # ERROR: cyclic derived from!
+    derived_from: PolicyTypeDerivedFromCyclicType3
+
+  PolicyTypeDerivedFromCyclicType2:
+    # ERROR: cyclic derived from!
+    derived_from: PolicyTypeDerivedFromCyclicType1
+
+  PolicyTypeDerivedFromCyclicType3:
+    # ERROR: cyclic derived from!
+    derived_from: PolicyTypeDerivedFromCyclicType2
+
+  PolicyTypePropertiesTypeMissed:
+    properties:
+      p1: {
+        # ERROR: type missed!
+      }
+
+  PolicyTypePropertiesUndefinedType:
+    properties:
+      p1:
+        # ERROR: undefined data type!
+        type: UndefinedType
+
+  PolicyTypePropertiesIncorrectType:
+    properties:
+      p1:
+        # ERROR: data type required!
+        type: tosca.interfaces.Root
+
+  PolicyTypePropertiesIncompatibleType:
+    derived_from: PolicyType
+    properties:
+      p1:
+        # ERROR: incompatible type with previous declared type!
+        type: integer
+
+  PolicyTypePropertiesRequiredTrue:
+    properties:
+      p1:
+        type: string
+        # required: true by default
+
+  PolicyTypePropertiesRequiredFalse:
+    derived_from: PolicyTypePropertiesRequiredTrue
+    properties:
+      p1:
+        required: false # ERROR: previous declared as required!
+
+  PolicyTypeTargetsUndefinedType:
+    # ERROR: must be defined types!
+    targets: [ UndefinedType ]
+
+  PolicyTypeTargetsIncorrectType:
+    # ERROR: must be node or group types!
+    targets: [ tosca.policies.Root ]
+
+  PolicyTypeTargetsIncompatibleType:
+    derived_from: PolicyType
+    # ERROR: must be compatible with derived_from targets types!
+    # Here tosca.nodes.Compute doesn't derived from NodeType or GroupType.
+    targets: [ tosca.nodes.Compute ]
+
+topology_template:
+  inputs:
+    i1:
+      # ERROR: undefined data type!
+      type: UndefinedType
+    i2:
+      # ERROR: data type required!
+      type: NodeType
+    i-int:
+      type: integer
+    i-string:
+      type: string
+
+  node_templates:
+    n1:
+      # ERROR: undefined node type!
+      type: UndefinedType
+    n2:
+      # ERROR: node type required!
+      type: DataType
+    n3:
+      type: NodeType
+      properties:
+        undefined-property: # ERROR: undefined in NodeType!
+        p1: # ERROR: string expected!
+      attributes:
+        undefined-attribute: # ERROR: undefined in NodeType!
+      capabilities:
+        undefined-capability: {} # ERROR: undefined in NodeType!
+        c1:
+          properties:
+            undefined-property: # ERROR: undefined in CapabilityType!
+          attributes:
+            undefined-attribute: # ERROR: undefined in CapabilityType!
+      requirements:
+        - undefined-requirement: {} # ERROR: undefined in NodeType!
+        - r1: undefined-node-template # ERROR: node template undefined!
+      interfaces:
+        undefined-interface: {} # ERROR: undefined in NodeType!
+      # artifacts: TODO
+
+  relationship_templates:
+    r1:
+      # ERROR: undefined relationship type!
+      type: UndefinedType
+    r2:
+      # ERROR: relationship type required!
+      type: DataType
+    r3:
+      type: RelationshipType
+      properties:
+        undefined-property: # ERROR: undefined in NodeType!
+        p1: # ERROR: string expected!
+      attributes:
+        undefined-attribute: # ERROR: undefined in NodeType!
+      interfaces:
+        undefined-interface: {} # ERROR: undefined in NodeType!
+
+  groups:
+    g1:
+      # ERROR: undefined group type!
+      type: UndefinedType
+    g2:
+      # ERROR: group type required!
+      type: DataType
+    g3:
+      type: GroupType
+      properties:
+        undefined-property: # ERROR: undefined in NodeType!
+        p1: # ERROR: string expected!
+      interfaces:
+        undefined-interface: {} # ERROR: undefined in NodeType!
+
+  policies:
+    - p1:
+        # ERROR: undefined policy type!
+        type: UndefinedType
+    - p2:
+        # ERROR: policy type required!
+        type: DataType
+    - p3:
+        type: PolicyType
+        properties:
+          undefined-property: # ERROR: undefined in NodeType!
+          p1: # ERROR: string expected!
+
+  outputs:
+    o1:
+      # ERROR: undefined data type!
+      type: UndefinedType
+    o2:
+      # ERROR: data type required!
+      type: NodeType
+
+  # substitution_mappings: TODO
+
+  # workflows: TODO

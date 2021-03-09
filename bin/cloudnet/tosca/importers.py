@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -13,38 +13,43 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
-import requests  # for HTTP GET requests.
-import yaml      # for parsing YAML.
-import zipfile   # for reading ZIP files.
-import logging   # for logging purposes.
+import logging  # for logging purposes.
+import zipfile  # for reading ZIP files.
 
 import cloudnet.tosca.configuration as configuration
+import requests  # for HTTP GET requests.
+import yaml  # for parsing YAML.
 
-configuration.DEFAULT_CONFIGURATION['logging']['loggers'][__name__] = {
-    'level': 'INFO',
+configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
+    "level": "INFO",
 }
 
+# init logger
 LOGGER = logging.getLogger(__name__)
 
 
 class ToscaServiceTemplate(object):
-    '''
-        Represents a TOSCA service template.
-    '''
+    """
+    Represents a TOSCA service template.
+    """
 
     def __init__(self, filename, yaml_content, importer):
-        '''
-            Constructor.
-        '''
+        """
+        Constructor.
+        """
         self.filename = filename
         self.yaml_content = yaml_content
         self.importer = importer
+        LOGGER.debug("%r created" % self)
 
     def __repr__(self):
-        '''
-            Textual representation.
-        '''
-        return '<ToscaServiceTemplate filename=' + self.filename + ' importer=' + repr(self.importer) + '>'
+        """
+        Textual representation.
+        """
+        return "<ToscaServiceTemplate filename=%s importer=%r>" % (
+            self.filename,
+            self.importer,
+        )
 
     def get_filename(self):
         return self.filename
@@ -56,24 +61,24 @@ class ToscaServiceTemplate(object):
         return self.yaml_content
 
     def imports(self, path):
-        '''
-            Imports a TOSCA service template from the importer of this template.
-        '''
+        """
+        Imports a TOSCA service template from the importer of this template.
+        """
         return self.importer.imports(path)
 
 
 class Importer(object):
-    '''
-        Abstract base class for importers of TOSCA service templates.
-    '''
+    """
+    Abstract base class for importers of TOSCA service templates.
+    """
 
     # Root importer used to load HTTP and aliased templates.
     root_importer = None
 
     def __init__(self, base_path, alias={}):
-        '''
-            Constructor.
-        '''
+        """
+        Constructor.
+        """
         self.base_path = base_path
         self.alias = alias
         # Init the cache of already loaded TOSCA service templates.
@@ -83,45 +88,44 @@ class Importer(object):
         # Store the first created imported as the root importer.
         if Importer.root_importer is None:
             Importer.root_importer = self
-        LOGGER.debug(str(self) + ' created')
+        LOGGER.debug("%r created" % self)
 
     def __repr__(self):
-        '''
-            Textual representation.
-        '''
-        return '<' + type(self).__name__ + ' base_path=' + self.base_path + '>'
+        """
+        Textual representation.
+        """
+        return "<%s base_path=%s>" % (type(self).__name__, self.base_path)
 
     def get_fullname(self):
         return self.base_path
 
     def imports(self, path):
-        '''
-            Imports a TOSCA service template.
-        '''
-
-        LOGGER.debug('Imports ' + path + ' from ' + str(self))
+        """
+        Imports a TOSCA service template.
+        """
+        LOGGER.debug("import %s from %r" % (path, self))
 
         # Try to resolve aliased files.
         filepath = Importer.root_importer.alias.get(path)
-        if filepath:
+        if filepath is not None:
             return Importer.root_importer.imports(filepath)
 
         # Cut the path into its base path and file name.
-        index = path.rfind('/')
-        base_path = path[:index+1]
-        filename = path[index+1:]
+        index = path.rfind("/")
+        base_path = path[: index + 1]
+        filename = path[index + 1 :]
 
         # if not / in path then use the current importer.
-        if base_path == '':
+        if base_path == "":
             importer = self
         # if path is an url then reuse or create an URL importer.
-        elif base_path.startswith('file:'):
-            base_path = base_path[len('file:'):]
+        elif base_path.startswith("file:"):
+            base_path = base_path[len("file:") :]
             importer = Importer.root_importer.children_importers.get(base_path)
             if importer is None:
                 importer = FilesystemImporter(base_path)
                 Importer.root_importer.children_importers[base_path] = importer
-        elif base_path.startswith('http:') or base_path.startswith('https:'):
+        elif base_path.startswith("http:") or base_path.startswith("https:"):
             importer = Importer.root_importer.children_importers.get(base_path)
             if importer is None:
                 importer = UrlImporter(base_path)
@@ -134,126 +138,150 @@ class Importer(object):
                 self.children_importers[base_path] = importer
 
         # Is this tosca service template already loaded?
-        tosca_service_template = importer.already_loaded_tosca_service_templates.get(filename)
-        if tosca_service_template:
+        tosca_service_template = importer.already_loaded_tosca_service_templates.get(
+            filename
+        )
+        if tosca_service_template is not None:
             return tosca_service_template  # then return it.
 
         # Load the YAML content.
-        LOGGER.debug('Loads ' + importer.base_path + filename + ' from ' + str(importer))
+        LOGGER.debug(
+            "load_yaml %s%s from %r" % (importer.base_path, filename, importer)
+        )
         try:
             yaml_content = importer.load_yaml(importer.base_path + filename)
+        except FileNotFoundError:
+            raise FileNotFoundError("No such file: " + filename)
         except yaml.YAMLError as exc:
-            if hasattr(exc, 'problem_mark'):
-                mark = exc.problem_mark
-                raise ValueError("(1) Yaml error line %s column %s" % (mark.line+1, mark.column+1))
+            problem = exc.problem
+            if problem.startswith("found unexpected end of stream"):
+                problem = "missed quote at the end of the string"
+            elif problem.startswith("expected <block end>, but found"):
+                problem = "incorrect indentation"
+            elif problem == "mapping values are not allowed here":
+                problem = "incorrect indentation or string must be quoted"
+            if exc.context is None:
+                raise ValueError(
+                    "%s at line %s column %s"
+                    % (problem, exc.problem_mark.line + 1, exc.problem_mark.column + 1)
+                )
+            else:
+                raise ValueError(
+                    "%s at line %s column %s %s at line %s column %s"
+                    % (
+                        problem,
+                        exc.problem_mark.line + 1,
+                        exc.problem_mark.column + 1,
+                        exc.context,
+                        exc.context_mark.line + 1,
+                        exc.context_mark.column + 1,
+                    )
+                )
 
         # Create the TOSCA service template.
         tosca_service_template = ToscaServiceTemplate(filename, yaml_content, importer)
 
         # Store the loaded tosca service template.
-        importer.already_loaded_tosca_service_templates[filename] = tosca_service_template
+        importer.already_loaded_tosca_service_templates[
+            filename
+        ] = tosca_service_template
 
         # Return the TOSCA service template.
         return tosca_service_template
 
     def new_importer(self, path):
-        '''
-            Creates a new importer.
-        '''
-        pass
+        """
+        Creates a new importer.
+        """
+        raise NotImplementedError()
 
     def load_yaml(self, filename):
-        '''
-            Loads a YAML file.
-        '''
-        pass
+        """
+        Loads a YAML file.
+        """
+        raise NotImplementedError()
 
 
 class FilesystemImporter(Importer):
-    '''
-        Importer of TOSCA service templates as files.
-    '''
+    """
+    Importer of TOSCA service templates as files.
+    """
 
     def new_importer(self, path):
-        '''
-            Creates a new importer.
-        '''
+        """
+        Creates a new importer.
+        """
         return FilesystemImporter(self.base_path + path, self.alias)
 
     def load_yaml(self, filename):
-        '''
-            Loads a YAML file.
-        '''
-
-        # load yaml descriptor and raise an error with line and column
-        # if this appens
-        template = ""
-        with open(filename, 'r') as stream:
-            try:
-                template = yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                if hasattr(exc, 'problem_mark'):
-                    mark = exc.problem_mark
-                    raise ValueError("Yaml error line %s column %s" % (mark.line+1, mark.column+1))
-
-        return template
+        """
+        Loads a YAML file.
+        """
+        with open(filename, "r") as stream:
+            return yaml.safe_load(stream)
 
 
 class UrlImporter(Importer):
-    '''
-        Importer of TOSCA service templates as HTTP resources.
-    '''
+    """
+    Importer of TOSCA service templates as HTTP resources.
+    """
 
     def new_importer(self, path):
-        '''
-            Creates a new importer.
-        '''
+        """
+        Creates a new importer.
+        """
         return UrlImporter(self.base_path + path, self.alias)
 
     def load_yaml(self, filename):
-        '''
-            Loads a YAML file.
-        '''
-        response = requests.get(filename)
+        """
+        Loads a YAML file.
+        """
+        try:
+            response = requests.get(filename)
+        except requests.exceptions.ConnectionError:
+            raise FileNotFoundError(filename)
         if response.status_code == 404:
             raise FileNotFoundError(filename)
         return yaml.safe_load(response.text)
 
 
 class ArchiveImporter(Importer):
-    '''
-        Importer of TOSCA service templates as archive resources.
-    '''
+    """
+    Importer of TOSCA service templates as archive resources.
+    """
 
-    def __init__(self, zipFile, base_path='', alias={}):
-        '''
-            Constructor.
-        '''
-        if type(zipFile) == zipfile.ZipFile:
+    def __init__(self, zipFile, base_path="", alias={}):
+        """
+        Constructor.
+        """
+        if isinstance(zipFile, zipfile.ZipFile):
             self.zipfile = zipFile
         else:
-            self.zipfile = zipfile.ZipFile(zipFile, 'r')
+            self.zipfile = zipfile.ZipFile(zipFile, "r")
         Importer.__init__(self, base_path, alias)
 
     def __repr__(self):
-        '''
-            Textual representation.
-        '''
-        return '<ArchiveImporter zipfile=' + repr(self.zipfile) + ' base_path=' + self.base_path + '>'
+        """
+        Textual representation.
+        """
+        return "<ArchiveImporter zipfile=%r base_path=%s>" % (
+            self.zipfile,
+            self.base_path,
+        )
 
     def get_fullname(self):
-        return self.zipfile.filename + ':' + self.base_path
+        return self.zipfile.filename + ":" + self.base_path
 
     def new_importer(self, path):
-        '''
-            Creates a new importer.
-        '''
+        """
+        Creates a new importer.
+        """
         return ArchiveImporter(self.zipfile, self.base_path + path, self.alias)
 
     def load_yaml(self, filename):
-        '''
-            Loads a YAML file.
-        '''
+        """
+        Loads a YAML file.
+        """
         try:
             with self.zipfile.open(filename) as stream:
                 return yaml.safe_load(stream)
@@ -263,16 +291,19 @@ class ArchiveImporter(Importer):
 
 def imports(tosca_service_template_path, alias={}):
     # Inits the root loader of TOSCA service templates.
-    importer = FilesystemImporter('', alias)
+    importer = FilesystemImporter("", alias)
 
-    if not (tosca_service_template_path.endswith('.csar') or tosca_service_template_path.endswith('.zip')):
+    if not (
+        tosca_service_template_path.endswith(".csar")
+        or tosca_service_template_path.endswith(".zip")
+    ):
         return importer.imports(tosca_service_template_path)
     else:
-        importer = ArchiveImporter(tosca_service_template_path, '', alias)
-        tosca_meta = importer.imports('TOSCA-Metadata/TOSCA.meta').get_yaml()
-        if type(tosca_meta) != dict:
-            raise ValueError('Invalid TOSCA-Metadata/TOSCA.meta file')
-        entry_definitions = tosca_meta.get('Entry-Definitions')
+        importer = ArchiveImporter(tosca_service_template_path, "", alias)
+        tosca_meta = importer.imports("TOSCA-Metadata/TOSCA.meta").get_yaml()
+        if not isinstance(tosca_meta, dict):
+            raise ValueError("Invalid TOSCA-Metadata/TOSCA.meta file")
+        entry_definitions = tosca_meta.get("Entry-Definitions")
         if entry_definitions is None:
-            raise ValueError('No entry-definitions in TOSCA-Metadata/TOSCA.meta')
+            raise ValueError("No entry-definitions in TOSCA-Metadata/TOSCA.meta")
         return importer.imports(entry_definitions)

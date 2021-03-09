@@ -1,8 +1,8 @@
 /******************************************************************************
  *
- * Software Name : Cloudnet TOSCA toolbox 
+ * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
- * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+ * SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
  * SPDX-License-Identifier: Apache-2.0
  *
  * This software is distributed under the Apache License 2.0
@@ -21,7 +21,6 @@ module tosca_simple_yaml_1_3
 
 open LocationGraphs
 open TOSCA
-
 // --------------------------------------------------
 // TOSCA Topology Metadata
 // --------------------------------------------------
@@ -826,7 +825,7 @@ sig tosca_capabilities_Endpoint extends tosca_capabilities_Root
   // --------------------------------------------------
 
   // YAML ip_address: {'type': 'string'}
-  attribute_ip_address: one TOSCA/Attribute,
+  attribute_ip_address: one string,
 
 } {
   // --------------------------------------------------
@@ -840,9 +839,6 @@ sig tosca_capabilities_Endpoint extends tosca_capabilities_Root
   // Attributes
   // --------------------------------------------------
 
-  attribute[attribute_ip_address]
-  attribute_ip_address.name["ip_address"]
-  attribute_ip_address.type[string]
 
 }
 
@@ -875,6 +871,7 @@ sig tosca_capabilities_Endpoint_Public extends tosca_capabilities_Endpoint
 
   // YAML network_name: {'type': 'string', 'default': 'PUBLIC', 'constraints': [{'equal': 'PUBLIC'}]}
   // NOTE: network_name overloaded
+
   // YAML floating: {'description': 'Indicates that the public address should be allocated from a pool of floating IPs that are associated with the network.', 'type': 'boolean', 'default': False, 'status': 'experimental'}
   //
   // Indicates that the public address should be allocated from a pool of floating IPs that are associated with the network.
@@ -925,6 +922,7 @@ sig tosca_capabilities_Endpoint_Admin extends tosca_capabilities_Endpoint
 
   // YAML secure: {'type': 'boolean', 'default': True, 'constraints': [{'equal': True}]}
   // NOTE: secure overloaded
+
 } {
   // --------------------------------------------------
   // Properties
@@ -1167,10 +1165,10 @@ sig tosca_relationships_Root extends TOSCA/Relationship
   // --------------------------------------------------
 
   // YAML tosca_id: {'type': 'string'}
-  attribute_tosca_id: one TOSCA/Attribute,
+  attribute_tosca_id: one string,
 
   // YAML tosca_name: {'type': 'string'}
-  attribute_tosca_name: one TOSCA/Attribute,
+  attribute_tosca_name: one string,
 
 
   // --------------------------------------------------
@@ -1185,13 +1183,7 @@ sig tosca_relationships_Root extends TOSCA/Relationship
   // Attributes
   // --------------------------------------------------
 
-  attribute[attribute_tosca_id]
-  attribute_tosca_id.name["tosca_id"]
-  attribute_tosca_id.type[string]
 
-  attribute[attribute_tosca_name]
-  attribute_tosca_name.name["tosca_name"]
-  attribute_tosca_name.type[string]
 
   // --------------------------------------------------
   // Interfaces
@@ -1431,17 +1423,75 @@ sig tosca_interfaces_node_lifecycle_Standard extends tosca_interfaces_Root
   // Operations
   // --------------------------------------------------
 
-  // YAML operations: {'create': {'description': 'Standard lifecycle create operation.'}, 'configure': {'description': 'Standard lifecycle configure operation.'}, 'start': {'description': 'Standard lifecycle start operation.'}, 'stop': {'description': 'Standard lifecycle stop operation.'}, 'delete': {'description': 'Standard lifecycle delete operation.'}}
-  operation_operations: one TOSCA/Operation,
+  // YAML create: {'description': 'Standard lifecycle create operation.'}
+  //
+  // Standard lifecycle create operation.
+  //
+  operation_create: one TOSCA/Operation,
+
+  // YAML configure: {'description': 'Standard lifecycle configure operation.'}
+  //
+  // Standard lifecycle configure operation.
+  //
+  operation_configure: one TOSCA/Operation,
+
+  // YAML start: {'description': 'Standard lifecycle start operation.'}
+  //
+  // Standard lifecycle start operation.
+  //
+  operation_start: one TOSCA/Operation,
+
+  // YAML stop: {'description': 'Standard lifecycle stop operation.'}
+  //
+  // Standard lifecycle stop operation.
+  //
+  operation_stop: one TOSCA/Operation,
+
+  // YAML delete: {'description': 'Standard lifecycle delete operation.'}
+  //
+  // Standard lifecycle delete operation.
+  //
+  operation_delete: one TOSCA/Operation,
 
 } {
   // --------------------------------------------------
   // Operations
   // --------------------------------------------------
 
-  // YAML operations: {'create': {'description': 'Standard lifecycle create operation.'}, 'configure': {'description': 'Standard lifecycle configure operation.'}, 'start': {'description': 'Standard lifecycle start operation.'}, 'stop': {'description': 'Standard lifecycle stop operation.'}, 'delete': {'description': 'Standard lifecycle delete operation.'}}
-  operation_operations.name["operations"]
-  operation[operation_operations]
+  // YAML create: {'description': 'Standard lifecycle create operation.'}
+  //
+  // Standard lifecycle create operation.
+  //
+  operation_create.name["create"]
+  operation[operation_create]
+
+  // YAML configure: {'description': 'Standard lifecycle configure operation.'}
+  //
+  // Standard lifecycle configure operation.
+  //
+  operation_configure.name["configure"]
+  operation[operation_configure]
+
+  // YAML start: {'description': 'Standard lifecycle start operation.'}
+  //
+  // Standard lifecycle start operation.
+  //
+  operation_start.name["start"]
+  operation[operation_start]
+
+  // YAML stop: {'description': 'Standard lifecycle stop operation.'}
+  //
+  // Standard lifecycle stop operation.
+  //
+  operation_stop.name["stop"]
+  operation[operation_stop]
+
+  // YAML delete: {'description': 'Standard lifecycle delete operation.'}
+  //
+  // Standard lifecycle delete operation.
+  //
+  operation_delete.name["delete"]
+  operation[operation_delete]
 
 }
 
@@ -1471,17 +1521,114 @@ sig tosca_interfaces_relationship_Configure extends tosca_interfaces_Root
   // Operations
   // --------------------------------------------------
 
-  // YAML operations: {'pre_configure_source': {'description': 'Operation to pre-configure the source endpoint.'}, 'pre_configure_target': {'description': 'Operation to pre-configure the target endpoint.'}, 'post_configure_source': {'description': 'Operation to post-configure the source endpoint.'}, 'post_configure_target': {'description': 'Operation to post-configure the target endpoint.'}, 'add_target': {'description': 'Operation to notify the source node of a target node being added via a relationship.'}, 'add_source': {'description': 'Operation to notify the target node of a source node which is now available via a relationship.'}, 'target_changed': {'description': 'Operation to notify source some property or attribute of the target changed'}, 'remove_target': {'description': 'Operation to remove a target node.'}}
-  operation_operations: one TOSCA/Operation,
+  // YAML pre_configure_source: {'description': 'Operation to pre-configure the source endpoint.'}
+  //
+  // Operation to pre-configure the source endpoint.
+  //
+  operation_pre_configure_source: one TOSCA/Operation,
+
+  // YAML pre_configure_target: {'description': 'Operation to pre-configure the target endpoint.'}
+  //
+  // Operation to pre-configure the target endpoint.
+  //
+  operation_pre_configure_target: one TOSCA/Operation,
+
+  // YAML post_configure_source: {'description': 'Operation to post-configure the source endpoint.'}
+  //
+  // Operation to post-configure the source endpoint.
+  //
+  operation_post_configure_source: one TOSCA/Operation,
+
+  // YAML post_configure_target: {'description': 'Operation to post-configure the target endpoint.'}
+  //
+  // Operation to post-configure the target endpoint.
+  //
+  operation_post_configure_target: one TOSCA/Operation,
+
+  // YAML add_target: {'description': 'Operation to notify the source node of a target node being added via a relationship.'}
+  //
+  // Operation to notify the source node of a target node being added via a relationship.
+  //
+  operation_add_target: one TOSCA/Operation,
+
+  // YAML add_source: {'description': 'Operation to notify the target node of a source node which is now available via a relationship.'}
+  //
+  // Operation to notify the target node of a source node which is now available via a relationship.
+  //
+  operation_add_source: one TOSCA/Operation,
+
+  // YAML target_changed: {'description': 'Operation to notify source some property or attribute of the target changed'}
+  //
+  // Operation to notify source some property or attribute of the target changed
+  //
+  operation_target_changed: one TOSCA/Operation,
+
+  // YAML remove_target: {'description': 'Operation to remove a target node.'}
+  //
+  // Operation to remove a target node.
+  //
+  operation_remove_target: one TOSCA/Operation,
 
 } {
   // --------------------------------------------------
   // Operations
   // --------------------------------------------------
 
-  // YAML operations: {'pre_configure_source': {'description': 'Operation to pre-configure the source endpoint.'}, 'pre_configure_target': {'description': 'Operation to pre-configure the target endpoint.'}, 'post_configure_source': {'description': 'Operation to post-configure the source endpoint.'}, 'post_configure_target': {'description': 'Operation to post-configure the target endpoint.'}, 'add_target': {'description': 'Operation to notify the source node of a target node being added via a relationship.'}, 'add_source': {'description': 'Operation to notify the target node of a source node which is now available via a relationship.'}, 'target_changed': {'description': 'Operation to notify source some property or attribute of the target changed'}, 'remove_target': {'description': 'Operation to remove a target node.'}}
-  operation_operations.name["operations"]
-  operation[operation_operations]
+  // YAML pre_configure_source: {'description': 'Operation to pre-configure the source endpoint.'}
+  //
+  // Operation to pre-configure the source endpoint.
+  //
+  operation_pre_configure_source.name["pre_configure_source"]
+  operation[operation_pre_configure_source]
+
+  // YAML pre_configure_target: {'description': 'Operation to pre-configure the target endpoint.'}
+  //
+  // Operation to pre-configure the target endpoint.
+  //
+  operation_pre_configure_target.name["pre_configure_target"]
+  operation[operation_pre_configure_target]
+
+  // YAML post_configure_source: {'description': 'Operation to post-configure the source endpoint.'}
+  //
+  // Operation to post-configure the source endpoint.
+  //
+  operation_post_configure_source.name["post_configure_source"]
+  operation[operation_post_configure_source]
+
+  // YAML post_configure_target: {'description': 'Operation to post-configure the target endpoint.'}
+  //
+  // Operation to post-configure the target endpoint.
+  //
+  operation_post_configure_target.name["post_configure_target"]
+  operation[operation_post_configure_target]
+
+  // YAML add_target: {'description': 'Operation to notify the source node of a target node being added via a relationship.'}
+  //
+  // Operation to notify the source node of a target node being added via a relationship.
+  //
+  operation_add_target.name["add_target"]
+  operation[operation_add_target]
+
+  // YAML add_source: {'description': 'Operation to notify the target node of a source node which is now available via a relationship.'}
+  //
+  // Operation to notify the target node of a source node which is now available via a relationship.
+  //
+  operation_add_source.name["add_source"]
+  operation[operation_add_source]
+
+  // YAML target_changed: {'description': 'Operation to notify source some property or attribute of the target changed'}
+  //
+  // Operation to notify source some property or attribute of the target changed
+  //
+  operation_target_changed.name["target_changed"]
+  operation[operation_target_changed]
+
+  // YAML remove_target: {'description': 'Operation to remove a target node.'}
+  //
+  // Operation to remove a target node.
+  //
+  operation_remove_target.name["remove_target"]
+  operation[operation_remove_target]
 
 }
 
@@ -1519,13 +1666,13 @@ sig tosca_nodes_Root extends TOSCA/Node
   // --------------------------------------------------
 
   // YAML tosca_id: {'type': 'string'}
-  attribute_tosca_id: one TOSCA/Attribute,
+  attribute_tosca_id: one string,
 
   // YAML tosca_name: {'type': 'string'}
-  attribute_tosca_name: one TOSCA/Attribute,
+  attribute_tosca_name: one string,
 
   // YAML state: {'type': 'string'}
-  attribute_state: one TOSCA/Attribute,
+  attribute_state: one string,
 
 
   // --------------------------------------------------
@@ -1554,17 +1701,8 @@ sig tosca_nodes_Root extends TOSCA/Node
   // Attributes
   // --------------------------------------------------
 
-  attribute[attribute_tosca_id]
-  attribute_tosca_id.name["tosca_id"]
-  attribute_tosca_id.type[string]
 
-  attribute[attribute_tosca_name]
-  attribute_tosca_name.name["tosca_name"]
-  attribute_tosca_name.type[string]
 
-  attribute[attribute_state]
-  attribute_state.name["state"]
-  attribute_state.type[string]
 
   // --------------------------------------------------
   // Interfaces
@@ -1658,16 +1796,16 @@ sig tosca_nodes_Compute extends tosca_nodes_Abstract_Compute
   // --------------------------------------------------
 
   // YAML private_address: {'type': 'string'}
-  attribute_private_address: one TOSCA/Attribute,
+  attribute_private_address: one string,
 
   // YAML public_address: {'type': 'string'}
-  attribute_public_address: one TOSCA/Attribute,
+  attribute_public_address: one string,
 
   // YAML networks: {'type': 'map', 'entry_schema': {'type': 'tosca.datatypes.network.NetworkInfo'}}
-  attribute_networks: one TOSCA/Attribute,
+  attribute_networks: one TOSCA/map_data/Map,
 
   // YAML ports: {'type': 'map', 'entry_schema': {'type': 'tosca.datatypes.network.PortInfo'}}
-  attribute_ports: one TOSCA/Attribute,
+  attribute_ports: one TOSCA/map_data/Map,
 
   // --------------------------------------------------
   // Capabilities
@@ -1700,21 +1838,9 @@ sig tosca_nodes_Compute extends tosca_nodes_Abstract_Compute
   // Attributes
   // --------------------------------------------------
 
-  attribute[attribute_private_address]
-  attribute_private_address.name["private_address"]
-  attribute_private_address.type[string]
 
-  attribute[attribute_public_address]
-  attribute_public_address.name["public_address"]
-  attribute_public_address.type[string]
 
-  attribute[attribute_networks]
-  attribute_networks.name["networks"]
-  attribute_networks.type[TOSCA/map_data/Map]
 
-  attribute[attribute_ports]
-  attribute_ports.name["ports"]
-  attribute_ports.type[TOSCA/map_data/Map]
 
   // --------------------------------------------------
   // Capabilities
@@ -2196,6 +2322,13 @@ sig tosca_nodes_Storage_BlockStorage extends tosca_nodes_Abstract_Storage
   property_snapshot_id: lone string,
 
   // --------------------------------------------------
+  // Attributes
+  // --------------------------------------------------
+
+  // YAML volume_id: {'type': 'string'}
+  attribute_volume_id: one string,
+
+  // --------------------------------------------------
   // Capabilities
   // --------------------------------------------------
 
@@ -2205,6 +2338,11 @@ sig tosca_nodes_Storage_BlockStorage extends tosca_nodes_Abstract_Storage
 } {
   // --------------------------------------------------
   // Properties
+  // --------------------------------------------------
+
+
+  // --------------------------------------------------
+  // Attributes
   // --------------------------------------------------
 
 
@@ -2291,10 +2429,7 @@ sig tosca_nodes_Container_Application extends tosca_nodes_Root
   // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.Container.Runtime', 'relationship': 'tosca.relationships.HostedOn'}
   requirement_host: one TOSCA/Requirement,
 
-  // YAML storage: {'capability': 'tosca.capabilities.Storage', 'relationship': 'tosca.relationships.Root'}
-  requirement_storage: one TOSCA/Requirement,
-
-  // YAML network: {'capability': 'tosca.capabilities.Endpoint', 'relationship': 'tosca.relationships.Root'}
+  // YAML network: {'capability': 'tosca.capabilities.network.Linkable', 'relationship': 'tosca.relationships.network.LinksTo'}
   requirement_network: one TOSCA/Requirement,
 
 } {
@@ -2308,15 +2443,10 @@ sig tosca_nodes_Container_Application extends tosca_nodes_Root
   requirement_host.relationship[tosca_relationships_HostedOn]
   requirement_host.node[tosca_nodes_Container_Runtime]
 
-  // YAML storage: {'capability': 'tosca.capabilities.Storage', 'relationship': 'tosca.relationships.Root'}
-  requirement["storage", requirement_storage]
-  requirement_storage.capability[tosca_capabilities_Storage]
-  requirement_storage.relationship[tosca_relationships_Root]
-
-  // YAML network: {'capability': 'tosca.capabilities.Endpoint', 'relationship': 'tosca.relationships.Root'}
+  // YAML network: {'capability': 'tosca.capabilities.network.Linkable', 'relationship': 'tosca.relationships.network.LinksTo'}
   requirement["network", requirement_network]
-  requirement_network.capability[tosca_capabilities_Endpoint]
-  requirement_network.relationship[tosca_relationships_Root]
+  requirement_network.capability[tosca_capabilities_network_Linkable]
+  requirement_network.relationship[tosca_relationships_network_LinksTo]
 
 }
 
@@ -2328,9 +2458,9 @@ run Show_tosca_nodes_Container_Application {
   5 seq,
   // NOTE: Setting following scopes strongly reduces the research space.
   exactly 0 LocationGraphs/LocationGraph,
-  exactly 7 LocationGraphs/Location,
+  exactly 6 LocationGraphs/Location,
   exactly 35 LocationGraphs/Value,
-  exactly 7 LocationGraphs/Name,
+  exactly 6 LocationGraphs/Name,
   exactly 1 LocationGraphs/Sort,
   exactly 1 LocationGraphs/Process,
   exactly 0 TOSCA/Group,
@@ -2525,7 +2655,7 @@ sig tosca_nodes_network_Port extends tosca_nodes_Root
   // --------------------------------------------------
 
   // YAML ip_address: {'type': 'string'}
-  attribute_ip_address: one TOSCA/Attribute,
+  attribute_ip_address: one string,
 
   // --------------------------------------------------
   // Requirements
@@ -2548,9 +2678,6 @@ sig tosca_nodes_network_Port extends tosca_nodes_Root
   // Attributes
   // --------------------------------------------------
 
-  attribute[attribute_ip_address]
-  attribute_ip_address.name["ip_address"]
-  attribute_ip_address.type[string]
 
   // --------------------------------------------------
   // Requirements

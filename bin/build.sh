@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -16,13 +16,13 @@
 
 docker_build()
 {
-  echo -------------------- $1 Docker image --------------------
-  echo Building $1 Docker image...
-  docker build -t $1 $2
+  echo -------------------- "$1" Docker image --------------------
+  echo Building "$1" Docker image...
+  docker build -t "$1" "$2"
   echo
 }
 
-docker_build toscaware/dot dot
-docker_build toscaware/nwdiag nwdiag
-docker_build toscaware/plantuml plantuml
-docker_build toscaware/toscaware toscaware
+docker_build cloudnet/dot dot
+docker_build cloudnet/nwdiag nwdiag
+docker_build cloudnet/plantuml plantuml
+docker_build cloudnet/toscaware toscaware

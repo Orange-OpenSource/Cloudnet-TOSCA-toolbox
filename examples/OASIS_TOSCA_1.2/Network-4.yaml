@@ -1,8 +1,8 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -26,6 +26,7 @@ topology_template:
       capabilities:
         host:
           properties:
+            name: My Server # NOTE: added to show it on the network diagram!
             disk_size: 10 GB
             num_cpus: 1
             mem_size: 4096 MB
@@ -41,23 +42,30 @@ topology_template:
       properties:
         cidr: '192.168.1.0/24'
         network_name: net1
+        start_ip: '192.168.1.1' # NOTE: added to show it on the network diagram!
+        end_ip: '192.168.1.100' # NOTE: added to show it on the network diagram!
 
     my_network2:
       type: tosca.nodes.network.Network
       properties:
         cidr: '192.168.2.0/24'
         network_name: net2
+        start_ip: '192.168.2.1' # NOTE: added to show it on the network diagram!
+        end_ip: '192.168.2.100' # NOTE: added to show it on the network diagram!
 
     my_network3:
       type: tosca.nodes.network.Network
       properties:
         cidr: '192.168.3.0/24'
         network_name: net3
+        start_ip: '192.168.3.1' # NOTE: added to show it on the network diagram!
+        end_ip: '192.168.3.100' # NOTE: added to show it on the network diagram!
 
     my_port1:
       type: tosca.nodes.network.Port
       properties:
         order: 0
+        ip_address: '192.168.1.1' # NOTE: added to show it on the network diagram!
       requirements:
         - binding: my_server
         - link: my_network1
@@ -66,6 +74,7 @@ topology_template:
       type: tosca.nodes.network.Port
       properties:
         order: 1
+        ip_address: '192.168.2.1' # NOTE: added to show it on the network diagram!
       requirements:
         - binding: my_server
         - link: my_network2
@@ -74,6 +83,7 @@ topology_template:
       type: tosca.nodes.network.Port
       properties:
         order: 2
+        ip_address: '192.168.3.1' # NOTE: added to show it on the network diagram!
       requirements:
         - binding: my_server
         - link: my_network3

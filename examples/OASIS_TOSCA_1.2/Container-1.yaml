@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -39,11 +39,12 @@ topology_template:
     # The MYSQL container based on official MySQL image in Docker hub
     mysql_container:
       type: tosca.nodes.Container.Application.Docker
-      # capabilities: # ISSUE: can't be empty
+#     capabilities: # ISSUE: commented as no capability assigned!
         # This is a capability that would mimic the Docker –link feature
-# ISSUE: tosca.capabilities.Docker.Link undefined
-# ISSUE: a capability type is not expected here
-# ISSUE:        database_link: tosca.capabilities.Docker.Link
+#       database_link: tosca.capabilities.Docker.Link # ISSUE: not conform to TOSCA 1.2 grammar!
+      requirements: # ISSUE: following requirements must be fulfilled!
+        - host: docker_runtime
+        - network: network
       artifacts:
         my_image:
           file: mysql
@@ -59,15 +60,18 @@ topology_template:
     # The WordPress container based on official WordPress image in Docker hub
     wordpress_container:
       type: tosca.nodes.Container.Application.Docker
-      # requirements: # ISSUE: can't be empty
-# ISSUE: requirement database_link undefined
-# ISSUE:        - database_link: mysql_container
+      requirements:
+        - database_link: mysql_container
+        # ISSUE: following requirements must be also fulfilled!
+        - host: docker_runtime
+        - network: network
+
       artifacts:
         my_image:
           file: wordpress
           type: tosca.artifacts.Deployment.Image.Container.Docker
           repository: docker_hub
-# ISSUE: not allowed
+# ISSUE: not allowed!
 #          <metadata-link> : <topology_artifact_name> # defined outside and linked to from here
       interfaces:
         Standard:
@@ -75,3 +79,16 @@ topology_template:
             implementation: my_image
             inputs:
               host_port: { get_input: wp_host_port }
+
+# NOTE: added node templates modeling the infrastructure
+
+    docker_runtime:
+      type: tosca.nodes.Container.Runtime.Docker
+      requirements:
+        - host: compute
+
+    compute:
+      type: tosca.nodes.Compute
+
+    network:
+      type: tosca.nodes.network.Network

@@ -1,8 +1,8 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -205,7 +205,7 @@ capability_types:
   # Section 5.5.3 tosca.capabilities.Compute
   tosca.capabilities.Compute:
     derived_from: tosca.capabilities.Container
-    # shortname: Compute # ISSUE: error in spec. : 'shortname' is not an allowed keyword
+    # shortname: Compute # ISSUE: error in TOSCA spec. - 'shortname' is not an allowed keyword!
     properties:
       name:
         type: string
@@ -365,7 +365,7 @@ capability_types:
         constraints:
           - greater_or_equal: 1 # ISSUE: Added.
       default_instances:
-        required: false # ISSUE: Missed in the spec.
+        required: false # ISSUE: Missed in the spec!
         type: integer
         constraints:
           - greater_or_equal: 1 # ISSUE: Added.
@@ -443,7 +443,7 @@ interface_types:
 
   # Section 5.8.3 tosca.interfaces.Root
   tosca.interfaces.Root:
-# ISSUE: tosca.entity.Root undefined
+# ISSUE: tosca.entity.Root undefined!
 #    derived_from: tosca.entity.Root
     description: The TOSCA root Interface Type all other TOSCA base Interface Types derive from
 
@@ -485,7 +485,7 @@ node_types:
 
   # Section 5.9.1 tosca.nodes.Root
   tosca.nodes.Root:
-# ISSUE: tosca.entity.Root undefined
+# ISSUE: tosca.entity.Root undefined!
 #    derived_from: tosca.entity.Root
     description: The TOSCA Node Type all other TOSCA base Node Types derive from
     attributes:
@@ -514,7 +514,7 @@ node_types:
     capabilities:
       host:
         type: tosca.capabilities.Compute
-#        valid_source_types: [] # ISSUE: See page 107 line 1942: "represents the optional list of one or more names of Node Types that the Capability Type supports as valid sources for a successful relationship to be established to itself".
+#        valid_source_types: [] # ISSUE: See page 107 line 1942: "represents the optional list of one or more names of Node Types that the Capability Type supports as valid sources for a successful relationship to be established to itself"!
 
   # Section 5.9.3 tosca.nodes.Compute
   tosca.nodes.Compute:
@@ -535,7 +535,7 @@ node_types:
     requirements:
       - local_storage:
           capability: tosca.capabilities.Attachment
-#          node: tosca.nodes.BlockStorage # ISSUE: undefined type.
+#          node: tosca.nodes.BlockStorage # ISSUE: undefined type!
           node: tosca.nodes.Storage.BlockStorage
           relationship: tosca.relationships.AttachesTo
           occurrences: [0, UNBOUNDED]
@@ -586,7 +586,7 @@ node_types:
     properties:
       context_root:
         type: string
-        required: false # ISSUE: missed in the spec.
+        required: false # ISSUE: Missed in the spec!
     capabilities:
       app_endpoint:
         type: tosca.capabilities.Endpoint
@@ -605,7 +605,7 @@ node_types:
         required: false
         description: the optional root password for the DBMS service
       port:
-        type: integer # ISSUE: Should be PortDef.
+        type: integer # ISSUE: Should be PortDef?
         required: false
         description: the port the DBMS service will listen to for data and requests
     capabilities:
@@ -621,9 +621,9 @@ node_types:
         type: string
         description: the logical name of the database
       port:
-        type: integer # ISSUE: Should be PortDef.
+        type: integer # ISSUE: Should be PortDef?
         description: the port the underlying database service will listen to for data
-        required: false # ISSUE: missed in the spec.
+        required: false # ISSUE: Missed in the spec!
       user:
         type: string
         description: the optional user account name for DB administration
@@ -652,8 +652,8 @@ node_types:
         default: 0 MB
         constraints:
           - greater_or_equal: 0 MB
-        required: false # ISSUE: missed in the spec.
-#    capabilities: # ISSUE: can be empty
+        required: false # ISSUE: Missed in the spec!
+#    capabilities: # ISSUE: can be null!
       # TBD
 
   # Section 5.9.10 tosca.nodes.Storage.ObjectStorage
@@ -678,6 +678,9 @@ node_types:
       snapshot_id:
         type: string
         required: false
+    attributes: # ISSUE: Added to avoid warnings on outputs of all BlockStorage examples!
+      volume_id:
+        type: string
     capabilities:
       attachment:
         type: tosca.capabilities.Attachment
@@ -700,17 +703,15 @@ node_types:
           capability: tosca.capabilities.Compute
           node: tosca.nodes.Container.Runtime
           relationship: tosca.relationships.HostedOn
-      - storage:
-          capability: tosca.capabilities.Storage
-# ISSUE: relationship undefined.
-# ISSUE: no relationship type has tosca.capabilities.Storage as valid_target_types.
-# ISSUE: no node type has tosca.capabilities.Storage as capabilities.
-          relationship: tosca.relationships.Root
+# ISSUE: no relationship type has tosca.capabilities.Storage as valid_target_types!
+# ISSUE: no node type has tosca.capabilities.Storage as capabilities!
+#      - storage:
+#          capability: tosca.capabilities.Storage
       - network:
-#          capability: tosca.capabilities.EndPoint # ISSUE: EndPoint undefined.
-          capability: tosca.capabilities.Endpoint
-# ISSUE: relationship undefined.
-          relationship: tosca.relationships.Root
+#          capability: tosca.capabilities.EndPoint # ISSUE: EndPoint undefined!
+          # ISSUE: Linkable is more appropriate than Endpoint to link a container with a network!
+          capability: tosca.capabilities.network.Linkable
+          relationship: tosca.relationships.network.LinksTo
 
   # Section 5.9.14 tosca.nodes.LoadBalancer
   tosca.nodes.LoadBalancer:

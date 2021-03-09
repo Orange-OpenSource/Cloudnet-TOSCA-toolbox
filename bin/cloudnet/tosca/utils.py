@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -13,50 +13,63 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
+
 def split_scalar_unit(scalar):
-    tmp = scalar.split(' ')
+    tmp = scalar.split(" ")
     scalar_unit = tmp[-1]
     scalar_value = int(tmp[0])
     return scalar_value, scalar_unit
 
-'''
-    Compute a short type name, i.e., remove the dotted prefix.
-'''
-def short_type_name(type_name):
-    idx = type_name.rfind('.')
-    if type_name[idx+1].isdigit():
-        return short_type_name(type_name[:idx]) + type_name[idx:]
-    return type_name[idx+1:]
 
-'''
+"""
+    Compute a short type name, i.e., remove the dotted prefix.
+"""
+
+
+def short_type_name(type_name):
+    idx = type_name.rfind(".")
+    if type_name[idx + 1].isdigit():
+        return short_type_name(type_name[:idx]) + type_name[idx:]
+    return type_name[idx + 1 :]
+
+
+"""
     Normalize a name, i.e., '.' and '-' characters are replaced by '_'.
-'''
+"""
+
+
 def normalize_name(label):
-    for character in ['.', '-', ' ', ':']:
-        label = label.replace(character, '_')
+    for character in [".", "-", " ", ":"]:
+        label = label.replace(character, "_")
     return label
 
-'''
+
+"""
     Merge two dictionaries.
-'''
+"""
+
+
 def merge_dict(d, u):
     from copy import deepcopy
+
     d = deepcopy(d)
     for k, v in u.items():
         if isinstance(v, dict):
             dv = d.get(k)
-            if dv == None:
+            if dv is None:
                 dv = {}
             if type(dv) != dict:
                 dv = {}
-                dv['_old_value_'] = dv
+                dv["_old_value_"] = dv
             d[k] = merge_dict(dv, v)
         else:
-            if v != None:
+            if v is not None:
                 old_v = d.get(k)
-                if old_v != None and isinstance(old_v, dict):
+                if old_v is not None and isinstance(old_v, dict):
                     # Avoid to lose the previous dictionary.
-                    old_v['value'] = v # Keep 'value' as key because this has a wanted side effect, find a better way to do that.
+                    old_v[
+                        "value"
+                    ] = v  # Keep 'value' as key because this has a wanted side effect, find a better way to do that.
                 else:
                     d[k] = v
 
@@ -64,6 +77,7 @@ def merge_dict(d, u):
                 d[k] = None
 
     return d
+
 
 def normalize_dict(data):
     data_type = type(data)
@@ -78,15 +92,16 @@ def normalize_dict(data):
                 result[key] = value
         return result
     else:
-        raise ValueError('not a dict or list')
+        raise ValueError("not a dict or list")
 
-def get_path(a_dict,*path, default=None):
+
+def get_path(a_dict, *path, default=None):
     result = a_dict
     for p in path:
         if type(result) == dict:
             result = result.get(p)
         else:
             return default
-        if result == None:
+        if result is None:
             return default
     return result

@@ -1,8 +1,8 @@
 /******************************************************************************
  *
- * Software Name : Cloudnet TOSCA toolbox 
+ * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
- * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+ * SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
  * SPDX-License-Identifier: Apache-2.0
  *
  * This software is distributed under the Apache License 2.0
@@ -796,7 +796,7 @@ sig tosca_capabilities_Endpoint extends tosca_capabilities_Root
   // --------------------------------------------------
 
   // YAML ip_address: {'type': 'string'}
-  attribute_ip_address: one TOSCA/Attribute,
+  attribute_ip_address: one string,
 
 } {
   // --------------------------------------------------
@@ -810,9 +810,6 @@ sig tosca_capabilities_Endpoint extends tosca_capabilities_Root
   // Attributes
   // --------------------------------------------------
 
-  attribute[attribute_ip_address]
-  attribute_ip_address.name["ip_address"]
-  attribute_ip_address.type[string]
 
 }
 
@@ -845,6 +842,7 @@ sig tosca_capabilities_Endpoint_Public extends tosca_capabilities_Endpoint
 
   // YAML network_name: {'type': 'string', 'default': 'PUBLIC', 'constraints': [{'equal': 'PUBLIC'}]}
   // NOTE: network_name overloaded
+
   // YAML floating: {'description': 'Indicates that the public address should be allocated from a pool of floating IPs that are associated with the network.', 'type': 'boolean', 'default': False, 'status': 'experimental'}
   //
   // Indicates that the public address should be allocated from a pool of floating IPs that are associated with the network.
@@ -895,6 +893,7 @@ sig tosca_capabilities_Endpoint_Admin extends tosca_capabilities_Endpoint
 
   // YAML secure: {'type': 'boolean', 'default': True, 'constraints': [{'equal': True}]}
   // NOTE: secure overloaded
+
 } {
   // --------------------------------------------------
   // Properties
@@ -1137,10 +1136,10 @@ sig tosca_relationships_Root extends TOSCA/Relationship
   // --------------------------------------------------
 
   // YAML tosca_id: {'type': 'string'}
-  attribute_tosca_id: one TOSCA/Attribute,
+  attribute_tosca_id: one string,
 
   // YAML tosca_name: {'type': 'string'}
-  attribute_tosca_name: one TOSCA/Attribute,
+  attribute_tosca_name: one string,
 
 
   // --------------------------------------------------
@@ -1155,13 +1154,7 @@ sig tosca_relationships_Root extends TOSCA/Relationship
   // Attributes
   // --------------------------------------------------
 
-  attribute[attribute_tosca_id]
-  attribute_tosca_id.name["tosca_id"]
-  attribute_tosca_id.type[string]
 
-  attribute[attribute_tosca_name]
-  attribute_tosca_name.name["tosca_name"]
-  attribute_tosca_name.type[string]
 
   // --------------------------------------------------
   // Interfaces
@@ -1644,13 +1637,13 @@ sig tosca_nodes_Root extends TOSCA/Node
   // --------------------------------------------------
 
   // YAML tosca_id: {'type': 'string'}
-  attribute_tosca_id: one TOSCA/Attribute,
+  attribute_tosca_id: one string,
 
   // YAML tosca_name: {'type': 'string'}
-  attribute_tosca_name: one TOSCA/Attribute,
+  attribute_tosca_name: one string,
 
   // YAML state: {'type': 'string'}
-  attribute_state: one TOSCA/Attribute,
+  attribute_state: one string,
 
 
   // --------------------------------------------------
@@ -1679,17 +1672,8 @@ sig tosca_nodes_Root extends TOSCA/Node
   // Attributes
   // --------------------------------------------------
 
-  attribute[attribute_tosca_id]
-  attribute_tosca_id.name["tosca_id"]
-  attribute_tosca_id.type[string]
 
-  attribute[attribute_tosca_name]
-  attribute_tosca_name.name["tosca_name"]
-  attribute_tosca_name.type[string]
 
-  attribute[attribute_state]
-  attribute_state.name["state"]
-  attribute_state.type[string]
 
   // --------------------------------------------------
   // Interfaces
@@ -1783,16 +1767,16 @@ sig tosca_nodes_Compute extends tosca_nodes_Abstract_Compute
   // --------------------------------------------------
 
   // YAML private_address: {'type': 'string'}
-  attribute_private_address: one TOSCA/Attribute,
+  attribute_private_address: one string,
 
   // YAML public_address: {'type': 'string'}
-  attribute_public_address: one TOSCA/Attribute,
+  attribute_public_address: one string,
 
   // YAML networks: {'type': 'map', 'entry_schema': {'type': 'tosca.datatypes.network.NetworkInfo'}}
-  attribute_networks: one TOSCA/Attribute,
+  attribute_networks: one TOSCA/map_data/Map,
 
   // YAML ports: {'type': 'map', 'entry_schema': {'type': 'tosca.datatypes.network.PortInfo'}}
-  attribute_ports: one TOSCA/Attribute,
+  attribute_ports: one TOSCA/map_data/Map,
 
   // --------------------------------------------------
   // Capabilities
@@ -1825,21 +1809,9 @@ sig tosca_nodes_Compute extends tosca_nodes_Abstract_Compute
   // Attributes
   // --------------------------------------------------
 
-  attribute[attribute_private_address]
-  attribute_private_address.name["private_address"]
-  attribute_private_address.type[string]
 
-  attribute[attribute_public_address]
-  attribute_public_address.name["public_address"]
-  attribute_public_address.type[string]
 
-  attribute[attribute_networks]
-  attribute_networks.name["networks"]
-  attribute_networks.type[TOSCA/map_data/Map]
 
-  attribute[attribute_ports]
-  attribute_ports.name["ports"]
-  attribute_ports.type[TOSCA/map_data/Map]
 
   // --------------------------------------------------
   // Capabilities
@@ -2321,6 +2293,13 @@ sig tosca_nodes_Storage_BlockStorage extends tosca_nodes_Abstract_Storage
   property_snapshot_id: lone string,
 
   // --------------------------------------------------
+  // Attributes
+  // --------------------------------------------------
+
+  // YAML volume_id: {'type': 'string'}
+  attribute_volume_id: one string,
+
+  // --------------------------------------------------
   // Capabilities
   // --------------------------------------------------
 
@@ -2330,6 +2309,11 @@ sig tosca_nodes_Storage_BlockStorage extends tosca_nodes_Abstract_Storage
 } {
   // --------------------------------------------------
   // Properties
+  // --------------------------------------------------
+
+
+  // --------------------------------------------------
+  // Attributes
   // --------------------------------------------------
 
 
@@ -2416,10 +2400,7 @@ sig tosca_nodes_Container_Application extends tosca_nodes_Root
   // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.Container.Runtime', 'relationship': 'tosca.relationships.HostedOn'}
   requirement_host: one TOSCA/Requirement,
 
-  // YAML storage: {'capability': 'tosca.capabilities.Storage', 'relationship': 'tosca.relationships.Root'}
-  requirement_storage: one TOSCA/Requirement,
-
-  // YAML network: {'capability': 'tosca.capabilities.Endpoint', 'relationship': 'tosca.relationships.Root'}
+  // YAML network: {'capability': 'tosca.capabilities.network.Linkable', 'relationship': 'tosca.relationships.network.LinksTo'}
   requirement_network: one TOSCA/Requirement,
 
 } {
@@ -2433,15 +2414,10 @@ sig tosca_nodes_Container_Application extends tosca_nodes_Root
   requirement_host.relationship[tosca_relationships_HostedOn]
   requirement_host.node[tosca_nodes_Container_Runtime]
 
-  // YAML storage: {'capability': 'tosca.capabilities.Storage', 'relationship': 'tosca.relationships.Root'}
-  requirement["storage", requirement_storage]
-  requirement_storage.capability[tosca_capabilities_Storage]
-  requirement_storage.relationship[tosca_relationships_Root]
-
-  // YAML network: {'capability': 'tosca.capabilities.Endpoint', 'relationship': 'tosca.relationships.Root'}
+  // YAML network: {'capability': 'tosca.capabilities.network.Linkable', 'relationship': 'tosca.relationships.network.LinksTo'}
   requirement["network", requirement_network]
-  requirement_network.capability[tosca_capabilities_Endpoint]
-  requirement_network.relationship[tosca_relationships_Root]
+  requirement_network.capability[tosca_capabilities_network_Linkable]
+  requirement_network.relationship[tosca_relationships_network_LinksTo]
 
 }
 
@@ -2453,9 +2429,9 @@ run Show_tosca_nodes_Container_Application {
   5 seq,
   // NOTE: Setting following scopes strongly reduces the research space.
   exactly 0 LocationGraphs/LocationGraph,
-  exactly 7 LocationGraphs/Location,
+  exactly 6 LocationGraphs/Location,
   exactly 35 LocationGraphs/Value,
-  exactly 7 LocationGraphs/Name,
+  exactly 6 LocationGraphs/Name,
   exactly 1 LocationGraphs/Sort,
   exactly 1 LocationGraphs/Process,
   exactly 0 TOSCA/Group,
@@ -2646,6 +2622,13 @@ sig tosca_nodes_network_Port extends tosca_nodes_Root
   property_ip_range_end: lone string,
 
   // --------------------------------------------------
+  // Attributes
+  // --------------------------------------------------
+
+  // YAML ip_address: {'type': 'string'}
+  attribute_ip_address: one string,
+
+  // --------------------------------------------------
   // Requirements
   // --------------------------------------------------
 
@@ -2661,6 +2644,11 @@ sig tosca_nodes_network_Port extends tosca_nodes_Root
   // --------------------------------------------------
 
   property_order.greater_or_equal[0]
+
+  // --------------------------------------------------
+  // Attributes
+  // --------------------------------------------------
+
 
   // --------------------------------------------------
   // Requirements
