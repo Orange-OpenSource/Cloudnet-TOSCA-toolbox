@@ -15,7 +15,7 @@
 ######################################################################
 
 # Check that the argument is correct.
-if [ ! -f ${CLOUDNET_BINDIR}/cloudnet_rc.sh ]
+if [ ! -f "${CLOUDNET_BINDIR}"/cloudnet_rc.sh ]
 then
   echo CLOUDNET_BINDIR environment variable incorrectly set!
 fi
@@ -29,8 +29,8 @@ translate()
   echo Translate TOSCA files...
   for file in "$@"
   do
-    echo "-" $file
-    ${CLOUDNET_BINDIR}/toscaware/toscaware "$file"
+    echo "- $file"
+    "${CLOUDNET_BINDIR}"/toscaware/toscaware "$file"
   done
 }
 
@@ -44,8 +44,8 @@ alloy_parse()
   echo Parsing and type checking generated Alloy files...
   for file in "$@"
   do
-    echo "-" $file
-    ${CLOUDNET_BINDIR}/Alloy/alloy.sh parse ${ALLOY_PARSE_OPTS} "$file"
+    echo "- $file"
+    "${CLOUDNET_BINDIR}"/Alloy/alloy.sh parse "${ALLOY_PARSE_OPTS}" "$file"
   done
 }
 
@@ -60,8 +60,8 @@ alloy_execute()
   local file
   for file in "$@"
   do
-    echo "-" $file
-    ${CLOUDNET_BINDIR}/Alloy/alloy.sh execute ${ALLOY_EXECUTE_OPTS} "$file"
+    echo "- $file"
+    "${CLOUDNET_BINDIR}"/Alloy/alloy.sh execute "${ALLOY_EXECUTE_OPTS}" "$file"
   done
 }
 
@@ -75,12 +75,12 @@ generate_tosca_diagrams()
   echo Generating TOSCA diagrams...
   for file in "$@"
   do
-    echo "-" $file
-    filebase="$(dirname $file)/$(basename -s .dot $file)"
+    echo "- $file"
+    filebase="$(dirname "$file")/$(basename -s .dot "$file")"
     # generate TOSCA diagram as a PNG image
-    ${CLOUDNET_BINDIR}/dot/dot -o$filebase.png -Tpng "$file"
+    "${CLOUDNET_BINDIR}"/dot/dot -o"$filebase.png" -Tpng "$file"
     # generate TOSCA diagram as a SVG file
-    ${CLOUDNET_BINDIR}/dot/dot -o$filebase.svg -Tsvg "$file"
+    "${CLOUDNET_BINDIR}"/dot/dot -o"$filebase.svg" -Tsvg "$file"
   done
 }
 
@@ -97,14 +97,14 @@ generate_network_diagrams()
   echo Generating network diagrams...
   for file in "$@"
   do
-    echo "-" $file
-    current_directory=$PWD # store current directory
-    cd $(dirname $file) # go to directory containing generated network diagrams
+    echo "- $file"
+    current_directory="$PWD" # store current directory
+    cd "$(dirname "$file")" || exit # go to directory containing generated network diagrams
     # generate network diagram as a PNG image
-    ${CLOUDNET_BINDIR}/nwdiag/nwdiag -a -Tpng "$(basename $file)"
+    "${CLOUDNET_BINDIR}"/nwdiag/nwdiag -a -Tpng "$(basename "$file")"
     # generate network diagram as a SVG file
-    ${CLOUDNET_BINDIR}/nwdiag/nwdiag -Tsvg "$(basename $file)"
-    cd ${current_directory} # back to current directory
+    "${CLOUDNET_BINDIR}"/nwdiag/nwdiag -Tsvg "$(basename "$file")"
+    cd "${current_directory}" || exit  # back to current directory
   done
 }
 
@@ -119,10 +119,10 @@ generate_uml2_diagrams()
   echo Generating UML2 diagrams...
   for file in "$@"
   do
-    echo "-" $file
+    echo "- $file"
     # generate UML2 diagram as a PNG image
-    ${CLOUDNET_BINDIR}/plantuml/plantuml -Tpng "$file"
+    "${CLOUDNET_BINDIR}"/plantuml/plantuml -Tpng "$file"
     # generate UML2 diagram as a SVG file
-    ${CLOUDNET_BINDIR}/plantuml/plantuml -Tsvg "$file"
+    "${CLOUDNET_BINDIR}"/plantuml/plantuml -Tsvg "$file"
   done
 }

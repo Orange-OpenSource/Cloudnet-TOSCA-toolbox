@@ -22,7 +22,7 @@
 #
 ######################################################################
 
-DIR=`dirname $0`
+DIR=$(dirname "$0")
 
 if [[ $1 == "gui" ]]
 then
@@ -38,9 +38,14 @@ then
   MAIN_CLASS=cloudnet.BenchmarkSolver
 else
   echo "alloy.sh (gui|parse|execute|benchmark) ..."
-  exit -1
+  # According to what was decided return a program crash error code 2
+  # Remember : 
+  #    0 : OK
+  #    1 : INFO, WARNING or ERROR
+  #    2 : program crash or unexpected error
+  exit 2
 fi
 
 shift
 
-java ${JAVA_OPTS} -cp $DIR:$DIR/org.alloytools.alloy.dist.jar:$DIR/commons-cli-1.4.jar $MAIN_CLASS $@
+java ${JAVA_OPTS} -cp "$DIR":"$DIR"/org.alloytools.alloy.dist.jar:"$DIR"/commons-cli-1.4.jar "$MAIN_CLASS" $@

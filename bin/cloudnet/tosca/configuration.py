@@ -16,36 +16,40 @@
 import logging
 import logging.config
 import os
+
 import yaml
 from cloudnet.tosca.utils import merge_dict
 
 LOGGER = logging.getLogger(__name__)
 
-CONFIGURATION_FILE = 'tosca2cloudnet.yaml'
+CONFIGURATION_FILE = "tosca2cloudnet.yaml"
+
 
 def load(config_file=CONFIGURATION_FILE):
     configuration = DEFAULT_CONFIGURATION
 
     if os.path.exists(config_file):
         # Load the configuration file if it exists.
-        with open(config_file, 'r') as stream:
+        with open(config_file, "r") as stream:
             content = yaml.safe_load(stream)
             configuration = merge_dict(DEFAULT_CONFIGURATION, content)
 
     # Configure logging.
-    logging.config.dictConfig(configuration['logging'])
+    logging.config.dictConfig(configuration["logging"])
 
     # Log the configuration file loading.
     if configuration != DEFAULT_CONFIGURATION:
-        LOGGER.info(config_file + ' loaded.')
+        LOGGER.info(config_file + " loaded.")
 
     # Return the configuration.
-    return Configuration( configuration )
+    return Configuration(configuration)
+
 
 class Configuration(object):
-    '''
-        This is a class for managing configuration.
-    '''
+    """
+    This is a class for managing configuration.
+    """
+
     def __init__(self, configuration):
         self.configuration = configuration
 
@@ -55,34 +59,28 @@ class Configuration(object):
             result = result[p]
         return result
 
+
 #
 # Default configuration
 #
 DEFAULT_CONFIGURATION = {
-    'logging': {
-        'version': 1,
-        'formatters': {
-            'default': {
-                'format': '%(asctime)s %(levelname)s %(name)s %(message)s',
-                'datefmt': '%Y-%m-%d %H:%M:%S'
+    "logging": {
+        "version": 1,
+        "formatters": {
+            "default": {
+                "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M:%S",
             },
         },
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-                'formatter': 'default',
-                'level': 'DEBUG',
-                'stream': 'ext://sys.stdout'
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "default",
+                "level": "DEBUG",
+                "stream": "ext://sys.stdout",
             },
         },
-        'loggers': {
-            __name__: {
-                'level': 'INFO',
-            },
-        },
-        'root': {
-            'level': 'DEBUG',
-            'handlers': [ 'console' ],
-        },
+        "loggers": {__name__: {"level": "INFO", },},
+        "root": {"level": "DEBUG", "handlers": ["console"],},
     },
 }
