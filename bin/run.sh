@@ -47,6 +47,7 @@ TOSCA_SyntaxCheck()
    # Configure a log file
    _LOG=$(basename "${PWD}")-$(date +%F_%H-%M-%S).log
    mkdir -p logs 2>/dev/null
+   touch logs/"$_LOG"
 
    # All description files translation
    echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/"${_LOG}"
@@ -81,6 +82,9 @@ DiagramsGen()
        * ) echo -e "ERROR argument $DIAGRAM_TYPE not expected";;
    esac
 
+   # A tiltle of process ongoing
+   echo -e "\n${normal}${magenta}*** Generating $DIAGRAM_TYPE diagrams ***${reset}" | tee -a logs/"${_LOG}"
+
    local GENERATE=false
    # Verify that we have diagrams to generate
    if [ -d "$TARGET_DIRECTORY" ]; 
@@ -114,147 +118,22 @@ DiagramsGen()
          then
             case $DIAGRAM_TYPE in
                network) 
-                     generate_network_diagrams "$TARGET_DIRECTORY/$FILE_TYPE" 2>&1 |tee -a logs/"${_LOG}"
+                     # generate_network_diagrams "$TARGET_DIRECTORY/$FILE_TYPE" 2>&1 |tee -a logs/"${_LOG}"
+                     generate_network_diagrams "$TARGET_DIRECTORY"/*.nwdiag 2>&1 |tee -a logs/"${_LOG}"
                      ;;
                TOSCA) 
-                     # Here we cannot use the FILE_TYPE varaible according to the way
-                     # generate_tosca_diagrams (defined in cloudnet_rc.sh) works
                      generate_tosca_diagrams "$TARGET_DIRECTORY"/*.dot 2>&1 |tee -a "logs/${_LOG}"
                      ;;
                UML2) 
-                     generate_uml2_diagrams "$TARGET_DIRECTORY/$FILE_TYPE" 2>&1 |tee -a "logs/${_LOG}"
+                     generate_uml2_diagrams "$TARGET_DIRECTORY"/*.plantuml 2>&1 |tee -a "logs/${_LOG}"
                      ;;
                 * )  echo -e "ERROR argument $DIAGRAM_TYPE not expected";;
             esac
          fi
       fi
    else
-      echo -e "\n         The target directory was not found be sure to run \"TOSCA syntax checking\" option before generating diagrams.\n"
-   fi
-}
-
-################################################################################
-# Network diagrams generation
-################################################################################
-NetworkDiagrams()
-{
-   # Verify if Syntax checking has been done
-   if [ -d "${nwdiag_target_directory}" ]; then
-      if [ "$SYNTAX_CHECK" = true ]; then 
-         echo -e "\n${normal}${magenta}*** Generating network diagrams ***${reset}" | tee -a logs/"${_LOG}"
-         generate_network_diagrams "${nwdiag_target_directory}"/*.nwdiag 2>&1 |tee -a logs/"${_LOG}"
-      else
-         # TODO : convert in a function to use it also for TOSCA, UML2, Alloy syntax and solve
-         # If not, ask if we create diagrams with older generated files if they exist 
-         if test -n "$(find "${nwdiag_target_directory}" -maxdepth 1 -name '*.nwdiag' -print -quit)"
-         then
-            # 'old' files found
-            echo -e "${normal}${red}DEBUG${reset} :\n    NWDIAG_OPTS : ${NWDIAG_OPTS}\n    DOCKER_OPTS : ${DOCKER_OPTS}"
-            echo -e "${normal}${magenta}Previous generated nwdiag files found.${reset}"
-            echo -e "Would you like to Generate diagrams whith them or generate Newer ones ? [Gg|Nn]" gn
-            while true; do
-                read -rs -n 1 gn
-                case $gn in
-                    [Gg]* ) 
-                        generate_network_diagrams "${nwdiag_target_directory}"/*.nwdiag 2>&1 |tee -a logs/"${_LOG}";
-                        break;;
-                    [Nn]* ) 
-                        echo -e "\n         So run \"TOSCA syntax checking\" option before generating diagrams.\n"
-                        break;;
-                    * ) echo "Please answer [Gg]enerate or [Nn]ew.";;
-                esac
-            done
-         else
-            # no files found
-            echo -e "${normal}${magenta}No generated nwdiag file found.${reset}"
-            echo -e "      Be sure  to run \"TOSCA syntax checking\" before generating diagrams\n"
-         fi
-      fi
-   else
-      echo -e "\n${normal}${magenta}*** No network diagrams to generate ***${reset}" | tee -a logs/"${_LOG}"
-   fi
-}
-
-################################################################################
-# TOSCA diagrams generation
-################################################################################
-TOSCADiagrams()
-{
-   # Verify if Syntax checking has been done
-   if [ -d "${tosca_diagrams_target_directory}" ];
-   then
-      if [ "$SYNTAX_CHECK" = true ]; then 
-         echo -e "\n${normal}${magenta}*** Generating TOSCA diagrams ***${reset}" | tee -a "logs/${_LOG}"
-         echo -e "\n${tosca_diagrams_target_directory}\n"
-         generate_tosca_diagrams "${tosca_diagrams_target_directory}"/*.dot 2>&1 |tee -a "logs/${_LOG}"
-      else
-         # If not, ask if we create diagrams with older generated files if they exist 
-         if test -n "$(find "${tosca_diagrams_target_directory}" -maxdepth 1 -name '*.dot' -print -quit)"
-         then
-            # 'old' files found
-            echo -e "${normal}${magenta}Previous generated TOSCA files found.${reset}"
-            echo -e "Would you like to Generate diagrams whith them or generate Newer ones ? [Gg|Nn]" gn
-            while true; do
-                read -rs -n 1 gn
-                case $gn in
-                    [Gg]* )
-                        generate_tosca_diagrams "${tosca_diagrams_target_directory}"/*.dot 2>&1 |tee -a logs/"${_LOG}";
-                        break;;
-                    [Nn]* )
-                        echo -e "\n         So run \"TOSCA syntax checking\" option before generating diagrams.\n"
-                        break;;
-                    * ) echo "Please answer [Gg]enerate or [Nn]ew.";;
-                esac
-            done
-         else
-            # no files found
-          echo -e "${normal}${magenta}No generated dot file found.${reset}"
-          echo -e "\n      Be sure  to run \"TOSCA syntax checking\" before generating diagrams\n"
-         fi
-      fi
-   else
-      echo -e "\n${normal}${magenta}*** No TOSCA diagrams to generate ***${reset}" | tee -a logs/"${_LOG}"
-   fi
-}
-
-################################################################################
-# UML2 diagrams generation
-################################################################################
-UML2Diagrams()
-{
-   # Verify if Syntax checking has been done
-   if [ -d "${UML2_target_directory}" ];
-   then
-      if [ "$SYNTAX_CHECK" = true ]; then 
-          echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a "logs/${_LOG}"
-          generate_uml2_diagrams "${UML2_target_directory}"/*.plantuml 2>&1 |tee -a "logs/${_LOG}"
-      else
-         # If not, ask if we create diagrams with older generated files if they exist 
-         if test -n "$(find "${UML2_target_directory}" -maxdepth 1 -name '*.plantuml' -print -quit)"
-         then
-            # 'old' files found
-            echo -e "${normal}${magenta}Previous generated plantuml files found.${reset}"
-            echo -e "Would you like to Generate diagrams whith them or generate Newer ones ? [Gg|Nn]" gn
-            while true; do
-                read -rs -n 1 gn
-                case $gn in
-                    [Gg]* ) 
-                        generate_uml2_diagrams "${UML2_target_directory}"/*.plantuml 2>&1 |tee -a logs/"${_LOG}";
-                        break;;
-                    [Nn]* ) 
-                        echo -e "\n         So run \"TOSCA syntax checking\" option before generating diagrams.\n"
-                        break;;
-                    * ) echo "Please answer [Gg]enerate or [Nn]ew.";;
-                esac
-            done
-         else
-            # no files found
-            echo -e "${normal}${magenta}No generated plantuml file found.${reset}"
-            echo -e "\n      Be sure  to run \"TOSCA syntax checking\" before generating diagrams\n"
-         fi
-      fi
-   else
-      echo -e "\n${normal}${magenta}*** No UML2 diagrams to generate ***${reset}" | tee -a logs/"${_LOG}"
+      echo -e "\n         The target directory was not found."
+      echo -e "         Be sure to run \"TOSCA syntax checking\" option before generating diagrams.\n"
    fi
 }
 
@@ -364,8 +243,6 @@ show_menus() {
     echo "      w. Launch the whole process"
     echo "      x. Exit"
     echo
-    echo "      t. Test diagram function"
-    echo
 }
 
 ################################################################################
@@ -383,17 +260,17 @@ read_options(){
            ;;
         2) # Launch ALL diagrams generation
            echo -e "\n"
-           NetworkDiagrams
-           TOSCADiagrams
-           UML2Diagrams
+           DiagramsGen network "$nwdiag_target_directory"
+           DiagramsGen TOSCA "$tosca_diagrams_target_directory"
+           DiagramsGen UML2 "$UML2_target_directory"
            pause
            ;;
         3) # Launch TOSCA syntax checking + ALL diagrams generation
            echo -e "\n"
            TOSCA_SyntaxCheck
-           NetworkDiagrams
-           TOSCADiagrams
-           UML2Diagrams
+           DiagramsGen network "$nwdiag_target_directory"
+           DiagramsGen TOSCA "$tosca_diagrams_target_directory"
+           DiagramsGen UML2 "$UML2_target_directory"
            pause
            ;;
         4) # Launch Alloy Syntax checking
@@ -417,11 +294,8 @@ read_options(){
              echo " delete ${var} (${!var})"
              rm -rf "${!var}"
            done
-           if [ "$DIRVARS_GENERATED" = true ]; then
-             echo -e "\nRemove generated configuration file"
-             rm -f "$TOSCA2CLOUDNET_CONF_FILE"
-             rm -rf "$RESULT_DIR"
-           fi
+           echo -e "\nRemove generated result directory"
+           rm -rf "${RESULT_DIR}"
            pause
            ;;
         l) # Show the log file
@@ -438,11 +312,11 @@ read_options(){
            echo -e "\n TOSCA syntax checking"
            TOSCA_SyntaxCheck
            echo -e "\n Network diagrams generation"
-           NetworkDiagrams
+           DiagramsGen network "$nwdiag_target_directory"
            echo -e "\n TOSCA diagrams generation"
-           TOSCADiagrams
+           DiagramsGen TOSCA "$tosca_diagrams_target_directory"
            echo -e "\n UML2 diagrams generation"
-           UML2Diagrams
+           DiagramsGen UML2 "$UML2_target_directory"
            echo -e "\n ALLOY syntax checking"
            AlloySyntax
            echo -e "\n ALLOY solve execution"
@@ -456,15 +330,6 @@ read_options(){
            fi
            echo -e "\nSee you soon ..."
            exit 0
-           ;;
-        t) # Tests new diagram generation function
-           echo -e "\n Network diagrams generation"
-           DiagramsGen network "$nwdiag_target_directory"
-           echo -e "\n TOSCA diagrams generation"
-           DiagramsGen TOSCA "$tosca_diagrams_target_directory"
-           echo -e "\n UML2 diagrams generation"
-           DiagramsGen UML2 "$UML2_target_directory"
-           pause
            ;;
         *) echo -e "${bold}${red}Error${reset} Invalid menu choice..." && sleep 2
     esac
@@ -569,9 +434,7 @@ fi
 create_variables $TOSCA2CLOUDNET_CONF_FILE
 
 # verify if the target directories are set, if not set default ones
-##### TODO : HOT_target_directory (and maybe others) can be set in the TOSCA2CLOUDNET_CONF_FILE 
-#####        but are not used in this script currently, so we have to manage it
-dirArray=( Alloy_target_directory nwdiag_target_directory tosca_diagrams_target_directory UML2_target_directory)
+dirArray=(Alloy_target_directory nwdiag_target_directory tosca_diagrams_target_directory UML2_target_directory HOT_target_directory)
 NBVARSSET=0
 for var in "${dirArray[@]}"
 do
@@ -615,9 +478,9 @@ while getopts ${optstring} option; do
          _LOG=$(basename "$PWD")_BATCH_MODE-$(date +%F_%H-%M-%S).log
          # Launch the whole stuff process
          TOSCA_SyntaxCheck
-         NetworkDiagrams
-         TOSCADiagrams
-         UML2Diagrams
+         DiagramsGen network "$nwdiag_target_directory"
+         DiagramsGen TOSCA "$tosca_diagrams_target_directory"
+         DiagramsGen UML2 "$UML2_target_directory"
          AlloySyntax
 # take to much time and ressource, not necessary if used for regression testing in CI/CD
 #         AlloySolve
@@ -642,6 +505,8 @@ done
 ################################################################################
 # Create a _LOG variable in case we have privious results we want to reuse
 _LOG=$(basename "${PWD}")-$(date +%F_%H-%M-%S).log
+mkdir -p logs 2>/dev/null
+touch logs/"$_LOG"
 
 clear
 
