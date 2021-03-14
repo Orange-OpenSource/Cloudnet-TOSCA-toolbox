@@ -36,7 +36,7 @@ configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
         'tosca_simple_yaml_1_2': profiles_directory + '/tosca_simple_yaml_1_2/types.yaml',
         'tosca_simple_yaml_1_3': profiles_directory + '/tosca_simple_yaml_1_3/types.yaml'
     },
-    DEFAULT_TOSCA_NORMATIVE_TYPES: 'tosca_simple_yaml_1_2',
+    DEFAULT_TOSCA_NORMATIVE_TYPES: None, # 'tosca_simple_yaml_1_2',
     SHORT_NAMES: { # TODO: separate short names for TOSCA 1.0, TOSCA 1.1, TOSCA 1.2 and TOSCA 1.3
         'AttachesTo': 'tosca.relationships.AttachesTo',
         'BlockStorage': 'tosca.nodes.BlockStorage', # TODO warning not same in 1.0 and 1.2 Storage. removed
@@ -1262,9 +1262,19 @@ class TypeChecker(Checker):
         if implementation != None:
             self.check_notification_implementation_definition(implementation, context_error_message + ':' + syntax.IMPLEMENTATION)
         # check outputs
-        self.iterate_over_map_of_definitions(self.check_attribute_mapping_definition, syntax.OUTPUTS, notification_definition, previous_notification_definition, REFINE_OR_NEW, context_error_message)
+        self.iterate_over_map_of_definitions(self.check_output_notification_definition, syntax.OUTPUTS, notification_definition, previous_notification_definition, REFINE_OR_NEW, context_error_message)
 
     check_notification_implementation_definition = check_operation_implementation_definition
+
+    def check_output_notification_definition(self, output_name, output_definition, previous_output_definition, context_error_message):
+        if isinstance(output_definition, list):
+            # TOSCA 1.3 grammar
+            self.check_attribute_mapping_definition(output_name, output_definition, previous_output_definition, context_error_message)
+        elif isinstance(output_definition, dict):
+            # TOSCA 2.0 grammar
+            self.check_parameter_definition(output_name, output_definition, context_error_message)
+        else:
+            self.error(context_error_message + ': ' + str(output_definition) + ' - unexpected grammar')
 
     def check_attribute_mapping_definition(self, attribute_mapping_name, attribute_mapping_definition, previous_attribute_mapping_definition, context_error_message):
         if len(attribute_mapping_definition) != 2:
@@ -2420,7 +2430,9 @@ class TypeChecker(Checker):
         self.check_keyword(trigger_definition, 'target_filter', check_target_filter, context_error_message)
         # check condition
         condition = trigger_definition.get('condition')
-        if condition != None:
+        if isinstance(condition, list):
+            self.iterate_over_list(trigger_definition, 'condition', self.check_condition_clause_definition, context_error_message)
+        elif isinstance(condition, dict):
             cem = context_error_message + ':' + 'condition'
             # duplicate condition
             condition = dict(condition)
@@ -2456,6 +2468,7 @@ class TypeChecker(Checker):
             else:
                 # check the short notation
                 self.check_condition_clause_definition(condition, cem)
+
         # check action
         self.iterate_over_list(trigger_definition, 'action', self.check_activity_definition, context_error_message)
 
