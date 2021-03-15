@@ -1,0 +1,146 @@
+######################################################################
+#
+# Copyright (c) 2019 Orange
+#
+# Author(s):
+# - Philippe Merle <philippe.merle@inria.fr>
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+#
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: A NSD topology
+
+imports:
+  - etsi_nfv_sol001_nsd_types.yaml
+
+node_types:
+  MyNS:
+    derived_from: tosca.nodes.nfv.NS
+    properties:
+      descriptor_id:
+        default: NS_ID1 # required
+      designer:
+        default: MyCompany # required
+      version:
+        default: '1.0' # required
+      name:
+        default: My Network Service # required
+      invariant_id:
+        default: NS_ID2 # required
+      flavour_id:
+        default: simple # required
+
+topology_template:
+  substitution_mappings:
+    node_type: MyNS
+    requirements:
+      - virtual_link: [SAP, external_virtual_link]
+
+  node_templates:
+    NS:
+      type: tosca.nodes.nfv.NS
+      properties: # TODO: Must be removed as already defined as default in MyNS.
+        descriptor_id: NS_ID1 # required
+        designer: MyCompany # required
+        version: '1.0' # required
+        name: My Network Service # required
+        invariant_id: NS_ID2 # required
+        flavour_id: simple # required
+      requirements:
+        - virtual_link: InternalVirtualLink # optional
+
+    InternalVirtualLink:
+      type: tosca.nodes.nfv.NsVirtualLink
+      properties:
+        connectivity_type: # required
+          layer_protocols: [ ipv4, ipv6 ] # required
+          flow_pattern: mesh # optional
+        description: Internal virtual link of this network service # optional
+        vl_profile: # required
+          max_bitrate_requirements: # required
+            root: 200000 # required
+            leaf: 20000  # optional
+          min_bitrate_requirements: # required
+            root: 100000 # required
+            leaf: 10000  # optional
+          qos: # optional
+            priority: 1 # optional
+            latency: 1 ms # required
+            packet_delay_variation: 1 ms # required
+            packet_loss_ratio: 0.0 # optional
+          service_availability_level: 7 # optional
+        test_access: [] # optional
+
+    VNF:
+      type: tosca.nodes.nfv.VNF
+      properties:
+        descriptor_id: ID_VNF # required
+        descriptor_version: '1.0' # required
+        provider: MyCompany # required
+        product_name: MyVNF # required
+        software_version: '1.0' # required
+        vnfm_info: [] # required
+        flavour_id: simple # required
+        flavour_description: Simple flavour # required
+      requirements:
+        - virtual_link: InternalVirtualLink # optional
+
+    PNF:
+      type: tosca.nodes.nfv.PNF
+      properties:
+        descriptor_id: b1bb0ce7-ebca-4fa7-95ed-4840d70a2233 # required
+        function_description: a physical network function # required
+        provider: MyCompany # required
+        version: '1.0' # required
+        descriptor_invariant_id: 1111-2222-ccaa-bbdd # required
+        name: MyPNF # required
+      requirements:
+        - virtual_link: InternalVirtualLink # optional
+
+    SAP:
+      type: tosca.nodes.nfv.Sap
+      properties:
+        layer_protocols: [ ipv4, ipv6 ] # required
+        role: root # optional
+        description: Service access point of this network service # optional
+        protocol: []
+        trunk_mode: true
+      requirements:
+        - internal_virtual_link: InternalVirtualLink # required
+#        - external_virtual_link: # is a requirement of this topology.
+
+    # ExternalVirtualLink:
+    #   type: tosca.nodes.nfv.NsVirtualLink
+    #   properties:
+    #     connectivity_type: # required
+    #       layer_protocols: [ ipv4, ipv6 ] # required
+    #       flow_pattern: line # optional
+    #     description: External virtual link of this network service # optional
+    #     vl_profile: # required
+    #       max_bitrate_requirements: # required
+    #         root: 2000000 # required
+    #         leaf: 200000 # optional
+    #       min_bitrate_requirements: # required
+    #         root: 1000000 # required
+    #         leaf: 100000 # optional
+    #       qos: # optional
+    #         priority: 2 # optional
+    #         latency: 1 ms # required
+    #         packet_delay_variation: 1 ms # required
+    #         packet_loss_ratio: 0.0 # optional
+    #       service_availability: # optional
+    #         level: level2 # required
+    #     test_access: [] # optional
