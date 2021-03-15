@@ -73,7 +73,7 @@ DEFAULT_CONFIGURATION = {
         "version": 1,
         "formatters": {
             "default": {
-                "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
+                'format': '[%(levelname)s] %(message)s',
                 "datefmt": "%Y-%m-%d %H:%M:%S",
             },
         },
