@@ -26,10 +26,9 @@ export CLOUDNET_BINDIR
 translate()
 {
   local file
-  echo Translate TOSCA files...
   for file in "$@"
   do
-    echo "-" $file
+    echo Translate $file...
     ${CLOUDNET_BINDIR}/toscaware/toscaware "$file"
   done
 }
@@ -98,13 +97,14 @@ generate_network_diagrams()
   for file in "$@"
   do
     echo "-" $file
-    current_directory=$PWD # store current directory
+    current_directory="$PWD" # store current directory
+    # double quote to deal with spaces in the path
     cd $(dirname $file) # go to directory containing generated network diagrams
     # generate network diagram as a PNG image
     ${CLOUDNET_BINDIR}/nwdiag/nwdiag -a -Tpng "$(basename $file)"
     # generate network diagram as a SVG file
     ${CLOUDNET_BINDIR}/nwdiag/nwdiag -Tsvg "$(basename $file)"
-    cd ${current_directory} # back to current directory
+    cd "${current_directory}" # back to current directory
   done
 }
 
