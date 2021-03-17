@@ -41,6 +41,7 @@ check_regression yaml_parsing/incorrect_indentation_in_mapping.yaml
 check_regression yaml_parsing/incorrect_indentation_in_sequence.yaml
 check_regression yaml_parsing/missed_quote_error.yaml
 check_regression yaml_parsing/string_must_be_quoted.yaml
+check_regression yaml_parsing/unexpected_carriage_return.yaml
 
 # TOSCA syntax checking
 check_regression syntax_checking-1.2.yaml # tosca_definitions_version: tosca_simple_yaml_1_2
