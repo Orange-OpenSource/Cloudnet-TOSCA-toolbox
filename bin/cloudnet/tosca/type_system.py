@@ -1938,7 +1938,7 @@ class TypeChecker(Checker):
               if requirement_node_type_name is None:
                   requirement_capability = requirement_definition.get(syntax.CAPABILITY)
                   if requirement_capability is None:
-                      self.error(context_error_message + ':' + syntax.NODE + ': ' + node + ' - no capability type in ' + str(requirement_definition))
+                      self.error(context_error_message + ':' + syntax.NODE + ': ' + requirement_assignment + ' - no capability type in ' + str(requirement_definition))
                   else:
                       node_template_type = self.type_system.merge_type(self.type_system.get_type_uri(node_template.get(syntax.TYPE)))
                       compatible_with_capability = False
