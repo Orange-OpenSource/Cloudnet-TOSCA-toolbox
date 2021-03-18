@@ -17,6 +17,10 @@ tosca_definitions_version: tosca_simple_yaml_1_3
 
 description: Tests related to TOSCA type checking done by TypeChecker component.
 
+imports:
+  - file: file.yaml
+    repository: repo # ERROR: repository undefined!
+
 interface_types:
   MyStandardInterface:
     derived_from: tosca.interfaces.node.lifecycle.Standard

@@ -87,7 +87,7 @@ class Processor(object):
         if import_repository != None:
             repository = syntax.get_repositories(self.tosca_service_template.get_yaml()).get(import_repository)
             if repository == None:
-                self.error(':imports[' + str(index) + ']:repository: ' + import_repository + ' undefined')
+                raise ValueError('repository: %s - repository undefined' % import_repository)
             else:
                 repository_url = syntax.get_repository_url(repository)
                 if repository_url == None:

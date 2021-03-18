@@ -651,6 +651,10 @@ class TypeChecker(Checker):
         for import_yaml in syntax.get_imports(template_yaml):
             try:
                 import_filepath = self.get_import_full_filepath(import_yaml)
+            except ValueError as exc:
+                self.error('imports[%d]:%s' % (index, exc))
+                continue
+            try:
                 import_namespace_prefix = syntax.get_import_namespace_prefix(import_yaml)
                 if import_namespace_prefix == None:
                     import_namespace_prefix = '' # no prefix
