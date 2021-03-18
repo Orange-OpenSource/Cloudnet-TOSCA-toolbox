@@ -1,6 +1,6 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
 # SPDX-FileCopyrightText: Copyright (c) 2020 Orange
 # SPDX-License-Identifier: Apache-2.0
@@ -48,8 +48,7 @@ def merge_dict(d, u):
             if dv == None:
                 dv = {}
             if type(dv) != dict:
-                dv = {}
-                dv['_old_value_'] = dv
+                dv = { '_old_value_': dv }
             d[k] = merge_dict(dv, v)
         else:
             if v != None:
