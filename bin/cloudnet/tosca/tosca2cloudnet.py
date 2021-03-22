@@ -119,13 +119,6 @@ def main(argv):
             return 2
         nb_errors += syntax_checker.nb_errors
         nb_warnings += syntax_checker.nb_warnings
-            print(processors.CRED, '[ERROR] ', args.template_file , ': ', e, processors.CEND, sep='', file=sys.stderr)
-            return 2
-
-        # Syntax checking.
-        syntax_checker = SyntaxChecker(tosca_service_template, config)
-        if syntax_checker.check() == False:
-            return 2
 
         # Create a TOSCA type system.
         type_system = TypeSystem(config)
