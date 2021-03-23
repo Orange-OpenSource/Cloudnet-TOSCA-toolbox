@@ -173,7 +173,7 @@ class TypeSystem(object):
         result = self.get_type(type_name)
         if result is None:
             # TBR            LOGGER.error(CRED + type_name + ' unknown!' + CEND)
-            diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem')
+            # TBR also ?     diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem')
             return dict()
 
         requirements = result.get(syntax.REQUIREMENTS)
