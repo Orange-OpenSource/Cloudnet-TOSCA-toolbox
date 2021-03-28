@@ -407,6 +407,29 @@ class PlantUMLGenerator(Generator):
                                 already_generated_interfaces[target_capability_uml_id] = target_capability_uml_id
                             self.generate(source_uml_id, ' --( ', target_capability_uml_id, ' : ', requirement_name, sep='')
 
+
+        # generate UML representation for TOSCA policies
+        for policy in topology_template.get(POLICIES, []):
+            for policy_name, policy_yaml in policy.items():
+                policy_type = policy_yaml.get(TYPE)
+                policy_uml_id = 'policy_' + normalize_name(policy_name)
+                if policy_type in [ 'tosca.policies.nfv.VnfIndicator' ]:
+                    self.generate('agent "', policy_name, ': ', short_type_name(policy_type), '" <<policy>> as ', policy_uml_id, ' #AliceBlue', sep='')
+                else:
+                    self.generate('agent "', short_type_name(policy_type), '" <<policy>> as ', policy_uml_id, ' #AliceBlue', sep='')
+                for target in policy_yaml.get(TARGETS, []):
+                    if node_templates.get(target) != None:
+                        target_uml_id = 'node_' + normalize_name(target)
+                        self.generate(policy_uml_id, ' -up-> ', target_uml_id, sep='')
+                    else:
+                        target_group = topology_template.get(GROUPS, {}).get(target)
+                        if target_group is None:
+                            self.error(target + " - undefined node template or group")
+                            continue
+                        for member in target_group.get(MEMBERS, []):
+                            member_uml_id = 'node_' + normalize_name(member)
+                            self.generate(policy_uml_id, ' -up-> ', member_uml_id, sep='')
+
         if substitution_mappings:
             capabilities = get_dict(substitution_mappings, CAPABILITIES)
 
