@@ -638,12 +638,22 @@ class TypeChecker(Checker):
 
     def load_tosca_yaml_template(self, path, importer, namescape_prefix = '', already_loaded_paths = {}):
         # Load the tosca service template if not already loaded.
-        tosca_service_template = already_loaded_paths.get(path)
-        if tosca_service_template == None:
-            tosca_service_template = importer.imports(path)
-            already_loaded_paths[path] = tosca_service_template
-        elif namescape_prefix == '':
+
+        # TBR
+        # tosca_service_template = already_loaded_paths.get(path)
+        # if tosca_service_template == None:
+        #    tosca_service_template = importer.imports(path)
+        #    already_loaded_paths[path] = tosca_service_template
+        # elif namescape_prefix == '':
+        #    return
+        tosca_service_template = importer.imports(path)
+        import os.path
+        fullname = namescape_prefix + os.path.normpath(tosca_service_template.get_fullname())
+        if already_loaded_paths.get(fullname) is None:
+            already_loaded_paths[fullname] = tosca_service_template
+        else:
             return
+
         template_yaml = tosca_service_template.get_yaml()
 
         # Load imported templates.
@@ -656,8 +666,8 @@ class TypeChecker(Checker):
                 continue
             try:
                 import_namespace_prefix = syntax.get_import_namespace_prefix(import_yaml)
-                if import_namespace_prefix == None:
-                    import_namespace_prefix = '' # no prefix
+                if import_namespace_prefix is None:
+                    import_namespace_prefix = namescape_prefix # reuse current namespace_prefix
                 else:
                     import_namespace_prefix = import_namespace_prefix + ':'
                 self.load_tosca_yaml_template(import_filepath, tosca_service_template, import_namespace_prefix, already_loaded_paths)
@@ -1943,7 +1953,7 @@ class TypeChecker(Checker):
                       node_template_type = self.type_system.merge_type(self.type_system.get_type_uri(node_template.get(syntax.TYPE)))
                       compatible_with_capability = False
                       for cap_name, cap_def in node_template_type.get(syntax.CAPABILITIES, {}).items():
-                          if self.type_system.is_derived_from(cap_def.get(syntax.TYPE), requirement_capability):
+                          if self.type_system.is_derived_from(syntax.get_capability_type(cap_def), requirement_capability):
                               compatible_with_capability = True
                               break
                       if compatible_with_capability is False:
@@ -1977,7 +1987,7 @@ class TypeChecker(Checker):
                         node_template_type = self.type_system.merge_type(self.type_system.get_type_uri(node_template.get(syntax.TYPE)))
                         compatible_with_capability = False
                         for cap_name, cap_def in node_template_type.get(syntax.CAPABILITIES, {}).items():
-                            if cap_name == requirement_capability or self.type_system.is_derived_from(cap_def.get(syntax.TYPE), requirement_capability):
+                            if cap_name == requirement_capability or self.type_system.is_derived_from(syntax.get_capability_type(cap_def), requirement_capability):
                                 compatible_with_capability = True
                                 break
                         if compatible_with_capability is False:
@@ -2006,7 +2016,7 @@ class TypeChecker(Checker):
                     else:
                         compatible_with_capability = False
                         for cap_name, cap_def in node_type.get(syntax.CAPABILITIES, {}).items():
-                            if cap_name == requirement_capability or self.type_system.is_derived_from(cap_def.get(syntax.TYPE), requirement_capability):
+                            if cap_name == requirement_capability or self.type_system.is_derived_from(syntax.get_capability_type(cap_def), requirement_capability):
                                 compatible_with_capability = True
                                 break
                         if compatible_with_capability is False:
