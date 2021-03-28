@@ -1130,7 +1130,8 @@ class InterfaceTypeGenerator(AbstractTypeGenerator):
                     self.generate_call_predicate('operation', prefixed_operation_name)
 
                     # Translate inputs.
-                    self.generate_inputs_facts(prefixed_operation_name + '.@', operation_yaml, INTERFACE_TYPES + ':' + interface_type_name + ':' + operation_name)
+# TODO: inputs must be generated!
+#                    self.generate_inputs_facts(prefixed_operation_name + '.@', operation_yaml, INTERFACE_TYPES + ':' + interface_type_name + ':' + operation_name)
 
                     self.generate()
         return
@@ -1305,9 +1306,10 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                 if interface_yaml:
                     for (operation_name, operation_yaml) in syntax.get_operations(interface_yaml).get('operations').items():
                             self.generate('  // YAML   ', operation_name, ':', sep='')
-                            if type(operation_yaml) == dict:
-                                # Translate inputs.
-                                self.generate_inputs_facts(self.prefix_name('interface', interface_name) + '.' + self.prefix_name('operation', operation_name) + '.', operation_yaml, '???')
+# TODO: inputs must be generated!
+#                            if type(operation_yaml) == dict:
+#                                # Translate inputs.
+#                                self.generate_inputs_facts(self.prefix_name('interface', interface_name) + '.' + self.prefix_name('operation', operation_name) + '.', operation_yaml, '???')
 
                             # Generate implementation.
                             prefixed_operation = self.prefix_name('interface', interface_name) + '.' + self.prefix_name('operation', operation_name)
@@ -1827,25 +1829,30 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             inputs_values = {}
 
                         # Add type if not defined.
-                        for input_name, input_yaml in inputs_values.items():
-                            input_declaration = inputs.get(input_name)
-                            if input_declaration == None:
-                                self.generate('  ', prefixed_operation, '.input["', input_name, '"].undefined[]', sep='')
-                                input_declaration = {}
-                            if not input_declaration.get(TYPE):
-                                input_declaration[TYPE] = 'string'
-                            inputs[input_name] = input_declaration
-
-                        self.generate_all_properties(inputs,
-                                                     inputs_values,
-                                                     prefixed_operation,
-                                                     context_error_message + ':' + INTERFACES + ':' + interface_name + ':' + operation_name + ':' + INPUTS,
-                                                     property_name_format = 'input["%s"].value')
+# TODO: inputs must be generated!
+#                        for input_name, input_yaml in inputs_values.items():
+#                            input_declaration = inputs.get(input_name)
+#                            if input_declaration == None:
+#                                self.generate('  ', prefixed_operation, '.input["', input_name, '"].undefined[]', sep='')
+#                                input_declaration = {}
+#                            if not input_declaration.get(TYPE):
+#                                input_declaration[TYPE] = 'string'
+#                            inputs[input_name] = input_declaration
+#
+#                        self.generate_all_properties(inputs,
+#                                                     inputs_values,
+#                                                     prefixed_operation,
+#                                                     context_error_message + ':' + INTERFACES + ':' + interface_name + ':' + operation_name + ':' + INPUTS,
+#                                                     property_name_format = 'input["%s"].value')
 
                     if type(operation_yaml) == dict:
                         nb_inputs = len(get_dict(operation_yaml, INPUTS))
                     else:
                         nb_inputs = 0
+
+# TODO: inputs must be generated!
+                    nb_inputs = 0
+
                     self.generate_cardinality_fact(prefixed_operation + '.' + INPUTS, nb_inputs)
             self.generate_cardinality_fact(prefixed_template_name + '.' + self.prefix_name('interface', interface_name) + '.operations', nb_operations)
 
@@ -2284,6 +2291,10 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 
             # TODO: add check interface declared
 
+#            interface_type = get_dict(node_template, INTERFACES).get(interface_name, {}).get(TYPE)
+#            if interface_type != None:
+#                interface_yaml = self.type_system.merge_type(interface_type)
+#            if interface_type is None:
             interface_type = get_dict(node_template_type, INTERFACES).get(interface_name).get(TYPE)
             if interface_type == None:
                 interface_sig = TOSCA.Interface
@@ -2293,11 +2304,11 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             if acs.get_signature_scopes().get(interface_sig, 0) > 0:
                 # This interface type was already processed.
                 is_new_interface = False
-#                interface_yaml = node_template.get(INTERFACES, {})
+#                interface_yaml = node_template.get(INTERFACES, {}).get(interface_name, {})
             else:
                 is_new_interface = True
 
-            interfaces_yaml = get_dict(node_template_type, INTERFACES).get(interface_name)
+#            interfaces_yaml = get_dict(node_template_type, INTERFACES).get(interface_name)
 
             # Iterate over all operations.
             for (operation_name, operation_yaml) in syntax.get_operations(interface_yaml).get(OPERATIONS).items():
@@ -2329,12 +2340,13 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                 artifact_type_sig = self.alloy_sig(primary.get('type'))
                                 acs.update_sig_scope(artifact_type_sig)
                     # Iterate over all inputs.
-                    for input_name, input_yaml in get_dict(operation_yaml, INPUTS).items():
+# TODO: inputs must be generated!
+#                    for input_name, input_yaml in get_dict(operation_yaml, INPUTS).items():
                         # Compute the scope required by each operation.
-                        acs.update_sig_scope(TOSCA.Parameter)
-                        is_new_operation = True
+#                        acs.update_sig_scope(TOSCA.Parameter)
+#                        is_new_operation = True
                         # Compute the scope of the input value.
-                        self.compute_scope_property(acs, input_yaml, node_template.get(INTERFACES,{}).get(operation_name,{}).get(input_name))
+#                        self.compute_scope_property(acs, input_yaml, node_template.get(INTERFACES,{}).get(operation_name,{}).get(input_name))
 
                     if is_new_operation:
                         acs.update_sig_scope(TOSCA.Operation)
