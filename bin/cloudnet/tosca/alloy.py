@@ -120,7 +120,7 @@ class Alloy(object):
             extended_signature_name = Alloy.get_superset(signature_name)
         except KeyError as e:
             LOGGER.error(CRED + str(e) + CEND)
-            diagnostic(gravity='error', message=str(e), cls=signature_name, file='')
+            diagnostic(gravity='error', message=str(e), cls=signature_name, file="")
             extended_signature_name = None
 
         while extended_signature_name:
@@ -130,10 +130,10 @@ class Alloy(object):
             except KeyError as e:
                 LOGGER.error(CRED + str(e) + " unknown!" + CEND)
                 diagnostic(
-                    gravity='error',
-                    message=str(e)+' unknown',
+                    gravity="error",
+                    message=str(e)+" unknown",
                     cls=signature_name,
-                    file=''
+                    file="",
                 )
                 extended_signature_name = None
 
@@ -3793,9 +3793,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                     )
                                     if type(requirement_relationship) == dict:
                                         relationship_type = (
-                                            requirement_relationship.get(
-                                                TYPE
-                                            )
+                                            requirement_relationship.get(TYPE)
                                         )
                                         requirement_relationship_properties = get_dict(
                                             requirement_relationship, PROPERTIES
@@ -3817,9 +3815,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                             relationship_type
                                         )
                                         requirement_relationship_type_sig = (
-                                            self.alloy_sig(
-                                                relationship_type
-                                            )
+                                            self.alloy_sig(relationship_type)
                                         )
                                         merged_requirement_relationship_type = (
                                             self.type_system.merge_node_type(
