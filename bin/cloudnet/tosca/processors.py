@@ -16,9 +16,9 @@
 import logging  # for logging purposes.
 import os
 from sys import stderr
-from cloudnet.tosca.diagnostics import diagnostic
 
 import cloudnet.tosca.configuration as configuration
+from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.importers import ArchiveImporter
 from cloudnet.tosca.utils import normalize_name
 
