@@ -166,7 +166,7 @@ def main(argv):
         )
         return 2
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(
         main(sys.argv[1:])
     )  # error code: 2 -> break workflow, 1 -> warnings, but continue
