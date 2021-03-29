@@ -92,7 +92,7 @@ DEFAULT_CONFIGURATION = {
             },
         },
         "root": {
-            "level": "DEBUG", 
+            "level": "DEBUG",
             "handlers": ["console"],
         },
     },
