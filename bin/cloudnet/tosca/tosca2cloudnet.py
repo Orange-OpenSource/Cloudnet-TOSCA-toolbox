@@ -32,6 +32,7 @@ import os
 import sys  # argv and stderr.
 
 import cloudnet.tosca.configuration as configuration
+import cloudnet.tosca.diagnostics as diagnostics
 import cloudnet.tosca.importers as importers
 import cloudnet.tosca.processors as processors
 from cloudnet.tosca.alloy import AlloyGenerator
@@ -70,10 +71,30 @@ def main(argv):
             required=True,
             help="YAML template or CSAR file to parse.",
         )
+        parser.add_argument(
+            "--diagnostics-file",
+            metavar="<filename>",
+            default="",
+            help="json log output processing file.",
+        )
+        parser.add_argument(
+            "--ignore-target-config",
+            dest="ignore_target_config",
+            action="store_true",
+            help="ignore target directory configuration, force it to default values.",
+        )
         (args, extra_args) = parser.parse_known_args(argv)
 
+        diagnostics.configure(
+            template_filename=args.template_file, log_filename=args.diagnostics_file
+        )
+
         # Load configuration.
-        config = configuration.load()
+        config = configuration.load(
+            ignored_keys=[processors.Generator.TARGET_DIRECTORY]
+            if args.ignore_target_config
+            else []
+        )
 
         # Load the TOSCA service template.
         try:
@@ -91,7 +112,13 @@ def main(argv):
                 sep="",
                 file=sys.stderr,
             )
-            exit(1)
+            diagnostics.diagnostic(
+                gravity="error",
+                file=args.template_file,
+                message=str(e),
+                cls="tosca2cloudnet",
+            )
+            return 2
 
         nb_errors = 0
         nb_warnings = 0
@@ -99,7 +126,7 @@ def main(argv):
         # Syntax checking.
         syntax_checker = SyntaxChecker(tosca_service_template, config)
         if syntax_checker.check() is False or syntax_checker.nb_errors > 0:
-            exit(1)
+            return 2
         nb_errors += syntax_checker.nb_errors
         nb_warnings += syntax_checker.nb_warnings
 
@@ -124,20 +151,23 @@ def main(argv):
         ]:
             generator = generator_class(generator=type_checker)
             generator.generation()
-            nb_errors += generator.nb_errors
-            nb_warnings += generator.nb_warnings
-
-        if nb_errors > 0 or nb_warnings > 0:
-            exit(1)
-
-    except Exception as e:
+        return diagnostics.return_code
+    except Exception as exception:
         print(processors.CRED, file=sys.stderr)
         import traceback
 
         traceback.print_exc(file=sys.stderr)
         print(processors.CEND, file=sys.stderr)
-        exit(1)
+        diagnostics.diagnostic(
+            gravity="error",
+            message=f"global exception {type(exception).__name__}, see output log.",
+            file="",
+            cls="main",
+        )
+        return 2
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    sys.exit(
+        main(sys.argv[1:])
+    )  # error code: 2 -> break workflow, 1 -> warnings, but continue
