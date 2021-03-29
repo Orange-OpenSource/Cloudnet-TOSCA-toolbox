@@ -1,7 +1,7 @@
 # simple structured logging
 import json
-import sys
 import os
+import sys
 
 outfile = None  # file object to output to
 template = ""  # name of the template file
