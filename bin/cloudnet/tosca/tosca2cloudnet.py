@@ -71,20 +71,28 @@ def main(argv):
             required=True,
             help="YAML template or CSAR file to parse.",
         )
-        parser.add_argument('--diagnostics-file',
-                            metavar='<filename>',
-                            default='',
-                            help='json log output processing file.')
-        parser.add_argument('--ignore-target-config',
-                            dest='ignore_target_config',
-                            action='store_true',
-                            help='ignore target directory configuration, force it to default values.')
+        parser.add_argument(
+            "--diagnostics-file",
+            metavar="<filename>",
+            default="",
+            help="json log output processing file.",
+        )
+        parser.add_argument(
+            "--ignore-target-config",
+            dest="ignore_target_config",
+            action="store_true",
+            help="ignore target directory configuration, force it to default values.")
         (args, extra_args) = parser.parse_known_args(argv)
 
-        diagnostics.configure(template_filename=args.template_file, log_filename=args.diagnostics_file)
+        diagnostics.configure(
+            template_filename=args.template_file, log_filename=args.diagnostics_file
+        )
 
         # Load configuration.
-        config = configuration.load(ignored_keys = [processors.Generator.TARGET_DIRECTORY] if args.ignore_target_config else [])
+        config = configuration.load(
+            ignored_keys = [processors.Generator.TARGET_DIRECTORY]
+            if args.ignore_target_config else []
+        )
 
         # Load the TOSCA service template.
         try:
@@ -103,10 +111,10 @@ def main(argv):
                 file=sys.stderr,
             )
             diagnostics.diagnostic(
-                gravity='error',
+                gravity="error",
                 file=args.template_file, 
                 message=str(e), 
-                cls='tosca2cloudnet'
+                cls="tosca2cloudnet"
             )
             return 2
 
@@ -148,7 +156,12 @@ def main(argv):
 
         traceback.print_exc(file=sys.stderr)
         print(processors.CEND, file=sys.stderr)
-        diagnostics.diagnostic(gravity='error',message=f'global exception {type(exception).__name__}, see output log.', file='',cls='main')
+        diagnostics.diagnostic(
+            gravity="error",
+            message=f"global exception {type(exception).__name__}, see output log.",
+            file="",
+            cls="main",
+        )
         return 2
 
 if __name__ == '__main__':
