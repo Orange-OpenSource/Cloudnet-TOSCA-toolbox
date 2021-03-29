@@ -21,9 +21,9 @@ from copy import deepcopy
 
 import cloudnet.tosca.configuration as configuration
 import cloudnet.tosca.syntax as syntax
+from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.processors import CEND, CRED, Checker
 from cloudnet.tosca.utils import merge_dict, normalize_dict
-from cloudnet.tosca.diagnostics import diagnostic
 
 profiles_directory = "file:" + os.path.dirname(__file__) + "/profiles"
 
