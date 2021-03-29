@@ -17,17 +17,17 @@ import copy  # for deepcopy
 import logging  # for logging purposes.
 
 import cloudnet.tosca.configuration as configuration
-from cloudnet.tosca.processors import CEND, CRED, Generator
 import cloudnet.tosca.syntax as syntax
-from cloudnet.tosca.syntax import *  # TODO to be removed
 import cloudnet.tosca.utils as utils
-
+from cloudnet.tosca.diagnostics import diagnostic
+from cloudnet.tosca.processors import CEND, CRED, Generator
+from cloudnet.tosca.syntax import *  # TODO to be removed
 
 ALLOY = "Alloy"
 SCOPE = "scope"
 configuration.DEFAULT_CONFIGURATION[ALLOY] = {
     # Target directory where Alloy files are generated.
-    Generator.TARGET_DIRECTORY: "Alloy",
+    Generator.TARGET_DIRECTORY: "Results/Alloy",
     SCOPE: {"for": 5, "Int": 8, "seq": 5,},
     "scalar-mapping": {
         "0.1 GHz": "1 Hz",  # for tosca_simple_yaml_1_2
@@ -119,6 +119,7 @@ class Alloy(object):
             extended_signature_name = Alloy.get_superset(signature_name)
         except KeyError as e:
             LOGGER.error(CRED + str(e) + CEND)
+            diagnostic(gravity="error", message=str(e), cls=signature_name, file="")
             extended_signature_name = None
 
         while extended_signature_name:
@@ -127,6 +128,12 @@ class Alloy(object):
                 extended_signature_name = Alloy.get_superset(extended_signature_name)
             except KeyError as e:
                 LOGGER.error(CRED + str(e) + " unknown!" + CEND)
+                diagnostic(
+                    gravity="error",
+                    message=str(e) + " unknown",
+                    cls=signature_name,
+                    file="",
+                )
                 extended_signature_name = None
 
         return supersets
@@ -3103,8 +3110,10 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         requirement_relationship
                     )
                     if requirement_relationship_type is not None:
-                        merged_requirement_relationship_type = self.type_system.merge_node_type(
-                            requirement_relationship_type
+                        merged_requirement_relationship_type = (
+                            self.type_system.merge_node_type(
+                                requirement_relationship_type
+                            )
                         )
                     prefixed_relationship = (
                         prefixed_node_template_name
@@ -3121,8 +3130,10 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             tmp = syntax.get_type(requirement_relationship)
                             if tmp is not None:
                                 requirement_relationship_type = tmp
-                                merged_requirement_relationship_type = self.type_system.merge_node_type(
-                                    requirement_relationship_type
+                                merged_requirement_relationship_type = (
+                                    self.type_system.merge_node_type(
+                                        requirement_relationship_type
+                                    )
                                 )
                                 requirement_relationship_properties = get_dict(
                                     requirement_relationship, PROPERTIES
@@ -3149,8 +3160,10 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                 )
                                 continue
                             requirement_relationship_type = requirement_relationship
-                            merged_requirement_relationship_type = self.type_system.merge_node_type(
-                                requirement_relationship_type
+                            merged_requirement_relationship_type = (
+                                self.type_system.merge_node_type(
+                                    requirement_relationship_type
+                                )
                             )
                             requirement_relationship_properties = {}
                             self.generate(
@@ -3772,12 +3785,14 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             if node_template_requirement_yaml:
                                 requirement_relationship_properties = {}
                                 if type(node_template_requirement_yaml) == dict:
-                                    requirement_relationship = syntax.get_requirement_relationship(
-                                        node_template_requirement_yaml
+                                    requirement_relationship = (
+                                        syntax.get_requirement_relationship(
+                                            node_template_requirement_yaml
+                                        )
                                     )
                                     if type(requirement_relationship) == dict:
-                                        relationship_type = requirement_relationship.get(
-                                            TYPE
+                                        relationship_type = (
+                                            requirement_relationship.get(TYPE)
                                         )
                                         requirement_relationship_properties = get_dict(
                                             requirement_relationship, PROPERTIES
@@ -3798,11 +3813,13 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                         requirement_relationship_type = (
                                             relationship_type
                                         )
-                                        requirement_relationship_type_sig = self.alloy_sig(
-                                            relationship_type
+                                        requirement_relationship_type_sig = (
+                                            self.alloy_sig(relationship_type)
                                         )
-                                        merged_requirement_relationship_type = self.type_system.merge_node_type(
-                                            relationship_type
+                                        merged_requirement_relationship_type = (
+                                            self.type_system.merge_node_type(
+                                                relationship_type
+                                            )
                                         )
 
                                 acs.update_sig_scope(TOSCA.Requirement)
