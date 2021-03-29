@@ -600,9 +600,7 @@ class PlantUMLGenerator(Generator):
 
                         if type(requirement_yaml) == dict:
                             requirement_relationship = (
-                                syntax.get_requirement_relationship(
-                                    requirement_yaml
-                                )
+                                syntax.get_requirement_relationship(requirement_yaml)
                             )
                             if type(requirement_relationship) == dict:
                                 relationship_component_type = (
