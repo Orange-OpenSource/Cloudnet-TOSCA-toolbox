@@ -81,7 +81,8 @@ def main(argv):
             "--ignore-target-config",
             dest="ignore_target_config",
             action="store_true",
-            help="ignore target directory configuration, force it to default values.")
+            help="ignore target directory configuration, force it to default values.",
+        )
         (args, extra_args) = parser.parse_known_args(argv)
 
         diagnostics.configure(
@@ -90,8 +91,9 @@ def main(argv):
 
         # Load configuration.
         config = configuration.load(
-            ignored_keys = [processors.Generator.TARGET_DIRECTORY]
-            if args.ignore_target_config else []
+            ignored_keys=[processors.Generator.TARGET_DIRECTORY]
+            if args.ignore_target_config
+            else []
         )
 
         # Load the TOSCA service template.
@@ -112,9 +114,9 @@ def main(argv):
             )
             diagnostics.diagnostic(
                 gravity="error",
-                file=args.template_file, 
-                message=str(e), 
-                cls="tosca2cloudnet"
+                file=args.template_file,
+                message=str(e),
+                cls="tosca2cloudnet",
             )
             return 2
 
@@ -165,4 +167,6 @@ def main(argv):
         return 2
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:])) # error code: 2 -> break workflow, 1 -> warnings, but continue
+    sys.exit(
+        main(sys.argv[1:])
+    ) # error code: 2 -> break workflow, 1 -> warnings, but continue
