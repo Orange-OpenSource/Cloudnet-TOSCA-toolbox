@@ -16,7 +16,7 @@ def configure(template_filename, log_filename) :
 def diagnostic(gravity, file, message, cls, **kwargs) :
 	global return_code, outfile, template
 	if gravity == "info" or outfile == None:
-            return
+        return
 	return_code = 1
 	if file == "":
 		file = template
