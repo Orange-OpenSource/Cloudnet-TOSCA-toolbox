@@ -32,6 +32,7 @@ import os
 import sys  # argv and stderr.
 
 import cloudnet.tosca.configuration as configuration
+import cloudnet.tosca.diagnostics as diagnostics
 import cloudnet.tosca.importers as importers
 import cloudnet.tosca.processors as processors
 from cloudnet.tosca.alloy import AlloyGenerator
@@ -41,7 +42,7 @@ from cloudnet.tosca.syntax import SyntaxChecker
 from cloudnet.tosca.tosca_diagrams import ToscaDiagramGenerator
 from cloudnet.tosca.type_system import TypeChecker, TypeSystem
 from cloudnet.tosca.uml2_diagrams import PlantUMLGenerator
-import cloudnet.tosca.diagnostics as diagnostics
+
 
 ALIASED_TOSCA_SERVICE_TEMPLATES = "aliased_tosca_service_templates"
 
