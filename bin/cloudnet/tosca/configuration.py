@@ -34,9 +34,10 @@ def load(config_file=CONFIGURATION_FILE, ignored_keys=[]):
             content = yaml.safe_load(stream)
             # delete all subkeys of content which are in ignored values
             for d in content.values() : 
-                if isinstance(d,dict) : 
-                    for k in ignored_keys : 
-                        if k in d: del d[k]
+                if isinstance(d, dict) : 
+                    for k in ignored_keys: 
+                        if k in d:
+                            del d[k]
             configuration = merge_dict(DEFAULT_CONFIGURATION, content)
 
     # Configure logging.
@@ -73,7 +74,7 @@ DEFAULT_CONFIGURATION = {
         "version": 1,
         "formatters": {
             "default": {
-                'format': '[%(levelname)s] %(message)s',
+                "format": "[%(levelname)s] %(message)s",
                 "datefmt": "%Y-%m-%d %H:%M:%S",
             },
         },
@@ -85,7 +86,14 @@ DEFAULT_CONFIGURATION = {
                 "stream": "ext://sys.stdout",
             },
         },
-        "loggers": {__name__: {"level": "INFO", },},
-        "root": {"level": "DEBUG", "handlers": ["console"],},
+        "loggers": {
+            __name__: {
+                "level": "INFO",
+            },
+        },
+        "root": {
+            "level": "DEBUG", 
+            "handlers": ["console"],
+        },
     },
 }
