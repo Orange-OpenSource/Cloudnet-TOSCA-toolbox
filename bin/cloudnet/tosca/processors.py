@@ -129,7 +129,7 @@ class Processor(object):
             sep="",
             file=stderr,
         )
-        self.diagnostic("error",message)
+        self.diagnostic("error", message)
         self.nb_errors += 1
 
     def warning(self, message):
@@ -144,7 +144,7 @@ class Processor(object):
             sep="",
             file=stderr,
         )
-        self.diagnostic("warning",message)
+        self.diagnostic("warning", message)
         self.nb_warnings += 1
 
     def info(self, message):
@@ -157,14 +157,14 @@ class Processor(object):
                 sep="",
                 file=stderr,
             )
-        self.diagnostic("info",message)
+        self.diagnostic("info", message)
 
-    def diagnostic(self, gravity, message) :
+    def diagnostic(self, gravity, message):
         diagnostic(
             gravity=gravity,
-            file=self.tosca_service_template.get_fullname(), 
+            file=self.tosca_service_template.get_fullname(),
             message=message,
-            cls=self.__class__.__name__
+            cls=self.__class__.__name__,
         )
 
     def process(self):
