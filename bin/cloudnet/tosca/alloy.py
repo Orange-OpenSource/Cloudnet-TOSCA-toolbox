@@ -120,7 +120,7 @@ class Alloy(object):
             extended_signature_name = Alloy.get_superset(signature_name)
         except KeyError as e:
             LOGGER.error(CRED + str(e) + CEND)
-            diagnostic(gravity='error', message=str(e), cls=signature_name, file="")
+            diagnostic(gravity="error", message=str(e), cls=signature_name, file="")
             extended_signature_name = None
 
         while extended_signature_name:
@@ -131,7 +131,7 @@ class Alloy(object):
                 LOGGER.error(CRED + str(e) + " unknown!" + CEND)
                 diagnostic(
                     gravity="error",
-                    message=str(e)+" unknown",
+                    message=str(e) + " unknown",
                     cls=signature_name,
                     file="",
                 )
