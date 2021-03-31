@@ -395,14 +395,14 @@ sig TopologyTemplate extends LG/LocationGraph
   distinct_names[outputs]
 
   // if one substitution_mapping then it is distinct of nodes.
-  one substitution_mapping implies substitution_mapping not in nodes
+  some substitution_mapping implies substitution_mapping not in nodes
 
   //
   // Mapping TOSCA to Location Graphs.
   //
   // nodes, relationships, groups and policies are locations of this location graph.
-// TBR  locations = nodes + relationships + groups + policies + nodes.requirements.relationship
-  locations = nodes + relationships + groups + policies + (String.(nodes.requirements)).relationship
+  locations = nodes + relationships + groups + policies + nodes.requirements.relationship
+  // TBR: locations = nodes + relationships + groups + policies + (String.(nodes.requirements)).relationship
   // NOTE: substitution_mapping is not a location of this location graph but
   // will be part of the location graphs where it will be substituted.
 }
@@ -545,8 +545,8 @@ pred TopologyTemplate.apply_substitution[]
 
 abstract sig Node extends ToscaComponent {
   node_type_name: lone String, // NOTE: Used by the substitution algorithm.
-// TBR:  requirements : set Requirement,
-  requirements :  String -> Requirement,
+  requirements : set Requirement,
+  // TBR: requirements :  String -> Requirement,
   capabilities : set Capability,
   artifacts : set Artifact,
 } {
@@ -557,8 +557,8 @@ abstract sig Node extends ToscaComponent {
   // Mapping TOSCA to Location Graphs.
   //
   // Requirements are required roles of this location.
-// TBR:  required = requirements
-  required = String.requirements
+  required = requirements
+// TBR: required = String.requirements
   //
   // Capabilities are provided roles of this location.
   provided = capabilities
@@ -576,21 +576,20 @@ fun Node.capability[name: one String] : set Capability
 }
 
 /** A requirement is owned by this node. */
-// TBR: pred Node.requirement[requirement:  one Requirement]
 pred Node.requirement[name: String, requirement:  one Requirement]
 {
-// TBR:  requirement in this.requirements
-  (name -> requirement) in this.requirements
+  requirement in this.requirements
+// TBR: (name -> requirement) in this.requirements
 }
 
-fun Node.requirement[name: one String] : set Requirement
-{
-// TBR:  role[this.requirements, name]
-  this.requirements[name]
-}
+// TBR
+// fun Node.requirement[name: one String] : set Requirement
+// {
+//  this.requirements[name]
+// }
 
 /** An artefact is owned by this node. */
-pred Node.artifact[artifact:  one Artifact]
+pred Node.artifact[artifact: one Artifact]
 {
   artifact in this.artifacts
 }
@@ -605,7 +604,6 @@ fun Node.artifact[name: one String] : one Artifact
  *******************************************************************************/
 
 // TODO: to remove as perhaps not required
-// abstract // TBR: abstract is not necessary
 sig Requirement extends ToscaRole {
   relationship: lone Relationship
 } {
@@ -621,14 +619,8 @@ sig Requirement extends ToscaRole {
 
 /* Return the node owning a given requirement. */
 fun Requirement.node[] : set Node {
-// TBR:  ~(Node<:requirements)[this]
-  ~(Node<:select13[requirements])[this]
-}
-
-// Copied from ternary.als
-/** returns the first and last columns of a ternary relation */
-fun select13 [r: univ->univ->univ] : ((r.univ).univ) -> (univ.(univ.r)) {
-  {x: (r.univ).univ, z: univ.(univ.r) | some (x.r).z}
+  ~(Node<:requirements)[this]
+// TBR: (requirements.this).String
 }
 
 /** The capability targetted by this requirement is of given capability types. */
