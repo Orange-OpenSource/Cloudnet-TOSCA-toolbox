@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -697,6 +697,9 @@ class HOTGenerator(Generator):
         elif type(network_connectivity_type_layer_protocols) == str:
             layer_protocols = [ network_connectivity_type_layer_protocols ]
         for layer_protocol in layer_protocols:
+            # Generate only ip subnets
+            if layer_protocol not in ['ipv4', 'ipv6']:
+                continue
             # Get the protocol data associated to the current layer_protocol.
             l3_protocol_data = network_vl_profile_virtual_link_protocol_data.get(layer_protocol, {}).get('l3_protocol_data', {})
             #
