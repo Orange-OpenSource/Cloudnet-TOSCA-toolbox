@@ -39,7 +39,8 @@ configuration.DEFAULT_CONFIGURATION[ALLOY] = {
         '4096 MB': '4 GB',    # for OASIS TOSCA/1.2/example-1.yaml
         '2048 MB': '2 GB',    # for OASIS TOSCA/1.2/example-2.yaml}
     },
-    'open_tosca_definitions_version' : True
+    'open_tosca_definitions_version' : True,
+    'invariants': {}
 }
 
 configuration.DEFAULT_CONFIGURATION['logging']['loggers'][__name__] = {
@@ -291,6 +292,9 @@ def test(stream):
 #
 
 class AbstractAlloySigGenerator(Generator):
+
+    def generator_configuration_id(self):
+        return ALLOY
 
     def alloy_sig(self, typename):
         return utils.normalize_name(self.type_system.get_type_uri(typename))
@@ -902,6 +906,7 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
         self.generate_fields(type_name, type_yaml)
         self.generate('} {')
         self.generate_facts(type_name, type_yaml)
+        self.generate_invariants(type_name, type_yaml)
         self.generate('}')
         self.generate()
         self.generate_commands(type_name, type_yaml)
@@ -983,6 +988,22 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
                 if isinstance(attribute_yaml, dict):
                     self.generate_constraints_facts(self.prefix_name('attribute', attribute_name), attribute_yaml, self.get_kind() + '_types:' + type_name + ':attributes:' + attribute_name)
                 self.generate()
+
+    def generate_invariants(self, type_name, type_yaml):
+        invariants = self.configuration.get(self.generator_configuration_id(), 'invariants').get(type_name)
+        if invariants is None:
+            return
+        self.info('generate invariants for %s' % type_name)
+        for invariant in invariants:
+            self.generate('  // INVARIANT')
+            description = invariant.get('description')
+            self.generate('  // %s' % description)
+            the_invariant = invariant.get('invariant')
+            if the_invariant[-1] == '\n':
+                the_invariant = the_invariant[:-1] # remove new line at the end of the_invariant
+            for line in the_invariant.split('\n'):
+                self.generate('  %s' % line)
+            self.generate()
 
 class ArtifactTypeGenerator(AbstractTypeGenerator):
 
@@ -2640,9 +2661,6 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 # Alloy generator.
 #
 class AlloyGenerator(AbstractAlloySigGenerator):
-
-    def generator_configuration_id(self):
-        return ALLOY
 
     def generation(self):
         self.info('Alloy generation')
