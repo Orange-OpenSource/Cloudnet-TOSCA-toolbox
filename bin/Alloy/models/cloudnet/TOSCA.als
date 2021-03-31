@@ -599,6 +599,12 @@ fun Node.artifact[name: one String] : one Artifact
   get_value[this.artifacts, name]
 }
 
+/** Get the topology template owning this node */
+fun Node.topology_template[] : one TopologyTemplate
+{
+  ~nodes[this]
+}
+
 /*******************************************************************************
  * TOSCA Requirement.
  *******************************************************************************/
@@ -752,6 +758,12 @@ pred Policy.targets_type[nodesAndGroups: set Node + Group]
 pred Policy.targets[nodesAndGroups: set Node + Group]
 {
     this.targets = nodesAndGroups
+}
+
+/** Get the topology template owning this policy */
+fun Policy.topology_template[] : one TopologyTemplate
+{
+  ~policies[this]
 }
 
 /*******************************************************************************
