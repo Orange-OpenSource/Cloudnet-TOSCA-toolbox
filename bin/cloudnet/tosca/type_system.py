@@ -1647,11 +1647,30 @@ class TypeChecker(Checker):
         the_type = self.type_system.merge_type(self.type_system.get_type_uri(type_name))
         return checked, type_name, the_type
 
+    def has_no_default_value(self, definition):
+        default = definition.get(syntax.DEFAULT)
+        if default != None:
+            return False # default is set
+        # default is not set
+        # get the type definition
+        type_def = self.type_system.merge_type(definition.get(syntax.TYPE))
+        type_properties = type_def.get(syntax.PROPERTIES, {})
+        if len(type_properties) == 0: # no property
+            return True # no default value
+        # the type has some properties
+        # iterate over all properties
+        for property_name, property_definition in type_properties.items():
+            if property_definition.get(syntax.REQUIRED, True) \
+               and self.has_no_default_value(property_definition):
+                return True # this is a required property without a default value
+        # all required properties have a default value
+        return False
+
     def check_required_fields(self, keyword, kind, definition, definition_type, default_fields_definition, default_fields_definition_location, context_error_message):
         fields = definition.get(keyword, {})
         for field_name, field_definition in definition_type.get(keyword, {}).items():
             if field_definition.get(syntax.REQUIRED, True) \
-               and field_definition.get(syntax.DEFAULT) is None \
+               and self.has_no_default_value(field_definition) \
                and fields.get(field_name) is None:
                 default_field_definition = default_fields_definition.get(field_name)
                 if default_field_definition is None:
