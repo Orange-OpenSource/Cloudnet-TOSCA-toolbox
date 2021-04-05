@@ -533,12 +533,12 @@ class AbstractAlloySigGenerator(Generator):
             if value < MAX_INT:
                 return str(value)
             else:
-                self.warning(context_error_message + ': ' + str(value) + ' - integer narrowed to ' + str(MAX_INT))
+                self.info(context_error_message + ': ' + str(value) + ' - integer narrowed to ' + str(MAX_INT))
                 return str(MAX_INT)
 
         elif value_type == 'float':
             # TODO: value must be a float else this is an error.
-            self.warning(context_error_message + ': ' + str(value) + ' - float mapped to an Alloy string')
+            self.info(context_error_message + ': ' + str(value) + ' - float mapped to an Alloy string')
             return '"' + str(value) + '"'
 
         elif value_type == 'string':
@@ -586,7 +586,7 @@ class AbstractAlloySigGenerator(Generator):
                 scalar_value, scalar_unit = self.split_scalar_unit(mapping, context_error_message)
             else:
                 scalar_value = MAX_INT
-            self.warning(context_error_message + ": scalar-unit '" + scalar + "' is narrowed to '" + str(scalar_value) + ' ' + scalar_unit + "'")
+            self.info(context_error_message + ": scalar-unit '" + scalar + "' is narrowed to '" + str(scalar_value) + ' ' + scalar_unit + "'")
         return scalar_value, scalar_unit
 
     def generate_property(self, prefix, property_value, property_declaration, context_error_message):

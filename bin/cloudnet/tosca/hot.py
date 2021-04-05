@@ -727,7 +727,7 @@ class HOTGenerator(Generator):
                 # self.generate('      subnetpool: { get_resource: subnetpool_', layer_protocol, ' }', sep='')
                 cidr = self.configuration.get(HOT, 'OS::Neutron::Subnet.cidr.' + layer_protocol) % self.subnet_cidr_idx
                 self.subnet_cidr_idx = self.subnet_cidr_idx +1
-                self.warning(' HOT - CIDR "' + cidr + '" generated')
+                self.info(' HOT - CIDR "' + cidr + '" generated')
                 self.generate('      cidr:', cidr, ' # generated')
             else:
                 self.generate('      cidr:', cidr)
@@ -840,7 +840,7 @@ class HOTGenerator(Generator):
         maximum_ram = self.configuration.get(HOT, 'OS::Nova::Flavor.ram.maximum')
         if ram > maximum_ram:
             self.generate('      ram:', maximum_ram, '# WARNING: Initial value was', ram, '!')
-            self.warning(' HOT - ram of ' + str(ram) + 'MB narrowed to '+ str(maximum_ram) + 'MB')
+            self.info(' HOT - ram of ' + str(ram) + 'MB narrowed to '+ str(maximum_ram) + 'MB')
         else:
             self.generate('      ram:', ram)
         self.generate_todo_translate(virtual_memory, 'virtual_mem_oversubscription_policy')
