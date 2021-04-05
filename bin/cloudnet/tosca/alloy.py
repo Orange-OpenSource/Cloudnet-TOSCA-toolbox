@@ -2566,6 +2566,11 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                           get_dict(merged_node_type_declaration, PROPERTIES),
                                           get_dict(substitution_mappings, PROPERTIES))
 
+            # Iterate over all attributes.
+            for attribute_name, attribute_yaml in get_dict(merged_node_type_declaration, ATTRIBUTES).items():
+                # Compute the scope required by the attribute value.
+                self.compute_scope_property(acs, attribute_yaml, None)
+
             # Iterate over all node capabilities.
             for capability_name, capability_yaml in get_dict(merged_node_type_declaration, CAPABILITIES).items():
                 # Compute the scope required by this capability.
