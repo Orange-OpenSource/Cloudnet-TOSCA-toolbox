@@ -32,6 +32,7 @@ import os
 import sys  # argv and stderr.
 
 import cloudnet.tosca.configuration as configuration
+import cloudnet.tosca.diagnostics as diagnostics
 import cloudnet.tosca.importers as importers
 import cloudnet.tosca.processors as processors
 from cloudnet.tosca.alloy import AlloyGenerator
@@ -41,7 +42,6 @@ from cloudnet.tosca.syntax import SyntaxChecker
 from cloudnet.tosca.tosca_diagrams import ToscaDiagramGenerator
 from cloudnet.tosca.type_system import TypeChecker, TypeSystem
 from cloudnet.tosca.uml2_diagrams import PlantUMLGenerator
-import cloudnet.tosca.diagnostics as diagnostics
 
 ALIASED_TOSCA_SERVICE_TEMPLATES = "aliased_tosca_service_templates"
 
@@ -71,20 +71,30 @@ def main(argv):
             required=True,
             help="YAML template or CSAR file to parse.",
         )
-        parser.add_argument('--diagnostics-file',
-                            metavar='<filename>',
-                            default='',
-                            help='json log output processing file.')
-        parser.add_argument('--ignore-target-config',
-                            dest='ignore_target_config',
-                            action='store_true',
-                            help='ignore target directory configuration, force it to default values.')
+        parser.add_argument(
+            "--diagnostics-file",
+            metavar="<filename>",
+            default="",
+            help="json log output processing file.",
+        )
+        parser.add_argument(
+            "--ignore-target-config",
+            dest="ignore_target_config",
+            action="store_true",
+            help="ignore target directory configuration, force it to default values.",
+        )
         (args, extra_args) = parser.parse_known_args(argv)
 
-        diagnostics.configure(template_filename=args.template_file, log_filename=args.diagnostics_file)
+        diagnostics.configure(
+            template_filename=args.template_file, log_filename=args.diagnostics_file
+        )
 
         # Load configuration.
-        config = configuration.load(ignored_keys = [processors.Generator.TARGET_DIRECTORY] if args.ignore_target_config else [])
+        config = configuration.load(
+            ignored_keys=[processors.Generator.TARGET_DIRECTORY]
+            if args.ignore_target_config
+            else []
+        )
 
         # Load the TOSCA service template.
         try:
@@ -103,10 +113,10 @@ def main(argv):
                 file=sys.stderr,
             )
             diagnostics.diagnostic(
-                gravity='error',
-                file=args.template_file, 
-                message=str(e), 
-                cls='tosca2cloudnet'
+                gravity="error",
+                file=args.template_file,
+                message=str(e),
+                cls="tosca2cloudnet",
             )
             return 2
 
@@ -119,7 +129,6 @@ def main(argv):
             return 2
         nb_errors += syntax_checker.nb_errors
         nb_warnings += syntax_checker.nb_warnings
-
 
         # Create a TOSCA type system.
         type_system = TypeSystem(config)
@@ -152,8 +161,16 @@ def main(argv):
 
         traceback.print_exc(file=sys.stderr)
         print(processors.CEND, file=sys.stderr)
-        diagnostics.diagnostic(gravity='error',message=f'global exception {type(exception).__name__}, see output log.', file='',cls='main')
+        diagnostics.diagnostic(
+            gravity="error",
+            message=f"global exception {type(exception).__name__}, see output log.",
+            file="",
+            cls="main",
+        )
         return 2
 
-if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:])) # error code: 2 -> break workflow, 1 -> warnings, but continue
+
+if __name__ == "__main__":
+    sys.exit(
+        main(sys.argv[1:])
+    )  # error code: 2 -> break workflow, 1 -> warnings, but continue

@@ -16,9 +16,9 @@
 
 # simple structured logging
 import json
-import sys
 import os
 from cloudnet.tosca.importers import Coord
+import sys
 
 outfile = None  # file object to output to
 template = ""  # name of the template file

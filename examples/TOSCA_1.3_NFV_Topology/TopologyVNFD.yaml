@@ -1,0 +1,311 @@
+######################################################################
+#
+# Copyright (c) 2019 Orange
+#
+# Author(s):
+# - Philippe Merle <philippe.merle@inria.fr>
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+#
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: A VNFD topology
+
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml
+
+node_types:
+  MyVNF:
+    derived_from: tosca.nodes.nfv.VNF
+    properties:
+      descriptor_id:
+        default: abcd-0123456789 # required.
+      descriptor_version:
+        default: '1.0' # required.
+      provider:
+        default: MyCompany # required.
+      product_name:
+        default: MyVNF # required.
+      software_version:
+        default: '1.0' # required.
+      vnfm_info:
+        default: [] # required.
+      flavour_id:
+        default: simple # required.
+      flavour_description:
+        default: This is the flavour description # required.
+
+topology_template:
+  substitution_mappings:
+    node_type: MyVNF
+    requirements:
+      - virtual_link: [ externalCp, external_virtual_link ]
+      - virtual_link: [ externalCp_2, external_virtual_link ]
+  node_templates:
+    VNF:
+      type: MyVNF
+      properties: # TODO: Must be removed as already defined as default in MyVNF
+        descriptor_id: abcd-0123456789 # required.
+        descriptor_version: '1.0' # required.
+        provider: MyCompany # required.
+        product_name: MyVNF # required.
+        software_version: '1.0' # required.
+        vnfm_info: [] # required.
+        flavour_id: simple # required.
+        flavour_description: This is the flavour description # required.
+      requirements:
+        - virtual_link: internalVl
+
+    VduCompute_1:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties: # Following properties are required.
+        name: VduCompute_1
+        description: VduCompute without image
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 1
+      capabilities: # Following capabilities are required.
+        virtual_compute:
+          properties: # Following properties are required.
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+
+# TODO: Add an invariant checking that there is at least one VduCp that binds each Vdu.Compute
+
+    VduCompute_2:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: VduCompute_2
+        description: Vdu.Compute with image
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 1
+
+      capabilities:
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: image.v1.0.qcow2
+          properties:
+            name: VduCompute_2 Software Image
+            version: '1.0'
+            checksum:
+              algorithm: sha-256
+              hash: b9c3036539fd7a5f87a1bf38eb05fdde8b556a1a7e664dbeda90ed3cd74b4f9d
+            container_format: bare
+            disk_format: qcow2
+            min_disk: 2 GB
+            min_ram: 8192 MiB
+            size: 2 GB
+            operating_system: Linux
+            supported_virtualisation_environments: [ KVM ]
+
+    VduCompute_3:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties: # Following properties are required.
+        name: VduCompute_3
+        description: Vdu.Compute connected to a VirtualBlockStorage
+        vdu_profile:
+          min_number_of_instances: 1
+          max_number_of_instances: 1
+      capabilities: # Following capabilities are required.
+        virtual_compute:
+          properties: # Following properties are required.
+            virtual_memory:
+              virtual_mem_size: 1 GB
+            virtual_cpu:
+              num_virtual_cpu: 1
+      requirements:
+        - virtual_storage: VirtualBlockStorage_1
+        - virtual_storage: VirtualBlockStorage_2
+
+    VirtualBlockStorage_1:
+      type: tosca.nodes.nfv.Vdu.VirtualBlockStorage
+      properties:
+        virtual_block_storage_data: # Following properties are required.
+          size_of_storage: 10 GB
+
+    VirtualBlockStorage_2:
+      type: tosca.nodes.nfv.Vdu.VirtualBlockStorage
+      properties:
+        virtual_block_storage_data:
+          size_of_storage: 10 GB
+
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: image.v1.0.qcow2
+          properties:
+#        sw_image_data: # Following properties are required.
+            name: VirtualBlockStorage_2 Software Image
+            version: '1.0'
+            checksum:
+              algorithm: sha-256
+              hash: b9c3036539fd7a5f87a1bf38eb05fdde8b556a1a7e664dbeda90ed3cd74b4f9d
+            container_format: bare
+            disk_format: qcow2
+            min_disk: 2 GB
+            size: 2 GB
+
+    internalCp_1:
+      type: tosca.nodes.nfv.VduCp
+      properties: # Following properties are required.
+        layer_protocols: [ ipv4 ]
+        role: root
+      requirements:
+        - virtual_binding: VduCompute_1
+        - virtual_link: internalVl
+
+    internalCp_2:
+      type: tosca.nodes.nfv.VduCp
+      properties: # Following properties are required.
+        layer_protocols: [ ipv4 ]
+        role: leaf
+      requirements:
+        - virtual_binding: VduCompute_2
+        - virtual_link: internalVl
+
+    internalCp_3:
+      type: tosca.nodes.nfv.VduCp
+      properties: # Following properties are required.
+        layer_protocols: [ ipv4 ]
+        role: root
+      requirements:
+        - virtual_binding: VduCompute_3
+        - virtual_link: internalVl_2
+
+    internalCp_4:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ] # required.
+        role: leaf
+        protocol: # optional.
+          - associated_layer_protocol: ipv4 # required.
+            address_data: # required.
+              - address_type: ip_address # required.
+                l3_address_data:
+                  ip_address_assignment: true # required.
+                  floating_ip_activated: true # required.
+                  ip_address_type: ipv4 # optional.
+                  number_of_ip_address: 1 # optional.
+      requirements:
+        - virtual_binding: VduCompute_1
+        - virtual_link: internalVl_2
+
+    internalVl:
+      type: tosca.nodes.nfv.VnfVirtualLink
+      properties: # Following properties are required.
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+        vl_profile:
+          max_bitrate_requirements:
+            root: 100000
+            leaf:  10000
+          min_bitrate_requirements:
+            root: 10000
+            leaf:  1000
+
+    externalCp:
+      type: tosca.nodes.nfv.VnfExtCp
+      properties: # next properties are required.
+        layer_protocols: [ ipv4 ]
+        role: leaf
+      requirements:
+        # - external_virtual_link: # set as requirements of the substitution mapping.
+        - internal_virtual_link: internalVl
+
+    internalVl_2:
+      type: tosca.nodes.nfv.VnfVirtualLink
+      properties:
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+        vl_profile:
+          max_bitrate_requirements:
+            root: 100000
+          min_bitrate_requirements:
+            root: 10000
+          virtual_link_protocol_data:
+            - associated_layer_protocol: ipv4 # TODO: Must be in connectivity_type.layer_protocols
+              l3_protocol_data:
+# TODO                name: internal-vl2.
+                ip_version: ipv4 # TODO: Must be equal to associated_layer_protocol
+                cidr: 192.168.1.0/24
+                ip_allocation_pools:
+                  - start_ip_address: 192.168.1.50 # TODO: Must be valid according to cidr
+                    end_ip_address: 192.168.1.100 # TODO: Must be valid according to cidr
+                  - start_ip_address: 192.168.1.200 # TODO: Must be valid according to cidr
+                    end_ip_address: 192.168.1.250 # TODO: Must be valid according to cidr
+                gateway_ip: 192.168.1.1 # TODO: Must be valid according to cidr and not included in ip_allocation_pools
+                dhcp_enabled: true
+
+    externalCp_2:
+      type: tosca.nodes.nfv.VnfExtCp
+      properties: # next properties are required.
+        layer_protocols: [ ipv4 ]
+        role: root
+      requirements:
+        # - external_virtual_link: # set as requirements of the substitution mapping.
+        - internal_virtual_link: internalVl_2
+
+    #
+    # internalVl_3:
+    #   type: tosca.nodes.nfv.VnfVirtualLink
+    #   properties:
+    #     connectivity_type:
+    #       layer_protocols: [ ethernet, ipv4 ]
+    #     vl_profile:
+    #       max_bitrate_requirements:
+    #         root: 100000
+    #       min_bitrate_requirements:
+    #         root: 10000
+    #       virtual_link_protocol_data:
+    #         - associated_layer_protocol: ethernet
+    #           l2_protocol_data:
+    #             name: internalVl_3 Ethernet network
+    #             network_type: flat # or vlan, vxlan, gre
+    #             vlan_transparent: true
+    #             mtu: 1500
+    #         - associated_layer_protocol: ipv4
+    #           l3_protocol_data:
+    #             name: internalVl_3 IPv4 network 1
+    #             ip_version: ipv4
+    #             cidr: 192.168.1.0/24
+    #             ip_allocation_pools:
+    #               - start_ip_address: 192.168.1.10
+    #                 end_ip_address: 192.168.1.50
+    #               - start_ip_address: 192.168.1.100
+    #                 end_ip_address: 192.168.1.200
+    #             gateway_ip: 192.168.1.1
+    #             dhcp_enabled: true
+    #         - associated_layer_protocol: ipv4 # TODO: Is possible to declare two IPV4 networks?
+    #           l3_protocol_data:
+    #             name: internalVl_2 IPv4 network 1
+    #             ip_version: ipv4
+    #             cidr: 192.168.2.0/24
+    #             ip_allocation_pools:
+    #               - start_ip_address: 192.168.2.10
+    #                 end_ip_address: 192.168.2.50
+    #               - start_ip_address: 192.168.2.100
+    #                 end_ip_address: 192.168.2.200
+    #             gateway_ip: 192.168.2.1
+    #             dhcp_enabled: true

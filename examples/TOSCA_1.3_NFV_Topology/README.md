@@ -1,12 +1,12 @@
-# Cloudnet-TOSCA-toolbox ETSI NFV SOL 001 example
+# Cloudnet-TOSCA-toolbox TOSCA 1.3 example
 
-These examples are ... TO BE COMPLETED ...
+This is examples of NVF Topology comming from ETSI NFV SOL001
 
 You can experiment the TOSCA-toolbox with these yaml files.
 
 ## Table of contents
 1. [Manual procedure](#manual-procedure)
-2. [Usefull run.sh script](#A-Usefull-run.sh-script)
+2. [Usefull run.sh script](#a-usefull-runsh-script)
     - [Batch or cli mode](#batch-or-cli-mode)
     - [Using the interactive mode](#using-the-interactive-mode)
 3. [Examples description](#examples-description)
@@ -51,7 +51,7 @@ And to generate UML diagrams:
 generate_uml2_diagrams uml2/*.plantuml
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Back to top](#cloudnet-tosca-toolbox-etsi-nfv-sol-001-example)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Back to top](#cloudnet-tosca-toolbox-tosca-13-example)
 
 ## A Usefull run.sh script
 
@@ -68,7 +68,7 @@ This script is located int the bin directory of the repository
   Uml2Diagrams : platuml and png files
 
 ```sh
-cd examples/OpenStack
+cd examples/TOSCA_1.3_NFV_Topology/
 
 ## Run all the tools (TOSCA syntax checking, diagrams generation, Alloy syntax checking)
 ../../bin -b
@@ -78,11 +78,11 @@ cd examples/OpenStack
 
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Back to top](#cloudnet-tosca-toolbox-etsi-nfv-sol-001-example)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Back to top](#cloudnet-tosca-toolbox-tosca-13-example)
 
 ### Using the interactive mode
 ```sh
-cd examples/OpenStack
+cd examples/TOSCA_1.3_NFV_Topology/
 ../../bin/run.sh
 ```
 It will say you where the results files will be located :
@@ -116,50 +116,17 @@ and display the following menu
 Enter choice [ 1-5 clwx ]
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Back to top](#cloudnet-tosca-toolbox-etsi-nfv-sol-001-example)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Back to top](#cloudnet-tosca-toolbox-tosca-13-example)
 
 ## Examples description
-| Example file name  | Description                                         | Status (Draft, Finished, Excluded) |
-|--------------------|-----------------------------------------------------|------------------------------------|
-|example_A.2-01.yaml| Relational database, simple|Draft|
-|example_A.2-sunshinedbcomplex.vnfd.tosca.yaml| Relational database, complex |Draft|
-|example_A.2-sunshine.vnfd.tosca.yaml| Relational database, non-scalable|Draft|
-|example_A.2-sunshineVNF.yaml| Relational database, non-scalable|Draft|
-|example_A.3.2-01.yaml||Draft|
-|example_A.3.2-02.yaml||Draft|
-|example_A.3.3-01.yaml||Draft|
-|example_A.4-01.yaml||Draft|
-|example_A.4-02.yaml| composition of Vdu.Compute, Vdu.VirtualBlockStorage and VduCp. |Draft|
-|example_A.4-03.yaml||Draft|
-|example_A.5-01.yaml| Relational database, simple|Draft|
-|example_A.6.1-01.yaml| Complex scaling example (uniform delta value) described with policies|Draft|
-|example_A.6.2-01.yaml| Complex example (uniform and non-uniform delta value) described with policies|Draft|
-|example_A.7.2-01.yaml||Draft|
-|example_A.7.3-01.yaml||Draft|
-|example_A.8-01.yaml| Relational database, simple|Draft|
-|example_A.10-01.yaml| the service template of a PNFD|Draft|
-|example_A.11-MyExampleNs_big.yaml| myExampleNs with big flavour|Draft|
-|example_A.11-MyExampleNs_small.yaml| myExampleNs with small flavour|Draft|
-|example_A.11-MyExampleNs_Type.yaml| type definition of tosca.MyExampleNS|Draft|
-|example_A.11-MyExampleNs.yaml| my service|Draft|
-|example_A.12-01.yaml| myExampleNs with small flavour|Draft|
-|example_A.12-02.yaml| Example VNF4 type|Draft|
-|example_A.12-MyExampleNS_2.yaml| Relational database, simple|Draft|
-|example_A.12-MyExampleNs_Type.yaml| type definition of tosca.MyExampleNS|Draft|
-|example_A.13-01.yaml| Relational database, simple|Draft|
-|example_A.13-02.yaml| Relational database, simple|Draft|
-|example_A.14-01.yaml| VNF FG Model for example_NS|Draft|
-|example_A.14-etsi_nfv_example_vnf1.yaml|  VNF Descriptor for VNF1|Draft|
-|example_A.14-etsi_nfv_example_vnf2.yaml| VNF Descriptor for VNF2|Draft|
-|example_A.14-etsi_nfv_example_vnf3.yaml| VNF Descriptor for VNF3|Draft|
-|example_A.15-01.yaml||Draft|
-|example_A.16-01.yaml||Draft|
-|example_A.17-01.yaml| myExampleNs with scaling aspects|Draft|
-|example_A.17-CentralProcess_1_0.yaml||Draft|
-|example_A.17-Database_1_0.yaml||Draft|
-|example_A.17-FrontEnd_1_0.yaml||Draft|
-|example_A.17-MyScalableNs.yaml||Draft|
-|example_A.17-SupportFrontEndNs.yaml||Draft|
+| Example file name  | Description                                         |
+|--------------------|-----------------------------------------------------|
+| etsi_nfv_sol001_common_types.yaml | ETSI NFV SOL 001 common types definitions |
+| etsi_nfv_sol001_nsd_types.yaml | ETSI NFV SOL 001 nsd types definitions |
+| etsi_nfv_sol001_pnfd_types.yaml | ETSI NFV SOL 001 pnfd types definitions |
+| etsi_nfv_sol001_vnfd_types.yaml | ETSI NFV SOL 001 vnfd types definitions |
+| TopologyNSD.yaml | An example of a Network Service topology |
+| TopologyVNFD.yaml | An example of a Virtual Network Fonction topology |
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Back to top](#cloudnet-tosca-toolbox-etsi-nfv-sol-001-example)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Back to top](#cloudnet-tosca-toolbox-tosca-13-example)

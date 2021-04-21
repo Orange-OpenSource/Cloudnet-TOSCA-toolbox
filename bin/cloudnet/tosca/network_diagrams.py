@@ -24,7 +24,7 @@ from cloudnet.tosca.processors import Generator
 NWDIAG = "nwdiag"
 DEFAULT_CONFIGURATION[NWDIAG] = {
     # Target directory where network diagrams are generated.
-    Generator.TARGET_DIRECTORY: 'Results/NetworkDiagrams',
+    Generator.TARGET_DIRECTORY: "Results/NetworkDiagrams",
     # Network capability types.
     "linkable_capability_types": ["tosca.capabilities.network.Linkable"],
     # Port capability types.
@@ -32,7 +32,9 @@ DEFAULT_CONFIGURATION[NWDIAG] = {
     # Representation of node templates.
     "node_types": {
         "tosca.nodes.network.Network": {
-            "label": ["properties.network_name",],
+            "label": [
+                "properties.network_name",
+            ],
             "address": [
                 "properties.cidr",
                 #                'properties.start_ip',
@@ -44,7 +46,9 @@ DEFAULT_CONFIGURATION[NWDIAG] = {
             # no shape as it is a network
         },
         "tosca.nodes.network.Port": {
-            "address": ["properties.ip_address",],
+            "address": [
+                "properties.ip_address",
+            ],
             # no graphical attributes as it is a port
         },
     },

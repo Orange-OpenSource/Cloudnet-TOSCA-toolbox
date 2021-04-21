@@ -21,6 +21,7 @@ from copy import deepcopy
 
 import cloudnet.tosca.configuration as configuration
 import cloudnet.tosca.syntax as syntax
+from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.processors import CEND, CRED, Checker
 from cloudnet.tosca.utils import merge_dict, normalize_dict
 from cloudnet.tosca.diagnostics import diagnostic
@@ -72,7 +73,10 @@ configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
         "tosca.nodes.BlockStorage": "tosca.nodes.Storage.BlockStorage",  # TODO remove later
     },
     # predefined workflows
-    "predefined_workflows": {"deploy": {}, "undeploy": {}, },
+    "predefined_workflows": {
+        "deploy": {},
+        "undeploy": {},
+    },
 }
 
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
@@ -175,6 +179,7 @@ class TypeSystem(object):
         if result is None:
             # TBR            LOGGER.error(CRED + type_name + ' unknown!' + CEND)
             diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem',value=type_name )
+            # TBR also ?     diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem')
             return dict()
 
         requirements = result.get(syntax.REQUIREMENTS)
@@ -968,8 +973,8 @@ class TypeChecker(Checker):
             except FileNotFoundError:
                 # It seems that we get a program crash here but I didn't figure out
                 # how to deal with yet !
-                #   This case occurs when a file imported is not present
-                #   JLC 20201126
+                #    This case occurs when a file imported is not present
+                #    JLC 20201126
                 self.error(
                     "imports["
                     + str(index)
@@ -5379,8 +5384,10 @@ class TypeChecker(Checker):
             node_template_type_capability_definitions = node_template_type.get(
                 syntax.CAPABILITIES, {}
             )
-            node_template_capability_definition = node_template_type_capability_definitions.get(
-                node_template_capability_name
+            node_template_capability_definition = (
+                node_template_type_capability_definitions.get(
+                    node_template_capability_name
+                )
             )
             if node_template_capability_definition is None:
                 self.error(
@@ -5455,8 +5462,10 @@ class TypeChecker(Checker):
             node_template_type_requirement_definitions = syntax.get_requirements_dict(
                 node_template_type
             )
-            node_template_requirement_definition = node_template_type_requirement_definitions.get(
-                node_template_requirement_name
+            node_template_requirement_definition = (
+                node_template_type_requirement_definitions.get(
+                    node_template_requirement_name
+                )
             )
             if node_template_requirement_definition is None:
                 self.error(
@@ -5469,8 +5478,8 @@ class TypeChecker(Checker):
                     node_template_requirement_name
                 )
                 return
-            node_template_requirement_capability = node_template_requirement_definition.get(
-                syntax.CAPABILITY
+            node_template_requirement_capability = (
+                node_template_requirement_definition.get(syntax.CAPABILITY)
             )
             requirement_capability = requirement_definition.get(syntax.CAPABILITY)
             if not self.type_system.is_derived_from(

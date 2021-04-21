@@ -166,8 +166,10 @@ class PlantUMLGenerator(Generator):
                     self.generate("+", capability_name, sep="")
                     capability_type = get_capability_type(capability_yaml)
                     if capability_type:
-                        capability_occurrence = translateToscaOccurrences2UmlMultiplicity(
-                            get_capability_occurrences(capability_yaml)
+                        capability_occurrence = (
+                            translateToscaOccurrences2UmlMultiplicity(
+                                get_capability_occurrences(capability_yaml)
+                            )
                         )
                         self.generate(
                             " type : ",
@@ -597,12 +599,14 @@ class PlantUMLGenerator(Generator):
                         relationship_component_type = None
 
                         if isinstance(requirement_yaml, dict):
-                            requirement_relationship = syntax.get_requirement_relationship(
-                                requirement_yaml
+                            requirement_relationship = (
+                                syntax.get_requirement_relationship(requirement_yaml)
                             )
                             if isinstance(requirement_relationship, dict):
-                                relationship_component_type = syntax.get_relationship_type(
-                                    requirement_relationship
+                                relationship_component_type = (
+                                    syntax.get_relationship_type(
+                                        requirement_relationship
+                                    )
                                 )
                             else:
                                 relationship_template = relationship_templates.get(
@@ -612,8 +616,8 @@ class PlantUMLGenerator(Generator):
                                     relationship_component_name = (
                                         requirement_relationship
                                     )
-                                    relationship_component_type = relationship_template.get(
-                                        TYPE
+                                    relationship_component_type = (
+                                        relationship_template.get(TYPE)
                                     )
                                 else:
                                     relationship_component_type = (
@@ -1008,16 +1012,16 @@ class PlantUMLGenerator(Generator):
                             requirement_yaml
                         )
                         if isinstance(requirement_relationship, dict):
-                            requirement_relationship_type = syntax.get_relationship_type(
-                                requirement_relationship
+                            requirement_relationship_type = (
+                                syntax.get_relationship_type(requirement_relationship)
                             )
                         else:
                             relationship_template = relationship_templates.get(
                                 requirement_relationship
                             )
                             if relationship_template:
-                                requirement_relationship_type = relationship_template.get(
-                                    TYPE
+                                requirement_relationship_type = (
+                                    relationship_template.get(TYPE)
                                 )
                             else:
                                 requirement_relationship_type = requirement_relationship
