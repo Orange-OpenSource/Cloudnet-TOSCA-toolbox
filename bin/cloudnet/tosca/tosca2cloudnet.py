@@ -119,13 +119,7 @@ def main(argv):
             return 2
         nb_errors += syntax_checker.nb_errors
         nb_warnings += syntax_checker.nb_warnings
-            print(processors.CRED, '[ERROR] ', args.template_file , ': ', e, processors.CEND, sep='', file=sys.stderr)
-            return 2
 
-        # Syntax checking.
-        syntax_checker = SyntaxChecker(tosca_service_template, config)
-        if syntax_checker.check() == False:
-            return 2
 
         # Create a TOSCA type system.
         type_system = TypeSystem(config)
@@ -133,7 +127,8 @@ def main(argv):
         # Type checking.
         type_checker = TypeChecker(tosca_service_template, config, type_system)
         if type_checker.check() is False or type_checker.nb_errors > 0:
-            exit(1)
+            return 2
+
         nb_errors += type_checker.nb_errors
         nb_warnings += type_checker.nb_warnings
 
@@ -148,6 +143,8 @@ def main(argv):
         ]:
             generator = generator_class(generator=type_checker)
             generator.generation()
+            nb_errors += generator.nb_errors
+            nb_warnings += generator.nb_warnings
         return diagnostics.return_code
     except Exception as exception:
         print(processors.CRED, file=sys.stderr)

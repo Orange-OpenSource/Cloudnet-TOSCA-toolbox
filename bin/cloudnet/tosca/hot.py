@@ -116,7 +116,8 @@ class HOTGenerator(Generator):
                         + " defined in both "
                         + file_of_flavour_id
                         + " and "
-                        + imported_file
+                        + imported_file,
+                        flavour_id
                     )
                 else:
                     mapping_flavour_file[flavour_id] = imported_file
@@ -439,7 +440,7 @@ class HOTGenerator(Generator):
         self.generate_OS_Heat_None(entity_name, entity_yaml)
 
     def generate_todo_translate(self, properties, property_name):
-        if type(properties) != dict:
+        if not isinstance(properties, dict):
             return
         property_value = properties.get(property_name)
         if property_value:
@@ -457,7 +458,7 @@ class HOTGenerator(Generator):
         if unit == "GB":
             return size * 1000
         else:
-            self.error("Do not know how to convert " + scalar_size + " to MB")
+            self.error("Do not know how to convert " + scalar_size + " to MB", scalar_size)
             return "1 # TODO: " + scalar_size
 
     def sizeInGB(self, scalar_size):
@@ -465,7 +466,7 @@ class HOTGenerator(Generator):
         if unit == "GB":
             return size
         else:
-            self.error("Do not know how to convert " + scalar_size + " to GB")
+            self.error("Do not know how to convert " + scalar_size + " to GB", scalar_size)
             return "1 # TODO: " + scalar_size
 
     def generate_NS(self, ns_name, ns_yaml):
@@ -550,7 +551,10 @@ class HOTGenerator(Generator):
                     dependency.append(requirement_value)
                 else:
                     self.error(
-                        ' HOT - requirement "', requirement_name, '" not supported'
+                        ' HOT - requirement "',
+                        requirement_name,
+                        '" not supported',
+                        requirement,
                     )
 
         if external_virtual_link is None:
@@ -666,7 +670,8 @@ class HOTGenerator(Generator):
                     self.error(
                         " HOT - layer protocol '"
                         + layer_protocol
-                        + "' is not supported"
+                        + "' is not supported",
+                        layer_protocol,
                     )
                     continue
                 generate_router_interface(
@@ -1074,7 +1079,8 @@ class HOTGenerator(Generator):
                     + NODE_TEMPLATES
                     + ":"
                     + node_name
-                    + ": Artifact of type 'tosca.artifacts.nfv.SwImage' required"
+                    + ": Artifact of type 'tosca.artifacts.nfv.SwImage' required",
+                    node_name
                 )
                 self.generate(
                     "      location: # ERROR: Location not set because tosca.artifacts.nfv.SwImage artifact missed!"
@@ -1111,7 +1117,8 @@ class HOTGenerator(Generator):
                 + NODE_TEMPLATES
                 + ":"
                 + node_name
-                + ": Property 'sw_image_data' required"
+                + ": Property 'sw_image_data' required",
+                node_name
             )
         return False
 
@@ -1147,7 +1154,8 @@ class HOTGenerator(Generator):
                 + str(ram)
                 + "MB narrowed to "
                 + str(maximum_ram)
-                + "MB"
+                + "MB",
+                ram
             )
         else:
             self.generate("      ram:", ram)
@@ -1304,7 +1312,8 @@ class HOTGenerator(Generator):
                         " HOT - Invalid requirement "
                         + requirement_name
                         + ": "
-                        + str(requirement_value)
+                        + str(requirement_value),
+                        requirement_name
                     )
 
         if virtual_link_as_param is None:
@@ -1360,7 +1369,7 @@ class HOTGenerator(Generator):
                         vdu_cp_name, virtual_link, layer_protocols[0], vdu_cp_role
                     )
                 else:
-                    self.error(" HOT - layer_protocols can not be empty")
+                    self.error(" HOT - layer_protocols can not be empty", vdu_cp_properties)
 
         self.generate_todo_translate(vdu_cp_properties, "description")
         self.generate_todo_translate(vdu_cp_properties, "trunk_mode")

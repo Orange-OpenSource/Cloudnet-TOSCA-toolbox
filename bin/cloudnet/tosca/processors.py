@@ -67,7 +67,7 @@ class Processor(object):
                 break
             else:
                 key = previous
-                if type(key) == list:
+                if isinstance(key, list):
                     result = []
                     for value in key:
                         mapping = self.get_mapping(value, mappings)
@@ -107,17 +107,18 @@ class Processor(object):
                     + str(index)
                     + "]:repository: "
                     + import_repository
-                    + " undefined"
+                    + " undefined",
+                    import_repository,
                 )
             else:
                 repository_url = syntax.get_repository_url(repository)
                 if repository_url is None:
-                    self.error(":repositories:" + import_repository + ":url undefined")
+                    self.error(":repositories:" + import_repository + ":url undefined", repository)
                 else:
                     result = repository_url + "/" + import_file
         return result
 
-    def error(self, message):
+    def error(self, message, value=None):
         print(
             CRED,
             "[ERROR] ",
@@ -129,10 +130,10 @@ class Processor(object):
             sep="",
             file=stderr,
         )
-        self.diagnostic('error',message)
+        self.diagnostic('error', message, value=value)
         self.nb_errors += 1
 
-    def warning(self, message):
+    def warning(self, message, value=None):
         print(
             CYELLOW,
             "[Warning] ",
@@ -144,10 +145,10 @@ class Processor(object):
             sep="",
             file=stderr,
         )
-        self.diagnostic('warning',message)
+        self.diagnostic('warning', message, value=value)
         self.nb_warnings += 1
 
-    def info(self, message):
+    def info(self, message, value=None):
         if self.logger.isEnabledFor(logging.INFO):
             print(
                 "[Info] ",
@@ -157,13 +158,14 @@ class Processor(object):
                 sep="",
                 file=stderr,
             )
-        self.diagnostic('info',message)
+        self.diagnostic('info', message, value=value)
 
-    def diagnostic(self, gravity, message) :
+    def diagnostic(self, gravity, message, value=None):
         diagnostic(
             gravity=gravity,
             file=self.tosca_service_template.get_fullname(), 
-            message=message, cls=self.__class__.__name__
+            message=message, cls=self.__class__.__name__,
+            value=value
             )
 
     def process(self):

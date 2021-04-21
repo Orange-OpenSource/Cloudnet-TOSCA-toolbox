@@ -21,6 +21,8 @@ from cloudnet.tosca.processors import CEND, CRED, Generator
 import cloudnet.tosca.syntax as syntax
 from cloudnet.tosca.syntax import *  # TODO to be removed
 import cloudnet.tosca.utils as utils
+from cloudnet.tosca.yaml_line_numbering import Bool
+
 
 from cloudnet.tosca.diagnostics import diagnostic
 
@@ -29,7 +31,7 @@ SCOPE = "scope"
 configuration.DEFAULT_CONFIGURATION[ALLOY] = {
     # Target directory where Alloy files are generated.
     Generator.TARGET_DIRECTORY: "Results/Alloy",
-    SCOPE: {"for": 5, "Int": 8, "seq": 5,},
+    SCOPE: {"for": 5, "Int": 8, "seq": 5, },
     "scalar-mapping": {
         "0.1 GHz": "1 Hz",  # for tosca_simple_yaml_1_2
         "8096 MB": "8 GB",  # for ETSI NFV SOL 001 Annex A examples
@@ -46,6 +48,7 @@ configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
 }
 
 LOGGER = logging.getLogger(__name__)
+
 
 #
 # Alloy signatures and predicates.
@@ -104,8 +107,8 @@ class Alloy(object):
     def is_signature_declared(signature_name):
         """ Is an Alloy signature declared. """
         return (
-            Alloy.the_extends_relation_between_signatures.get(signature_name)
-            is not None
+                Alloy.the_extends_relation_between_signatures.get(signature_name)
+                is not None
         )
 
     def get_superset(signature_name):
@@ -120,7 +123,13 @@ class Alloy(object):
             extended_signature_name = Alloy.get_superset(signature_name)
         except KeyError as e:
             LOGGER.error(CRED + str(e) + CEND)
-            diagnostic(gravity='error',message=str(e),cls=signature_name,file='')
+            diagnostic(
+                gravity="error",
+                message=str(e),
+                cls=signature_name,
+                file="",
+                value=signature_name,
+            )
             extended_signature_name = None
 
         while extended_signature_name:
@@ -129,7 +138,13 @@ class Alloy(object):
                 extended_signature_name = Alloy.get_superset(extended_signature_name)
             except KeyError as e:
                 LOGGER.error(CRED + str(e) + " unknown!" + CEND)
-                diagnostic(gravity='error',message=str(e)+' unknown',cls=signature_name,file='')
+                diagnostic(
+                    gravity="error",
+                    message=str(e) + " unknown",
+                    cls=signature_name,
+                    file="",
+                    value=signature_name,
+                )
                 extended_signature_name = None
 
         return supersets
@@ -146,8 +161,8 @@ class AlloyCommandScope(object):
         self.signature_scopes = {}
         # By default, the scope of each declared signature is equals to zero.
         for (
-            type_name,
-            type_yaml,
+                type_name,
+                type_yaml,
         ) in Alloy.the_extends_relation_between_signatures.items():
             self.update_sig_scope(type_name, 0)
 
@@ -338,13 +353,14 @@ class AbstractAlloySigGenerator(Generator):
         index = implementation.rfind(".")
         if index != -1:
             result = self.type_system.get_artifact_type_by_file_ext(
-                implementation[index + 1 :]
+                implementation[index + 1:]
             )
         if result is None:
             self.warning(
                 " no implementation artifact type associated to implementation '"
                 + implementation
-                + "'"
+                + "'",
+                implementation
             )
             result = "tosca.artifacts.Implementation"
         return result
@@ -412,10 +428,9 @@ class AbstractAlloySigGenerator(Generator):
         return self.get_cardinality(requirement_yaml, Alloy.ONE)
 
     def get_operation_implementation(self, operation_yaml):
-        type_operation_yaml = type(operation_yaml)
-        if type_operation_yaml == str:
+        if isinstance(operation_yaml, str):
             return operation_yaml
-        elif type_operation_yaml == dict:
+        elif isinstance(operation_yaml, dict):
             implementation = operation_yaml.get(IMPLEMENTATION)
             if implementation is None:
                 implementation = operation_yaml.get(VALUE)
@@ -430,7 +445,7 @@ class AbstractAlloySigGenerator(Generator):
             self.generate("  no", relation)
 
     def generate_occurrences_cardinality_constraints(
-        self, relation_name, yaml, minimum
+            self, relation_name, yaml, minimum
     ):
         occurrences = syntax.get_occurrences(yaml)
         if occurrences:
@@ -454,7 +469,7 @@ class AbstractAlloySigGenerator(Generator):
     def generate_description(self, yaml, indent=""):
         if yaml is None:
             return
-        if type(yaml) != dict:
+        if not isinstance(yaml, dict):
             return
         description = yaml.get(DESCRIPTION)
         if description:
@@ -495,9 +510,9 @@ class AbstractAlloySigGenerator(Generator):
         return "TOSCA/" + self.get_map_module(property_yaml) + "/Map"
 
     def stringify_value(
-        self, value, value_type_definition, context_error_message, list_sep=" + "
+            self, value, value_type_definition, context_error_message, list_sep=" + "
     ):
-        if type(value) == list:
+        if isinstance(value, list):
             result = None
             index = 0
             for v in value:
@@ -513,15 +528,16 @@ class AbstractAlloySigGenerator(Generator):
                 index = index + 1
             return result
 
-        if type(value) == dict:
+        if isinstance(value, dict):
             result = ""
             for key, v in value.items():
                 PARAMETER_STRING_TYPE = {TYPE: "string"}
                 if key == GET_INPUT:
-                    if type(v) != str:
+                    if not isinstance(v, str):
                         self.error(
                             context_error_message
-                            + ": get_input has only one string parameter"
+                            + ": get_input has only one string parameter",
+                            v,
                         )
                     result = result + key + '["' + v + '"]'
                 elif key == GET_PROPERTY:
@@ -535,19 +551,20 @@ class AbstractAlloySigGenerator(Generator):
                         # TODO: deal with v[1] as a capability name.
                         # TODO: still a lot of work to do
                         result = (
-                            result
-                            + node_name
-                            + ".requirement_"
-                            + v[1]
-                            + ".relationship.target.property_"
-                            + str(v[2])
+                                result
+                                + node_name
+                                + ".requirement_"
+                                + v[1]
+                                + ".relationship.target.property_"
+                                + str(v[2])
                         )
                     else:
                         self.error(
                             context_error_message
                             + ": "
                             + key
-                            + " - four or more parameters unsupported by Alloy generator"
+                            + " - four or more parameters unsupported",
+                            v,
                         )
 
                 elif key == GET_ATTRIBUTE:
@@ -560,32 +577,26 @@ class AbstractAlloySigGenerator(Generator):
                     if node_name == "SELF":
                         node_name = self.SELF
                     function_arguments = (
-                        node_name
-                        + ", "
-                        + self.stringify_value(
-                            v[1], PARAMETER_STRING_TYPE, context_error_message, ", "
-                        )
+                            node_name
+                            + ", "
+                            + self.stringify_value(
+                        v[1], PARAMETER_STRING_TYPE, context_error_message, ", "
+                    )
                     )
                     result = result + key + "[" + function_arguments + "]"
                 elif key in ["get_operation_output", "token", "get_secret"]:
                     self.warning(
-                        context_error_message
-                        + ": "
-                        + key
-                        + " function unsupported by Alloy generator"
+                        context_error_message + ": " + key + " function unsupported", key
                     )
                     result = '"' + key + '[...]"'
                 elif key in ["concat"]:
                     self.warning(
-                        context_error_message
-                        + ": "
-                        + key
-                        + " function unsupported by Alloy generator"
+                        context_error_message + ": " + key + " function unsupported", key
                     )
                     result = '"' + key + '[...]"'
                 else:
                     self.error(
-                        context_error_message + ": " + key + " function undefined"
+                        context_error_message + ": " + key + " function undefined", key
                     )
                     result = '"' + key + '"'
             return result
@@ -593,17 +604,19 @@ class AbstractAlloySigGenerator(Generator):
         value_type = syntax.get_property_type(value_type_definition)
 
         if value_type == "boolean":
-            if type(value) != bool:
+            if not isinstance(value, Bool):
                 self.error(
-                    context_error_message + ": " + str(value) + " - boolean expected"
+                    context_error_message + ": " + str(value) + " - boolean expected",
+                    value,
                 )
                 return False
             return str(value).lower()
 
         elif value_type == "integer":
-            if type(value) != int:
+            if not isinstance(value, int):
                 self.error(
-                    context_error_message + ": " + str(value) + " - integer expected"
+                    context_error_message + ": " + str(value) + " - integer expected",
+                    value,
                 )
                 return value
             MAX_INT = self.get_max_int()
@@ -615,7 +628,8 @@ class AbstractAlloySigGenerator(Generator):
                     + ": "
                     + str(value)
                     + " - integer narrowed to "
-                    + str(MAX_INT)
+                    + str(MAX_INT),
+                    value,
                 )
                 return str(MAX_INT)
 
@@ -625,7 +639,8 @@ class AbstractAlloySigGenerator(Generator):
                 context_error_message
                 + ": "
                 + str(value)
-                + " - float mapped to an Alloy string"
+                + " - float mapped to an Alloy string",
+                value,
             )
             return '"' + str(value) + '"'
 
@@ -645,14 +660,15 @@ class AbstractAlloySigGenerator(Generator):
 
         elif value_type.startswith("scalar-unit."):
             # TODO: value must be a string else this is an error.
-            if type(value) != str:
+            if not isinstance(value, str):
                 self.error(
                     context_error_message
                     + ": "
                     + str(value)
                     + " - "
                     + value_type
-                    + " expected"
+                    + " expected",
+                    value,
                 )
                 return value
             scalar_value, scalar_unit = self.split_scalar_unit(
@@ -665,12 +681,7 @@ class AbstractAlloySigGenerator(Generator):
             return '"' + str(value) + '"'
 
         # else
-        self.error(
-            context_error_message
-            + ": "
-            + value_type
-            + " type unsupported by Alloy generator"
-        )
+        self.error(context_error_message + ": " + value_type + " type unsupported", value_type)
         return None
 
     def split_scalar_unit(self, scalar, context_error_message):
@@ -678,7 +689,9 @@ class AbstractAlloySigGenerator(Generator):
             not_an_integer = False
             scalar_value, scalar_unit = utils.split_scalar_unit(scalar)
         except ValueError:
-            self.error(context_error_message +': invalid scalar ' + str(scalar))
+            self.error(
+                context_error_message + ": invalid scalar " + str(scalar), scalar
+            )
             not_an_integer = True
             scalar_unit = "UNKNOWN"  # TODO
         MAX_INT = self.get_max_int()
@@ -699,32 +712,36 @@ class AbstractAlloySigGenerator(Generator):
                 + str(scalar_value)
                 + " "
                 + scalar_unit
-                + "'"
+                + "'",
+                scalar,
             )
         return scalar_value, scalar_unit
 
     def generate_property(
-        self, prefix, property_value, property_declaration, context_error_message
+            self, prefix, property_value, property_declaration, context_error_message
     ):
         property_type = syntax.get_property_type(property_declaration)
         if property_type is None:
-            self.error(context_error_message + ": type undefined")
+            self.error(context_error_message + ": type undefined", property_declaration)
             return
 
-        if type(property_type) != str:
-            self.error(context_error_message + ": " + str(property_type) + " invalid!")
+        if not isinstance(property_type, str):
+            self.error(
+                context_error_message + ": " + str(property_type) + " invalid!",
+                property_type,
+            )
             return
 
         if property_type == "integer":  # special case to generate a comment
             comment = ""
             MAX_INT = self.get_max_int()
-            if type(property_value) == int and property_value >= MAX_INT:
+            if isinstance(property_value, int) and property_value >= MAX_INT:
                 comment = (
-                    " "
-                    + Alloy.SINGLE_LINE_COMMENT
-                    + " ISSUE: "
-                    + str(property_value)
-                    + " is a too big integer!!!"
+                        " "
+                        + Alloy.SINGLE_LINE_COMMENT
+                        + " ISSUE: "
+                        + str(property_value)
+                        + " is a too big integer!!!"
                 )
             self.generate(
                 "  ",
@@ -749,7 +766,7 @@ class AbstractAlloySigGenerator(Generator):
             )
 
         elif property_type == "range":
-            if type(property_value) == dict:
+            if isinstance(property_value, dict):
                 self.generate(
                     "  ",
                     prefix,
@@ -772,7 +789,7 @@ class AbstractAlloySigGenerator(Generator):
                 )
 
         elif property_type.startswith("scalar-unit."):
-            if type(property_value) == dict:
+            if isinstance(property_value, dict):
                 self.generate(
                     "  ",
                     prefix,
@@ -806,12 +823,13 @@ class AbstractAlloySigGenerator(Generator):
                 index = index + 1
 
         elif property_type == "map":
-            if type(property_value) != dict:
+            if not isinstance(property_value, dict):
                 self.error(
                     context_error_message
                     + ": "
                     + str(property_value)
-                    + " - map required"
+                    + " - map required",
+                    property_value,
                 )
                 return
 
@@ -830,13 +848,13 @@ class AbstractAlloySigGenerator(Generator):
                     key = str(key)  # to be sure that key is a string
                     self.generate("  " + prefix + '.one_entry["' + key + '"]')
                     prefixed_entry = (
-                        "("
-                        + entry_cast_sig
-                        + "<:("
-                        + prefix
-                        + '.entry["'
-                        + key
-                        + '"]))'
+                            "("
+                            + entry_cast_sig
+                            + "<:("
+                            + prefix
+                            + '.entry["'
+                            + key
+                            + '"]))'
                     )
                     self.generate_property(
                         prefixed_entry,
@@ -868,7 +886,7 @@ class AbstractAlloySigGenerator(Generator):
                         context_error_message,
                     )
                     return
-                if type(property_value) == dict and property_value.get(GET_INPUT):
+                if isinstance(property_value, dict) and property_value.get(GET_INPUT):
                     self.generate(
                         "  ",
                         prefix,
@@ -879,18 +897,19 @@ class AbstractAlloySigGenerator(Generator):
                         sep="",
                     )
                     return
-                if type(property_value) != dict:
+                if not isinstance(property_value, dict):
                     self.error(
                         context_error_message
                         + ": map expected instead of "
-                        + str(property_value)
+                        + str(property_value),
+                        property_value,
                     )
                     return
 
                 # self.generate_all_properties(...) produces a typing error.
                 AbstractAlloySigGenerator.generate_all_properties(
                     self,
-                    get_dict(type_type, PROPERTIES),
+                    self.get_dict(type_type, PROPERTIES),
                     property_value,
                     prefix,
                     context_error_message,
@@ -904,17 +923,18 @@ class AbstractAlloySigGenerator(Generator):
                     + str(property_value)
                     + " - "
                     + property_type
-                    + " type unsupported by Alloy generator"
+                    + " type unsupported",
+                    property_value,
                 )
 
     def generate_all_properties(
-        self,
-        all_declared_properties,
-        template_properties,
-        prefixed_template_name,
-        context_error_message,
-        property_name_format="property_%s",
-        generate_no_value=True,
+            self,
+            all_declared_properties,
+            template_properties,
+            prefixed_template_name,
+            context_error_message,
+            property_name_format="property_%s",
+            generate_no_value=True,
     ):
         if template_properties is None:
             template_properties = {}
@@ -923,7 +943,11 @@ class AbstractAlloySigGenerator(Generator):
         for property_name, property_yaml in template_properties.items():
             if not all_declared_properties.get(property_name):
                 self.error(
-                    context_error_message + ": property '" + property_name + "' unknown"
+                    context_error_message
+                    + ": property '"
+                    + property_name
+                    + "' unknown",
+                    property_name,
                 )
 
         prefix = prefixed_template_name + "."
@@ -935,7 +959,7 @@ class AbstractAlloySigGenerator(Generator):
             property_value = template_properties.get(property_name)
             if property_value is not None:
                 value = property_value
-                if type(value) == str:  # escape multi-line properties
+                if isinstance(value, str):  # escape multi-line properties
                     value = value.replace("\n", "\\n").replace('"', '\\"')
                 self.generate("  // YAML ", property_name, ": ", value, sep="")
                 self.generate_property(
@@ -952,7 +976,8 @@ class AbstractAlloySigGenerator(Generator):
                             context_error_message
                             + ": property '"
                             + property_name
-                            + "' must be set as it is required"
+                            + "' must be set as it is required",
+                            property_value,
                         )
                         self.generate(
                             "  // NOTE: The property '",
@@ -999,14 +1024,14 @@ class AbstractAlloySigGenerator(Generator):
                             self.generate("  no  ", prefixed_property_name)
 
     def generate_constraints_facts(self, name, yaml, context_error_message):
-        if type(yaml) == str:
+        if isinstance(yaml, str):
             return
         constraints = syntax.get_constraints(yaml)
         if constraints:
             for constraint in constraints:
                 for constraint_name, constraint_yaml in constraint.items():
                     ctx_error_msg = (
-                        context_error_message + ":constraints:" + constraint_name
+                            context_error_message + ":constraints:" + constraint_name
                     )
                     if constraint_name in ["in_range"]:
                         value = self.stringify_value(
@@ -1032,7 +1057,7 @@ class AbstractAlloySigGenerator(Generator):
             )
 
     def generate_parameter_facts(
-        self, indentation, prefix, parameter_name, parameter_yaml, context_error_message
+            self, indentation, prefix, parameter_name, parameter_yaml, context_error_message
     ):
         parameter_type = syntax.get_input_type(parameter_yaml)
         if parameter_type is None:
@@ -1113,13 +1138,13 @@ class AbstractAlloySigGenerator(Generator):
         self.generate(indentation, "// YAML  default: ", parameter_default, sep="")
         if parameter_default:
             property_name = (
-                indentation[: len(indentation) - 2]
-                + "("
-                + self.alloy_sig(parameter_type)
-                + "<:"
-                + prefix
-                + parameter_name
-                + ".default)"
+                    indentation[: len(indentation) - 2]
+                    + "("
+                    + self.alloy_sig(parameter_type)
+                    + "<:"
+                    + prefix
+                    + parameter_name
+                    + ".default)"
             )
             self.generate_property(
                 property_name,
@@ -1256,7 +1281,7 @@ class AbstractAlloySigGenerator(Generator):
             "  // NOTE: Setting following scopes strongly reduces the research space."
         )
         for (sig_name, sig_scope) in self.get_command_Show_LG_scopes(
-            name, yaml
+                name, yaml
         ).items():
             self.generate(
                 "  ", Alloy.EXACTLY, " ", sig_scope, " ", sig_name, ",", sep=""
@@ -1323,7 +1348,7 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
     # TODO: can be factorize in AbstractAlloySigGenerator
     def generate_sig(self, type_name, type_yaml):
         self.generate_description(type_yaml)
-        if type(type_yaml) == dict:
+        if isinstance(type_yaml, dict):
             derived_from = type_yaml.get(DERIVED_FROM)
         else:
             derived_from = None
@@ -1350,7 +1375,7 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
         self.generate_commands(type_name, type_yaml)
 
     def generate_all_properties(self, type_name, type_yaml):
-        if type(type_yaml) != dict:
+        if not isinstance(type_yaml, dict):
             return
         properties = type_yaml.get(PROPERTIES)
         if properties:
@@ -1372,7 +1397,7 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
                 field_cardinality = Alloy.LONE
             field_type = field_yaml.get(TYPE)
             if field_type is None:
-                self.error("type required for " + field_kind + " " + field_name)
+                self.error("type required for " + field_kind + " " + field_name, field_yaml)
                 return
             field_sig = self.alloy_sig(field_type)
             if field_sig == "list":
@@ -1383,7 +1408,8 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
                         " entry schema type required for "
                         + field_kind
                         + " "
-                        + field_name
+                        + field_name,
+                        field_yaml
                     )
                     return
                 field_sig = self.alloy_sig(entry_schema_type)
@@ -1406,7 +1432,7 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
                     "  // YAML ", attribute_name, ": ", attribute_yaml, sep=""
                 )
                 if self.is_attribute_defined(
-                    type_yaml.get(DERIVED_FROM), attribute_name
+                        type_yaml.get(DERIVED_FROM), attribute_name
                 ):
                     self.generate("  // NOTE:", attribute_name, "overloaded")
                 else:
@@ -1416,13 +1442,13 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
                 self.generate()
 
     def generate_facts(self, type_name, type_yaml):
-        if type(type_yaml) != dict:
+        if not isinstance(type_yaml, dict):
             return
         properties = type_yaml.get(PROPERTIES)
         if properties:
             self.generate_header("Properties", "  ")
             for (property_name, property_yaml) in properties.items():
-                if type(property_yaml) == dict:
+                if isinstance(property_yaml, dict):
                     self.generate_constraints_facts(
                         self.prefix_name(None, property_name),
                         property_yaml,
@@ -1443,7 +1469,7 @@ class AbstractTypeGenerator(AbstractAlloySigGenerator):
             for (attribute_name, attribute_yaml) in attributes.items():
                 self.generate_description(attribute_yaml, "  ")
                 if self.is_attribute_defined(
-                    type_yaml.get(DERIVED_FROM), attribute_name
+                        type_yaml.get(DERIVED_FROM), attribute_name
                 ):
                     self.generate("  // NOTE:", attribute_name, "overloaded")
                 if isinstance(attribute_yaml, dict):
@@ -1586,7 +1612,7 @@ class InterfaceTypeGenerator(AbstractTypeGenerator):
 
             self.generate_header("Operations", "  ")
             for (operation_name, operation_yaml) in (
-                syntax.get_operations(interface_type_yaml).get(OPERATIONS).items()
+                    syntax.get_operations(interface_type_yaml).get(OPERATIONS).items()
             ):
                 self.generate(
                     "  // YAML ", operation_name, ": ", operation_yaml, sep=""
@@ -1611,7 +1637,7 @@ class InterfaceTypeGenerator(AbstractTypeGenerator):
         if interface_type_yaml:
             self.generate_header("Operations", "  ")
             for (operation_name, operation_yaml) in (
-                syntax.get_operations(interface_type_yaml).get(OPERATIONS).items()
+                    syntax.get_operations(interface_type_yaml).get(OPERATIONS).items()
             ):
                 self.generate(
                     "  // YAML ", operation_name, ": ", operation_yaml, sep=""
@@ -1659,7 +1685,7 @@ class InterfaceTypeGenerator(AbstractTypeGenerator):
         }
 
     def generate_command_Check_predicates(
-        self, interface_type_name, interface_type_yaml
+            self, interface_type_name, interface_type_yaml
     ):
         for (operation_name, operation_yaml) in interface_type_yaml.items():
             self.generate(
@@ -1834,7 +1860,7 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                     )
                 if interface_yaml:
                     for (operation_name, operation_yaml) in (
-                        syntax.get_operations(interface_yaml).get("operations").items()
+                            syntax.get_operations(interface_yaml).get("operations").items()
                     ):
                         self.generate("  // YAML   ", operation_name, ":", sep="")
                         if type(operation_yaml) == dict:
@@ -1850,9 +1876,9 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
 
                         # Generate implementation.
                         prefixed_operation = (
-                            self.prefix_name("interface", interface_name)
-                            + "."
-                            + self.prefix_name("operation", operation_name)
+                                self.prefix_name("interface", interface_name)
+                                + "."
+                                + self.prefix_name("operation", operation_name)
                         )
                         implementation = self.get_operation_implementation(
                             operation_yaml
@@ -1862,7 +1888,7 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                             def generate_implementation_fact(implementation):
                                 artifacts = syntax.get_dict(yaml, ARTIFACTS)
                                 if artifacts is not None and artifacts.get(
-                                    implementation
+                                        implementation
                                 ):
                                     self.generate(
                                         "  ",
@@ -1905,7 +1931,8 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                                             + str(implementation)
                                             + " - "
                                             + unsupported_key
-                                            + " unsupported by Alloy generator"
+                                            + " unsupported by Alloy generator",
+                                            unsupported_key
                                         )
                                 # only primary is supported currently!
                                 primary = implementation.get("primary")
@@ -1913,7 +1940,8 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                                     self.error(
                                         " implementation "
                                         + str(implementation)
-                                        + " - primary artifact missed"
+                                        + " - primary artifact missed",
+                                        implementation
                                     )
                                     continue
                                 # generate the Alloy fact
@@ -1985,7 +2013,7 @@ class RelationshipTypeGenerator(ToscaComponentTypeGenerator):
     #        return
 
     def get_command_Show_LG_scopes(
-        self, relationship_type_name, relationship_type_yaml
+            self, relationship_type_name, relationship_type_yaml
     ):
         # TODO calculer TOSCA_OPERATION = somme all interfaces nombre d'opérations et des interfaces héritées
         return {
@@ -2021,16 +2049,16 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
                     "  // YAML ", capability_name, ": ", capability_yaml, sep=""
                 )
                 if self.is_capability_defined(
-                    node_type_yaml.get(DERIVED_FROM), capability_name
+                        node_type_yaml.get(DERIVED_FROM), capability_name
                 ):
                     self.generate(
                         " ", Alloy.SINGLE_LINE_COMMENT, capability_name, "overloaded"
                     )
                 else:
-                    if type(capability_yaml) == str:
+                    if isinstance(capability_yaml, str):
                         capability_type = capability_yaml
                         capability_cardinality = self.get_capability_cardinality({})
-                    elif type(capability_yaml) == dict:
+                    elif isinstance(capability_yaml, dict):
                         self.generate_description(capability_yaml, "  ")
                         capability_type = get_capability_type(capability_yaml)
                         capability_cardinality = self.get_capability_cardinality(
@@ -2041,7 +2069,8 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
                             "Invalid capability declaration "
                             + capability_name
                             + ": "
-                            + capability_yaml
+                            + capability_yaml,
+                            capability_yaml,
                         )
                         capability_type = TOSCA.Capability
                         capability_cardinality = Alloy.ONE
@@ -2063,7 +2092,7 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
                     "  // YAML ", requirement_name, ": ", requirement_yaml, sep=""
                 )
                 if self.is_requirement_defined(
-                    node_type_yaml.get(DERIVED_FROM), requirement_name
+                        node_type_yaml.get(DERIVED_FROM), requirement_name
                 ):
                     self.generate(
                         " ", Alloy.SINGLE_LINE_COMMENT, requirement_name, "overloaded"
@@ -2099,7 +2128,7 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
                 artifact_cardinality = Alloy.ONE
                 self.generate("  // YAML ", artifact_name, ": ", artifact_yaml, sep="")
                 if self.is_artifact_defined(
-                    node_type_yaml.get(DERIVED_FROM), artifact_name
+                        node_type_yaml.get(DERIVED_FROM), artifact_name
                 ):
                     self.generate("  // NOTE:", artifact_name, "overloaded")
                 else:
@@ -2124,7 +2153,7 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
             self.generate_header("Capabilities", "  ")
             for (capability_name, capability_yaml) in capabilities.items():
 
-                if type(capability_yaml) == dict:
+                if isinstance(capability_yaml, dict):
                     self.generate_description(capability_yaml, "  ")
                 self.generate(
                     "  // YAML ", capability_name, ": ", capability_yaml, sep=""
@@ -2133,7 +2162,7 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
                     "capability", capability_name
                 )
                 if not self.is_capability_defined(
-                    node_type_yaml.get(DERIVED_FROM), capability_name
+                        node_type_yaml.get(DERIVED_FROM), capability_name
                 ):
                     self.generate_call_predicate(
                         capability_alloy_field_name + ".name",
@@ -2142,7 +2171,7 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
                     self.generate_call_predicate(
                         "capability", capability_alloy_field_name
                     )
-                if type(capability_yaml) == dict:
+                if isinstance(capability_yaml, dict):
                     valid_source_types = capability_yaml.get(VALID_SOURCE_TYPES)
                     if valid_source_types:
                         tmp = ""
@@ -2175,7 +2204,7 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
                         "requirement", requirement_name
                     )
                     if not self.is_requirement_defined(
-                        node_type_yaml.get(DERIVED_FROM), requirement_name
+                            node_type_yaml.get(DERIVED_FROM), requirement_name
                     ):
                         self.generate(
                             '  requirement["',
@@ -2431,7 +2460,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         self.generate_header("Topology Template", "")
         path = self.tosca_service_template.get_filename()
         topology_template_sig_name = (
-            utils.normalize_name(path[: path.rfind(".")]) + "_topology_template"
+                utils.normalize_name(path[: path.rfind(".")]) + "_topology_template"
         )
         self.generate("sig", topology_template_sig_name, "extends", self.get_root_sig())
         self.generate("{")
@@ -2444,7 +2473,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         self.generate()
 
     def generate_template_field(
-        self, template_name, template_yaml, type_keyword, field_prefix, context_message
+            self, template_name, template_yaml, type_keyword, field_prefix, context_message
     ):
         self.generate("  // YAML ", template_name, ": ", template_yaml, sep="")
         template_yaml_type = template_yaml.get(type_keyword)
@@ -2457,7 +2486,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 + template_name
                 + ": "
                 + type_keyword
-                + " keyword missed"
+                + " keyword missed",
+                type_keyword
             )
             self.generate("  // ERROR: '", type_keyword, "' keyword missed!", sep="")
             return
@@ -2472,7 +2502,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 + type_keyword
                 + ": "
                 + template_yaml_type
-                + " undefined"
+                + " undefined",
+                template_yaml_type
             )
             self.generate(
                 "  // ERROR: ",
@@ -2494,7 +2525,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         templates = topology_template.get(keyword)
         if templates is None:
             templates = {}
-        elif type(templates) == list:
+        elif isinstance(templates, list):
             templates = utils.normalize_dict(templates)
         for (template_name, template_yaml) in templates.items():
             self.generate_template_field(
@@ -2530,12 +2561,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         # TODO: generate workflows
 
     def generate_interfaces_facts(
-        self,
-        template_name,
-        template_yaml,
-        prefixed_template_name,
-        merged_template_type,
-        context_error_message,
+            self,
+            template_name,
+            template_yaml,
+            prefixed_template_name,
+            merged_template_type,
+            context_error_message,
     ):
         self.generate("  // YAML ", INTERFACES, ":", sep="")
         interfaces = get_dict(merged_template_type, INTERFACES)
@@ -2546,7 +2577,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             self.generate("  // YAML ", interface_name, ":", sep="")
             nb_operations = 0
             for (operation_name, operation_yaml) in (
-                syntax.get_operations(interface_yaml).get(OPERATIONS).items()
+                    syntax.get_operations(interface_yaml).get(OPERATIONS).items()
             ):
                 self.generate(
                     "  // YAML ", operation_name, ": ", operation_yaml, sep=""
@@ -2554,18 +2585,18 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 nb_operations = nb_operations + 1
                 if operation_yaml:
                     prefixed_operation = (
-                        prefixed_template_name
-                        + "."
-                        + self.prefix_name("interface", interface_name)
-                        + "."
-                        + self.prefix_name("operation", operation_name)
+                            prefixed_template_name
+                            + "."
+                            + self.prefix_name("interface", interface_name)
+                            + "."
+                            + self.prefix_name("operation", operation_name)
                     )
                     implementation = self.get_operation_implementation(operation_yaml)
                     if implementation:
 
                         def generate_implementation_fact(implementation):
                             if get_dict(template_yaml, ARTIFACTS).get(
-                                implementation
+                                    implementation
                             ) or merged_template_type.get(ARTIFACTS, {}).get(
                                 implementation
                             ):
@@ -2613,7 +2644,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                         + str(implementation)
                                         + " - "
                                         + unsupported_key
-                                        + " unsupported by Alloy generator"
+                                        + " unsupported by Alloy generator",
+                                        implementation
                                     )
                             # only primary is supported currently!
                             primary = implementation.get("primary")
@@ -2621,7 +2653,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                 self.error(
                                     " implementation "
                                     + str(implementation)
-                                    + " - primary artifact missed"
+                                    + " - primary artifact missed",
+                                    implementation
                                 )
                                 continue
                             # generate the Alloy fact
@@ -2662,7 +2695,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         operation_name,
                         default={},
                     )
-                    if type(template_operation) == dict:
+                    if isinstance(template_operation, dict):
                         inputs_values = get_dict(template_operation, INPUTS)
                     else:
                         inputs_values = {}
@@ -2700,7 +2733,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         property_name_format='input["%s"].value',
                     )
 
-                if type(operation_yaml) == dict:
+                if isinstance(operation_yaml, dict):
                     nb_inputs = len(get_dict(operation_yaml, INPUTS))
                 else:
                     nb_inputs = 0
@@ -2716,13 +2749,13 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             )
 
     def generate_templates_facts(
-        self,
-        topology_template,
-        keyword,
-        relation_name,
-        predicate_name,
-        field_prefix,
-        more_generation,
+            self,
+            topology_template,
+            keyword,
+            relation_name,
+            predicate_name,
+            field_prefix,
+            more_generation,
     ):
         # Translate templates.
         self.generate_header("YAML " + keyword + ":", "  ")
@@ -2809,12 +2842,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         # Translate node templates.
 
         def generate_artifacts_capabilities_requirements(
-            self,
-            node_template_name,
-            node_template_yaml,
-            merged_node_template_type,
-            prefixed_node_template_name,
-            context_error_message,
+                self,
+                node_template_name,
+                node_template_yaml,
+                merged_node_template_type,
+                prefixed_node_template_name,
+                context_error_message,
         ):
 
             # Generate template artifacts
@@ -2840,7 +2873,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         + ARTIFACTS
                         + ":"
                         + artifact_name
-                        + " must have a type"
+                        + " must have a type",
+                        artifact_name
                     )
                     artifact_type = TOSCA.Artifact
                 prefixed_artifact_name = self.prefix_name("artifact", artifact_name)
@@ -2903,7 +2937,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         + CAPABILITIES
                         + ":"
                         + capability_name
-                        + ": undefined capability"
+                        + ": undefined capability",
+                        capability_yaml,
                     )
 
             self.generate("  // YAML ", CAPABILITIES, ":", sep="")
@@ -2914,9 +2949,9 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 )
                 if capability_yaml:
                     prefixed_capability_name = (
-                        prefixed_node_template_name
-                        + "."
-                        + self.prefix_name("capability", capability_name)
+                            prefixed_node_template_name
+                            + "."
+                            + self.prefix_name("capability", capability_name)
                     )
                     if capability_value is None:
                         capability_value = {}
@@ -2957,7 +2992,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             context_error_message
                             + ":"
                             + requirement_name
-                            + " - requirement undefined"
+                            + " - requirement undefined",
+                            requirement_yaml,
                         )
 
             # TODO: manage requirements defined in the node type but not filled in the node template.
@@ -2990,12 +3026,13 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             + REQUIREMENTS
                             + ":"
                             + requirement_name
-                            + " - node or node_filter expected"
+                            + " - node or node_filter expected",
+                            requirement_yaml,
                         )
                         continue
                     if (
-                        requirement_node is not None
-                        and requirement_node_filter is not None
+                            requirement_node is not None
+                            and requirement_node_filter is not None
                     ):
                         self.error(
                             context_error_message
@@ -3003,7 +3040,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             + REQUIREMENTS
                             + ":"
                             + requirement_name
-                            + " - both node and node_filter excluded"
+                            + " - both node and node_filter excluded",
+                            requirement_yaml,
                         )
                         continue
                     if requirement_node_filter is not None:
@@ -3013,7 +3051,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             + REQUIREMENTS
                             + ":"
                             + requirement_name
-                            + ":node_filter unsupported by Alloy generator"
+                            + ":node_filter unsupported by Alloy generator",
+                            requirement_yaml
                         )
                         continue
 
@@ -3027,7 +3066,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             + requirement_name
                             + ":node: "
                             + requirement_node
-                            + " - undefined node template"
+                            + " - undefined node template",
+                            requirement_node_yaml,
                         )
                         continue
                     requirement_node_type_name = requirement_node_yaml.get(TYPE)
@@ -3045,7 +3085,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             + requirement_name
                             + ": node type '"
                             + node_templates.get(requirement_node).get(TYPE)
-                            + "' unknown"
+                            + "' unknown",
+                            requirement_node_yaml,
                         )
                         continue
                     requirement = all_requirements.get(requirement_name)
@@ -3054,10 +3095,10 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     )
                     capability_found = False
                     for (capability_name, capability_yaml) in get_dict(
-                        merged_requirement_node_type, CAPABILITIES
+                            merged_requirement_node_type, CAPABILITIES
                     ).items():
                         if self.type_system.is_derived_from(
-                            get_capability_type(capability_yaml), requirement_capability
+                                get_capability_type(capability_yaml), requirement_capability
                         ):
                             capability_found = True
                             break
@@ -3094,7 +3135,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             + ": capability of type "
                             + requirement_capability
                             + " not found in "
-                            + requirement_node_type_name
+                            + requirement_node_type_name,
+                            requirement_node_yaml,
                         )
                         prefixed_requirement_name = "unknown"
 
@@ -3111,17 +3153,17 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             requirement_relationship_type
                         )
                     prefixed_relationship = (
-                        prefixed_node_template_name
-                        + "."
-                        + prefixed_requirement_name
-                        + ".relationship"
+                            prefixed_node_template_name
+                            + "."
+                            + prefixed_requirement_name
+                            + ".relationship"
                     )
 
-                    if type(requirement_yaml) == dict:
+                    if isinstance(requirement_yaml, dict):
                         requirement_relationship = syntax.get_requirement_relationship(
                             requirement_yaml
                         )
-                        if type(requirement_relationship) == dict:
+                        if isinstance(requirement_relationship, dict):
                             tmp = syntax.get_type(requirement_relationship)
                             if tmp is not None:
                                 requirement_relationship_type = tmp
@@ -3139,7 +3181,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                     "]",
                                     sep="",
                                 )
-                        elif type(requirement_relationship) == str:
+                        elif isinstance(requirement_relationship, str):
                             if relationship_templates.get(requirement_relationship):
                                 self.generate(
                                     "  ",
@@ -3219,12 +3261,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         # Generate facts for groups
 
         def generate_members(
-            self,
-            group_name,
-            group_yaml,
-            merged_group_type,
-            prefixed_group_name,
-            context_message,
+                self,
+                group_name,
+                group_yaml,
+                merged_group_type,
+                prefixed_group_name,
+                context_message,
         ):
             # Generate members.
             members = group_yaml.get(MEMBERS)
@@ -3248,12 +3290,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         # Generate facts for policies
 
         def generate_targets(
-            self,
-            policy_name,
-            policy_yaml,
-            merged_policy_type,
-            prefixed_policy_name,
-            context_message,
+                self,
+                policy_name,
+                policy_yaml,
+                merged_policy_type,
+                prefixed_policy_name,
+                context_message,
         ):
             all_node_templates = get_dict(topology_template_yaml, NODE_TEMPLATES)
             all_groups = get_dict(topology_template_yaml, GROUPS)
@@ -3275,7 +3317,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             + str(idx)
                             + "] - "
                             + target
-                            + " node template or group undefined"
+                            + " node template or group undefined",
+                            target,
                         )
                         idx = idx + 1
                         continue
@@ -3351,13 +3394,14 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             if capabilities:
                 self.generate("  // YAML   capabilities:")
                 for capability_name, capability_yaml in capabilities.items():
-                    if type(capability_yaml) != list:
+                    if not isinstance(capability_yaml, list):
                         self.error(
                             "???:capabilities:"
                             + capability_name
                             + ": "
                             + str(capability_yaml)
-                            + " unsupported by Alloy generator"
+                            + " unsupported by Alloy generator",
+                            capability_yaml
                         )
                         continue
                     self.generate(
@@ -3422,7 +3466,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         property_type = syntax.get_property_type(property_declaration)
 
         if property_type == "integer":
-            if type(property_value) == int:
+            if isinstance(property_value, int):
                 MAX_INT = self.get_max_int()
                 if property_value >= MAX_INT:
                     property_value = MAX_INT
@@ -3448,7 +3492,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 entry_schema = property_declaration.get(ENTRY_SCHEMA)
                 if entry_schema is None:
                     return
-                if type(property_value) != dict:
+                if not isinstance(property_value, dict):
                     return
                 for key, value in property_value.items():
                     self.compute_scope_property(acs, entry_schema, value)
@@ -3462,13 +3506,13 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             if not self.type_system.is_yaml_type(derived_from):
                 alloy_sig = self.alloy_sig(property_type)
                 acs.update_sig_scope(alloy_sig)
-                if type_type and type(property_value) == dict:
+                if type_type and isinstance(property_value, dict):
                     self.compute_scope_properties(
                         acs, get_dict(type_type, PROPERTIES), property_value
                     )
 
     def compute_scope_properties(
-        self, acs, all_declared_properties, template_properties
+            self, acs, all_declared_properties, template_properties
     ):
         if template_properties is None:
             template_properties = {}
@@ -3490,7 +3534,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         )
 
     def compute_scope_interfaces(
-        self, acs, node_type, node_template_type, node_template
+            self, acs, node_type, node_template_type, node_template
     ):
 
         if acs.get_signature_scopes().get(self.alloy_sig(node_type)) == 1:
@@ -3526,7 +3570,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 
             # Iterate over all operations.
             for (operation_name, operation_yaml) in (
-                syntax.get_operations(interface_yaml).get(OPERATIONS).items()
+                    syntax.get_operations(interface_yaml).get(OPERATIONS).items()
             ):
                 # Compute the scope required by each operation.
                 is_new_operation = is_new_interface
@@ -3539,12 +3583,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 
                     def update_sig_scope_implementation_short_notation(implementation):
                         if (
-                            get_dict(node_template, ARTIFACTS).get(implementation)
-                            is None
-                            and get_dict(node_template_type, ARTIFACTS).get(
-                                implementation
-                            )
-                            is None
+                                get_dict(node_template, ARTIFACTS).get(implementation)
+                                is None
+                                and get_dict(node_template_type, ARTIFACTS).get(
+                            implementation
+                        )
+                                is None
                         ):
                             artifact_type_sig = self.alloy_sig(
                                 self.get_implementation_artifact_type(implementation)
@@ -3576,8 +3620,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         acs,
                         input_yaml,
                         node_template.get(INTERFACES, {})
-                        .get(operation_name, {})
-                        .get(input_name),
+                            .get(operation_name, {})
+                            .get(input_name),
                     )
 
                 if is_new_operation:
@@ -3589,11 +3633,11 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 acs.update_sig_scope(interface_sig)
 
     def compute_scope_templates(
-        self, acs, topology_template, keyword, more_computation
+            self, acs, topology_template, keyword, more_computation
     ):
         # Iterate over all templates.
         for template_name, template_yaml in get_dict(
-            topology_template, keyword
+                topology_template, keyword
         ).items():
             # Compute the scope required by each template.
             template_type = syntax.get_type(template_yaml)
@@ -3612,7 +3656,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 
             # Iterate over all attributes.
             for attribute_name, attribute_yaml in get_dict(
-                merged_template_type, ATTRIBUTES
+                    merged_template_type, ATTRIBUTES
             ).items():
                 # Compute the scope required by the attribute value.
                 self.compute_scope_property(acs, attribute_yaml, None)
@@ -3656,7 +3700,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 )
 
     def compute_scope_topology_template(
-        self, acs, topology_template_name, topology_template_yaml
+            self, acs, topology_template_name, topology_template_yaml
     ):
         # Required in order to compute the scope required by this topology template.
         Alloy.declare_signature(topology_template_name, TOSCA.TopologyTemplate)
@@ -3677,12 +3721,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         # Iterate over all node templates.
 
         def compute_scope_capabilities_requirements(
-            self,
-            acs,
-            node_template_name,
-            node_template_yaml,
-            merged_node_template_type,
-            context_message,
+                self,
+                acs,
+                node_template_name,
+                node_template_yaml,
+                merged_node_template_type,
+                context_message,
         ):
             all_relationship_templates = get_dict(
                 topology_template_yaml, RELATIONSHIP_TEMPLATES
@@ -3690,7 +3734,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 
             # Iterate over all node template capabilities.
             for capability_name, capability_yaml in get_dict(
-                merged_node_template_type, CAPABILITIES
+                    merged_node_template_type, CAPABILITIES
             ).items():
                 # Compute the scope required by each capability.
                 capability_type = get_capability_type(capability_yaml)
@@ -3716,7 +3760,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 
                 # Iterate over all capability attributes.
                 for attribute_name, attribute_yaml in get_dict(
-                    merged_capability_type, ATTRIBUTES
+                        merged_capability_type, ATTRIBUTES
                 ).items():
                     # Compute the scope required by the attribute value.
                     self.compute_scope_property(acs, attribute_yaml, None)
@@ -3726,7 +3770,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 node_template_requirements = []
             # Iterate over all node template requirements.
             for (requirement_name, requirement_yaml) in get_dict(
-                merged_node_template_type, REQUIREMENTS
+                    merged_node_template_type, REQUIREMENTS
             ).items():
                 requirement_capability = syntax.get_requirement_capability(
                     requirement_yaml
@@ -3738,7 +3782,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         + REQUIREMENTS
                         + ":"
                         + requirement_name
-                        + ": capability type undefined"
+                        + ": capability type undefined",
+                        requirement_yaml,
                     )
                     continue
                 requirement_capability_sig = self.alloy_sig(requirement_capability)
@@ -3755,7 +3800,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         + REQUIREMENTS
                         + ":"
                         + requirement_name
-                        + ": relationship type undefined"
+                        + ": relationship type undefined",
+                        requirement_yaml,
                     )
                     continue
                 requirement_relationship_type_sig = self.alloy_sig(
@@ -3768,27 +3814,27 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 nb_requirements = 0
                 for node_template_requirement in node_template_requirements:
                     for (
-                        node_template_requirement_name,
-                        node_template_requirement_yaml,
+                            node_template_requirement_name,
+                            node_template_requirement_yaml,
                     ) in node_template_requirement.items():
                         # TODO : take occurrences into account
                         if node_template_requirement_name == requirement_name:
                             if node_template_requirement_yaml:
                                 requirement_relationship_properties = {}
-                                if type(node_template_requirement_yaml) == dict:
+                                if isinstance(node_template_requirement_yaml, dict):
                                     requirement_relationship = syntax.get_requirement_relationship(
                                         node_template_requirement_yaml
                                     )
-                                    if type(requirement_relationship) == dict:
+                                    if isinstance(requirement_relationship, dict):
                                         relationship_type = requirement_relationship.get(
                                             TYPE
                                         )
                                         requirement_relationship_properties = get_dict(
                                             requirement_relationship, PROPERTIES
                                         )
-                                    elif type(requirement_relationship) == str:
+                                    elif isinstance(requirement_relationship, str):
                                         if all_relationship_templates.get(
-                                            requirement_relationship
+                                                requirement_relationship
                                         ):
                                             acs.update_sig_scope(TOSCA.Requirement)
                                             acs.update_sig_scope(
@@ -3825,7 +3871,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 
                                 # Iterate over all relationship attributes.
                                 for attribute_name, attribute_yaml in get_dict(
-                                    merged_requirement_relationship_type, ATTRIBUTES
+                                        merged_requirement_relationship_type, ATTRIBUTES
                                 ).items():
                                     # Compute the scope required by the attribute value.
                                     self.compute_scope_property(
@@ -3893,20 +3939,20 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 
             # Iterate over all node capabilities.
             for capability_name, capability_yaml in get_dict(
-                merged_node_type_declaration, CAPABILITIES
+                    merged_node_type_declaration, CAPABILITIES
             ).items():
                 # Compute the scope required by this capability.
                 NOTHING_TO_DO = True
 
             # Iterate over all node requirements.
             for (requirement_name, requirement_yaml) in get_dict(
-                merged_node_type_declaration, REQUIREMENTS
+                    merged_node_type_declaration, REQUIREMENTS
             ).items():
                 # Compute the scope required by this requirement.
                 nb_filled_requirements = 0
                 for (
-                    node_template_requirement_name,
-                    node_template_requirement_yaml,
+                        node_template_requirement_name,
+                        node_template_requirement_yaml,
                 ) in syntax.get_substitution_mappings_requirements(
                     substitution_mappings
                 ).items():
@@ -3919,7 +3965,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     requirement_yaml
                 )[0]
                 unfilled_requirements = (
-                    requirement_lower_occurrences - nb_filled_requirements
+                        requirement_lower_occurrences - nb_filled_requirements
                 )
                 if unfilled_requirements > 0:
                     acs.update_sig_scope(TOSCA.Requirement, unfilled_requirements)
@@ -3985,7 +4031,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     filepath
                 ).get_yaml()
             except Exception as e:
-                self.error("imports[" + str(index) + "]: " + filepath + ": " + str(e))
+                self.error("imports[" + str(index) + "]: " + filepath + ": " + str(e), import_definition)
                 index = index + 1
                 continue
             imported_topology_template_yaml = imported_file_yaml.get(TOPOLOGY_TEMPLATE)
@@ -3993,8 +4039,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                 if imported_topology_template_yaml.get(SUBSTITUTION_MAPPINGS):
                     import_file = syntax.get_import_file(import_definition)
                     imported_topology_template_name = (
-                        utils.normalize_name(import_file[: import_file.rfind(".")])
-                        + "_topology_template"
+                            utils.normalize_name(import_file[: import_file.rfind(".")])
+                            + "_topology_template"
                     )
                     # Add this imported topology template to the scope.
                     self.compute_scope_topology_template(
@@ -4103,8 +4149,8 @@ class AlloyGenerator(AbstractAlloySigGenerator):
                 self.generate(Alloy.OPEN, "cloudnet/LocationGraphs")
                 self.generate(Alloy.OPEN, "cloudnet/TOSCA")
                 if (
-                    self.configuration.get(ALLOY, "open_tosca_definitions_version")
-                    is True
+                        self.configuration.get(ALLOY, "open_tosca_definitions_version")
+                        is True
                 ):
                     if tosca_definitions_version == "tosca_simple_yaml_1_1":
                         # NOTE: This is a temporary workaround, which would be removed later.

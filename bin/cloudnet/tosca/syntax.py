@@ -160,23 +160,21 @@ def get_list(yaml, keyword):
     result = yaml.get(keyword)
     if result is None:
         return []
-    type_result = type(result)
-    if type_result == list:
+    if isinstance(result, list):
         return result
     else:
         raise ValueError("YAML list expected")
 
 
 def get_dict(yaml, keyword):
-    if type(yaml) != dict:
+    if not isinstance(yaml, dict):
         return {}
     result = yaml.get(keyword)
     if result is None:
         return {}
-    type_result = type(result)
-    if type_result == dict:
+    if isinstance(result, dict):
         return result
-    elif type_result == list:
+    elif isinstance(result, list):
         return normalize_dict(result)
     else:
         raise ValueError("YAML map expected")
@@ -187,9 +185,9 @@ def get_repositories(yaml):
 
 
 def get_repository_url(yaml):
-    if type(yaml) == str:
+    if isinstance(yaml, str):
         return yaml
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(URL)
     return None
 
@@ -199,49 +197,49 @@ def get_imports(yaml):
 
 
 def get_import_file(yaml):
-    if type(yaml) == str:
+    if isinstance(yaml, str):
         return yaml
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         file = yaml.get(FILE)
         if file is not None:
             return file
         if len(yaml) == 1:
             for key, value in yaml.items():
-                if type(value) == str:
+                if isinstance(value, str):
                     return value
-                if type(value) == dict:
+                if isinstance(value, dict):
                     return value.get(FILE)
     return None
 
 
 def get_import_repository(yaml):
-    if type(yaml) == str:
+    if isinstance(yaml, str):
         return None
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         repository = yaml.get(REPOSITORY)
         if repository is not None:
             return repository
         if len(yaml) == 1:
             for key, value in yaml.items():
-                if type(value) == str:
+                if isinstance(value, str):
                     return None
-                if type(value) == dict:
+                if isinstance(value, dict):
                     return value.get(REPOSITORY)
     return None
 
 
 def get_import_namespace_prefix(yaml):
-    if type(yaml) == str:
+    if isinstance(yaml, str):
         return None
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         repository = yaml.get(NAMESPACE_PREFIX)
         if repository is not None:
             return repository
         if len(yaml) == 1:
             for key, value in yaml.items():
-                if type(value) == str:
+                if isinstance(value, str):
                     return None
-                if type(value) == dict:
+                if isinstance(value, dict):
                     return value.get(NAMESPACE_PREFIX)
     return None
 
@@ -287,11 +285,11 @@ def get_substitution_mappings(yaml):
 
 
 def get_substitution_mappings_requirements(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         requirements = yaml.get(REQUIREMENTS)
-        if type(requirements) == dict:
+        if isinstance(requirements, dict):
             return requirements
-        if type(requirements) == list:
+        if isinstance(requirements, list):
             result = {}
             for requirement in requirements:
                 for k, v in requirement.items():
@@ -313,16 +311,15 @@ def get_node_templates(yaml):
 
 
 def get_type(yaml):
-    yaml_type = type(yaml)
-    if yaml_type == str:
+    if isinstance(yaml, str):
         return yaml
-    if yaml_type == dict:
+    if isinstance(yaml, dict):
         return yaml.get(TYPE)
     return None
 
 
 def get_derived_from(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(DERIVED_FROM)
     return None
 
@@ -336,59 +333,57 @@ def get_requirements_dict(yaml):
 
 
 def get_property_type(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(TYPE, "string")
     return "string"
 
 
 def get_property_default(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(DEFAULT)
     return None
 
 
 def is_property_required(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(REQUIRED, True)
     return True
 
 
 def get_default(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(DEFAULT)
     return None
 
 
 def get_entry_schema(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(ENTRY_SCHEMA)
     return None
 
 
 def get_entry_schema_type(yaml):
     entry_schema = yaml.get(ENTRY_SCHEMA)
-    if type(entry_schema) == dict:
+    if isinstance(entry_schema, dict):
         return entry_schema.get(TYPE)
-    elif type(entry_schema) == str:
+    elif isinstance(entry_schema, str):
         return entry_schema
     return "string"
 
 
 def get_capability_type(capability_yaml):
-    type_capability_yaml = type(capability_yaml)
-    if type_capability_yaml == str:
+    if isinstance(capability_yaml, str):
         return capability_yaml
-    elif type_capability_yaml == dict:
+    elif isinstance(capability_yaml, dict):
         return capability_yaml.get(TYPE)
     else:
         raise ValueError("invalid value for " + str(capability_yaml))
 
 
 def get_capability_occurrences(capability_yaml):
-    type_capability_yaml = type(capability_yaml)
-    if type_capability_yaml == dict:
+    if isinstance(capability_yaml, dict):
         return capability_yaml.get(OCCURRENCES, [1, UNBOUNDED])
-    elif type_capability_yaml == str:
+    elif isinstance(capability_yaml, str):
         return [1, UNBOUNDED]
     else:
         raise ValueError("invalid value for " + str(capability_yaml))
@@ -396,16 +391,15 @@ def get_capability_occurrences(capability_yaml):
 
 # ACK for Alien4Cloud
 def get_type_requirement(yaml, name):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get("type_requirement", name)
     return name
 
 
 def get_requirement_capability(requirement_yaml):
-    type_requirement_yaml = type(requirement_yaml)
-    if type_requirement_yaml == str:
+    if isinstance(requirement_yaml, str):
         return requirement_yaml
-    elif type_requirement_yaml == dict:
+    elif isinstance(requirement_yaml, dict):
         capability = requirement_yaml.get(CAPABILITY)
         # ACK for Alien4Cloud
         if capability is None:
@@ -415,134 +409,129 @@ def get_requirement_capability(requirement_yaml):
 
 
 def get_requirement_node_type(requirement_yaml):
-    type_requirement_yaml = type(requirement_yaml)
-    if type_requirement_yaml == str:
+    if isinstance(requirement_yaml, str):
         return None
-    elif type_requirement_yaml == dict:
+    elif isinstance(requirement_yaml, dict):
         return requirement_yaml.get(NODE)
     else:
         return None
 
 
 def get_requirement_node_template(requirement_yaml):
-    type_requirement_yaml = type(requirement_yaml)
-    if type_requirement_yaml == str:
+    if isinstance(requirement_yaml, str):
         return requirement_yaml
-    elif type_requirement_yaml == dict:
+    elif isinstance(requirement_yaml, dict):
         return requirement_yaml.get(NODE)
     else:
         return None
 
 
 def get_requirement_node_filter(requirement_yaml):
-    type_requirement_yaml = type(requirement_yaml)
-    if type_requirement_yaml == str:
+    if isinstance(requirement_yaml, str):
         return None
-    elif type_requirement_yaml == dict:
+    elif isinstance(requirement_yaml, dict):
         return requirement_yaml.get(NODE_FILTER)
     return None
 
 
 def get_requirement_relationship(requirement_yaml):
-    if type(requirement_yaml) == dict:
+    if isinstance(requirement_yaml, dict):
         return requirement_yaml.get(RELATIONSHIP)
     return None
 
 
 def get_relationship_type(relationship_yaml):
-    type_relationship_yaml = type(relationship_yaml)
-    if type_relationship_yaml == str:
+    if isinstance(relationship_yaml, str):
         return relationship_yaml
-    elif type_relationship_yaml == dict:
+    elif isinstance(relationship_yaml, dict):
         return relationship_yaml.get(TYPE)
     return None
 
 
 def get_relationship_interfaces(relationship_yaml):
-    type_relationship_yaml = type(relationship_yaml)
-    if type_relationship_yaml == str:
+    if isinstance(relationship_yaml, str):
         return None
-    elif type_relationship_yaml == dict:
+    elif isinstance(relationship_yaml, dict):
         return relationship_yaml.get(INTERFACES)
     return None
 
 
 def get_requirement_occurrences(requirement_yaml):
-    if type(requirement_yaml) == dict:
+    if isinstance(requirement_yaml, dict):
         return requirement_yaml.get(OCCURRENCES, [1, 1])
     return [1, 1]
 
 
 def get_inputs(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(INPUTS)
     return None
 
 
 def get_input_type(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(TYPE, "string")
     return "string"
 
 
 def get_input_description(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(DESCRIPTION)
     return None
 
 
 def get_input_value(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(VALUE)
     return yaml
 
 
 def get_input_default(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(DEFAULT)
     return None
 
 
 def get_input_status(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(STATUS, "supported")
     return "supported"
 
 
 def get_input_external_schema(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(EXTERNAL_SCHEMA)
     return None
 
 
 def get_input_metadata(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(METADATA)
     return None
 
 
 def get_constraints(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(CONSTRAINTS)
     return None
 
 
 def get_occurrences(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(OCCURRENCES)
     return None
 
 
 def get_artifact_file(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(FILE)
-    elif type(yaml) == str:
+    elif isinstance(yaml, str):
         return yaml
     return None
 
 
 def get_artifact_type(yaml):
-    if type(yaml) == dict:
+    if isinstance(yaml, dict):
         return yaml.get(TYPE)
     return None
 
@@ -576,15 +565,17 @@ class SyntaxChecker(Checker):
         )
 
         template_yaml = self.tosca_service_template.get_yaml()
-        if type(template_yaml) != dict:
-            self.error(" invalid YAML file as a map is expected")
+        if not isinstance(template_yaml, dict):
+            self.error(" invalid YAML file as a map is expected", template_yaml)
             return False
 
         tosca_definitions_version = template_yaml.get(TOSCA_DEFINITIONS_VERSION)
         if tosca_definitions_version is None:
-            self.error("tosca_definitions_version undefined")
-        elif type(tosca_definitions_version) != str:
-            self.error("tosca_definitions_version: string expected")
+            self.error("tosca_definitions_version undefined", template_yaml)
+        elif not isinstance(tosca_definitions_version, str):
+            self.error(
+                "tosca_definitions_version: string expected", tosca_definitions_version
+            )
             tosca_definitions_version = None
         if tosca_definitions_version is None:
             self.warning(
@@ -606,7 +597,8 @@ class SyntaxChecker(Checker):
             self.error(
                 "tosca_definitions_version: "
                 + tosca_definitions_version
-                + " unsupported"
+                + " unsupported",
+                tosca_definitions_version
             )
             if tosca_definitions_version.startswith("cloudify_dsl"):
                 return False
@@ -648,11 +640,11 @@ class SyntaxChecker(Checker):
                 error_message = value + " unexpected"
             error_path = ""
             for value in error.path:
-                if type(value) is int:
+                if isinstance(value, int):
                     error_path = error_path[:-1] + "[" + str(value) + "]:"
                 else:
                     error_path += str(value) + ":"
-            self.error(error_path + " - " + error_message)
+            self.error(error_path + " - " + error_message, error.instance)
             is_validated = False
 
         return is_validated
