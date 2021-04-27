@@ -384,7 +384,7 @@ class HOTGenerator(Generator):
     def generate_hot_template_ressource(self, entity_name, entity_yaml):
         entity_type = entity_yaml.get(TYPE)
         flavour_id = self.get_flavour_id(entity_yaml, entity_type)
-        if type(flavour_id) == str:
+        if isinstance(flavour_id, str):
             template_file = self.substitution_mappings.get(entity_type, {}).get(
                 flavour_id
             )
@@ -405,8 +405,7 @@ class HOTGenerator(Generator):
                     entity_yaml, PROPERTIES
                 ).items():
                     property_type = entity_type_properties.get(property_name).get(TYPE)
-                    property_value_type = type(property_value)
-                    if property_type == "string" and property_value_type == float:
+                    if property_type == "string" and isinstance(property_value, float):
                         # Quote the float value to be sure that Heat will be seen it as a string (not a float).
                         self.generate(
                             "      ", property_name, ": '", property_value, "'", sep=""
@@ -567,7 +566,7 @@ class HOTGenerator(Generator):
                 .get(SUBSTITUTION_MAPPINGS, {})
             ).items():
                 if (
-                    type(requirement_value) == list
+                    isinstance(requirement_value, list)
                     and len(requirement_value) == 2
                     and requirement_value[0] is not None
                     and requirement_value[0] == router_name
@@ -950,9 +949,9 @@ class HOTGenerator(Generator):
                 virtual_link_protocol_data.get("associated_layer_protocol")
             ] = virtual_link_protocol_data
 
-        if type(network_connectivity_type_layer_protocols) == list:
+        if isinstance(network_connectivity_type_layer_protocols, list):
             layer_protocols = network_connectivity_type_layer_protocols
-        elif type(network_connectivity_type_layer_protocols) == str:
+        elif isinstance(network_connectivity_type_layer_protocols, str):
             layer_protocols = [network_connectivity_type_layer_protocols]
         for layer_protocol in layer_protocols:
             # Get the protocol data associated to the current layer_protocol.
@@ -1140,7 +1139,7 @@ class HOTGenerator(Generator):
         self.generate("    properties:")
         self.generate("      is_public: false")
         virtual_memory = virtual_compute_properties.get("virtual_memory")
-        if type(virtual_memory) == dict:
+        if isinstance(virtual_memory, dict):
             ram = self.sizeInMB(virtual_memory.get("virtual_mem_size"))
         else:
             ram = 0
@@ -1165,7 +1164,7 @@ class HOTGenerator(Generator):
         self.generate_todo_translate(virtual_memory, "vdu_mem_requirements")
         self.generate_todo_translate(virtual_memory, "numa_enabled")
         virtual_cpu = virtual_compute_properties.get("virtual_cpu")
-        if type(virtual_cpu) == dict:
+        if isinstance(virtual_cpu, dict):
             self.generate("      vcpus:", virtual_cpu.get("num_virtual_cpu"))
         self.generate_todo_translate(virtual_cpu, "cpu_architecture")
         self.generate_todo_translate(virtual_cpu, "virtual_cpu_clock")
@@ -1190,7 +1189,7 @@ class HOTGenerator(Generator):
         # Generate OS::Nova::Server
         #
         vdu_profile = vdu_compute_properties.get("vdu_profile")
-        if type(vdu_profile) == dict:
+        if isinstance(vdu_profile, dict):
             min_number_of_instances = vdu_profile.get("min_number_of_instances")
             if min_number_of_instances > 1:
                 self.generate()
@@ -1326,7 +1325,7 @@ class HOTGenerator(Generator):
                 .get(SUBSTITUTION_MAPPINGS, {})
             ).items():
                 if (
-                    type(requirement_value) == list
+                    isinstance(requirement_value, list)
                     and len(requirement_value) == 2
                     and requirement_value[0] == vdu_cp_name
                     and requirement_value[1] == "virtual_link"

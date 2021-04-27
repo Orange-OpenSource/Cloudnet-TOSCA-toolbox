@@ -16,6 +16,7 @@
 import yaml
 from yaml.resolver import BaseResolver
 import re
+import json
 
 BaseResolver.add_implicit_resolver(
         'tag:yaml.org,2002:bool',
@@ -75,21 +76,6 @@ def isTrue(b):
 class Coord():
     pass
 
-class Bool():
-    def __init__(self, value):
-        self.value = value
-    def __bool__(self):
-        return bool(self.value)
-    def __repr__(self):
-        return repr(bool(self.value))
-    def __eq__(self, value):
-        return bool(value) == bool(self.value)
-
-class BoolCoord(Bool):
-    def __init__(self, value, line=0, column=0):
-        Bool.__init__(self, value)
-        self.line = line
-        self.column = column
 
 class StrCoord(str, Coord):
     def __new__(cls, value, line=0, column=0):
@@ -116,10 +102,6 @@ class FloatCoord(int, Coord):
 
 
 class DictCoord(dict, Coord):
-    def __new__(cls, value, line=0, column=0):
-        obj = super().__new__(cls, value)
-        return obj
-
     def __init__(self, value, line=0, column=0):
         dict.__init__(self, value)
         self.line = line
@@ -127,10 +109,6 @@ class DictCoord(dict, Coord):
 
 
 class ListCoord(list, Coord):
-    def __new__(cls, value, line=0, column=0):
-        obj = super().__new__(cls, value)
-        return obj
-
     def __init__(self, value, line=0, column=0):
         list.__init__(self, value)
         self.line = line
@@ -149,7 +127,8 @@ class SafeLineLoader(yaml.BaseLoader):
     def construct_object(self, node, deep=False):
         mapping = super(SafeLineLoader, self).construct_object(node, deep=deep)
         if node.tag == 'tag:yaml.org,2002:bool':
-            return BoolCoord(isTrue(mapping), line=node.start_mark.line + 1, column=node.start_mark.column + 1)
+            # can't heritate from bool because. No line can be managed for this type
+            return isTrue(mapping)
         if node.tag == 'tag:yaml.org,2002:float':
             return FloatCoord(float(mapping), line=node.start_mark.line + 1, column=node.start_mark.column + 1)
         if node.tag == 'tag:yaml.org,2002:int':
@@ -163,3 +142,5 @@ class SafeLineLoader(yaml.BaseLoader):
         # default is mapped to str
         return StrCoord(mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1)
 
+
+            

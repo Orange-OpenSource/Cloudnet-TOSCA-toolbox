@@ -122,7 +122,6 @@ def main(argv):
 
         nb_errors = 0
         nb_warnings = 0
-
         # Syntax checking.
         syntax_checker = SyntaxChecker(tosca_service_template, config)
         if syntax_checker.check() is False or syntax_checker.nb_errors > 0:

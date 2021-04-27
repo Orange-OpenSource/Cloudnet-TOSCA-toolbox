@@ -25,7 +25,6 @@ from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.processors import CEND, CRED, Checker
 from cloudnet.tosca.utils import merge_dict, normalize_dict
 from cloudnet.tosca.diagnostics import diagnostic
-from cloudnet.tosca.yaml_line_numbering import Bool
 
 profiles_directory = "file:" + os.path.dirname(__file__) + "/profiles"
 
@@ -178,7 +177,7 @@ class TypeSystem(object):
         result = self.get_type(type_name)
         if result is None:
             # TBR            LOGGER.error(CRED + type_name + ' unknown!' + CEND)
-            diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem',value=type_name )
+            # diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem',value=type_name )
             # TBR also ?     diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem')
             return dict()
 
@@ -408,7 +407,7 @@ class DataTypeChecker(AbstractTypeChecker):
         self.data_type = data_type
 
     def check_type(self, values, processor, context_error_message):
-        if type(values) != dict:
+        if not isinstance(values, dict):
             processor.error(
                 context_error_message
                 + ": "
@@ -437,46 +436,46 @@ BASIC_TYPE_CHECKERS = {
     "string": BasicTypeChecker("string", lambda value: isinstance(value, str)),
     "integer": BasicTypeChecker("integer", lambda value: isinstance(value, int)),
     "float": BasicTypeChecker("float", lambda value: isinstance(value, int) or isinstance(value, float)),
-    "boolean": BasicTypeChecker("boolean", lambda value: isinstance(value, Bool)),
+    "boolean": BasicTypeChecker("boolean", lambda value: isinstance(value, bool)),
     "timestamp": BasicTypeChecker(
         "timestamp",
-        lambda value: type(value) == datetime.datetime
-        or (type(value) == str and datetime.datetime.fromisoformat(value)),
+        lambda value: isinstance(value, datetime.datetime)
+        or (isinstance(value, str) and datetime.datetime.fromisoformat(value)),
     ),
     "null": BasicTypeChecker("null", lambda value: value is None),
     # TOSCA types
     "version": BasicTypeChecker(
         "version",
-        lambda value: (type(value) == float)
-        or (type(value) == str and check_version(value)),
+        lambda value: (isinstance(value, float))
+        or (isinstance(value, str) and check_version(value)),
     ),
     "range": BasicTypeChecker(
         "range",
-        lambda value: type(value) == list
+        lambda value: isinstance(value, list)
         and len(value) == 2
-        and type(value[0]) == int
-        and type(value[1]) == int,
+        and isinstance(value[0], int)
+        and isinstance(value[1], int),
     ),
-    "list": BasicTypeChecker("list", lambda value: type(value) == list),
-    "map": BasicTypeChecker("map", lambda value: type(value) == dict),
+    "list": BasicTypeChecker("list", lambda value: isinstance(value, list)),
+    "map": BasicTypeChecker("map", lambda value: isinstance(value, dict)),
     "scalar-unit.size": BasicTypeChecker(
         "scalar-unit.size",
-        lambda value: type(value) == str
+        lambda value: isinstance(value, str)
         and check_scalar_unit(value, SCALAR_SIZE_UNITS),
     ),
     "scalar-unit.time": BasicTypeChecker(
         "scalar-unit.time",
-        lambda value: type(value) == str
+        lambda value: isinstance(value, str)
         and check_scalar_unit(value, SCALAR_TIME_UNITS),
     ),
     "scalar-unit.frequency": BasicTypeChecker(
         "scalar-unit.frequency",
-        lambda value: type(value) == str
+        lambda value: isinstance(value, str)
         and check_scalar_unit(value, SCALAR_FREQUENCY_UNITS),
     ),
     "scalar-unit.bitrate": BasicTypeChecker(
         "scalar-unit.bitrate",
-        lambda value: type(value) == str
+        lambda value: isinstance(value, str)
         and check_scalar_unit(value, SCALAR_BITRATE_UNITS),
     ),
 }
@@ -521,13 +520,13 @@ def in_range_scalar_unit(v1, v2, units):
 
 type_check_operand = lambda operand, type_checker: type_checker(operand)
 type_check_in_range_operand = (
-    lambda operand, type_checker: type(operand) == list
+    lambda operand, type_checker: isinstance(operand, list)
     and len(operand) == 2
     and type_checker(operand[0])
     and type_checker(operand[1])
 )
 type_check_in_range_range_operand = (
-    lambda operand, type_checker: type(operand) == list
+    lambda operand, type_checker: isinstance(operand, list)
     and len(operand) == 2
     and type_checker(operand)
 )
@@ -1064,7 +1063,7 @@ class TypeChecker(Checker):
         if type_name is None:
             return False
         type_name = self.type_system.get_type_uri(type_name)
-        if type(type_kinds) == str:
+        if isinstance(type_kinds, str):
             type_kinds = [type_kinds]
         for type_kind in type_kinds:
             if (
@@ -1339,7 +1338,7 @@ class TypeChecker(Checker):
         self, repository_name, repository_definition, context_error_message
     ):
         # Normalize repository_definition
-        if type(repository_definition) == str:
+        if isinstance(repository_definition, str):
             repository_definition = {syntax.URL: repository_definition}
         # check description - nothing to do
         # check url - nothing to do
@@ -1421,8 +1420,8 @@ class TypeChecker(Checker):
         previous_schema_definition = previous_definition.get(keyword, {})
 
         # check the short notation used before TOSCA 1.3
-        if type(schema_definition) is str:
-            if type(previous_schema_definition) is str:
+        if isinstance(schema_definition, str):
+            if isinstance(previous_schema_definition, str):
                 previous_schema_definition = {syntax.TYPE: previous_schema_definition}
             self.check_type_in_definition(
                 "data",
@@ -1649,7 +1648,7 @@ class TypeChecker(Checker):
     def check_constraint_clause(
         self, constraint_clause, type_checker, context_error_message
     ):
-        if type(constraint_clause) != dict:
+        if not isinstance(constraint_clause, dict):
             constraint_clause = {"equal": constraint_clause}
         for constraint_operator, constraint_value in constraint_clause.items():
             cem = context_error_message + ":" + constraint_operator
@@ -1906,12 +1905,12 @@ class TypeChecker(Checker):
             # relationship defined
 
             # normalize when the short notation is used
-            if type(requirement_relationship) is str:
+            if isinstance(requirement_relationship, str):
                 requirement_relationship = {syntax.TYPE: requirement_relationship}
             previous_requirement_relationship = previous_requirement_definition.get(
                 syntax.RELATIONSHIP, {}
             )
-            if type(previous_requirement_relationship) is str:
+            if isinstance(previous_requirement_relationship, str):
                 previous_requirement_relationship = {
                     syntax.TYPE: previous_requirement_relationship
                 }
@@ -2044,9 +2043,9 @@ class TypeChecker(Checker):
         # check description - nothing to do
 
         # Normalize capability_definition and previous_capability_definition
-        if type(capability_definition) == str:
+        if isinstance(capability_definition, str):
             capability_definition = {syntax.TYPE: capability_definition}
-        if type(previous_capability_definition) == str:
+        if isinstance(previous_capability_definition, str):
             previous_capability_definition = {
                 syntax.TYPE: previous_capability_definition
             }
@@ -2192,7 +2191,7 @@ class TypeChecker(Checker):
         context_error_message,
     ):
         # check the short notation
-        if type(operation_definition) is str:
+        if isinstance(operation_definition, str):
             self.check_operation_implementation_definition(
                 operation_definition, context_error_message
             )
@@ -2219,7 +2218,7 @@ class TypeChecker(Checker):
         self, operation_implementation_definition, context_error_message
     ):
         # check the short notation
-        if type(operation_implementation_definition) is str:
+        if isinstance(operation_implementation_definition, str):
             self.check_artifact_definition(
                 "", operation_implementation_definition, {}, context_error_message
             )
@@ -2262,7 +2261,7 @@ class TypeChecker(Checker):
         context_error_message,
     ):
         # check the short notation
-        if type(notification_definition) is str:
+        if isinstance(notification_definition, str):
             self.check_notification_implementation_definition(
                 notification_definition, context_error_message
             )
@@ -2379,7 +2378,7 @@ class TypeChecker(Checker):
                     )
 
         # check the short notation
-        if type(artifact_definition) is str:
+        if isinstance(artifact_definition, str):
             check_file(artifact_definition, context_error_message)
             return
 
@@ -2662,7 +2661,7 @@ class TypeChecker(Checker):
             return operation_definition
 
         # check the short notation
-        if type(call_operation) is str:
+        if isinstance(call_operation, str):
             operation_definition = check_operation(
                 call_operation, context_error_message
             )
@@ -3325,10 +3324,10 @@ class TypeChecker(Checker):
                 method(key, value, definition, context_error_message + key)
 
     def check_value_assignment(self, name, value, definition, context_error_message):
-        if type(value) is dict and len(value) == 1:
+        if isinstance(value, dict) and len(value) == 1:
             if syntax.GET_ARTIFACT in value:
                 parameters = value[syntax.GET_ARTIFACT]
-                if type(parameters) != list:
+                if not isinstance(parameters, list):
                     self.error(
                         context_error_message + ": " + str(value) + " - list expected", parameters
                     )
@@ -3403,7 +3402,7 @@ class TypeChecker(Checker):
                         )
 
                 # check 3rd parameter
-                if len(parameters) > 2 and isinstance(parameters[2], str):
+                if len(parameters) > 2 and not isinstance(parameters[2], str):
                     self.error(
                         context_error_message
                         + ": "
@@ -3413,7 +3412,7 @@ class TypeChecker(Checker):
                     )
 
                 # check 4th parameter
-                if len(parameters) > 3 and isinstance(parameters[3], Bool):
+                if len(parameters) > 3 and not isinstance(parameters[3], bool):
                     self.error(
                         context_error_message
                         + ": "
@@ -3426,7 +3425,7 @@ class TypeChecker(Checker):
 
             if syntax.GET_ATTRIBUTE in value:
                 parameters = value[syntax.GET_ATTRIBUTE]
-                if type(parameters) != list:
+                if not isinstance(parameters, list):
                     self.error(
                         context_error_message + ": " + str(value) + " - list expected", parameters
                     )
@@ -3584,7 +3583,7 @@ class TypeChecker(Checker):
 
             if syntax.GET_PROPERTY in value:
                 parameters = value[syntax.GET_PROPERTY]
-                if type(parameters) != list:
+                if not isinstance(parameters, list):
                     self.error(
                         context_error_message + ": " + str(value) + " - list expected", parameters
                     )
@@ -3771,7 +3770,7 @@ class TypeChecker(Checker):
 
             if syntax.GET_INPUT in value:
                 parameter = value[syntax.GET_INPUT]
-                if type(parameter) != str:
+                if not isinstance(parameter, str):
                     self.error(
                         context_error_message
                         + ": "
@@ -3919,7 +3918,7 @@ class TypeChecker(Checker):
         context_error_message,
     ):
         # check the short notation
-        if type(requirement_assignment) is str:
+        if isinstance(requirement_assignment, str):
             node_template = (
                 self.get_topology_template()
                 .get(syntax.NODE_TEMPLATES, {})
@@ -4176,7 +4175,7 @@ class TypeChecker(Checker):
         if relationship is not None:
             cem = context_error_message + ":" + syntax.RELATIONSHIP
             # check short notation
-            if type(relationship) is str:
+            if isinstance(relationship, str):
                 relationship_template = (
                     self.get_topology_template()
                     .get(syntax.RELATIONSHIP_TEMPLATES, {})
@@ -4334,10 +4333,10 @@ class TypeChecker(Checker):
                     if property_value is None:
                         # TODO: dealt with default or value defined in the property definition
                         return False  # no value for the property
-                    if type(property_constraint_clauses) != list:
+                    if not isinstance(property_constraint_clauses, list):
                         property_constraint_clauses = [property_constraint_clauses]
                     for property_constraint_clause in property_constraint_clauses:
-                        if type(property_constraint_clause) != dict:
+                        if not isinstance(property_constraint_clause, dict):
                             property_constraint_clause = {
                                 "equal": property_constraint_clause
                             }
@@ -4495,7 +4494,7 @@ class TypeChecker(Checker):
         context_error_message,
     ):
         # check the short notation
-        if type(operation_assignment) is str:
+        if isinstance(operation_assignment, str):
             self.check_operation_implementation_definition(
                 operation_assignment, context_error_message
             )
@@ -4611,7 +4610,7 @@ class TypeChecker(Checker):
         for capability_name, capability_definition in node_type.get(
             syntax.CAPABILITIES, {}
         ).items():
-            if type(capability_definition) is str:
+            if isinstance(capability_definition, str):
                 capability_type = self.type_system.merge_type(capability_definition)
             else:
                 (
@@ -4719,7 +4718,7 @@ class TypeChecker(Checker):
                         )
                     else:
                         cem1 += capability_name + ":properties"
-                        if type(capability_definition) is str:
+                        if isinstance(capability_definition, str):
                             capability_definition = {syntax.TYPE: capability_definition}
                         (
                             checked,
@@ -4775,7 +4774,7 @@ class TypeChecker(Checker):
         type_checker = self.get_type_checker(
             property_definition, {}, context_error_message
         )
-        if type(property_filter_definition) is list:
+        if isinstance(property_filter_definition, list):
             self.check_list_of_constraint_clauses(
                 property_filter_definition, type_checker, context_error_message
             )
@@ -5418,7 +5417,7 @@ class TypeChecker(Checker):
                 )
 
         # check the short notation
-        if type(capability_mapping) is list:
+        if isinstance(capability_mapping, list):
             check_mapping_as_list(capability_mapping, context_error_message)
             return
 
@@ -5501,7 +5500,7 @@ class TypeChecker(Checker):
             ).connectIt()
 
         # check the short notation
-        if type(requirement_mapping) is list:
+        if isinstance(requirement_mapping, list):
             check_mapping_as_list(requirement_mapping, context_error_message)
             return
 

@@ -17,7 +17,7 @@
 # simple structured logging
 import json
 import os
-from cloudnet.tosca.importers import Coord
+from cloudnet.tosca.yaml_line_numbering import Coord
 import sys
 
 outfile = None  # file object to output to
@@ -44,7 +44,7 @@ def diagnostic(gravity, file, message, cls, value=None, **kwargs):
             file=file,
             message=message,
             cls=cls,
-            classe=str(type(value)),
+            value=value,
             line=value.line,
             column=value.column,
         )
@@ -54,7 +54,6 @@ def diagnostic(gravity, file, message, cls, value=None, **kwargs):
             file=file,
             message=message,
             cls=cls,
-            classe=str(type(value)),
             value=value,
             line=0,
             column=0,

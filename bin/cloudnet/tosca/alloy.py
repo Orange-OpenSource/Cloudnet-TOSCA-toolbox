@@ -19,8 +19,6 @@ import logging  # for logging purposes.
 import cloudnet.tosca.configuration as configuration
 import cloudnet.tosca.syntax as syntax
 import cloudnet.tosca.utils as utils
-from cloudnet.tosca.yaml_line_numbering import Bool
-
 
 from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.processors import CEND, CRED, Generator
@@ -604,7 +602,7 @@ class AbstractAlloySigGenerator(Generator):
         value_type = syntax.get_property_type(value_type_definition)
 
         if value_type == "boolean":
-            if not isinstance(value, Bool):
+            if not isinstance(value, bool):
                 self.error(
                     context_error_message + ": " + str(value) + " - boolean expected",
                     value,
@@ -906,7 +904,7 @@ class AbstractAlloySigGenerator(Generator):
                 # self.generate_all_properties(...) produces a typing error.
                 AbstractAlloySigGenerator.generate_all_properties(
                     self,
-                    self.get_dict(type_type, PROPERTIES),
+                    get_dict(type_type, PROPERTIES),
                     property_value,
                     prefix,
                     context_error_message,
@@ -1860,7 +1858,7 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                             syntax.get_operations(interface_yaml).get("operations").items()
                     ):
                         self.generate("  // YAML   ", operation_name, ":", sep="")
-                        if type(operation_yaml) == dict:
+                        if isinstance(operation_yaml, dict):
                             # Translate inputs.
                             self.generate_inputs_facts(
                                 self.prefix_name("interface", interface_name)

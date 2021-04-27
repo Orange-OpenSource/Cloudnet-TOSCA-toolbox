@@ -212,7 +212,7 @@ class Generator(Processor):
         )
         # Get the importer of the template.
         importer = self.tosca_service_template.importer
-        if type(importer) == ArchiveImporter:
+        if isinstance(importer, ArchiveImporter):
             # If the importer is type of ArchiveImporter then
             # add the basename of the zip file to the target directory.
             target_directory = (
