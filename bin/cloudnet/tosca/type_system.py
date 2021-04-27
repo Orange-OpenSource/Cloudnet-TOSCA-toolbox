@@ -347,12 +347,14 @@ class BasicTypeChecker(AbstractTypeChecker):
                     + str(value)
                     + " - "
                     + self.type_name
-                    + " expected"
+                    + " expected",
+                    value
                 )
                 return False
         except ValueError as exc:
             processor.error(
-                context_error_message + ": " + str(value) + " - " + str(exc)
+                context_error_message + ": " + str(value) + " - " + str(exc),
+                value
             )
             return False
         return True
@@ -414,7 +416,8 @@ class DataTypeChecker(AbstractTypeChecker):
                 + str(values)
                 + " - "
                 + self.type_name
-                + " expected"
+                + " expected",
+                values
             )
         else:
             properties = {syntax.PROPERTIES: values}
@@ -1049,7 +1052,7 @@ class TypeChecker(Checker):
                 + ": "
                 + str(value)
                 + " - currently unchecked",
-                keyword
+                value
             )
 
     def check_keyword(
@@ -3130,12 +3133,12 @@ class TypeChecker(Checker):
                 + " connections"
             )
             if requirement.connections < requirement.lower_bound:
-                self.error(cem + " - not enough connections", requirement.connections)
+                self.error(cem + " - not enough connections", requirement.node_template_name)
             if (
                 requirement.upper_bound != syntax.UNBOUNDED
                 and requirement.connections > requirement.upper_bound
             ):
-                self.error(cem + " - too many connections", requirement.connections)
+                self.error(cem + " - too many connections", requirement.node_template_name)
 
     def check_type_in_template(
         self, type_kinds, template, keyword, context_error_message
@@ -5165,7 +5168,7 @@ class TypeChecker(Checker):
             # check either extended or short notation
             if extended_notation:
                 if len(condition) != 0:
-                    self.error(cem + ": " + str(condition) + " - unexpected")
+                    self.error(cem + ": " + str(condition) + " - unexpected", condition)
             else:
                 # check the short notation
                 self.check_condition_clause_definition(condition, cem)
