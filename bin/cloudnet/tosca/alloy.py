@@ -575,9 +575,9 @@ class AbstractAlloySigGenerator(Generator):
                     if node_name == "SELF":
                         node_name = self.SELF
                     function_arguments = (
-                            node_name
-                            + ", "
-                            + self.stringify_value(
+                        node_name
+                        + ", "
+                        + self.stringify_value(
                         v[1], PARAMETER_STRING_TYPE, context_error_message, ", "
                     )
                     )

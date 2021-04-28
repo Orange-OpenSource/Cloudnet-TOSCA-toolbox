@@ -24,7 +24,6 @@ import cloudnet.tosca.syntax as syntax
 from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.processors import CEND, CRED, Checker
 from cloudnet.tosca.utils import merge_dict, normalize_dict
-from cloudnet.tosca.diagnostics import diagnostic
 
 profiles_directory = "file:" + os.path.dirname(__file__) + "/profiles"
 
@@ -177,7 +176,7 @@ class TypeSystem(object):
         result = self.get_type(type_name)
         if result is None:
             # TBR            LOGGER.error(CRED + type_name + ' unknown!' + CEND)
-            # diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem',value=type_name )
+            # diagnostic(gravity="error", file="", message=type_name + " unknown!", cls="TypeSystem",value=type_name )
             # TBR also ?     diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem')
             return dict()
 
@@ -3133,11 +3132,13 @@ class TypeChecker(Checker):
                 + " connections"
             )
             if requirement.connections < requirement.lower_bound:
+                # TODO for PME : check which object should be concerned by the error
                 self.error(cem + " - not enough connections", requirement.node_template_name)
             if (
                 requirement.upper_bound != syntax.UNBOUNDED
                 and requirement.connections > requirement.upper_bound
             ):
+                # TODO for PME : check which object should be concerned by the error
                 self.error(cem + " - too many connections", requirement.node_template_name)
 
     def check_type_in_template(

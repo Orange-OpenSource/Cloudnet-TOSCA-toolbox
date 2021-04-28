@@ -13,57 +13,58 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
+import json
+import re
 import yaml
 from yaml.resolver import BaseResolver
-import re
-import json
+
 
 BaseResolver.add_implicit_resolver(
-        'tag:yaml.org,2002:bool',
+        "tag:yaml.org,2002:bool",
         re.compile(r'''^(?:true|false)$''', re.X),
-        list('yYnNtTfFoO'))
+        list("yYnNtTfFoO"))
 
 BaseResolver.add_implicit_resolver(
-        'tag:yaml.org,2002:float',
+        "tag:yaml.org,2002:float",
         re.compile(r'''^(?:[-+]?(?:[0-9][0-9_]*)\.[0-9_]*(?:[eE][-+][0-9]+)?
                     |\.[0-9_]+(?:[eE][-+][0-9]+)?
                     |[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\.[0-9_]*
                     |[-+]?\.(?:inf|Inf|INF)
                     |\.(?:nan|NaN|NAN))$''', re.X),
-        list('-+0123456789.'))
+        list("-+0123456789."))
 
 BaseResolver.add_implicit_resolver(
-        'tag:yaml.org,2002:int',
+        "tag:yaml.org,2002:int",
         re.compile(r'''^(?:[-+]?0b[0-1_]+
                     |[-+]?0[0-7_]+
                     |[-+]?(?:0|[1-9][0-9_]*)
                     |[-+]?0x[0-9a-fA-F_]+
                     |[-+]?[1-9][0-9_]*(?::[0-5]?[0-9])+)$''', re.X),
-        list('-+0123456789'))
+        list("-+0123456789"))
 
 BaseResolver.add_implicit_resolver(
-        'tag:yaml.org,2002:merge',
+        "tag:yaml.org,2002:merge",
         re.compile(r'^(?:<<)$'),
         ['<'])
 
 BaseResolver.add_implicit_resolver(
-        'tag:yaml.org,2002:null',
+        "tag:yaml.org,2002:null",
         re.compile(r'''^(?: ~
                     |null|Null|NULL
                     | )$''', re.X),
         ['~', 'n', 'N', ''])
 
 BaseResolver.add_implicit_resolver(
-        'tag:yaml.org,2002:timestamp',
+        "tag:yaml.org,2002:timestamp",
         re.compile(r'''^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]
                     |[0-9][0-9][0-9][0-9] -[0-9][0-9]? -[0-9][0-9]?
                      (?:[Tt]|[ \t]+)[0-9][0-9]?
                      :[0-9][0-9] :[0-9][0-9] (?:\.[0-9]*)?
                      (?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$''', re.X),
-        list('0123456789'))
+        list("0123456789"))
 
 BaseResolver.add_implicit_resolver(
-        'tag:yaml.org,2002:value',
+        "tag:yaml.org,2002:value",
         re.compile(r'^(?:=)$'),
         ['='])
 

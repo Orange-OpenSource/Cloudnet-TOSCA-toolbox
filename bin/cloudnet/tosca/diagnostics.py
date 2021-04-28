@@ -29,7 +29,7 @@ def configure(template_filename, log_filename):
     global outfile, template
     template = template_filename
     if log_filename:
-        outfile = open(log_filename, 'a')
+        outfile = open(log_filename, "a")
 
 
 def diagnostic(gravity, file, message, cls, value=None, **kwargs):
