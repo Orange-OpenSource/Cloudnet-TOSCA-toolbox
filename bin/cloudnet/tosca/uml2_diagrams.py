@@ -36,7 +36,7 @@ DEFAULT_CONFIGURATION[UML2] = {
         'tosca.nodes.nfv.NsVirtualLink': 'queue', # ETSI NVF SOL 001 v2.5.1
         'tosca.nodes.nfv.VnfVirtualLink': 'queue', # ETSI NVF SOL 001
         'tosca.capabilities.nfv.VirtualLinkable': 'queue', # ETSI NVF SOL 001
-    }
+    },
 }
 DEFAULT_CONFIGURATION['logging']['loggers'][__name__] = {
     'level': 'INFO',
@@ -68,6 +68,8 @@ class PlantUMLGenerator(Generator):
             self.open_file('-uml2-deployment-diagram.plantuml')
             self.generate_UML2_deployment_diagram(topology_template)
             self.close_file()
+
+            self.generate_UML2_workflow_diagrams(topology_template)
 
     def generate_UML2_class_diagram(self):
         template_yaml = self.tosca_service_template.get_yaml()
@@ -626,3 +628,158 @@ class PlantUMLGenerator(Generator):
                 req_idx = req_idx + 1
 
         self.generate('@enduml')
+
+    def generate_UML2_workflow_diagrams(self, topology_template):
+
+        # get the workflows
+        workflows = topology_template.get('workflows', {})
+
+        def generate_workflow_diagram(workflow_name, workflow_definition):
+
+            def step_id(step_name):
+                return 'step_%s_%s' % (workflow_name, step_name)
+
+            # generate all steps of the current workflow
+            steps = workflow_definition.get('steps', {})
+            for step_name, step_definition in steps.items():
+                # generate a PlantUML state for each step
+                self.generate('state "%s" as %s << step >> {' % (step_name, step_id(step_name)))
+                # get the target of the current step
+                target = step_definition['target']
+                step_activity_id = step_id(step_name) + '_' + target
+                target_relationship = step_definition.get('target_relationship')
+                if target_relationship is None:
+                    target_label = target
+                else:
+                    step_activity_id += '_' + target_relationship
+                    target_label = target + ' ' + target_relationship
+                # store ids of all activities of the current step
+                activity_ids = []
+                # generate all activities of the current step
+                for activity in step_definition['activities']:
+                    for key, value in activity.items():
+                        # generate an id of the current activity
+                        activity_id = '%s_%s' % (step_activity_id, value)
+                        activity_ids.append(activity_id)
+                        if key == 'inline':
+                            # generate a step encapsulating the inlined workflow
+                            self.generate('  state "%s" as %s << %s >> {' % (value, activity_id, key))
+                            generate_workflow_diagram(value, workflows.get(value))
+                            self.generate('  }')
+                        else:
+                            # generate a PlantUML state for each activity
+                            self.generate('  state "%s %s" as %s << %s >>' % (target_label, value, activity_id, key))
+                if len(activity_ids) > 0:
+                    # links consecutive activities
+                    previous_activity_id = activity_ids[0]
+                    for next_activity_id in activity_ids[1:]:
+                        self.generate('  %s --> %s' % (previous_activity_id, next_activity_id))
+                        previous_activity_id = next_activity_id
+                # close the step
+                self.generate('}')
+
+            # compute the number of predecessors of each step
+            nb_predecessors = { step_name: 0 for step_name in steps.keys() }
+            for step_name, step_definition in steps.items():
+                for next_step in step_definition.get('on_success', []):
+                    nb_predecessors[next_step] += 1
+
+            # generate a join for each step having multiple predecessors
+            for step_name in steps.keys():
+                if nb_predecessors[step_name] > 1:
+                    sid = step_id(step_name)
+                    self.generate('  state %s_join <<join>>' % sid)
+                    self.generate('  %s_join --> %s' % (sid, sid))
+
+            # links the steps
+            initial_step_names = list(steps.keys())
+            final_step_names = []
+            for step_name, step_definition in steps.items():
+                on_success = step_definition.get('on_success')
+                if on_success is None or len(on_success) == 0:
+                    # the current step is a final step
+                    final_step_names.append(step_name)
+                else:
+                    # link the current step to each on_success step
+                    nb_successors = len(on_success)
+                    if nb_successors == 1:
+                        state_source_id = step_id(step_name)
+                    elif nb_successors > 1:
+                        # generate a fork
+                        state_source_id = '%s_fork' % step_id(step_name)
+                        self.generate('state %s <<fork>>' % state_source_id)
+                        self.generate('%s --> %s' % (step_id(step_name), state_source_id))
+                    for next_step in on_success:
+                        target_step_id = step_id(next_step)
+                        if nb_predecessors[next_step] > 1:
+                            target_step_id += '_join'
+                        self.generate('%s --> %s' % (state_source_id, target_step_id))
+                        # next_step is not an initial step
+                        try:
+                            initial_step_names.remove(next_step)
+                        except ValueError:
+                            pass # next_step was already removed from initial_step_names
+                # link the current step to each on_failure step
+                for next_step in step_definition.get('on_failure', []):
+                    self.generate('%s -right[#red]-> %s : <color:red>on_failure</color>' % (step_id(step_name), step_id(next_step)))
+                    # next_step is not an initial step
+                    try:
+                        initial_step_names.remove(next_step)
+                    except ValueError:
+                        pass # next_step was already removed from initial_step_names
+
+            # link all initial steps
+            nb_initial_steps = len(initial_step_names)
+            if nb_initial_steps == 0:
+                self.error('topology_template:workflows:%s - no initial state' % workflow_name)
+            elif nb_initial_steps == 1:
+                initial_state = '[*]'
+            else: # > 1
+                # generate a fork
+                initial_state = '%s_fork' % workflow_name
+                self.generate('state %s <<fork>>' % initial_state)
+                self.generate('[*] --> %s' % initial_state)
+            for step_name in initial_step_names:
+                self.generate('%s --> %s' % (initial_state, step_id(step_name)))
+
+            # link all final steps
+            nb_final_steps = len(final_step_names)
+            if nb_final_steps == 0:
+                self.error('topology_template:workflows:%s - no final state' % workflow_name)
+            elif nb_final_steps == 1:
+                final_state = '[*]'
+            else: # > 1
+                # generate a join
+                final_state = '%s_join' % workflow_name
+                self.generate('state %s <<join>>' % final_state)
+                self.generate('%s --> [*]' % final_state)
+            for step_name in final_step_names:
+                self.generate('%s --> %s' % (step_id(step_name), final_state))
+
+        # iterate over all workflows
+        for workflow_name, workflow_definition in workflows.items():
+            # open a file for each workflow
+            self.open_file('-%s-workflow-diagram.plantuml' % workflow_name)
+            self.generate('@startuml')
+            # generate PlantUML configuration
+            self.generate('hide empty description')
+            self.generate('skinparam shadowing false')
+            self.generate('skinparam state {')
+            self.generate('  ArrowColor blue')
+            self.generate('  BorderColor blue')
+            self.generate('  EndColor black')
+            self.generate('  StartColor green')
+            self.generate('  BackGroundColor<< step >> white')
+            self.generate('  BorderColor<< step >> black')
+            self.generate('  BackGroundColor<< delegate >> lightgrey')
+            self.generate('  BackGroundColor<< set_state >> white')
+            self.generate('  BackGroundColor<< call_operation >> lightblue')
+            self.generate('  BackGroundColor<< inline >> white')
+            self.generate('}')
+            self.generate()
+
+            generate_workflow_diagram(workflow_name, workflow_definition)
+
+            # close the current workflow diagram
+            self.generate('@enduml')
+            self.close_file()
