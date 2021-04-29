@@ -20,55 +20,67 @@ from yaml.resolver import BaseResolver
 
 
 BaseResolver.add_implicit_resolver(
-        "tag:yaml.org,2002:bool",
-        re.compile(r'''^(?:true|false)$''', re.X),
-        list("yYnNtTfFoO"))
+    "tag:yaml.org,2002:bool",
+    re.compile(r'''^(?:true|false)$''', re.X),
+    list("yYnNtTfFoO"))
 
 BaseResolver.add_implicit_resolver(
-        "tag:yaml.org,2002:float",
-        re.compile(r'''^(?:[-+]?(?:[0-9][0-9_]*)\.[0-9_]*(?:[eE][-+][0-9]+)?
+    "tag:yaml.org,2002:float",
+    re.compile(
+        r'''^(?:[-+]?(?:[0-9][0-9_]*)\.[0-9_]*(?:[eE][-+][0-9]+)?
                     |\.[0-9_]+(?:[eE][-+][0-9]+)?
                     |[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\.[0-9_]*
                     |[-+]?\.(?:inf|Inf|INF)
-                    |\.(?:nan|NaN|NAN))$''', re.X),
-        list("-+0123456789."))
+                    |\.(?:nan|NaN|NAN))$''',
+        re.X,
+    ),
+    list("-+0123456789.")
+)
 
 BaseResolver.add_implicit_resolver(
-        "tag:yaml.org,2002:int",
-        re.compile(r'''^(?:[-+]?0b[0-1_]+
+    "tag:yaml.org,2002:int",
+    re.compile(
+         r'''^(?:[-+]?0b[0-1_]+
                     |[-+]?0[0-7_]+
                     |[-+]?(?:0|[1-9][0-9_]*)
                     |[-+]?0x[0-9a-fA-F_]+
-                    |[-+]?[1-9][0-9_]*(?::[0-5]?[0-9])+)$''', re.X),
-        list("-+0123456789"))
+                    |[-+]?[1-9][0-9_]*(?::[0-5]?[0-9])+)$''',
+         re.X,
+    ),
+    list("-+0123456789"),
+)
 
 BaseResolver.add_implicit_resolver(
-        "tag:yaml.org,2002:merge",
-        re.compile(r'^(?:<<)$'),
-        ['<'])
+    "tag:yaml.org,2002:merge", re.compile(r'^(?:<<)$'), ['<']
+)
 
 BaseResolver.add_implicit_resolver(
-        "tag:yaml.org,2002:null",
-        re.compile(r'''^(?: ~
+    "tag:yaml.org,2002:null",
+    re.compile(
+         r'''^(?: ~
                     |null|Null|NULL
-                    | )$''', re.X),
-        ['~', 'n', 'N', ''])
+                    | )$''',
+         re.X,
+    ),
+    ['~', 'n', 'N', ''],
+)
 
 BaseResolver.add_implicit_resolver(
-        "tag:yaml.org,2002:timestamp",
-        re.compile(r'''^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]
+    "tag:yaml.org,2002:timestamp",
+    re.compile(
+         r'''^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]
                     |[0-9][0-9][0-9][0-9] -[0-9][0-9]? -[0-9][0-9]?
                      (?:[Tt]|[ \t]+)[0-9][0-9]?
                      :[0-9][0-9] :[0-9][0-9] (?:\.[0-9]*)?
-                     (?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$''', re.X),
-        list("0123456789"))
+                     (?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$''',
+         re.X
+    ),
+    list("0123456789"),
+)
 
 BaseResolver.add_implicit_resolver(
-        "tag:yaml.org,2002:value",
-        re.compile(r'^(?:=)$'),
-        ['='])
-
-
+    "tag:yaml.org,2002:value", re.compile(r'^(?:=)$'), ['=']
+)
 
 
 def isTrue(b):
@@ -119,29 +131,54 @@ class ListCoord(list, Coord):
 class SafeLineLoader(yaml.BaseLoader):
     def construct_mapping(self, node, deep=False):
         mapping = super(SafeLineLoader, self).construct_mapping(node, deep=deep)
-        return DictCoord(mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1)
+        return DictCoord(
+                mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1
+        )
 
     def construct_document(self, node):
         mapping = super(SafeLineLoader, self).construct_document(node)
-        return DictCoord(mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1)
+        return DictCoord(
+                mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1
+        )
 
     def construct_object(self, node, deep=False):
         mapping = super(SafeLineLoader, self).construct_object(node, deep=deep)
         if node.tag == 'tag:yaml.org,2002:bool':
             # can't heritate from bool because. No line can be managed for this type
             return isTrue(mapping)
-        if node.tag == 'tag:yaml.org,2002:float':
-            return FloatCoord(float(mapping), line=node.start_mark.line + 1, column=node.start_mark.column + 1)
-        if node.tag == 'tag:yaml.org,2002:int':
-            return IntCoord(int(mapping), line=node.start_mark.line + 1, column=node.start_mark.column + 1)
-        if node.tag == 'tag:yaml.org,2002:str':
-            return StrCoord(mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1)
-        if node.tag == 'tag:yaml.org,2002:seq' or isinstance(mapping, list):
-            return ListCoord(mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1)
-        if node.tag == 'tag:yaml.org,2002:map' or isinstance(mapping, dict):
-            return DictCoord(mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1)
+        if node.tag == "tag:yaml.org,2002:float":
+            return FloatCoord(
+                    float(mapping),
+                    line=node.start_mark.line + 1,
+                    column=node.start_mark.column + 1
+            )
+        if node.tag == "tag:yaml.org,2002:int":
+            return IntCoord(
+                    int(mapping),
+                    line=node.start_mark.line + 1,
+                    column=node.start_mark.column + 1
+            )
+        if node.tag == "tag:yaml.org,2002:str":
+            return StrCoord(
+                    mapping,
+                    line=node.start_mark.line + 1,
+                    column=node.start_mark.column + 1
+            )
+        if node.tag == "tag:yaml.org,2002:seq" or isinstance(mapping, list):
+            return ListCoord(
+                    mapping,
+                    line=node.start_mark.line + 1,
+                    column=node.start_mark.column + 1
+            )
+        if node.tag == "tag:yaml.org,2002:map" or isinstance(mapping, dict):
+            return DictCoord(
+                    mapping,
+                    line=node.start_mark.line + 1,
+                    column=node.start_mark.column + 1
+            )
         # default is mapped to str
-        return StrCoord(mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1)
-
-
-            
+        return StrCoord(
+            mapping,
+            line=node.start_mark.line + 1,
+            column=node.start_mark.column + 1
+        )           
