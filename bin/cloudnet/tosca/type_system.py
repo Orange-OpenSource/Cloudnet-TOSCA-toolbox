@@ -1017,7 +1017,7 @@ class TypeChecker(Checker):
                 if self.type_system.types.get(full_type_name):
                     self.error(
                         type_kind + ":" + type_name + " - type already defined",
-                        type_name
+                        type_name,
                     )
                 else:
                     self.type_system.types[full_type_name] = type_yaml
@@ -1096,7 +1096,7 @@ class TypeChecker(Checker):
                 + " - defined type but "
                 + array_to_string_with_or_separator(type_kinds)
                 + " type expected",
-                type_name
+                type_name,
             )
         return False
 
@@ -1676,7 +1676,7 @@ class TypeChecker(Checker):
             if constraint_clause_checker is None:
                 self.error(
                     cem + " - unallowed operator on " + type_checker.type_name,
-                    type_checker.type_name
+                    type_checker.type_name,
                 )
                 continue
 
@@ -1900,7 +1900,7 @@ class TypeChecker(Checker):
                         + found_relationship_types[0]
                         + " is compatible with "
                         + requirement_capability,
-                        requirement_capability
+                        requirement_capability,
                     )
                 else:
                     self.warning(
@@ -1909,7 +1909,7 @@ class TypeChecker(Checker):
                         + array_to_string_with_or_separator(found_relationship_types)
                         + " are compatible with "
                         + requirement_capability,
-                        requirement_capability
+                        requirement_capability,
                     )
         else:
             # relationship defined
@@ -3144,7 +3144,7 @@ class TypeChecker(Checker):
                 # TODO for PME : check which object should be concerned by the error
                 self.error(
                     cem + " - not enough connections",
-                    requirement.node_template_name
+                    requirement.node_template_name,
                 )
             if (
                 requirement.upper_bound != syntax.UNBOUNDED
@@ -3152,8 +3152,7 @@ class TypeChecker(Checker):
             ):
                 # TODO for PME : check which object should be concerned by the error
                 self.error(
-                    cem + " - too many connections",
-                    requirement.node_template_name
+                    cem + " - too many connections", requirement.node_template_name
                 )
 
     def check_type_in_template(
@@ -3214,7 +3213,7 @@ class TypeChecker(Checker):
                             + " not required but required "
                             + kind
                             + " expected",
-                            field_name
+                            field_name,
                         )
                     expected_type_name = field_definition.get(syntax.TYPE, "string")
                     default_field_type = default_field_definition.get(
@@ -3446,7 +3445,8 @@ class TypeChecker(Checker):
                 parameters = value[syntax.GET_ATTRIBUTE]
                 if not isinstance(parameters, list):
                     self.error(
-                        context_error_message + ": " + str(value) + " - list expected", parameters
+                        context_error_message + ": " + str(value) + " - list expected",
+                        parameters,
                     )
                     return
                 if len(parameters) < 2:
@@ -3950,7 +3950,7 @@ class TypeChecker(Checker):
                     + ": "
                     + requirement_assignment
                     + " - node template undefined",
-                    requirement_assignment
+                    requirement_assignment,
                 )
             else:
                 requirement_node_type_name = requirement_definition.get(syntax.NODE)
@@ -4911,7 +4911,6 @@ class TypeChecker(Checker):
                                 + " - incompatible with "
                                 + array_to_string_with_or_separator(group_type_members),
                                 member,
-
                             )
                 idx += 1
         # check interfaces
@@ -5000,7 +4999,7 @@ class TypeChecker(Checker):
                                 + array_to_string_with_or_separator(
                                     policy_type_targets
                                 ),
-                                target
+                                target,
                             )
                 idx += 1
         # check triggers
@@ -5689,7 +5688,7 @@ class TypeChecker(Checker):
                 + ":target: "
                 + target
                 + " - node template or group undefined",
-                target
+                target,
             )
             target_type = {}
         else:
