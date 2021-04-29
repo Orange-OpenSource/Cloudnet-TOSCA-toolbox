@@ -34,7 +34,7 @@ def configure(template_filename, log_filename):
 
 def diagnostic(gravity, file, message, cls, value=None, **kwargs):
     global return_code, outfile, template
-    if gravity == "info" or outfile == None: 
+    if gravity == "info" or outfile == None:
         return
     return_code = 1
     if file == "":
