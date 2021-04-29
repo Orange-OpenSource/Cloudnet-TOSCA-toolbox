@@ -144,38 +144,38 @@ class SafeLineLoader(yaml.BaseLoader):
 
     def construct_object(self, node, deep=False):
         mapping = super(SafeLineLoader, self).construct_object(node, deep=deep)
-        if node.tag == 'tag:yaml.org,2002:bool':
+        if node.tag == "tag:yaml.org,2002:bool":
             # can't heritate from bool because. No line can be managed for this type
             return isTrue(mapping)
         if node.tag == "tag:yaml.org,2002:float":
             return FloatCoord(
                 float(mapping),
                 line=node.start_mark.line + 1,
-                column=node.start_mark.column + 1
+                column=node.start_mark.column + 1,
             )
         if node.tag == "tag:yaml.org,2002:int":
             return IntCoord(
                 int(mapping),
                 line=node.start_mark.line + 1,
-                column=node.start_mark.column + 1
+                column=node.start_mark.column + 1,
             )
         if node.tag == "tag:yaml.org,2002:str":
             return StrCoord(
                 mapping,
                 line=node.start_mark.line + 1,
-                column=node.start_mark.column + 1
+                column=node.start_mark.column + 1,
             )
         if node.tag == "tag:yaml.org,2002:seq" or isinstance(mapping, list):
             return ListCoord(
                 mapping,
                 line=node.start_mark.line + 1,
-                column=node.start_mark.column + 1
+                column=node.start_mark.column + 1,
             )
         if node.tag == "tag:yaml.org,2002:map" or isinstance(mapping, dict):
             return DictCoord(
                 mapping,
                 line=node.start_mark.line + 1,
-                column=node.start_mark.column + 1
+                column=node.start_mark.column + 1,
             )
         # default is mapped to str
         return StrCoord(
