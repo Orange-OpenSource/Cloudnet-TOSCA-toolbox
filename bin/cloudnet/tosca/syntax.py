@@ -598,7 +598,7 @@ class SyntaxChecker(Checker):
                 "tosca_definitions_version: "
                 + tosca_definitions_version
                 + " unsupported",
-                tosca_definitions_version
+                tosca_definitions_version,
             )
             if tosca_definitions_version.startswith("cloudify_dsl"):
                 return False
