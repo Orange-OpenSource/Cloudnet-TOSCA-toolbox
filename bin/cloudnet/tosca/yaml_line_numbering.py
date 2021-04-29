@@ -15,9 +15,9 @@
 
 import json
 import re
+
 import yaml
 from yaml.resolver import BaseResolver
-
 
 BaseResolver.add_implicit_resolver(
     "tag:yaml.org,2002:bool",
