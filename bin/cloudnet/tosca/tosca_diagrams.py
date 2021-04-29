@@ -118,7 +118,7 @@ class ToscaDiagramGenerator(Generator):
                         if requirement_capability is None:
                             self.error(
                                 requirement_name + ": capability undefined",
-                                requirement_name
+                                requirement_name,
                             )
                             continue
                         requirement_node = syntax.get_requirement_node_template(
@@ -131,7 +131,7 @@ class ToscaDiagramGenerator(Generator):
                         if requirement_node_template is None:
                             self.error(
                                 requirement_node + " node template undefined",
-                                requirement_node
+                                requirement_node,
                             )
                             continue
                         for capability_name, capability_yaml in syntax.get_capabilities(
