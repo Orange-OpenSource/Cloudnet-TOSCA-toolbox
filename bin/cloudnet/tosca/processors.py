@@ -113,7 +113,10 @@ class Processor(object):
             else:
                 repository_url = syntax.get_repository_url(repository)
                 if repository_url is None:
-                    self.error(":repositories:" + import_repository + ":url undefined", repository)
+                    self.error(
+                        ":repositories:" + import_repository + ":url undefined",
+                        repository
+                    )
                 else:
                     result = repository_url + "/" + import_file
         return result
@@ -130,7 +133,7 @@ class Processor(object):
             sep="",
             file=stderr,
         )
-        self.diagnostic('error', message, value=value)
+        self.diagnostic("error", message, value=value)
         self.nb_errors += 1
 
     def warning(self, message, value=None):
@@ -145,7 +148,7 @@ class Processor(object):
             sep="",
             file=stderr,
         )
-        self.diagnostic('warning', message, value=value)
+        self.diagnostic("warning", message, value=value)
         self.nb_warnings += 1
 
     def info(self, message, value=None):
@@ -158,15 +161,16 @@ class Processor(object):
                 sep="",
                 file=stderr,
             )
-        self.diagnostic('info', message, value=value)
+        self.diagnostic("info", message, value=value)
 
     def diagnostic(self, gravity, message, value=None):
         diagnostic(
             gravity=gravity,
-            file=self.tosca_service_template.get_fullname(), 
-            message=message, cls=self.__class__.__name__,
-            value=value
-            )
+            file=self.tosca_service_template.get_fullname(),
+            message=message,
+            cls=self.__class__.__name__,
+            value=value,
+        )
 
     def process(self):
         pass
