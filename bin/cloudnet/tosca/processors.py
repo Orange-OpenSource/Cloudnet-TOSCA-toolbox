@@ -115,7 +115,7 @@ class Processor(object):
                 if repository_url is None:
                     self.error(
                         ":repositories:" + import_repository + ":url undefined",
-                        repository
+                        repository,
                     )
                 else:
                     result = repository_url + "/" + import_file
