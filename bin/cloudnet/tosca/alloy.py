@@ -3733,7 +3733,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
         # Iterate over all node templates.
 
         def compute_scope_capabilities_requirements(
-   0        self,
+            self,
             acs,
             node_template_name,
             node_template_yaml,
