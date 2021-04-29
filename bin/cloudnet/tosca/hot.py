@@ -457,7 +457,9 @@ class HOTGenerator(Generator):
         if unit == "GB":
             return size * 1000
         else:
-            self.error("Do not know how to convert " + scalar_size + " to MB", scalar_size)
+            self.error(
+                "Do not know how to convert " + scalar_size + " to MB", scalar_size
+            )
             return "1 # TODO: " + scalar_size
 
     def sizeInGB(self, scalar_size):
@@ -465,7 +467,9 @@ class HOTGenerator(Generator):
         if unit == "GB":
             return size
         else:
-            self.error("Do not know how to convert " + scalar_size + " to GB", scalar_size)
+            self.error(
+                "Do not know how to convert " + scalar_size + " to GB", scalar_size
+            )
             return "1 # TODO: " + scalar_size
 
     def generate_NS(self, ns_name, ns_yaml):
@@ -1079,7 +1083,7 @@ class HOTGenerator(Generator):
                     + ":"
                     + node_name
                     + ": Artifact of type 'tosca.artifacts.nfv.SwImage' required",
-                    node_name
+                    node_name,
                 )
                 self.generate(
                     "      location: # ERROR: Location not set because tosca.artifacts.nfv.SwImage artifact missed!"
@@ -1117,7 +1121,7 @@ class HOTGenerator(Generator):
                 + ":"
                 + node_name
                 + ": Property 'sw_image_data' required",
-                node_name
+                node_name,
             )
         return False
 
@@ -1154,7 +1158,7 @@ class HOTGenerator(Generator):
                 + "MB narrowed to "
                 + str(maximum_ram)
                 + "MB",
-                ram
+                ram,
             )
         else:
             self.generate("      ram:", ram)
@@ -1312,7 +1316,7 @@ class HOTGenerator(Generator):
                         + requirement_name
                         + ": "
                         + str(requirement_value),
-                        requirement_name
+                        requirement_name,
                     )
 
         if virtual_link_as_param is None:
@@ -1368,7 +1372,9 @@ class HOTGenerator(Generator):
                         vdu_cp_name, virtual_link, layer_protocols[0], vdu_cp_role
                     )
                 else:
-                    self.error(" HOT - layer_protocols can not be empty", vdu_cp_properties)
+                    self.error(
+                        " HOT - layer_protocols can not be empty", vdu_cp_properties
+                    )
 
         self.generate_todo_translate(vdu_cp_properties, "description")
         self.generate_todo_translate(vdu_cp_properties, "trunk_mode")
