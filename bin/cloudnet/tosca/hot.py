@@ -117,7 +117,7 @@ class HOTGenerator(Generator):
                         + file_of_flavour_id
                         + " and "
                         + imported_file,
-                        flavour_id
+                        flavour_id,
                     )
                 else:
                     mapping_flavour_file[flavour_id] = imported_file
