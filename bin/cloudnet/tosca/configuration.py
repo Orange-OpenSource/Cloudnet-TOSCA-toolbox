@@ -96,4 +96,4 @@ DEFAULT_CONFIGURATION = {
             "handlers": ["console"],
         },
     },
-} 
+}
