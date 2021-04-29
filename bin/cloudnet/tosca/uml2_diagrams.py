@@ -179,7 +179,7 @@ class PlantUMLGenerator(Generator):
                             "]",
                             sep="",
                         )
-                    if type(capability_yaml) == dict:
+                    if isinstance(capability_yaml, dict):
                         capability_valid_source_types = capability_yaml.get(
                             VALID_SOURCE_TYPES
                         )
@@ -315,7 +315,7 @@ class PlantUMLGenerator(Generator):
                         capability_name,
                         sep="",
                     )
-                if type(capability_yaml) == dict:
+                if isinstance(capability_yaml, dict):
                     capability_valid_source_types = capability_yaml.get(
                         VALID_SOURCE_TYPES
                     )
@@ -554,7 +554,7 @@ class PlantUMLGenerator(Generator):
             for capability_name, capability_yaml in get_dict(
                 merged_node_template_type, CAPABILITIES
             ).items():
-                if type(capability_yaml) == dict:
+                if isinstance(capability_yaml, dict):
                     capability_occurrences = capability_yaml.get(OCCURRENCES)
                 else:
                     capability_occurrences = None
@@ -598,11 +598,11 @@ class PlantUMLGenerator(Generator):
                         relationship_component_name = ""  # No name.
                         relationship_component_type = None
 
-                        if type(requirement_yaml) == dict:
+                        if isinstance(requirement_yaml, dict):
                             requirement_relationship = (
                                 syntax.get_requirement_relationship(requirement_yaml)
                             )
-                            if type(requirement_relationship) == dict:
+                            if isinstance(requirement_relationship, dict):
                                 relationship_component_type = (
                                     syntax.get_relationship_type(
                                         requirement_relationship
@@ -761,7 +761,7 @@ class PlantUMLGenerator(Generator):
             ).items():
                 capability = capabilities.get(capability_name)
                 if capability is not None:
-                    if type(capability) != list:
+                    if not isinstance(capability, list):
                         continue  # TODO when capability is not a list
                     target_node_uml_id = "node_" + capability[0]
                     target_uml_id = (
@@ -791,7 +791,7 @@ class PlantUMLGenerator(Generator):
                 # Connect the capability UML interface to the node template UML component.
                 capability = capabilities.get(capability_name)
                 if capability is not None:
-                    if type(capability) != list:
+                    if not isinstance(capability, list):
                         continue  # TODO when capability is not a list
                     target_node_uml_id = "node_" + capability[0]
                     target_uml_id = (
@@ -1007,11 +1007,11 @@ class PlantUMLGenerator(Generator):
             for requirement in get_list(node_template_yaml, REQUIREMENTS):
                 for requirement_name, requirement_yaml in requirement.items():
                     requirement_relationship_type = None
-                    if type(requirement_yaml) == dict:
+                    if isinstance(requirement_yaml, dict):
                         requirement_relationship = syntax.get_requirement_relationship(
                             requirement_yaml
                         )
-                        if type(requirement_relationship) == dict:
+                        if isinstance(requirement_relationship, dict):
                             requirement_relationship_type = (
                                 syntax.get_relationship_type(requirement_relationship)
                             )
@@ -1062,7 +1062,7 @@ class PlantUMLGenerator(Generator):
             for capability_name, capability_yaml in get_dict(
                 substitution_mappings, CAPABILITIES
             ).items():
-                if type(capability_yaml) != list:
+                if not isinstance(capability_yaml, list):
                     continue  # TODO
                 target_node_name = capability_yaml[0]
                 target_capability_name = capability_yaml[1]

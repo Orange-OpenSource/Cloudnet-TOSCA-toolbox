@@ -68,7 +68,7 @@ class ToscaDiagramGenerator(Generator):
                 substitution_mappings
             ).items():
                 if capability_yaml:
-                    if type(capability_yaml) != list:
+                    if not isinstance(capability_yaml, list):
                         continue  # TODO something when capability_yaml is not a list
                     capability_name_id = normalize_name(capability_name)
                     self.generate(
@@ -116,7 +116,10 @@ class ToscaDiagramGenerator(Generator):
                             node_type_requirements.get(requirement_name)
                         )
                         if requirement_capability is None:
-                            self.error(requirement_name + ": capability undefined")
+                            self.error(
+                                requirement_name + ": capability undefined",
+                                requirement_name,
+                            )
                             continue
                         requirement_node = syntax.get_requirement_node_template(
                             requirement_yaml
@@ -126,7 +129,10 @@ class ToscaDiagramGenerator(Generator):
                         capability_found = False
                         requirement_node_template = node_templates.get(requirement_node)
                         if requirement_node_template is None:
-                            self.error(requirement_node + " node template undefined")
+                            self.error(
+                                requirement_node + " node template undefined",
+                                requirement_node,
+                            )
                             continue
                         for capability_name, capability_yaml in syntax.get_capabilities(
                             self.type_system.merge_node_type(
@@ -153,7 +159,8 @@ class ToscaDiagramGenerator(Generator):
                             self.error(
                                 ' capability of type "'
                                 + requirement_capability
-                                + '" not found'
+                                + '" not found',
+                                requirement_node_template,
                             )
 
         for node_name, node_yaml in node_templates.items():

@@ -19,6 +19,7 @@ import zipfile  # for reading ZIP files.
 import cloudnet.tosca.configuration as configuration
 import requests  # for HTTP GET requests.
 import yaml  # for parsing YAML.
+from cloudnet.tosca.yaml_line_numbering import SafeLineLoader
 
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
@@ -218,7 +219,7 @@ class FilesystemImporter(Importer):
         Loads a YAML file.
         """
         with open(filename, "r") as stream:
-            return yaml.safe_load(stream)
+            return yaml.load(stream, Loader=SafeLineLoader)
 
 
 class UrlImporter(Importer):
@@ -242,7 +243,7 @@ class UrlImporter(Importer):
             raise FileNotFoundError(filename)
         if response.status_code == 404:
             raise FileNotFoundError(filename)
-        return yaml.safe_load(response.text)
+        return yaml.load(response.text, Loader=SafeLineLoader)
 
 
 class ArchiveImporter(Importer):
@@ -284,7 +285,7 @@ class ArchiveImporter(Importer):
         """
         try:
             with self.zipfile.open(filename) as stream:
-                return yaml.safe_load(stream)
+                return yaml.load(stream, Loader=SafeLineLoader)
         except KeyError:
             raise FileNotFoundError(filename)
 
