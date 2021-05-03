@@ -22,10 +22,10 @@ CLOUDNET_BINDIR="$PWD/../bin"
 exit_code=0
 
 # Define colors
-normal="\e[0;"
+normal="\033[0;"
 red="31m"
 green="32m"
-reset="\e[m"
+reset="\033[m"
 
 check_regression()
 {
