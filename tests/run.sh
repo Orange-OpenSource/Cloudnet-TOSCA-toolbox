@@ -20,6 +20,11 @@ CLOUDNET_BINDIR=$PWD/../bin
 
 exit_code=0
 
+# Define colors
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+RESET="\033[0m"
+
 check_regression()
 {
   translate $1 2> /tmp/cloudnet_translate.log
@@ -28,9 +33,9 @@ check_regression()
   echo ${expected_errors} expected errors and ${generated_errors} generated errors
   if [[ ${expected_errors} == ${generated_errors} ]]
   then
-    echo No regression in $1
+    echo -e ${GREEN}No regression in $1${RESET}
   else
-    echo Regression in $1!
+    echo -e ${RED}Regression in $1!${RESET}
     exit_code=1
   fi
 }
