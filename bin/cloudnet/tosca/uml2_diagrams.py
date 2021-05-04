@@ -37,6 +37,9 @@ DEFAULT_CONFIGURATION[UML2] = {
         'tosca.nodes.nfv.VnfVirtualLink': 'queue', # ETSI NVF SOL 001
         'tosca.capabilities.nfv.VirtualLinkable': 'queue', # ETSI NVF SOL 001
     },
+    'direction': {
+        'tosca.relationships.network.BindsTo': 'up', # OASIS TOSCA
+    }
 }
 DEFAULT_CONFIGURATION['logging']['loggers'][__name__] = {
     'level': 'INFO',
@@ -600,7 +603,8 @@ class PlantUMLGenerator(Generator):
                     if not self.type_system.is_derived_from(requirement_relationship_type, 'tosca.relationships.HostedOn'):
                         requirement_node = get_requirement_node_template(requirement_yaml)
                         if requirement_node:
-                            self.generate('node_', normalize_name(node_template_name), ' "', requirement_name, '" ..> node_', normalize_name(requirement_node), ' : <<', short_type_name(requirement_relationship_type), '>>', sep='')
+                            direction = self.configuration.get(UML2, 'direction').get(requirement_relationship_type, '')
+                            self.generate('node_', normalize_name(node_template_name), ' "', requirement_name, '" .' + direction + '.> node_', normalize_name(requirement_node), ' : <<', short_type_name(requirement_relationship_type), '>>', sep='')
 
         if substitution_mappings:
             self.generate('}')
@@ -637,7 +641,9 @@ class PlantUMLGenerator(Generator):
         def generate_workflow_diagram(workflow_name, workflow_definition):
 
             def step_id(step_name):
-                return 'step_%s_%s' % (workflow_name, step_name)
+                return 'step_%s_%s' \
+                    % (normalize_name(workflow_name), \
+                       normalize_name(step_name))
 
             # generate all steps of the current workflow
             steps = workflow_definition.get('steps', {})
@@ -646,13 +652,13 @@ class PlantUMLGenerator(Generator):
                 self.generate('state "%s" as %s << step >> {' % (step_name, step_id(step_name)))
                 # get the target of the current step
                 target = step_definition['target']
-                step_activity_id = step_id(step_name) + '_' + target
+                step_activity_id = step_id(step_name) + '_' + normalize_name(target)
                 target_relationship = step_definition.get('target_relationship')
                 if target_relationship is None:
                     target_label = target
                 else:
-                    step_activity_id += '_' + target_relationship
-                    target_label = target + ' ' + target_relationship
+                    step_activity_id += '_' + normalize_name(target_relationship)
+                    target_label = target + ' ' + normalize_name(target_relationship)
                 # store ids of all activities of the current step
                 activity_ids = []
                 # generate all activities of the current step
