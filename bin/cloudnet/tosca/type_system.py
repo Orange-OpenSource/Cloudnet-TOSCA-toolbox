@@ -807,6 +807,40 @@ class TypeChecker(Checker):
                 previous_value = PREVIOUSLY_UNDEFINED
             method(key, value, previous_value, context_error_message + key)
 
+
+    def is_relationship_type_compatible_with_capability_type(
+            self,
+            relationship_type_name,
+            capability_type_name
+            ):
+        relationship_type = self.type_system.merge_type(relationship_type_name)
+        for valid_target_type in relationship_type.get(syntax.VALID_TARGET_TYPES, []):
+            if self.type_system.is_derived_from(capability_type_name, valid_target_type):
+                return True
+        return False
+
+    def search_relationship_types_compatible_with_capability_type(
+            self,
+            capability_type_name,
+            context_error_message
+            ):
+        # Check that there is one relationship where capability_type_name is compatible with at least one valid target type
+        found_relationship_types = []
+        for relationship_type_name in list(self.type_system.relationship_types):
+            if self.is_relationship_type_compatible_with_capability_type(
+                        relationship_type_name,
+                        capability_type_name
+                    ):
+                found_relationship_types.append(relationship_type_name)
+        nb_found_relationship_types = len(found_relationship_types)
+        if nb_found_relationship_types == 0:
+            self.error(context_error_message + ' undefined but no relationship type is compatible with ' + capability_type_name)
+        elif nb_found_relationship_types == 1:
+            self.warning(context_error_message + ' undefined but ' + found_relationship_types[0] + ' is compatible with ' + capability_type_name)
+        else:
+            self.warning(context_error_message + ': undefined but ' + array_to_string_with_or_separator(found_relationship_types) + ' are compatible with ' + capability_type_name)
+        return found_relationship_types
+
     def check_service_template_definition(self, service_template_definition):
         # check tosca_definitions_version - already done
         # check namespace - nothing to do
@@ -1105,21 +1139,10 @@ class TypeChecker(Checker):
         if requirement_relationship == None:
             # relationship undefined
             if requirement_capability != None:
-                # Check that there is one relationship where requirement_capability is compatible with at least one valid target type
-                found_relationship_types = []
-                for relationship_type_name in list(self.type_system.relationship_types):
-                    relationship_type = self.type_system.merge_type(relationship_type_name)
-                    for valid_target_type in relationship_type.get(syntax.VALID_TARGET_TYPES, []):
-                        if self.type_system.is_derived_from(requirement_capability, valid_target_type):
-                            found_relationship_types.append(relationship_type_name)
-                            break
-                nb_found_relationship_types = len(found_relationship_types)
-                if nb_found_relationship_types == 0:
-                    self.error(context_error_message + ':relationship undefined but no relationship type is compatible with ' + requirement_capability)
-                elif nb_found_relationship_types == 1:
-                    self.warning(context_error_message + ':relationship undefined but ' + found_relationship_types[0] + ' is compatible with ' + requirement_capability)
-                else:
-                    self.warning(context_error_message + ':relationship undefined but ' + array_to_string_with_or_separator(found_relationship_types) + ' are compatible with ' + requirement_capability)
+                self.search_relationship_types_compatible_with_capability_type(
+                        requirement_capability,
+                        context_error_message + ':relationship'
+                    )
         else:
             # relationship defined
 
@@ -2068,8 +2091,18 @@ class TypeChecker(Checker):
                         self.error(cem + ': ' + relationship + ' - relationship template or type undefined')
                 else:
                     relationship_type = relationship_template.get(syntax.TYPE)
-                if not self.type_system.is_derived_from(relationship_type, requirement_definition.get(syntax.RELATIONSHIP)):
-                    self.error(cem + ': ' + relationship + ' - ' + relationship_type + ' but ' + requirement_definition.get(syntax.RELATIONSHIP) + ' relationship type expected')
+                requirement_relationship = requirement_definition.get(syntax.RELATIONSHIP)
+                if requirement_relationship != None:
+                    if not self.type_system.is_derived_from(relationship_type, requirement_relationship):
+                        self.error(cem + ': ' + relationship + ' - ' + relationship_type + ' but ' + requirement_relationship + ' relationship type expected')
+                else:
+                    if not self.is_relationship_type_compatible_with_capability_type(
+                            relationship_type,
+                            requirement_capability
+                        ):
+                        self.error(cem + ': ' + relationship + ' not compatible with ' + requirement_capability)
+                    else:
+                        self.info(cem + ': ' + relationship + ' compatible with ' + requirement_capability)
             else:
             # check extended notation
                 # check relationship type
@@ -2085,9 +2118,21 @@ class TypeChecker(Checker):
         else:
             # no relationship declared
             cem = context_error_message + ':' + syntax.RELATIONSHIP
-            checked, relationship_type_name, relationship_type = self.check_type_in_definition('relationship', syntax.RELATIONSHIP, requirement_definition, {}, cem)
-            # but the required properties without default of the relationship type must be assigned
-            self.check_required_properties({}, relationship_type, cem)
+            if requirement_definition.get(syntax.TYPE) != None:
+                checked, relationship_type_name, relationship_type = \
+                        self.check_type_in_definition('relationship',
+                        syntax.RELATIONSHIP,
+                        requirement_definition,
+                        {},
+                        context_error_message)
+                # but the required properties without default of the relationship type must be assigned
+                self.check_required_properties({}, relationship_type, cem)
+            else:
+                relationship_types = self.search_relationship_types_compatible_with_capability_type(requirement_capability, cem)
+                if len(relationship_types) > 0:
+                    self.warning(cem + ' - set to ' + relationship_types[0])
+                    # WARNING: modify the template
+                    requirement_assignment[syntax.RELATIONSHIP] = relationship_types[0]
 
         # check node_filter
         node_filter = requirement_assignment.get(syntax.NODE_FILTER)

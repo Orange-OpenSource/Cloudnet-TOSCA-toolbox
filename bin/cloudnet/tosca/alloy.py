@@ -2477,9 +2477,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     requirement_capability_sig = self.alloy_sig(requirement_capability)
                     requirement_relationship = syntax.get_requirement_relationship(requirement_yaml)
                     requirement_relationship_type = syntax.get_relationship_type(requirement_relationship)
-                    if requirement_relationship_type == None:
-                        self.error(context_message + ':' + REQUIREMENTS + ':' + requirement_name + ': relationship type undefined')
-                        continue
+                    if requirement_relationship_type is None:
+                        requirement_relationship_type = 'tosca.relationships.Root'
                     requirement_relationship_type_sig = self.alloy_sig(requirement_relationship_type)
                     merged_requirement_relationship_type = self.type_system.merge_node_type(requirement_relationship_type)
 
