@@ -1855,7 +1855,7 @@ class TypeChecker(Checker):
 
                 # check if the assigned definition is required then the assigning attribute is required
                 if value_type != None and definition.get(syntax.REQUIRED, True) and attribute_definition.get(syntax.REQUIRED, True) is False:
-                    self.warning(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' not required but required value expected')
+                    self.warning(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' is not required, but the actual value is expected from the system')
 
                 return
 
@@ -1930,7 +1930,7 @@ class TypeChecker(Checker):
                     if property_value is None and ( entity != None and entity.get(syntax.NODE_FILTER) is None ):
                         self.error(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' has no value but required value expected')
                     else:
-                        self.warning(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' not required but required value expected')
+                        self.warning(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' is not required, but the actual value is expected from the system')
 
                 return
 
@@ -1951,7 +1951,7 @@ class TypeChecker(Checker):
 
                 # check if the assigned definition is required then the assigning input is required
                 if value_type != None and definition.get(syntax.REQUIRED, True) and input_definition.get(syntax.REQUIRED, True) is False:
-                    self.warning(context_error_message + ': ' + str(value) + ' - input ' + str(parameter) + ' not required but required value expected')
+                    self.warning(context_error_message + ': ' + str(value) + ' - input ' + str(parameter) + ' is not required, but the actual value is expected from the system')
                 return
 
         self.check_value(value, definition, {}, context_error_message)
