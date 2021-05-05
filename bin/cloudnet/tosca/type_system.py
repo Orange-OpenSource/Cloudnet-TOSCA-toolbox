@@ -2579,14 +2579,15 @@ class TypeChecker(Checker):
             # produce an info message for each unmmapped attribute
             return self.info, None
         check_unmapped_definitions(node_type, syntax.ATTRIBUTES, 'attribute', check_ummapped_attribute_definition)
-        # check properties - TODO check_property_assignment -> check_property_mapping
-        self.iterate_over_map_of_assignments(self.check_property_assignment, syntax.PROPERTIES, substitution_mapping, node_type, node_type_name, context_error_message)
-        self.check_required_properties(substitution_mapping, node_type, context_error_message)
+        # check properties
+        self.iterate_over_map_of_assignments(self.check_property_mapping, syntax.PROPERTIES, substitution_mapping, node_type, node_type_name, context_error_message)
+#TBR: it is not needed to check required properties of a substitution mapping
+#TBR:        self.check_required_properties(substitution_mapping, node_type, context_error_message)
         # check that all properties are mapped
         def check_ummapped_property_definition(property_name, property_definition):
             if property_definition.get(syntax.REQUIRED, True) and property_definition.get(syntax.DEFAULT) is None:
                 # produce a warning for each unmmapped required property without default
-                return self.warning, 'required: true, no default value' #
+                return self.info, 'required: true, no default value'
             return None, None
         check_unmapped_definitions(node_type, syntax.PROPERTIES, 'property', check_ummapped_property_definition)
         # check capabilities
@@ -2630,6 +2631,51 @@ class TypeChecker(Checker):
             # produce an info message for each unmapped interface
             return self.info, None
         check_unmapped_definitions(node_type, syntax.INTERFACES, 'interface', check_ummapped_interface_definition)
+
+    def check_property_mapping(self, property_name, property_mapping, property_definition, context_error_message):
+
+        def check_mapping(mapping, cem):
+            input_name = mapping[0]
+            # TODO: following could be factorized with function get_input
+            input_definition = self.get_topology_template().get(syntax.INPUTS, {}).get(input_name)
+            if input_definition is None:
+                self.error(cem + ': ' + str(mapping) + ' - ' + input_name + ' input undefined')
+                return
+            input_type = input_definition.get(syntax.TYPE)
+            value_type = property_definition.get(syntax.TYPE)
+            if not self.type_system.is_derived_from(input_type, value_type):
+                self.error(cem + ': ' + str(mapping) + ' - property of type ' + value_type + ' incompatible with input of type ' + input_type)
+                return
+
+            # check if the mapped input is required but the property is not required
+            if property_definition.get(syntax.REQUIRED, True) is False and input_definition.get(syntax.REQUIRED, True):
+                self.warning(cem + ': ' + str(mapping) + ' - input ' + input_name + ' is required, but property ' + str(property_name) + ' is not required')
+                return
+
+        def check_value(value, cem):
+            self.warning(cem + ': ' + str(value) + ' - deprecated since TOSCA 1.3')
+            self.check_value_assignment(property_name, value, property_definition, cem)
+
+        if isinstance(property_mapping, dict):
+            # multi-line grammar
+            mapping = property_mapping.get("mapping")
+            if mapping != None:
+                # <property_name>:
+                #   mapping: [ <input_name> ]
+                check_mapping(mapping, context_error_message + ':mapping')
+            value = property_mapping.get("value")
+            if value != None:
+                # <property_name>:
+                #   value: <property_value> # This use is deprecated
+                check_value(value, context_error_message + ':value')
+        elif isinstance(property_mapping, list):
+            # single-line grammar
+            # <property_name>: [ <input_name> ]
+            check_mapping(property_mapping, context_error_message)
+        else:
+            # single-line grammar
+            # <property_name>: <property_value> # This use is deprecated
+            check_value(property_mapping, context_error_message)
 
     def check_capability_mapping(self, capability_name, capability_mapping, capability_definition, context_error_message):
         topology_template = self.get_topology_template()

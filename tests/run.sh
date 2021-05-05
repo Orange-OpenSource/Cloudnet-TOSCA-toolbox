@@ -30,12 +30,15 @@ check_regression()
   translate $1 2> /tmp/cloudnet_translate.log
   expected_errors="`grep ERROR $1 | wc -l`"
   generated_errors="`grep ERROR /tmp/cloudnet_translate.log | wc -l`"
+  expected_warnings="`grep WARNING $1 | wc -l`"
+  generated_warnings="`grep Warning /tmp/cloudnet_translate.log | wc -l`"
   echo ${expected_errors} expected errors and ${generated_errors} generated errors
-  if [[ ${expected_errors} == ${generated_errors} ]]
+  echo ${expected_warnings} expected warnings and ${generated_warnings} generated warnings
+  if [ ${expected_errors} == ${generated_errors} ] && [ ${expected_warnings} == ${generated_warnings} ]
   then
     echo -e ${GREEN}No regression in $1${RESET}
   else
-    echo -e ${RED}Regression in $1!${RESET}
+    echo -e ${RED}Regression in $1! ${RESET}
     exit_code=1
   fi
 }
@@ -59,5 +62,6 @@ translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_2/types.yaml
 translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_3/types.yaml
 check_regression type_checking.yaml
 check_regression type_checking-1.3.yaml
+check_regression topology_template_substitution_mapping.yaml
 
 exit ${exit_code}
