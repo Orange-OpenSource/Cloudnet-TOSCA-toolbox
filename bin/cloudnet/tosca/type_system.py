@@ -176,6 +176,7 @@ class TypeSystem(object):
         result = self.get_type(type_name)
         if result is None:
             # TBR            LOGGER.error(CRED + type_name + ' unknown!' + CEND)
+            # diagnostic(gravity="error", file="", message=type_name + " unknown!", cls="TypeSystem",value=type_name )
             # TBR also ?     diagnostic(gravity='error', file="", message=type_name + ' unknown!', cls='TypeSystem')
             return dict()
 
@@ -213,7 +214,7 @@ class TypeSystem(object):
         for (capability_name, capability_yaml) in syntax.get_capabilities(
             result
         ).items():
-            if type(capability_yaml) == dict:
+            if isinstance(capability_yaml, dict):
                 value = capability_yaml.get(
                     "value"
                 )  # TODO: rename 'value' to '_old_value_'
@@ -345,12 +346,13 @@ class BasicTypeChecker(AbstractTypeChecker):
                     + str(value)
                     + " - "
                     + self.type_name
-                    + " expected"
+                    + " expected",
+                    value,
                 )
                 return False
         except ValueError as exc:
             processor.error(
-                context_error_message + ": " + str(value) + " - " + str(exc)
+                context_error_message + ": " + str(value) + " - " + str(exc), value
             )
             return False
         return True
@@ -405,14 +407,15 @@ class DataTypeChecker(AbstractTypeChecker):
         self.data_type = data_type
 
     def check_type(self, values, processor, context_error_message):
-        if type(values) != dict:
+        if not isinstance(values, dict):
             processor.error(
                 context_error_message
                 + ": "
                 + str(values)
                 + " - "
                 + self.type_name
-                + " expected"
+                + " expected",
+                values,
             )
         else:
             properties = {syntax.PROPERTIES: values}
@@ -428,52 +431,55 @@ class DataTypeChecker(AbstractTypeChecker):
                 properties, self.data_type, context_error_message
             )
 
+isInt = lambda value: not isinstance(value, bool) and isinstance(value, int)
 
 BASIC_TYPE_CHECKERS = {
     # YAML types
-    "string": BasicTypeChecker("string", lambda value: type(value) == str),
-    "integer": BasicTypeChecker("integer", lambda value: type(value) == int),
-    "float": BasicTypeChecker("float", lambda value: type(value) in [int, float]),
-    "boolean": BasicTypeChecker("boolean", lambda value: type(value) == bool),
+    "string": BasicTypeChecker("string", lambda value: isinstance(value, str)),
+    "integer": BasicTypeChecker("integer", lambda value: isInt(value)),
+    "float": BasicTypeChecker(
+        "float", lambda value: isinstance(value, float) or isInt(value)
+    ),
+    "boolean": BasicTypeChecker("boolean", lambda value: isinstance(value, bool)),
     "timestamp": BasicTypeChecker(
         "timestamp",
-        lambda value: type(value) == datetime.datetime
-        or (type(value) == str and datetime.datetime.fromisoformat(value)),
+        lambda value: isinstance(value, datetime.datetime)
+        or (isinstance(value, str) and datetime.datetime.fromisoformat(value)),
     ),
     "null": BasicTypeChecker("null", lambda value: value is None),
     # TOSCA types
     "version": BasicTypeChecker(
         "version",
-        lambda value: (type(value) == float)
-        or (type(value) == str and check_version(value)),
+        lambda value: (isinstance(value, float))
+        or (isinstance(value, str) and check_version(value)),
     ),
     "range": BasicTypeChecker(
         "range",
-        lambda value: type(value) == list
+        lambda value: isinstance(value, list)
         and len(value) == 2
-        and type(value[0]) == int
-        and type(value[1]) == int,
+        and isInt(value[0])
+        and isInt(value[1]),
     ),
-    "list": BasicTypeChecker("list", lambda value: type(value) == list),
-    "map": BasicTypeChecker("map", lambda value: type(value) == dict),
+    "list": BasicTypeChecker("list", lambda value: isinstance(value, list)),
+    "map": BasicTypeChecker("map", lambda value: isinstance(value, dict)),
     "scalar-unit.size": BasicTypeChecker(
         "scalar-unit.size",
-        lambda value: type(value) == str
+        lambda value: isinstance(value, str)
         and check_scalar_unit(value, SCALAR_SIZE_UNITS),
     ),
     "scalar-unit.time": BasicTypeChecker(
         "scalar-unit.time",
-        lambda value: type(value) == str
+        lambda value: isinstance(value, str)
         and check_scalar_unit(value, SCALAR_TIME_UNITS),
     ),
     "scalar-unit.frequency": BasicTypeChecker(
         "scalar-unit.frequency",
-        lambda value: type(value) == str
+        lambda value: isinstance(value, str)
         and check_scalar_unit(value, SCALAR_FREQUENCY_UNITS),
     ),
     "scalar-unit.bitrate": BasicTypeChecker(
         "scalar-unit.bitrate",
-        lambda value: type(value) == str
+        lambda value: isinstance(value, str)
         and check_scalar_unit(value, SCALAR_BITRATE_UNITS),
     ),
 }
@@ -518,13 +524,13 @@ def in_range_scalar_unit(v1, v2, units):
 
 type_check_operand = lambda operand, type_checker: type_checker(operand)
 type_check_in_range_operand = (
-    lambda operand, type_checker: type(operand) == list
+    lambda operand, type_checker: isinstance(operand, list)
     and len(operand) == 2
     and type_checker(operand[0])
     and type_checker(operand[1])
 )
 type_check_in_range_range_operand = (
-    lambda operand, type_checker: type(operand) == list
+    lambda operand, type_checker: isinstance(operand, list)
     and len(operand) == 2
     and type_checker(operand)
 )
@@ -901,7 +907,8 @@ class TypeChecker(Checker):
                 )
                 if default_tosca_normative_types is not None:
                     self.warning(
-                        " " + default_tosca_normative_types + " normative types loaded"
+                        " " + default_tosca_normative_types + " normative types loaded",
+                        default_tosca_normative_types,
                     )
                     tosca_normative_types = self.get_mapping(
                         default_tosca_normative_types, tosca_normative_types_map
@@ -911,11 +918,11 @@ class TypeChecker(Checker):
                     tosca_normatives_type = None
             if tosca_normative_types is None:
                 pass  # nothing to do.
-            elif type(tosca_normative_types) == str:
+            elif isinstance(tosca_normative_types, str):
                 self.load_tosca_yaml_template(
                     tosca_normative_types, self.tosca_service_template
                 )
-            elif type(tosca_normative_types) == list:
+            elif isinstance(tosca_normative_types, list):
                 for value in tosca_normative_types:
                     self.load_tosca_yaml_template(value, self.tosca_service_template)
             else:
@@ -977,7 +984,8 @@ class TypeChecker(Checker):
                     + str(index)
                     + "]:file: "
                     + import_filepath
-                    + " - file not found"
+                    + " - file not found",
+                    import_yaml,
                 )
             except ValueError as exc:
                 self.error(
@@ -986,7 +994,8 @@ class TypeChecker(Checker):
                     + "]:file: "
                     + import_filepath
                     + " - "
-                    + str(exc)
+                    + str(exc),
+                    import_yaml,
                 )
             index = index + 1
 
@@ -1007,7 +1016,10 @@ class TypeChecker(Checker):
                 full_type_name = namescape_prefix + type_name
                 # check that this type is not already defined
                 if self.type_system.types.get(full_type_name):
-                    self.error(type_kind + ":" + type_name + " - type already defined")
+                    self.error(
+                        type_kind + ":" + type_name + " - type already defined",
+                        type_name,
+                    )
                 else:
                     self.type_system.types[full_type_name] = type_yaml
                     getattr(self.type_system, type_kind)[full_type_name] = type_yaml
@@ -1024,7 +1036,8 @@ class TypeChecker(Checker):
                         "file extension '"
                         + file_ext
                         + "' already associated to "
-                        + artifact_type
+                        + artifact_type,
+                        file_ext,
                     )
                     continue
                 self.type_system.artifact_types_by_file_ext[file_ext] = (
@@ -1043,7 +1056,8 @@ class TypeChecker(Checker):
                 + keyword
                 + ": "
                 + str(value)
-                + " - currently unchecked"
+                + " - currently unchecked",
+                value,
             )
 
     def check_keyword(
@@ -1057,7 +1071,7 @@ class TypeChecker(Checker):
         if type_name is None:
             return False
         type_name = self.type_system.get_type_uri(type_name)
-        if type(type_kinds) == str:
+        if isinstance(type_kinds, str):
             type_kinds = [type_kinds]
         for type_kind in type_kinds:
             if (
@@ -1072,7 +1086,8 @@ class TypeChecker(Checker):
                 + type_name
                 + " - undefined type but "
                 + array_to_string_with_or_separator(type_kinds)
-                + " type expected"
+                + " type expected",
+                type_name,
             )
         else:
             self.error(
@@ -1081,7 +1096,8 @@ class TypeChecker(Checker):
                 + type_name
                 + " - defined type but "
                 + array_to_string_with_or_separator(type_kinds)
-                + " type expected"
+                + " type expected",
+                type_name,
             )
         return False
 
@@ -1102,7 +1118,8 @@ class TypeChecker(Checker):
                         + ": "
                         + the_type
                         + " - incompatible with previous declared type "
-                        + previous_type
+                        + previous_type,
+                        the_type,
                     )
                     return False
             return True
@@ -1134,7 +1151,8 @@ class TypeChecker(Checker):
                 + keyword
                 + " - "
                 + type_kinds
-                + " type missed"
+                + " type missed",
+                keyword,
             )
             merged_type = previous_definition
         else:
@@ -1173,7 +1191,8 @@ class TypeChecker(Checker):
                             + ": "
                             + value
                             + " - incompatible with "
-                            + array_to_string_with_or_separator(previous_types)
+                            + array_to_string_with_or_separator(previous_types),
+                            value,
                         )
                 if additional_check:
                     additional_check(value, cem + ": ")
@@ -1221,7 +1240,8 @@ class TypeChecker(Checker):
                         context_error_message
                         + key
                         + " - undefined in "
-                        + refined_interface_name
+                        + refined_interface_name,
+                        key,
                     )
                 previous_value = PREVIOUSLY_UNDEFINED
             method(key, value, previous_value, context_error_message + key)
@@ -1263,7 +1283,8 @@ class TypeChecker(Checker):
                         + ": "
                         + derived_from
                         + " - cyclically derived from "
-                        + type_name
+                        + type_name,
+                        type_name,
                     )
                 # execute check_method
                 if (
@@ -1325,7 +1346,7 @@ class TypeChecker(Checker):
         self, repository_name, repository_definition, context_error_message
     ):
         # Normalize repository_definition
-        if type(repository_definition) == str:
+        if isinstance(repository_definition, str):
             repository_definition = {syntax.URL: repository_definition}
         # check description - nothing to do
         # check url - nothing to do
@@ -1390,7 +1411,8 @@ class TypeChecker(Checker):
                 + keyword
                 + " - unexpected because type is "
                 + str(definition_type)
-                + " instead of map"
+                + " instead of map",
+                keyword,
             )
         if keyword is syntax.ENTRY_SCHEMA and root_type not in ["map", "list"]:
             self.error(
@@ -1399,14 +1421,15 @@ class TypeChecker(Checker):
                 + keyword
                 + " - unexpected because type is "
                 + str(definition_type)
-                + " instead of list or map"
+                + " instead of list or map",
+                keyword,
             )
 
         previous_schema_definition = previous_definition.get(keyword, {})
 
         # check the short notation used before TOSCA 1.3
-        if type(schema_definition) is str:
-            if type(previous_schema_definition) is str:
+        if isinstance(schema_definition, str):
+            if isinstance(previous_schema_definition, str):
                 previous_schema_definition = {syntax.TYPE: previous_schema_definition}
             self.check_type_in_definition(
                 "data",
@@ -1534,7 +1557,8 @@ class TypeChecker(Checker):
                 + ": "
                 + str(value)
                 + " - no type checker for "
-                + definition.get(syntax.TYPE, "UNKNOWN")
+                + definition.get(syntax.TYPE, "UNKNOWN"),
+                value,
             )
             return
 
@@ -1573,7 +1597,8 @@ class TypeChecker(Checker):
                             context_error_message
                             + " - "
                             + constraint_name
-                            + " unsupported operator"
+                            + " unsupported operator",
+                            constraint_name,
                         )
                         continue
                     definition_type = definition.get(syntax.TYPE)
@@ -1587,7 +1612,8 @@ class TypeChecker(Checker):
                             + constraint_name
                             + " unallowed operator on "
                             + definition_type
-                            + " value"
+                            + " value",
+                            definition_type,
                         )
                         continue
                     LOGGER.debug(
@@ -1608,7 +1634,8 @@ class TypeChecker(Checker):
                             + constraint_name
                             + ": "
                             + str(constraint_value)
-                            + " failed"
+                            + " failed",
+                            value,
                         )
 
         # check that value respects all constraint clauses of the definition type
@@ -1629,7 +1656,7 @@ class TypeChecker(Checker):
     def check_constraint_clause(
         self, constraint_clause, type_checker, context_error_message
     ):
-        if type(constraint_clause) != dict:
+        if not isinstance(constraint_clause, dict):
             constraint_clause = {"equal": constraint_clause}
         for constraint_operator, constraint_value in constraint_clause.items():
             cem = context_error_message + ":" + constraint_operator
@@ -1637,7 +1664,7 @@ class TypeChecker(Checker):
                 constraint_operator
             )
             if constraint_clause_checkers is None:
-                self.error(cem + " - unsupported operator")
+                self.error(cem + " - unsupported operator", constraint_operator)
                 continue
 
             if type_checker is None:
@@ -1648,7 +1675,10 @@ class TypeChecker(Checker):
                 type_checker.type_name
             )
             if constraint_clause_checker is None:
-                self.error(cem + " - unallowed operator on " + type_checker.type_name)
+                self.error(
+                    cem + " - unallowed operator on " + type_checker.type_name,
+                    type_checker.type_name,
+                )
                 continue
 
             # check that the constraint operand is valid
@@ -1714,7 +1744,8 @@ class TypeChecker(Checker):
                     + syntax.REQUIRED
                     + ": "
                     + str(property_definition.get(syntax.REQUIRED, True))
-                    + " - previously declared as required"
+                    + " - previously declared as required",
+                    property_definition,
                 )
         # check default
         default = property_definition.get(syntax.DEFAULT)
@@ -1793,7 +1824,8 @@ class TypeChecker(Checker):
                     + " incompatible with valid source types "
                     + str(valid_source_types)
                     + " of "
-                    + requirement_capability
+                    + requirement_capability,
+                    requirement_capability,
                 )
 
         # check node
@@ -1827,7 +1859,8 @@ class TypeChecker(Checker):
                         + ": "
                         + requirement_node
                         + " - no capability compatible with "
-                        + requirement_capability
+                        + requirement_capability,
+                        requirement_node,
                     )
 
         # check relationship
@@ -1858,7 +1891,8 @@ class TypeChecker(Checker):
                     self.error(
                         context_error_message
                         + ":relationship undefined but no relationship type is compatible with "
-                        + requirement_capability
+                        + requirement_capability,
+                        requirement_capability,
                     )
                 elif nb_found_relationship_types == 1:
                     self.warning(
@@ -1866,7 +1900,8 @@ class TypeChecker(Checker):
                         + ":relationship undefined but "
                         + found_relationship_types[0]
                         + " is compatible with "
-                        + requirement_capability
+                        + requirement_capability,
+                        requirement_capability,
                     )
                 else:
                     self.warning(
@@ -1874,18 +1909,19 @@ class TypeChecker(Checker):
                         + ":relationship undefined but "
                         + array_to_string_with_or_separator(found_relationship_types)
                         + " are compatible with "
-                        + requirement_capability
+                        + requirement_capability,
+                        requirement_capability,
                     )
         else:
             # relationship defined
 
             # normalize when the short notation is used
-            if type(requirement_relationship) is str:
+            if isinstance(requirement_relationship, str):
                 requirement_relationship = {syntax.TYPE: requirement_relationship}
             previous_requirement_relationship = previous_requirement_definition.get(
                 syntax.RELATIONSHIP, {}
             )
-            if type(previous_requirement_relationship) is str:
+            if isinstance(previous_requirement_relationship, str):
                 previous_requirement_relationship = {
                     syntax.TYPE: previous_requirement_relationship
                 }
@@ -1970,7 +2006,8 @@ class TypeChecker(Checker):
                 + syntax.OCCURRENCES
                 + ": "
                 + str(occurrences)
-                + " - lower occurrence can not be greater than upper occurrence"
+                + " - lower occurrence can not be greater than upper occurrence",
+                occurrences,
             )
 
         if previous_definition is not PREVIOUSLY_UNDEFINED:
@@ -1986,7 +2023,8 @@ class TypeChecker(Checker):
                     + ": "
                     + str(occurrences)
                     + " - lower occurrence can not be less than "
-                    + str(previous_occurrences[0])
+                    + str(previous_occurrences[0]),
+                    occurrences,
                 )
             # check upper occurrence
             if previous_occurrences[1] != syntax.UNBOUNDED:
@@ -2002,7 +2040,8 @@ class TypeChecker(Checker):
                         + ": "
                         + str(occurrences)
                         + " - upper occurrence can not be greater than "
-                        + str(previous_occurrences[1])
+                        + str(previous_occurrences[1]),
+                        occurrences,
                     )
 
     def check_capability_definition(
@@ -2015,9 +2054,9 @@ class TypeChecker(Checker):
         # check description - nothing to do
 
         # Normalize capability_definition and previous_capability_definition
-        if type(capability_definition) == str:
+        if isinstance(capability_definition, str):
             capability_definition = {syntax.TYPE: capability_definition}
-        if type(previous_capability_definition) == str:
+        if isinstance(previous_capability_definition, str):
             previous_capability_definition = {
                 syntax.TYPE: previous_capability_definition
             }
@@ -2072,7 +2111,8 @@ class TypeChecker(Checker):
                         context_error_message
                         + valid_source_type
                         + " - no requirement compatible with "
-                        + capability_type_name
+                        + capability_type_name,
+                        valid_source_type,
                     )
 
         else:
@@ -2162,7 +2202,7 @@ class TypeChecker(Checker):
         context_error_message,
     ):
         # check the short notation
-        if type(operation_definition) is str:
+        if isinstance(operation_definition, str):
             self.check_operation_implementation_definition(
                 operation_definition, context_error_message
             )
@@ -2189,7 +2229,7 @@ class TypeChecker(Checker):
         self, operation_implementation_definition, context_error_message
     ):
         # check the short notation
-        if type(operation_implementation_definition) is str:
+        if isinstance(operation_implementation_definition, str):
             self.check_artifact_definition(
                 "", operation_implementation_definition, {}, context_error_message
             )
@@ -2232,7 +2272,7 @@ class TypeChecker(Checker):
         context_error_message,
     ):
         # check the short notation
-        if type(notification_definition) is str:
+        if isinstance(notification_definition, str):
             self.check_notification_implementation_definition(
                 notification_definition, context_error_message
             )
@@ -2271,7 +2311,8 @@ class TypeChecker(Checker):
                 context_error_message
                 + ": "
                 + str(attribute_mapping_definition)
-                + " - currently unchecked"
+                + " - currently unchecked",
+                attribute_mapping_definition,
             )
             return
         if len(attribute_mapping_definition) == 2:
@@ -2284,7 +2325,8 @@ class TypeChecker(Checker):
                     + str(attribute_mapping_definition)
                     + " - "
                     + keyword
-                    + " undefined"
+                    + " undefined",
+                    keyword,
                 )
                 return
             attribute_name = attribute_mapping_definition[1]
@@ -2298,7 +2340,8 @@ class TypeChecker(Checker):
                     + str(attribute_mapping_definition)
                     + " - "
                     + attribute_name
-                    + " attribute undefined"
+                    + " attribute undefined",
+                    attribute_name,
                 )
                 return
             return
@@ -2332,7 +2375,8 @@ class TypeChecker(Checker):
                         context_error_message
                         + ": "
                         + file
-                        + " - no artifact type found"
+                        + " - no artifact type found",
+                        file,
                     )
                 else:
                     self.info(
@@ -2345,7 +2389,7 @@ class TypeChecker(Checker):
                     )
 
         # check the short notation
-        if type(artifact_definition) is str:
+        if isinstance(artifact_definition, str):
             check_file(artifact_definition, context_error_message)
             return
 
@@ -2373,7 +2417,8 @@ class TypeChecker(Checker):
                     + syntax.FILE
                     + ": "
                     + artifact_file
-                    + " - artifact found"
+                    + " - artifact found",
+                    artifact_file,
                 )
             else:
                 # check that the file ext is in the artifact type file_ext
@@ -2390,7 +2435,8 @@ class TypeChecker(Checker):
                             + " - ."
                             + artifact_file_ext
                             + " not supported by "
-                            + artifact_type_name
+                            + artifact_type_name,
+                            artifact_file,
                         )
 
             # check that the file exists
@@ -2411,7 +2457,8 @@ class TypeChecker(Checker):
                     + syntax.REPOSITORY
                     + ": "
                     + repository
-                    + " - repository not found"
+                    + " - repository not found",
+                    repository,
                 )
         # check description - nothing to do
         # check deploy_path - nothing to do
@@ -2440,7 +2487,8 @@ class TypeChecker(Checker):
                     + ":"
                     + str(list_of_constraint_clauses)
                     + " - unchecked because several targets, i.e. "
-                    + str(current_targets)
+                    + str(self.current_targets),
+                    self.current_targets,
                 )
                 return
             # targets contains only one node
@@ -2458,7 +2506,8 @@ class TypeChecker(Checker):
                     + " - "
                     + attribute_name
                     + " attribute undefined in "
-                    + self.current_targets[0]
+                    + self.current_targets[0],
+                    attribute_name,
                 )
                 return
             self.info(
@@ -2466,7 +2515,8 @@ class TypeChecker(Checker):
                 + " - "
                 + attribute_name
                 + " attribute defined in "
-                + self.current_targets[0]
+                + self.current_targets[0],
+                attribute_name,
             )
             type_checker = self.get_type_checker(attribute_definition, {}, cem)
             self.check_list_of_constraint_clauses(
@@ -2515,7 +2565,8 @@ class TypeChecker(Checker):
                     context_error_message
                     + ": "
                     + workflow_name
-                    + " - workflow undefined"
+                    + " - workflow undefined",
+                    workflow_name,
                 )
             else:
                 self.iterate_over_map_of_assignments(
@@ -2537,7 +2588,7 @@ class TypeChecker(Checker):
         # check the extended notation
         workflow_name = delegate.get("workflow")
         if workflow_name is None:
-            self.error(context_error_message + " - workflow name expected")
+            self.error(context_error_message + " - workflow name expected", delegate)
         else:
             check_workflow_and_inputs(workflow_name, delegate)
 
@@ -2551,7 +2602,8 @@ class TypeChecker(Checker):
                 context_error_message
                 + ": "
                 + set_state
-                + " - state attribute undefined"
+                + " - state attribute undefined",
+                set_state,
             )
             return
         type_checker = self.get_type_checker(
@@ -2568,7 +2620,8 @@ class TypeChecker(Checker):
                     context_error_message
                     + ": "
                     + operation
-                    + " - <interface_name>.<operation_name> expected"
+                    + " - <interface_name>.<operation_name> expected",
+                    operation,
                 )
                 return {}
             interface_name = tmp[0]
@@ -2587,7 +2640,8 @@ class TypeChecker(Checker):
                     + " - "
                     + interface_name
                     + " interface undefined in "
-                    + self.current_targets[0]
+                    + self.current_targets[0],
+                    interface_name,
                 )
                 return {}
             checked, unused, interface_type = self.check_type_in_definition(
@@ -2612,13 +2666,14 @@ class TypeChecker(Checker):
                     + self.current_targets[0]
                     + ".interfaces."
                     + interface_name
-                    + " interface"
+                    + " interface",
+                    operation_name,
                 )
                 return {}
             return operation_definition
 
         # check the short notation
-        if type(call_operation) is str:
+        if isinstance(call_operation, str):
             operation_definition = check_operation(
                 call_operation, context_error_message
             )
@@ -2630,7 +2685,7 @@ class TypeChecker(Checker):
         # check operation
         operation_name = call_operation.get("operation")
         if operation_name is None:
-            self.error(context_error_message + ":operation - expected")
+            self.error(context_error_message + ":operation - expected", call_operation)
             return
         operation_definition = check_operation(
             operation_name, context_error_message + ":operation"
@@ -2664,7 +2719,8 @@ class TypeChecker(Checker):
                     context_error_message
                     + ": "
                     + workflow_name
-                    + " - workflow undefined"
+                    + " - workflow undefined",
+                    workflow_name,
                 )
             else:
                 self.iterate_over_map_of_assignments(
@@ -2686,7 +2742,7 @@ class TypeChecker(Checker):
         # check the extended notation
         workflow_name = inline.get("workflow")
         if workflow_name is None:
-            self.error(context_error_message + " - workflow name expected")
+            self.error(context_error_message + " - workflow name expected", inline)
         else:
             check_workflow_and_inputs(workflow_name, inline)
 
@@ -3086,12 +3142,19 @@ class TypeChecker(Checker):
                 + " connections"
             )
             if requirement.connections < requirement.lower_bound:
-                self.error(cem + " - not enough connections")
+                # TODO for PME : check which object should be concerned by the error
+                self.error(
+                    cem + " - not enough connections",
+                    requirement.node_template_name,
+                )
             if (
                 requirement.upper_bound != syntax.UNBOUNDED
                 and requirement.connections > requirement.upper_bound
             ):
-                self.error(cem + " - too many connections")
+                # TODO for PME : check which object should be concerned by the error
+                self.error(
+                    cem + " - too many connections", requirement.node_template_name
+                )
 
     def check_type_in_template(
         self, type_kinds, template, keyword, context_error_message
@@ -3128,7 +3191,8 @@ class TypeChecker(Checker):
                         + field_name
                         + " required "
                         + kind
-                        + " unassigned"
+                        + " unassigned",
+                        field_name,
                     )
                 else:
                     self.info(
@@ -3138,7 +3202,7 @@ class TypeChecker(Checker):
                         + " "
                         + kind
                         + " found in "
-                        + default_fields_definition_location
+                        + default_fields_definition_location,
                     )
                     if default_field_definition.get(syntax.REQUIRED, True) is False:
                         self.warning(
@@ -3149,7 +3213,8 @@ class TypeChecker(Checker):
                             + field_name
                             + " not required but required "
                             + kind
-                            + " expected"
+                            + " expected",
+                            field_name,
                         )
                     expected_type_name = field_definition.get(syntax.TYPE, "string")
                     default_field_type = default_field_definition.get(
@@ -3168,7 +3233,8 @@ class TypeChecker(Checker):
                             + default_field_type
                             + " found but type "
                             + expected_type_name
-                            + " expected"
+                            + " expected",
+                            field_name,
                         )
 
     def check_required_properties(
@@ -3267,7 +3333,8 @@ class TypeChecker(Checker):
                         context_error_message
                         + key
                         + " - undefined in "
-                        + template_type_name
+                        + template_type_name,
+                        key,
                     )
                     continue
                 definition = {}
@@ -3275,12 +3342,13 @@ class TypeChecker(Checker):
                 method(key, value, definition, context_error_message + key)
 
     def check_value_assignment(self, name, value, definition, context_error_message):
-        if type(value) is dict and len(value) == 1:
+        if isinstance(value, dict) and len(value) == 1:
             if syntax.GET_ARTIFACT in value:
                 parameters = value[syntax.GET_ARTIFACT]
-                if type(parameters) != list:
+                if not isinstance(parameters, list):
                     self.error(
-                        context_error_message + ": " + str(value) + " - list expected"
+                        context_error_message + ": " + str(value) + " - list expected",
+                        parameters,
                     )
                     return
                 if len(parameters) < 2:
@@ -3288,7 +3356,8 @@ class TypeChecker(Checker):
                         context_error_message
                         + ": "
                         + str(value)
-                        + " - at least two parameters expected"
+                        + " - at least two parameters expected",
+                        parameters,
                     )
                     return
                 if len(parameters) > 5:
@@ -3296,7 +3365,8 @@ class TypeChecker(Checker):
                         context_error_message
                         + ": "
                         + str(value)
-                        + " - no more than four parameters expected"
+                        + " - no more than four parameters expected",
+                        parameters,
                     )
                     return
 
@@ -3312,7 +3382,8 @@ class TypeChecker(Checker):
                             + str(value)
                             + " - "
                             + entity_name
-                            + " reserved keyword undefined"
+                            + " reserved keyword undefined",
+                            entity_name,
                         )
                 else:
                     entity_template = topology_template.get(
@@ -3329,7 +3400,8 @@ class TypeChecker(Checker):
                                 + str(value)
                                 + " - "
                                 + entity_name
-                                + " entity template undefined"
+                                + " entity template undefined",
+                                entity_name,
                             )
 
                 if entity_template is not None:
@@ -3344,34 +3416,38 @@ class TypeChecker(Checker):
                             + str(value)
                             + " - "
                             + artifact_name
-                            + " artifact undefined"
+                            + " artifact undefined",
+                            artifact_name,
                         )
 
                 # check 3rd parameter
-                if len(parameters) > 2 and type(parameters[2]) != str:
+                if len(parameters) > 2 and not isinstance(parameters[2], str):
                     self.error(
                         context_error_message
                         + ": "
                         + str(value)
-                        + " - location string expected"
+                        + " - location string expected",
+                        parameters[2],
                     )
 
                 # check 4th parameter
-                if len(parameters) > 3 and type(parameters[3]) != bool:
+                if len(parameters) > 3 and not isinstance(parameters[3], bool):
                     self.error(
                         context_error_message
                         + ": "
                         + str(value)
-                        + " - remove boolean expected"
+                        + " - remove boolean expected",
+                        parameters[3],
                     )
 
                 return
 
             if syntax.GET_ATTRIBUTE in value:
                 parameters = value[syntax.GET_ATTRIBUTE]
-                if type(parameters) != list:
+                if not isinstance(parameters, list):
                     self.error(
-                        context_error_message + ": " + str(value) + " - list expected"
+                        context_error_message + ": " + str(value) + " - list expected",
+                        parameters,
                     )
                     return
                 if len(parameters) < 2:
@@ -3379,7 +3455,8 @@ class TypeChecker(Checker):
                         context_error_message
                         + ": "
                         + str(value)
-                        + " - at least two parameters expected"
+                        + " - at least two parameters expected",
+                        parameters,
                     )
                     return
 
@@ -3395,7 +3472,8 @@ class TypeChecker(Checker):
                             + str(value)
                             + " - "
                             + entity_name
-                            + " reserved keyword undefined"
+                            + " reserved keyword undefined",
+                            entity_name,
                         )
                         return
                 else:
@@ -3413,7 +3491,8 @@ class TypeChecker(Checker):
                                 + str(value)
                                 + " - "
                                 + entity_name
-                                + " entity undefined"
+                                + " entity undefined",
+                                entity_name,
                             )
                             return
                 entity_type = self.type_system.merge_type(
@@ -3435,7 +3514,8 @@ class TypeChecker(Checker):
                             + str(value)
                             + " - "
                             + attribute_name
-                            + " attribute undefined"
+                            + " attribute undefined",
+                            attribute_name,
                         )
                         return
 
@@ -3480,7 +3560,8 @@ class TypeChecker(Checker):
                                 + str(value)
                                 + " - "
                                 + str(parameter)
-                                + " property undefined"
+                                + " property undefined",
+                                parameter,
                             )
                             return
 
@@ -3497,7 +3578,8 @@ class TypeChecker(Checker):
                         + attribute_type
                         + " type but "
                         + value_type
-                        + " type expected"
+                        + " type expected",
+                        attribute_type,
                     )
                     return
 
@@ -3513,16 +3595,18 @@ class TypeChecker(Checker):
                         + str(value)
                         + " - property "
                         + str(parameters)
-                        + " not required but required value expected"
+                        + " not required but required value expected",
+                        parameters,
                     )
 
                 return
 
             if syntax.GET_PROPERTY in value:
                 parameters = value[syntax.GET_PROPERTY]
-                if type(parameters) != list:
+                if not isinstance(parameters, list):
                     self.error(
-                        context_error_message + ": " + str(value) + " - list expected"
+                        context_error_message + ": " + str(value) + " - list expected",
+                        parameters,
                     )
                     return
                 if len(parameters) < 2:
@@ -3530,7 +3614,8 @@ class TypeChecker(Checker):
                         context_error_message
                         + ": "
                         + str(value)
-                        + " - at least two parameters expected"
+                        + " - at least two parameters expected",
+                        parameters,
                     )
                     return
 
@@ -3540,7 +3625,8 @@ class TypeChecker(Checker):
                         context_error_message
                         + ": "
                         + str(value)
-                        + " - currently unchecked"
+                        + " - currently unchecked",
+                        parameters,
                     )  # TODO later
                     return
 
@@ -3556,7 +3642,8 @@ class TypeChecker(Checker):
                             + str(value)
                             + " - "
                             + entity_name
-                            + " reserved keyword undefined"
+                            + " reserved keyword undefined",
+                            entity_name,
                         )
                         return
                 else:
@@ -3574,7 +3661,8 @@ class TypeChecker(Checker):
                                 + str(value)
                                 + " - "
                                 + entity_name
-                                + " entity undefined"
+                                + " entity undefined",
+                                entity_name,
                             )
                             return
                 entity_type = self.type_system.merge_type(
@@ -3610,7 +3698,8 @@ class TypeChecker(Checker):
                                 + str(value)
                                 + " - "
                                 + parameters[1]
-                                + " capability or requirement undefined"
+                                + " capability or requirement undefined",
+                                parameters[1],
                             )
                             return
                         requirement = syntax.get_requirements_dict(
@@ -3646,7 +3735,8 @@ class TypeChecker(Checker):
                         + str(value)
                         + " - "
                         + property_name
-                        + " property undefined"
+                        + " property undefined",
+                        property_name,
                     )
                     return
 
@@ -3663,7 +3753,8 @@ class TypeChecker(Checker):
                         + entity_property_type
                         + " type but "
                         + value_type
-                        + " type expected"
+                        + " type expected",
+                        entity_property_type,
                     )
                     return
 
@@ -3682,7 +3773,8 @@ class TypeChecker(Checker):
                             + str(value)
                             + " - property "
                             + str(parameters)
-                            + " has no value but required value expected"
+                            + " has no value but required value expected",
+                            parameters,
                         )
                     else:
                         self.warning(
@@ -3691,19 +3783,21 @@ class TypeChecker(Checker):
                             + str(value)
                             + " - property "
                             + str(parameters)
-                            + " not required but required value expected"
+                            + " not required but required value expected",
+                            parameters,
                         )
 
                 return
 
             if syntax.GET_INPUT in value:
                 parameter = value[syntax.GET_INPUT]
-                if type(parameter) != str:
+                if not isinstance(parameter, str):
                     self.error(
                         context_error_message
                         + ": "
                         + str(value)
-                        + " - input name expected"
+                        + " - input name expected",
+                        parameter,
                     )
                     return
                 input_definition = (
@@ -3716,7 +3810,8 @@ class TypeChecker(Checker):
                         + str(value)
                         + " - "
                         + parameter
-                        + " input undefined"
+                        + " input undefined",
+                        parameter,
                     )
                     return
                 input_type = input_definition.get(syntax.TYPE)
@@ -3732,7 +3827,8 @@ class TypeChecker(Checker):
                         + input_type
                         + " type but "
                         + value_type
-                        + " type expected"
+                        + " type expected",
+                        input_type,
                     )
                     return
 
@@ -3748,7 +3844,8 @@ class TypeChecker(Checker):
                         + str(value)
                         + " - input "
                         + str(parameter)
-                        + " not required but required value expected"
+                        + " not required but required value expected",
+                        parameter,
                     )
                 return
 
@@ -3842,7 +3939,7 @@ class TypeChecker(Checker):
         context_error_message,
     ):
         # check the short notation
-        if type(requirement_assignment) is str:
+        if isinstance(requirement_assignment, str):
             node_template = (
                 self.get_topology_template()
                 .get(syntax.NODE_TEMPLATES, {})
@@ -3853,7 +3950,8 @@ class TypeChecker(Checker):
                     context_error_message
                     + ": "
                     + requirement_assignment
-                    + " - node template undefined"
+                    + " - node template undefined",
+                    requirement_assignment,
                 )
             else:
                 requirement_node_type_name = requirement_definition.get(syntax.NODE)
@@ -3869,7 +3967,8 @@ class TypeChecker(Checker):
                             + ": "
                             + node
                             + " - no capability type in "
-                            + str(requirement_definition)
+                            + str(requirement_definition),
+                            requirement_definition,
                         )
                     else:
                         node_template_type = self.type_system.merge_type(
@@ -3895,7 +3994,8 @@ class TypeChecker(Checker):
                                 + requirement_assignment
                                 + " - "
                                 + requirement_capability
-                                + " capability expected"
+                                + " capability expected",
+                                requirement_assignment,
                             )
                 else:
                     # check node_template type is compatible with requirement_definition node
@@ -3910,7 +4010,8 @@ class TypeChecker(Checker):
                             + node_template.get(syntax.TYPE)
                             + " but "
                             + requirement_node_type_name
-                            + " expected"
+                            + " expected",
+                            requirement_node_type_name,
                         )
             return
 
@@ -3943,7 +4044,8 @@ class TypeChecker(Checker):
                             + ": "
                             + node
                             + " - no capability type in "
-                            + str(requirement_definition)
+                            + str(requirement_definition),
+                            requirement_definition,
                         )
                     else:
                         node_template_type = self.type_system.merge_type(
@@ -3972,7 +4074,8 @@ class TypeChecker(Checker):
                                 + node
                                 + " - "
                                 + requirement_capability
-                                + " capability expected"
+                                + " capability expected",
+                                node_template,
                             )
                 else:
                     # check node_template type is compatible with requirement_definition node
@@ -3987,7 +4090,8 @@ class TypeChecker(Checker):
                             + node_template.get(syntax.TYPE)
                             + " but "
                             + requirement_node_type_name
-                            + " expected"
+                            + " expected",
+                            node_template,
                         )
             else:
                 node_type = self.type_system.merge_type(node)
@@ -3998,7 +4102,8 @@ class TypeChecker(Checker):
                         + syntax.NODE
                         + ": "
                         + node
-                        + " - node template or type undefined"
+                        + " - node template or type undefined",
+                        node,
                     )
                 else:
                     requirement_node_type_name = requirement_definition.get(syntax.NODE)
@@ -4015,7 +4120,8 @@ class TypeChecker(Checker):
                                 + node
                                 + " - "
                                 + requirement_node_type_name
-                                + " expected"
+                                + " expected",
+                                node,
                             )
 
                     if capability is not None:
@@ -4032,7 +4138,8 @@ class TypeChecker(Checker):
                             + ": "
                             + node
                             + " - no capability type in "
-                            + str(requirement_definition)
+                            + str(requirement_definition),
+                            requirement_definition,
                         )
                     else:
                         compatible_with_capability = False
@@ -4056,7 +4163,8 @@ class TypeChecker(Checker):
                                 + node
                                 + " - "
                                 + requirement_capability
-                                + " capability expected"
+                                + " capability expected",
+                                node,
                             )
 
                     if requirement_assignment.get(syntax.NODE_FILTER) is None:
@@ -4064,7 +4172,7 @@ class TypeChecker(Checker):
                         cem = context_error_message + ":" + syntax.NODE + ": " + node
                         node_templates = self.select_node_templates(node, None, cem)
                         if len(node_templates) == 0:
-                            self.error(cem + " - no node template found")
+                            self.error(cem + " - no node template found", node)
                         else:
                             node_template = node_templates[0]
                             if len(node_templates) == 1:
@@ -4078,7 +4186,8 @@ class TypeChecker(Checker):
                                     + array_to_string_with_or_separator(node_templates)
                                     + " node templates found, then "
                                     + node_template
-                                    + " selected"
+                                    + " selected",
+                                    node_template,
                                 )
                             update_requirement_node = node_template
 
@@ -4087,7 +4196,7 @@ class TypeChecker(Checker):
         if relationship is not None:
             cem = context_error_message + ":" + syntax.RELATIONSHIP
             # check short notation
-            if type(relationship) is str:
+            if isinstance(relationship, str):
                 relationship_template = (
                     self.get_topology_template()
                     .get(syntax.RELATIONSHIP_TEMPLATES, {})
@@ -4105,7 +4214,8 @@ class TypeChecker(Checker):
                             cem
                             + ": "
                             + relationship
-                            + " - relationship template or type undefined"
+                            + " - relationship template or type undefined",
+                            relationship,
                         )
                 else:
                     relationship_type = relationship_template.get(syntax.TYPE)
@@ -4120,7 +4230,8 @@ class TypeChecker(Checker):
                         + relationship_type
                         + " but "
                         + requirement_definition.get(syntax.RELATIONSHIP)
-                        + " relationship type expected"
+                        + " relationship type expected",
+                        relationship_type,
                     )
             else:
                 # check extended notation
@@ -4203,7 +4314,7 @@ class TypeChecker(Checker):
                 node_type_name, node_filter, cem
             )
             if len(node_templates) == 0:
-                self.error(cem + " - no node template found")
+                self.error(cem + " - no node template found", node_type_name)
             else:
                 update_requirement_node = node_templates[0]
                 if len(node_templates) == 1:
@@ -4217,7 +4328,8 @@ class TypeChecker(Checker):
                         + array_to_string_with_or_separator(node_templates)
                         + " node templates found, then "
                         + update_requirement_node
-                        + " selected"
+                        + " selected",
+                        update_requirement_node,
                     )
             # WARNING: remove the node_filter from requirement_assignment!
             del requirement_assignment[syntax.NODE_FILTER]
@@ -4242,10 +4354,10 @@ class TypeChecker(Checker):
                     if property_value is None:
                         # TODO: dealt with default or value defined in the property definition
                         return False  # no value for the property
-                    if type(property_constraint_clauses) != list:
+                    if not isinstance(property_constraint_clauses, list):
                         property_constraint_clauses = [property_constraint_clauses]
                     for property_constraint_clause in property_constraint_clauses:
-                        if type(property_constraint_clause) != dict:
+                        if not isinstance(property_constraint_clause, dict):
                             property_constraint_clause = {
                                 "equal": property_constraint_clause
                             }
@@ -4403,7 +4515,7 @@ class TypeChecker(Checker):
         context_error_message,
     ):
         # check the short notation
-        if type(operation_assignment) is str:
+        if isinstance(operation_assignment, str):
             self.check_operation_implementation_definition(
                 operation_assignment, context_error_message
             )
@@ -4519,7 +4631,7 @@ class TypeChecker(Checker):
         for capability_name, capability_definition in node_type.get(
             syntax.CAPABILITIES, {}
         ).items():
-            if type(capability_definition) is str:
+            if isinstance(capability_definition, str):
                 capability_type = self.type_system.merge_type(capability_definition)
             else:
                 (
@@ -4597,7 +4709,8 @@ class TypeChecker(Checker):
                             cem
                             + ":"
                             + property_name
-                            + " - property undefined in %s" % node_type_name
+                            + " - property undefined in %s" % node_type_name,
+                            node_type_name,
                         )
                     else:
                         self.check_property_filter_definition(
@@ -4621,11 +4734,12 @@ class TypeChecker(Checker):
                         self.error(
                             cem1
                             + capability_name
-                            + " - capability undefined in %s" % node_type_name
+                            + " - capability undefined in %s" % node_type_name,
+                            node_type_name,
                         )
                     else:
                         cem1 += capability_name + ":properties"
-                        if type(capability_definition) is str:
+                        if isinstance(capability_definition, str):
                             capability_definition = {syntax.TYPE: capability_definition}
                         (
                             checked,
@@ -4658,7 +4772,8 @@ class TypeChecker(Checker):
                                         cem2
                                         + property_name
                                         + " - property undefined in "
-                                        + capability_type_name
+                                        + capability_type_name,
+                                        capability_type_properties,
                                     )
                                 else:
                                     self.check_property_filter_definition(
@@ -4680,7 +4795,7 @@ class TypeChecker(Checker):
         type_checker = self.get_type_checker(
             property_definition, {}, context_error_message
         )
-        if type(property_filter_definition) is list:
+        if isinstance(property_filter_definition, list):
             self.check_list_of_constraint_clauses(
                 property_filter_definition, type_checker, context_error_message
             )
@@ -4780,7 +4895,7 @@ class TypeChecker(Checker):
                     member
                 )
                 if node_template is None:
-                    self.error(cem + " - node template undefined")
+                    self.error(cem + " - node template undefined", topology_template)
                 else:
                     if group_type_members is not None:
                         node_template_type = node_template.get(syntax.TYPE)
@@ -4795,7 +4910,8 @@ class TypeChecker(Checker):
                             self.error(
                                 cem
                                 + " - incompatible with "
-                                + array_to_string_with_or_separator(group_type_members)
+                                + array_to_string_with_or_separator(group_type_members),
+                                member,
                             )
                 idx += 1
         # check interfaces
@@ -4857,7 +4973,9 @@ class TypeChecker(Checker):
                         syntax.GROUPS, {}
                     ).get(target)
                 if node_or_group_template is None:
-                    self.error(cem + " - node template or group undefined")
+                    self.error(
+                        cem + " - node template or group undefined", topology_template
+                    )
                 else:
                     node_or_group_template_type = node_or_group_template.get(
                         syntax.TYPE
@@ -4879,7 +4997,10 @@ class TypeChecker(Checker):
                             self.error(
                                 cem
                                 + " - incompatible with "
-                                + array_to_string_with_or_separator(policy_type_targets)
+                                + array_to_string_with_or_separator(
+                                    policy_type_targets
+                                ),
+                                target,
                             )
                 idx += 1
         # check triggers
@@ -4924,7 +5045,7 @@ class TypeChecker(Checker):
             # check node
             def check_node(node, cem):
                 if node not in self.current_targets:
-                    self.error(cem + ": " + node + " - not in policy targets")
+                    self.error(cem + ": " + node + " - not in policy targets", node)
                 else:
                     self.info(cem + ": " + node + " - valid target_filter node")
                     self.current_targets = [node]
@@ -4951,7 +5072,8 @@ class TypeChecker(Checker):
                         + ": "
                         + requirement
                         + " - requirement undefined in "
-                        + self.current_targets[0]
+                        + self.current_targets[0],
+                        self.current_targets[0],
                     )
                     node_type = {}
                 else:
@@ -4986,7 +5108,8 @@ class TypeChecker(Checker):
                         + ": "
                         + capability
                         + " - capability undefined in "
-                        + self.current_targets[0]
+                        + self.current_targets[0],
+                        self.current_targets[0],
                     )
                     capability_type = {}
                 else:
@@ -5059,14 +5182,14 @@ class TypeChecker(Checker):
             # check method
 
             def check_method(method, cem):
-                self.warning(cem + ": " + str(method) + " - unchecked")
+                self.warning(cem + ": " + str(method) + " - unchecked", method)
 
             self.check_keyword(condition, "method", check_method, cem)
             remove_keyword("method")
             # check either extended or short notation
             if extended_notation:
                 if len(condition) != 0:
-                    self.error(cem + ": " + str(condition) + " - unexpected")
+                    self.error(cem + ": " + str(condition) + " - unexpected", condition)
             else:
                 # check the short notation
                 self.check_condition_clause_definition(condition, cem)
@@ -5102,7 +5225,8 @@ class TypeChecker(Checker):
                             + " - "
                             + kind_definition
                             + " unmapped"
-                            + reason
+                            + reason,
+                            def_name,
                         )
 
         # check node_type
@@ -5273,7 +5397,8 @@ class TypeChecker(Checker):
                     + str(mapping)
                     + " - "
                     + node_template_name
-                    + " node template undefined"
+                    + " node template undefined",
+                    node_template_name,
                 )
                 return
             node_template_type = self.type_system.merge_type(
@@ -5294,7 +5419,8 @@ class TypeChecker(Checker):
                     + str(mapping)
                     + " - "
                     + node_template_capability_name
-                    + " capability undefined"
+                    + " capability undefined",
+                    node_template_capability_name,
                 )
                 return
             node_template_capability_type = node_template_capability_definition.get(
@@ -5310,11 +5436,12 @@ class TypeChecker(Checker):
                     + str(mapping)
                     + " - "
                     + capability_type
-                    + " capability expected"
+                    + " capability expected",
+                    node_template_capability_type,
                 )
 
         # check the short notation
-        if type(capability_mapping) is list:
+        if isinstance(capability_mapping, list):
             check_mapping_as_list(capability_mapping, context_error_message)
             return
 
@@ -5348,7 +5475,8 @@ class TypeChecker(Checker):
                     + str(mapping)
                     + " - "
                     + node_template_name
-                    + " node template undefined"
+                    + " node template undefined",
+                    node_template_name,
                 )
                 return
             node_template_type = self.type_system.merge_type(
@@ -5369,7 +5497,8 @@ class TypeChecker(Checker):
                     + str(mapping)
                     + " - "
                     + node_template_requirement_name
-                    + " requirement undefined"
+                    + " requirement undefined",
+                    node_template_requirement_name,
                 )
                 return
             node_template_requirement_capability = (
@@ -5385,7 +5514,8 @@ class TypeChecker(Checker):
                     + str(mapping)
                     + " - "
                     + requirement_capability
-                    + " capability expected"
+                    + " capability expected",
+                    requirement_capability,
                 )
 
             # mark that the requirement <node_template_name>.<node_template_reference_name> is connected
@@ -5394,7 +5524,7 @@ class TypeChecker(Checker):
             ).connectIt()
 
         # check the short notation
-        if type(requirement_mapping) is list:
+        if isinstance(requirement_mapping, list):
             check_mapping_as_list(requirement_mapping, context_error_message)
             return
 
@@ -5470,7 +5600,8 @@ class TypeChecker(Checker):
                 context_error_message
                 + ":target: "
                 + target
-                + " - node template undefined"
+                + " - node template undefined",
+                target,
             )
             target_type = {}
         else:
@@ -5496,7 +5627,8 @@ class TypeChecker(Checker):
                     + ": "
                     + target_relationship
                     + " - requirement undefined in "
-                    + target
+                    + target,
+                    target,
                 )
             else:
                 self.info(
@@ -5504,7 +5636,8 @@ class TypeChecker(Checker):
                     + ": "
                     + target_relationship
                     + " - requirement defined in "
-                    + target
+                    + target,
+                    target,
                 )
                 (
                     checked,
@@ -5555,7 +5688,8 @@ class TypeChecker(Checker):
                 context_error_message
                 + ":target: "
                 + target
-                + " - node template or group undefined"
+                + " - node template or group undefined",
+                target,
             )
             target_type = {}
         else:
@@ -5581,7 +5715,8 @@ class TypeChecker(Checker):
                     + ": "
                     + target_relationship
                     + " - requirement undefined in "
-                    + target
+                    + target,
+                    target,
                 )
             else:
                 self.info(
@@ -5633,7 +5768,8 @@ class TypeChecker(Checker):
                     context_error_message
                     + ":activities: "
                     + str(activities)
-                    + " - unchecked because target undefined"
+                    + " - unchecked because target undefined",
+                    activities,
                 )
             else:
                 self.iterate_over_list(
@@ -5660,4 +5796,4 @@ class TypeChecker(Checker):
     # check that a step is defined in the current imperative workflow
     def check_step(self, step_name, cem):
         if self.current_imperative_workflow.get("steps", {}).get(step_name) is None:
-            self.error(cem + ": " + step_name + " - step undefined")
+            self.error(cem + ": " + step_name + " - step undefined", step_name)

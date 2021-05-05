@@ -340,8 +340,8 @@ read_options(){
 # MAINtenant le programme commence  !!!!!!!!!!!!!                              #
 ################################################################################
 # Define colors
-normal="\e[0;"
-bold="\e[1;"
+normal="\033[0;"
+bold="\033[1;"
 red="31m"
 green="32m"
 yellow="33m"
@@ -349,7 +349,7 @@ blue="34m"
 magenta="35m"
 cyan="36m"
 white="37m"
-reset="\e[m"
+reset="\033[m"
 blink="5m"
 
 # SET environment variables to configure process execution

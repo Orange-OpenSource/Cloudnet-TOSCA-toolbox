@@ -122,7 +122,6 @@ def main(argv):
 
         nb_errors = 0
         nb_warnings = 0
-
         # Syntax checking.
         syntax_checker = SyntaxChecker(tosca_service_template, config)
         if syntax_checker.check() is False or syntax_checker.nb_errors > 0:
@@ -136,7 +135,8 @@ def main(argv):
         # Type checking.
         type_checker = TypeChecker(tosca_service_template, config, type_system)
         if type_checker.check() is False or type_checker.nb_errors > 0:
-            exit(1)
+            return 2
+
         nb_errors += type_checker.nb_errors
         nb_warnings += type_checker.nb_warnings
 
@@ -152,6 +152,8 @@ def main(argv):
             generator = generator_class(generator=type_checker)
             print("TOSCA2CLOUDNET : " + generator_class.__name__ + " ...")
             generator.generation()
+            nb_errors += generator.nb_errors
+            nb_warnings += generator.nb_warnings
         return diagnostics.return_code
     except Exception as exception:
         print(processors.CRED, file=sys.stderr)

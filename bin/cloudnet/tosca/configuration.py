@@ -31,7 +31,7 @@ def load(config_file=CONFIGURATION_FILE, ignored_keys=[]):
     if os.path.exists(config_file):
         # Load the configuration file if it exists.
         with open(config_file, "r") as stream:
-            content = yaml.safe_load(stream)
+            content = yaml.load(stream, Loader=yaml.FullLoader)
             # delete all subkeys of content which are in ignored values
             for d in content.values():
                 if isinstance(d, dict):

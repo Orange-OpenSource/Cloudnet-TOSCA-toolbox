@@ -58,7 +58,7 @@ def merge_dict(d, u):
             dv = d.get(k)
             if dv is None:
                 dv = {}
-            if type(dv) != dict:
+            if not isinstance(dv, dict):
                 dv = {}
                 dv["_old_value_"] = dv
             d[k] = merge_dict(dv, v)
@@ -80,13 +80,12 @@ def merge_dict(d, u):
 
 
 def normalize_dict(data):
-    data_type = type(data)
-    if data_type == dict:
+    if isinstance(data, dict):
         return data
-    elif data_type == list:
+    elif isinstance(data, list):
         result = dict()
         for item in data:
-            if type(item) != dict:
+            if not isinstance(item, dict):
                 continue
             for (key, value) in item.items():
                 result[key] = value
@@ -98,7 +97,7 @@ def normalize_dict(data):
 def get_path(a_dict, *path, default=None):
     result = a_dict
     for p in path:
-        if type(result) == dict:
+        if isinstance(result, dict):
             result = result.get(p)
         else:
             return default
