@@ -65,7 +65,7 @@ TOSCA_SyntaxCheck()
 NetworkDiagrams()
 {
    # Verify if Syntax checking has been done
-   if [ "$SYNTAX_CHECK" = true ]; then 
+   if [ "$SYNTAX_CHECK" = true ]; then
        echo -e "\n${normal}${magenta}*** Generating network diagrams ***${reset}" | tee -a logs/${_LOG}
        generate_network_diagrams ${nwdiag_target_directory}/*.nwdiag 2>&1 |tee -a logs/${_LOG}
    else
@@ -80,7 +80,7 @@ NetworkDiagrams()
 TOSCADiagrams()
 {
    # Verify if Syntax checking has been done
-   if [ "$SYNTAX_CHECK" = true ]; then 
+   if [ "$SYNTAX_CHECK" = true ]; then
        echo -e "\n${normal}${magenta}*** Generating TOSCA diagrams ***${reset}" | tee -a logs/${_LOG}
        generate_tosca_diagrams ${tosca_diagrams_target_directory}/*.dot 2>&1 |tee -a logs/${_LOG}
    else
@@ -95,7 +95,7 @@ TOSCADiagrams()
 UML2Diagrams()
 {
    # Verify if Syntax checking has been done
-   if [ "$SYNTAX_CHECK" = true ]; then 
+   if [ "$SYNTAX_CHECK" = true ]; then
        echo -e "\n${normal}${magenta}*** Generating UML2 diagrams ***${reset}" | tee -a logs/${_LOG}
        generate_uml2_diagrams ${UML2_target_directory}/*.plantuml 2>&1 |tee -a logs/${_LOG}
    else
@@ -110,7 +110,7 @@ UML2Diagrams()
 AlloySyntax()
 {
    # Verify if Syntax checking has been done
-   if [ "$SYNTAX_CHECK" = true ]; then 
+   if [ "$SYNTAX_CHECK" = true ]; then
        echo -e "\n${normal}${magenta}*** Checking ALLOY syntax ***${reset}" | tee -a logs/${_LOG}
        alloy_parse ${Alloy_target_directory}/*.als 2>&1 |tee -a logs/${_LOG}
    else
@@ -125,7 +125,7 @@ AlloySyntax()
 AlloySolve()
 {
    # Verify if Syntax checking has been done
-   if [ "$SYNTAX_CHECK" = true ]; then 
+   if [ "$SYNTAX_CHECK" = true ]; then
        echo -e "\n${normal}${magenta}*** Run the solver to verify the ability to deploy the description ***${reset}" | tee -a logs/${_LOG}
        (time alloy_execute ${Alloy_target_directory}/*.als 2>&1 |tee -a logs/${_LOG}) 2>>logs/${_LOG}
    else
@@ -244,7 +244,7 @@ read_options(){
            pause
            ;;
         x) # Exit with status code 0
-           if [ "$DIRVARS_GENERATED" = true ]; then 
+           if [ "$DIRVARS_GENERATED" = true ]; then
              # Remove generated configuration file
              rm -f $TOSCA2CLOUDNET_CONF_FILE
            fi
@@ -260,8 +260,8 @@ read_options(){
 # MAINtenant le programme commence  !!!!!!!!!!!!!                              #
 ################################################################################
 # Define colors
-normal="\e[0;"
-bold="\e[1;"
+normal="\033[0;"
+bold="\033[1;"
 red="31m"
 green="32m"
 yellow="33m"
@@ -269,7 +269,7 @@ blue="34m"
 magenta="35m"
 cyan="36m"
 white="37m"
-reset="\e[m"
+reset="\033[m"
 blink="5m"
 
 
@@ -319,7 +319,7 @@ if [ -f "${TOSCA2CLOUDNET_CONF_FILE}" ]; then
 fi
 
 # verify if the target directories are set, if not set default ones
-##### TODO : HOT_target_directory (and maybe others) can be set in the TOSCA2CLOUDNET_CONF_FILE 
+##### TODO : HOT_target_directory (and maybe others) can be set in the TOSCA2CLOUDNET_CONF_FILE
 #####        but are not used in this script currently, so we have to manage it
 dirArray=( Alloy_target_directory nwdiag_target_directory tosca_diagrams_target_directory UML2_target_directory)
 NBVARSSET=0
@@ -405,7 +405,7 @@ while getopts ${optstring} option; do
       s) # run syntax checking on a single file
          echo -e "${normal}${magenta}  xxx  `echo ${OPTARG} | tr [a-z] [A-Z]` xxx ${reset}"
          translate ${OPTARG}
-         if [ "$DIRVARS_GENERATED" = true ]; then 
+         if [ "$DIRVARS_GENERATED" = true ]; then
            rm -f $TOSCA2CLOUDNET_CONF_FILE
          fi
          exit;;
