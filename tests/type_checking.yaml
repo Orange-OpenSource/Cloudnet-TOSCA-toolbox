@@ -1374,6 +1374,32 @@ data_types:
         type: PortDef
         default: 66000 # ERROR: in_range: [ 1, 65535 ] failed!
 
+      p-list-of-positive-integers:
+        type: list
+        entry_schema:
+          type: integer
+          constraints:
+            - greater_or_equal: 0
+        default:
+          - -100 # ERROR: greater_or_equal: 0 failed!
+          - -10 # ERROR: greater_or_equal: 0 failed!
+          - 0 # CORRECT
+          - 10 # CORRECT
+          - 100 # CORRECT
+
+      p-map-of-positive-integers:
+        type: map
+        entry_schema:
+          type: integer
+          constraints:
+            - greater_or_equal: 0
+        default:
+          a: -100 # ERROR: greater_or_equal: 0 failed!
+          b: -10 # ERROR: greater_or_equal: 0 failed!
+          c: 0 # CORRECT
+          d: 10 # CORRECT
+          e: 100 # CORRECT
+
   DataTypePropertiesConstraintsOperatorIncompatibleWithType:
     properties:
       p-greater_than-boolean:

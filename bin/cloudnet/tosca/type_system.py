@@ -311,6 +311,50 @@ class BasicTypeChecker(AbstractTypeChecker):
         return True
 
 class ListTypeChecker(AbstractTypeChecker):
+    def __init__(self, type_checker, item_type_definition):
+        AbstractTypeChecker.__init__(self, type_checker.type_name)
+        self.type_checker = type_checker
+        self.item_type_definition = item_type_definition
+
+    def check_type(self, the_list, processor, context_error_message):
+        if self.type_checker.check_type(the_list, processor, context_error_message):
+            idx = 0
+            result = True
+            for item in the_list:
+                processor.check_value_assignment('item', item, self.item_type_definition, context_error_message + '[' + str(idx) + ']')
+                idx += 1
+            return result
+        return False
+
+class MapTypeChecker(AbstractTypeChecker):
+    def __init__(self, type_checker, key_type_definition, value_type_definition):
+        AbstractTypeChecker.__init__(self, type_checker.type_name)
+        self.type_checker = type_checker
+        self.key_type_definition = key_type_definition
+        self.value_type_definition = value_type_definition
+
+    def check_type(self, the_map, processor, context_error_message):
+        if self.type_checker.check_type(the_map, processor, context_error_message):
+            for key, value in the_map.items():
+                processor.check_value_assignment('key', key, self.key_type_definition, context_error_message + ':' + str(key))
+                processor.check_value_assignment('value', value, self.value_type_definition, context_error_message + ':' + str(key))
+            return True
+        return False
+
+class DataTypeChecker(AbstractTypeChecker):
+    def __init__(self, data_type_name, data_type):
+        AbstractTypeChecker.__init__(self, data_type_name)
+        self.data_type = data_type
+
+    def check_type(self, values, processor, context_error_message):
+        if type(values) != dict:
+            processor.error(context_error_message + ': ' + str(values) + ' - ' + self.type_name + ' expected')
+        else:
+            properties = { syntax.PROPERTIES: values}
+            processor.iterate_over_map_of_assignments(processor.check_value_assignment, syntax.PROPERTIES, properties, self.data_type, self.type_name, context_error_message)
+            processor.check_required_properties(properties, self.data_type, context_error_message)
+
+class ValidValuesChecker(AbstractTypeChecker):
     def __init__(self, type_checker, item_type_checker):
         AbstractTypeChecker.__init__(self, type_checker.type_name)
         self.type_checker = type_checker
@@ -326,37 +370,6 @@ class ListTypeChecker(AbstractTypeChecker):
                 idx += 1
             return result
         return False
-
-class MapTypeChecker(AbstractTypeChecker):
-    def __init__(self, type_checker, key_type_checker, value_type_checker):
-        AbstractTypeChecker.__init__(self, type_checker.type_name)
-        self.type_checker = type_checker
-        self.key_type_checker = key_type_checker
-        self.value_type_checker = value_type_checker
-
-    def check_type(self, the_map, processor, context_error_message):
-        if self.type_checker.check_type(the_map, processor, context_error_message):
-            result = True
-            for key, value in the_map.items():
-                if not self.key_type_checker.check_type(key, processor, context_error_message):
-                    result = False
-                if not self.value_type_checker.check_type(value, processor, context_error_message + ':' + str(key)):
-                    result = False
-            return result
-        return False
-
-class DataTypeChecker(AbstractTypeChecker):
-    def __init__(self, data_type_name, data_type):
-        AbstractTypeChecker.__init__(self, data_type_name)
-        self.data_type = data_type
-
-    def check_type(self, values, processor, context_error_message):
-        if type(values) != dict:
-            processor.error(context_error_message + ': ' + str(values) + ' - ' + self.type_name + ' expected')
-        else:
-            properties = { syntax.PROPERTIES: values}
-            processor.iterate_over_map_of_assignments(processor.check_value_assignment, syntax.PROPERTIES, properties, self.data_type, self.type_name, context_error_message)
-            processor.check_required_properties(properties, self.data_type, context_error_message)
 
 BASIC_TYPE_CHECKERS = {
     # YAML types
@@ -974,18 +987,18 @@ class TypeChecker(Checker):
         if type_checker != None:
             # TODO: factorize following code
             if data_type_name == 'list':
-                item_type_checker = self.get_type_checker({ syntax.TYPE: syntax.get_entry_schema_type(definition) }, {}, context_error_message)
-                if item_type_checker is None:
-                    return None
-                type_checker = ListTypeChecker(type_checker, item_type_checker)
+                entry_schema = definition.get(syntax.ENTRY_SCHEMA, 'string')
+                if isinstance(entry_schema, str):
+                    entry_schema = { syntax.TYPE: entry_schema }
+                type_checker = ListTypeChecker(type_checker, entry_schema)
             elif data_type_name == 'map':
-                key_type_checker = self.get_type_checker({ syntax.TYPE: definition.get(syntax.KEY_SCHEMA, {}).get(syntax.TYPE, 'string') }, {}, context_error_message)
-                if key_type_checker is None:
-                    return None
-                value_type_checker = self.get_type_checker({ syntax.TYPE: syntax.get_entry_schema_type(definition) }, {}, context_error_message)
-                if value_type_checker is None:
-                    return None
-                type_checker = MapTypeChecker(type_checker, key_type_checker, value_type_checker)
+                key_schema = definition.get(syntax.KEY_SCHEMA, 'string')
+                if isinstance(key_schema, str):
+                    key_schema = { syntax.TYPE: key_schema }
+                entry_schema = definition.get(syntax.ENTRY_SCHEMA, 'string')
+                if isinstance(entry_schema, str):
+                    entry_schema = { syntax.TYPE: entry_schema }
+                type_checker = MapTypeChecker(type_checker, key_schema, entry_schema)
         else:
             # definition_type could be a data type
             data_type = self.type_system.merge_type(self.type_system.get_type_uri(data_type_name))
@@ -1067,7 +1080,7 @@ class TypeChecker(Checker):
 
             # check that the constraint operand is valid
             if constraint_operator == 'valid_values':
-                check_constraint_operand = lambda operand : ListTypeChecker(BASIC_TYPE_CHECKERS.get('list'), type_checker).check_type(operand, self, cem)
+                check_constraint_operand = lambda operand : ValidValuesChecker(BASIC_TYPE_CHECKERS.get('list'), type_checker).check_type(operand, self, cem)
             else:
                 check_constraint_operand = lambda operand : type_checker.check_type(operand, self, cem)
             constraint_clause_checker.check_operand(constraint_value, check_constraint_operand)
