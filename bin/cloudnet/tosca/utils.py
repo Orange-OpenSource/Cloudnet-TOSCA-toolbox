@@ -13,11 +13,15 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
+import re
+
+SCALAR_UNIT_RE = re.compile('^([0-9]+(\.[0-9]+)?)( )*([A-Za-z]+)$')
+
 def split_scalar_unit(scalar):
-    tmp = scalar.split(' ')
-    scalar_unit = tmp[-1]
-    scalar_value = int(tmp[0])
-    return scalar_value, scalar_unit
+    match = SCALAR_UNIT_RE.fullmatch(scalar)
+    if match == None:
+        raise ValueError('<scalar> <unit> expected instead of %s' % scalar)
+    return int(match.group(1)), match.group(4)
 
 '''
     Compute a short type name, i.e., remove the dotted prefix.
