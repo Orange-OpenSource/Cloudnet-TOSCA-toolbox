@@ -431,13 +431,14 @@ class DataTypeChecker(AbstractTypeChecker):
                 properties, self.data_type, context_error_message
             )
 
+isInt = lambda value: not isinstance(value, bool) and isinstance(value, int)
 
 BASIC_TYPE_CHECKERS = {
     # YAML types
     "string": BasicTypeChecker("string", lambda value: isinstance(value, str)),
-    "integer": BasicTypeChecker("integer", lambda value: isinstance(value, int)),
+    "integer": BasicTypeChecker("integer", lambda value: isInt(value)),
     "float": BasicTypeChecker(
-        "float", lambda value: isinstance(value, int) or isinstance(value, float)
+        "float", lambda value: isinstance(value, float) or isInt(value)
     ),
     "boolean": BasicTypeChecker("boolean", lambda value: isinstance(value, bool)),
     "timestamp": BasicTypeChecker(
@@ -456,8 +457,8 @@ BASIC_TYPE_CHECKERS = {
         "range",
         lambda value: isinstance(value, list)
         and len(value) == 2
-        and isinstance(value[0], int)
-        and isinstance(value[1], int),
+        and isInt(value[0])
+        and isInt(value[1]),
     ),
     "list": BasicTypeChecker("list", lambda value: isinstance(value, list)),
     "map": BasicTypeChecker("map", lambda value: isinstance(value, dict)),

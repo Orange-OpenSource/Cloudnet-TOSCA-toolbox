@@ -13,171 +13,132 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
-import json
+import datetime
 import re
-
 import yaml
-from yaml.resolver import BaseResolver
-
-BaseResolver.add_implicit_resolver(
-    "tag:yaml.org,2002:bool",
-    re.compile(r'''^(?:true|false)$''', re.X),
-    list("yYnNtTfFoO"),
-)
-
-BaseResolver.add_implicit_resolver(
-    "tag:yaml.org,2002:float",
-    re.compile(
-        r'''^(?:[-+]?(?:[0-9][0-9_]*)\.[0-9_]*(?:[eE][-+][0-9]+)?
-                    |\.[0-9_]+(?:[eE][-+][0-9]+)?
-                    |[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\.[0-9_]*
-                    |[-+]?\.(?:inf|Inf|INF)
-                    |\.(?:nan|NaN|NAN))$''',
-        re.X,
-    ),
-    list("-+0123456789.")
-)
-
-BaseResolver.add_implicit_resolver(
-    "tag:yaml.org,2002:int",
-    re.compile(
-         r'''^(?:[-+]?0b[0-1_]+
-                    |[-+]?0[0-7_]+
-                    |[-+]?(?:0|[1-9][0-9_]*)
-                    |[-+]?0x[0-9a-fA-F_]+
-                    |[-+]?[1-9][0-9_]*(?::[0-5]?[0-9])+)$''',
-         re.X,
-    ),
-    list("-+0123456789"),
-)
-
-BaseResolver.add_implicit_resolver(
-    "tag:yaml.org,2002:merge", re.compile(r'^(?:<<)$'), ["<"]
-)
-
-BaseResolver.add_implicit_resolver(
-    "tag:yaml.org,2002:null",
-    re.compile(
-         r'''^(?: ~
-                    |null|Null|NULL
-                    | )$''',
-         re.X,
-    ),
-    ["~", "n", "N", ""],
-)
-
-BaseResolver.add_implicit_resolver(
-    "tag:yaml.org,2002:timestamp",
-    re.compile(
-        r'''^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]
-                    |[0-9][0-9][0-9][0-9] -[0-9][0-9]? -[0-9][0-9]?
-                     (?:[Tt]|[ \t]+)[0-9][0-9]?
-                     :[0-9][0-9] :[0-9][0-9] (?:\.[0-9]*)?
-                     (?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$''',
-        re.X,
-    ),
-    list("0123456789"),
-)
-
-BaseResolver.add_implicit_resolver(
-    "tag:yaml.org,2002:value", re.compile(r'^(?:=)$'), ["="]
-)
-
-
-def isTrue(b):
-    return b == "true"
 
 class Coord():
-    pass
-
+    def init(self, line=0, column=0):
+        self.line = line
+        self.column = column
 
 class StrCoord(str, Coord):
     def __new__(cls, value, line=0, column=0):
         obj = super().__new__(cls, value)
-        obj.line = line
-        obj.column = column
+        Coord.init(obj, line, column)
         return obj
-
 
 class IntCoord(int, Coord):
     def __new__(cls, value, line=0, column=0):
         obj = super().__new__(cls, value)
-        obj.line = line
-        obj.column = column
+        Coord.init(obj, line, column)
         return obj
 
-
-class FloatCoord(int, Coord):
+class FloatCoord(float, Coord):
     def __new__(cls, value, line=0, column=0):
         obj = super().__new__(cls, value)
-        obj.line = line
-        obj.column = column
+        Coord.init(obj, line, column)
         return obj
 
-
 class DictCoord(dict, Coord):
-    def __init__(self, value, line=0, column=0):
-        dict.__init__(self, value)
-        self.line = line
-        self.column = column
-
+    def __init__(self, line=0, column=0):
+        dict.__init__(self)
+        Coord.init(self, line, column)
 
 class ListCoord(list, Coord):
-    def __init__(self, value, line=0, column=0):
-        list.__init__(self, value)
-        self.line = line
-        self.column = column
+    def __init__(self, line=0, column=0):
+        list.__init__(self)
+        Coord.init(self, line, column)
 
+class DatetimeCoord(datetime.datetime, Coord):
+    pass
 
-class SafeLineLoader(yaml.BaseLoader):
-    def construct_mapping(self, node, deep=False):
-        mapping = super(SafeLineLoader, self).construct_mapping(node, deep=deep)
-        return DictCoord(
-            mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1
-        )
+class SafeLineLoader(yaml.SafeLoader):
 
-    def construct_document(self, node):
-        mapping = super(SafeLineLoader, self).construct_document(node)
-        return DictCoord(
-            mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1
-        )
+    def construct_yaml_int(self, node):
+        result = super().construct_yaml_int(node)
+        return IntCoord(
+                    result,
+                    line=node.start_mark.line + 1,
+                    column=node.start_mark.column + 1,
+                )
 
-    def construct_object(self, node, deep=False):
-        mapping = super(SafeLineLoader, self).construct_object(node, deep=deep)
-        if node.tag == "tag:yaml.org,2002:bool":
-            # can't heritate from bool because. No line can be managed for this type
-            return isTrue(mapping)
-        if node.tag == "tag:yaml.org,2002:float":
-            return FloatCoord(
-                float(mapping),
-                line=node.start_mark.line + 1,
-                column=node.start_mark.column + 1,
-            )
-        if node.tag == "tag:yaml.org,2002:int":
-            return IntCoord(
-                int(mapping),
-                line=node.start_mark.line + 1,
-                column=node.start_mark.column + 1,
-            )
-        if node.tag == "tag:yaml.org,2002:str":
-            return StrCoord(
-                mapping,
-                line=node.start_mark.line + 1,
-                column=node.start_mark.column + 1,
-            )
-        if node.tag == "tag:yaml.org,2002:seq" or isinstance(mapping, list):
-            return ListCoord(
-                mapping,
-                line=node.start_mark.line + 1,
-                column=node.start_mark.column + 1,
-            )
-        if node.tag == "tag:yaml.org,2002:map" or isinstance(mapping, dict):
-            return DictCoord(
-                mapping,
-                line=node.start_mark.line + 1,
-                column=node.start_mark.column + 1,
-            )
-        # default is mapped to str
+    def construct_yaml_float(self, node):
+        result = super().construct_yaml_float(node)
+        return FloatCoord(
+                    result,
+                    line=node.start_mark.line + 1,
+                    column=node.start_mark.column + 1,
+                )
+
+    def construct_yaml_timestamp(self, node):
+        dt = super().construct_yaml_timestamp(node)
+        result = DatetimeCoord(
+                      dt.year,
+                      dt.month,
+                      dt.day,
+                      dt.hour,
+                      dt.minute,
+                      dt.second,
+                      dt.microsecond,
+                      dt.tzinfo,
+                      fold=dt.fold)
+        Coord.init(result,
+                    line=node.start_mark.line + 1,
+                    column=node.start_mark.column + 1
+                )
+        return result
+
+    def construct_yaml_str(self, node):
+        result = super().construct_yaml_str(node)
         return StrCoord(
-            mapping, line=node.start_mark.line + 1, column=node.start_mark.column + 1
-        )
+                    result,
+                    line=node.start_mark.line + 1,
+                    column=node.start_mark.column + 1,
+                )
+
+    def construct_yaml_seq(self, node):
+# PM: don't understand how to use the result of super().construct_yaml_seq()
+#        result = super().construct_yaml_seq(node)
+# PM: so I duplicate the code
+        result = ListCoord(
+                   line=node.start_mark.line + 1,
+                   column=node.start_mark.column + 1,
+                )
+        result.extend(self.construct_sequence(node))
+        return result
+
+    def construct_yaml_map(self, node):
+# PM: don't understand how to use the result of super().construct_yaml_map()
+#        result = super().construct_yaml_map(node)
+# PM: so I duplicate the code
+        result = DictCoord(
+                        line=node.start_mark.line + 1,
+                        column=node.start_mark.column + 1,
+                    )
+        result.update(self.construct_mapping(node))
+        return result
+
+SafeLineLoader.add_constructor(
+        'tag:yaml.org,2002:int',
+        SafeLineLoader.construct_yaml_int)
+
+SafeLineLoader.add_constructor(
+        'tag:yaml.org,2002:float',
+        SafeLineLoader.construct_yaml_float)
+
+SafeLineLoader.add_constructor(
+        'tag:yaml.org,2002:timestamp',
+        SafeLineLoader.construct_yaml_timestamp)
+
+SafeLineLoader.add_constructor(
+        'tag:yaml.org,2002:str',
+        SafeLineLoader.construct_yaml_str)
+
+SafeLineLoader.add_constructor(
+        'tag:yaml.org,2002:seq',
+        SafeLineLoader.construct_yaml_seq)
+
+SafeLineLoader.add_constructor(
+        'tag:yaml.org,2002:map',
+        SafeLineLoader.construct_yaml_map)
