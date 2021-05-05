@@ -999,7 +999,8 @@ class TypeChecker(Checker):
 
         type_checker = self.get_type_checker(definition, previous_definition, context_error_message)
         if type_checker is None:
-            self.error(context_error_message + ': ' + str(value) + ' - no type checker for ' + definition.get(syntax.TYPE, 'UNKNOWN'))
+            # ISSUE: I don't know what to do when no type checker found :-(
+            self.warning(context_error_message + ': ' + str(value) + ' - no type found to check the value')
             return
 
         if not type_checker.check_type(value, self, context_error_message):
@@ -1479,7 +1480,7 @@ class TypeChecker(Checker):
         # check the short notation
         if type(call_operation) is str:
             operation_definition = check_operation(call_operation, context_error_message)
-            self.check_required_parameters({}, operation_definition, context_error_message)
+            self.check_required_parameters({}, operation_definition, context_error_message + ': ' + call_operation)
             return
         # check the extended notation
         # check operation
@@ -1490,7 +1491,7 @@ class TypeChecker(Checker):
         operation_definition = check_operation(operation_name, context_error_message + ':operation')
         # check inputs
         self.iterate_over_map_of_assignments(self.check_parameter_assignment, syntax.INPUTS, call_operation, operation_definition, operation_name, context_error_message)
-        self.check_required_parameters(call_operation, operation_definition, context_error_message)
+        self.check_required_parameters(call_operation, operation_definition, context_error_message + ': ' + operation_name)
 
     def check_inline_activity(self, inline, context_error_message):
         def check_workflow_and_inputs(workflow_name, delegate_definition):
@@ -1692,7 +1693,9 @@ class TypeChecker(Checker):
     def check_required_fields(self, keyword, kind, definition, definition_type, default_fields_definition, default_fields_definition_location, context_error_message):
         fields = definition.get(keyword, {})
         for field_name, field_definition in definition_type.get(keyword, {}).items():
-            if field_definition.get(syntax.REQUIRED, True) \
+            if isinstance(field_definition, dict) \
+               and field_definition.get(syntax.TYPE) != None \
+               and field_definition.get(syntax.REQUIRED, True) \
                and self.has_no_default_value(field_definition) \
                and fields.get(field_name) is None:
                 default_field_definition = default_fields_definition.get(field_name)
