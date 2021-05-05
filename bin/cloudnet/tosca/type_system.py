@@ -2118,7 +2118,7 @@ class TypeChecker(Checker):
         else:
             # no relationship declared
             cem = context_error_message + ':' + syntax.RELATIONSHIP
-            if requirement_definition.get(syntax.TYPE) != None:
+            if requirement_definition.get(syntax.RELATIONSHIP) != None:
                 checked, relationship_type_name, relationship_type = \
                         self.check_type_in_definition('relationship',
                         syntax.RELATIONSHIP,
