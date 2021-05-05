@@ -2706,6 +2706,7 @@ node_types:
       - r1:
           # ERROR: this node type is incompatible with valid source types of CapabilityTypeValidSourceNodeType
           capability: CapabilityTypeValidSourceNodeType
+          # WARNING: relationship undefined
 
   NodeTypeRequirementsNodeUndefinedType:
     requirements:
@@ -2713,6 +2714,7 @@ node_types:
           capability: CapabilityType
           # ERROR: must be a defined type!
           node: UndefinedType
+          # WARNING: relationship undefined
 
   NodeTypeRequirementsNodeIncorrectType:
     requirements:
@@ -2720,6 +2722,7 @@ node_types:
           capability: CapabilityType
           # ERROR: must be a node type!
           node: tosca.datatypes.Root
+          # WARNING: relationship undefined
 
   NodeTypeRequirementsNodeIncompatibleType:
     derived_from: NodeType
@@ -2734,6 +2737,7 @@ node_types:
           capability: CapabilityType
           # ERROR: tosca.nodes.Compute has no capability compatible with CapabilityType!
           node: tosca.nodes.Compute
+          # WARNING: relationship undefined
 
   NodeTypeRequirementsRelationshipUndefinedType:
     requirements:
@@ -3036,6 +3040,7 @@ node_types:
           capability: CapabilityType
           # ERROR: lower occurrence can not be greater than upper occurrence!
           occurrences: [ 1, 0 ]
+          # WARNING: relationship undefined
 
   NodeTypeRequirementsOccurrencesLessThanPreviousLowerOccurrences:
     derived_from: NodeType
@@ -3268,7 +3273,7 @@ node_types:
     artifacts:
       a1:
         type: ArtifactType
-        file: 'the file of this artifact' # WARNING: file currently unchecked!
+        file: 'the file of this artifact' # Warning: file currently unchecked!
 
   NodeTypeArtifactsFileNoArtifactTypeFound:
     artifacts:
@@ -4004,6 +4009,7 @@ group_types:
       - r1:
           # ERROR: this group type is incompatible with valid source types of CapabilityTypeValidSourceNodeType
           capability: CapabilityTypeValidSourceNodeType
+          # WARNING: relationship undefined
 
   GroupTypeRequirementsNodeUndefinedType:
     requirements:
@@ -4011,6 +4017,7 @@ group_types:
           capability: CapabilityType
           # ERROR: must be a defined type!
           node: UndefinedType
+          # WARNING: relationship undefined
 
   GroupTypeRequirementsNodeIncorrectType:
     requirements:
@@ -4018,6 +4025,7 @@ group_types:
           capability: CapabilityType
           # ERROR: must be a node type!
           node: tosca.datatypes.Root
+          # WARNING: relationship undefined
 
   GroupTypeRequirementsNodeIncompatibleWithCapabilityType:
     requirements:
@@ -4025,6 +4033,7 @@ group_types:
           capability: CapabilityType
           # ERROR: tosca.nodes.Compute has no capability compatible with CapabilityType!
           node: tosca.nodes.Compute
+          # WARNING: relationship undefined
 
   GroupTypeRequirementsNodeIncompatibleWithCapabilityValidSourceTypes:
     requirements:
@@ -4033,6 +4042,7 @@ group_types:
           # ERROR: NodeType has a capability compatible with CapabilityType but
           # GroupTypeRequirementsNodeIncompatibleWithCapabilityValidSourceTypes is not compatible with valid_source_types!
           node: NodeType
+          # WARNING: relationship undefined
 
   GroupTypeRequirementsRelationshipUndefinedType:
     requirements:
@@ -4335,6 +4345,7 @@ group_types:
           capability: CapabilityType
           # ERROR: lower occurrence can not be greater than upper occurrence!
           occurrences: [ 1, 0 ]
+          # WARNING: relationship undefined
 
   GroupTypeRequirementsOccurrencesLessThanPreviousLowerOccurrences:
     derived_from: GroupType
