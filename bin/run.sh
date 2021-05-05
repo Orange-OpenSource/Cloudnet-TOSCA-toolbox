@@ -352,6 +352,9 @@ white="37m"
 reset="\e[m"
 blink="5m"
 
+# SET environment variables to configure process execution
+# Network diagram generation
+export NWDIAG_OPTS=""
 
 # Guess where are located the software
 CLOUDNET_BINDIR="$PWD/.."
