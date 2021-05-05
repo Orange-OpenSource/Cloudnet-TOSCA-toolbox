@@ -683,7 +683,7 @@ class AbstractAlloySigGenerator(Generator):
                 self.generate('  // TODO', prefix, '=', property_value)
                 self.error(context_error_message + ': ' + str(property_value) + ' - ' + property_type + ' type unsupported by Alloy generator')
 
-    def generate_all_properties(self, all_declared_properties, template_properties, prefixed_template_name, context_error_message, property_name_format = 'property_%s', generate_no_value=True):
+    def generate_all_properties(self, all_declared_properties, template_properties, prefixed_template_name, context_error_message, property_name_format = 'property_%s', generate_no_value=True, required_properties_must_be_set=True):
         if template_properties == None:
             template_properties = {}
 
@@ -707,8 +707,9 @@ class AbstractAlloySigGenerator(Generator):
                 if is_property_required(property_declaration):
                     property_default = syntax.get_property_default(property_declaration)
                     if property_default == None:
-                        self.error(context_error_message + ": property '" + property_name + "' must be set as it is required")
-                        self.generate("  // NOTE: The property '", property_name, "' must be set as it is required.", sep='')
+                        if required_properties_must_be_set:
+                            self.error(context_error_message + ": property '" + property_name + "' must be set as it is required")
+                            self.generate("  // NOTE: The property '", property_name, "' must be set as it is required.", sep='')
                     else:
                         self.generate("  // NOTE: The property '", property_name, "' is set to its default value.", sep='')
                         self.generate_property(prefixed_property_name, property_default, property_declaration, context_error_message + ':' + property_name)
@@ -2189,7 +2190,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                                          get_dict(substitution_mappings, PROPERTIES),
                                          SUBSTITUTION_MAPPINGS,
                                          TOPOLOGY_TEMPLATE + ':' + SUBSTITUTION_MAPPINGS + ':' + PROPERTIES,
-                                         generate_no_value=False)
+                                         generate_no_value=False,
+                                         required_properties_must_be_set=False)
 
             # Translate capabilities.
             capabilities = substitution_mappings.get(CAPABILITIES)
