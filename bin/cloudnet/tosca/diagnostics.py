@@ -45,7 +45,7 @@ def diagnostic(gravity, file, message, cls, value=None, **kwargs):
             file=file,
             message=message,
             cls=cls,
-            value=value,
+            value=str(value),
             line=value.line,
             column=value.column,
         )
@@ -55,7 +55,7 @@ def diagnostic(gravity, file, message, cls, value=None, **kwargs):
             file=file,
             message=message,
             cls=cls,
-            value=value,
+            value=str(value),
             line=0,
             column=0,
         )
