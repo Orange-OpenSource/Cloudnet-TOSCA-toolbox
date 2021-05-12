@@ -108,6 +108,10 @@ class Processor(object):
         if self.logger.isEnabledFor(logging.INFO):
             print('[Info] ', self.tosca_service_template.get_fullname(), ': ', message, sep='', file=stderr)
 
+    def debug(self, message):
+        if self.logger.isEnabledFor(logging.DEBUG):
+            print('[DEBUG] ', self.tosca_service_template.get_fullname(), ': ', message, sep='', file=stderr)
+
     def process(self):
         pass
 
@@ -146,7 +150,7 @@ class Generator(Processor):
             target_directory = target_directory + '/' + os.path.basename(importer.zipfile.filename)
         if not os.path.exists(target_directory):
             os.makedirs(target_directory)
-            self.logger.info(target_directory + '/ created.')
+            self.info(target_directory + '/ created.')
         return target_directory
 
     def compute_filename(self, tosca_service_template, normalize=True):
@@ -162,7 +166,7 @@ class Generator(Processor):
             if template_version != None:
                 filename = filename + '-' + str(template_version)
         else:
-            tmp = tosca_service_template.get_filename()
+            tmp = tosca_service_template.get_fullname().replace('./', '').replace('/', '_')
             filename = tmp[:tmp.rfind('.')]
         if normalize:
             filename = normalize_name(filename)
@@ -172,7 +176,7 @@ class Generator(Processor):
         # Create the target directory if not already exists.
         target_directory = self.create_target_directory()
         # Compute the file path.
-        # TODO: call sefl.compute_filename()
+        # TODO: call self.compute_filename()
         template_yaml = self.tosca_service_template.get_yaml()
         metadata = template_yaml.get('metadata')
         if metadata == None:
@@ -188,7 +192,7 @@ class Generator(Processor):
             if extension != None:
                 filename = filename + '.ext'
         else:
-            filename = self.tosca_service_template.get_filename()
+            filename = self.tosca_service_template.get_fullname().replace('./', '').replace('/', '_')
         if extension != None:
             filename = filename[:filename.rfind('.')]
             if normalize:
@@ -198,7 +202,7 @@ class Generator(Processor):
             filepath = target_directory + '/' + filename
         # Open the file.
         self.file = open(filepath, 'w')
-        self.logger.info(filepath + ' opened.')
+        self.info(filepath + ' opened.')
 
     def generate(self, *args, sep=' '):
         print(*args, sep=sep, file=self.file)
