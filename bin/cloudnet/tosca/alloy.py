@@ -493,7 +493,7 @@ class AbstractAlloySigGenerator(Generator):
                         # TODO: still a lot of work to do
                         result = result + node_name + '.requirement_' + v[1] + '.relationship.target.property_' + str(v[2])
                     else:
-                        self.error(context_error_message + ': ' + key + ' - four or more parameters unsupported by Alloy generator')
+                        self.warning(context_error_message + ': ' + key + ' - four or more parameters unsupported by Alloy generator')
 
                 elif key == GET_ATTRIBUTE:
                     node_name = v[0]
@@ -686,6 +686,10 @@ class AbstractAlloySigGenerator(Generator):
     def generate_all_properties(self, all_declared_properties, template_properties, prefixed_template_name, context_error_message, property_name_format = 'property_%s', generate_no_value=True, required_properties_must_be_set=True):
         if template_properties == None:
             template_properties = {}
+
+        if len(template_properties) == 1 and template_properties.get('get_attribute'):
+            self.warning(context_error_message + " TODO %s = %s" % (prefixed_template_name, template_properties))
+            return
 
         # Check if each property of the template is defined in the template type.
         for property_name, property_yaml in template_properties.items():
@@ -2082,8 +2086,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             if tmp != None:
                                 requirement_relationship_type = tmp
                                 merged_requirement_relationship_type = self.type_system.merge_node_type(requirement_relationship_type)
-                                requirement_relationship_properties = get_dict(requirement_relationship, PROPERTIES)
                                 self.generate('  ', prefixed_relationship, '[', self.alloy_sig(requirement_relationship_type), ']', sep='')
+                            requirement_relationship_properties = get_dict(requirement_relationship, PROPERTIES)
                         elif type(requirement_relationship) == str:
                             if relationship_templates.get(requirement_relationship):
                                 self.generate('  ', prefixed_relationship, '[', self.prefix_name(RELATIONSHIP, requirement_relationship), ']', sep='')
