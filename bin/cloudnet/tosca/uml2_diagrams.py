@@ -410,7 +410,7 @@ class PlantUMLGenerator(Generator):
                                 # Connect the capability UML interface to the node template UML component.
                                 self.generate(target_capability_uml_id, '--', target_node_uml_id)
                                 already_generated_interfaces[target_capability_uml_id] = target_capability_uml_id
-                            self.generate(source_uml_id, ' --( ', target_capability_uml_id, ' : ', requirement_name, sep='')
+                            self.generate(source_uml_id, ' "' + requirement_name + '" --( ', target_capability_uml_id, sep='')
 
 
         # generate UML representation for TOSCA policies
@@ -468,15 +468,17 @@ class PlantUMLGenerator(Generator):
                     self.generate(capability_uml_id, '--', substitution_mappings_uml_id)
 
             index = 0
-            for requirement_name, requirement_yaml in syntax.get_substitution_mappings_requirements(substitution_mappings).items():
+            requirements = syntax.get_substitution_mappings_requirements(substitution_mappings)
+            for requirement_name, requirement_def in merged_substitution_mappings_type.get(REQUIREMENTS, {}).items():
                 interface_uml_id = substitution_mappings_uml_id + '_' + normalize_name(requirement_name) + str(index)
                 index = index + 1
                 self.generate('interface "', requirement_name, '" as ', interface_uml_id)
+                requirement_yaml = requirements.get(requirement_name)
                 if requirement_yaml:
                     source_uml_id = 'node_' + normalize_name(requirement_yaml[0])
-                    self.generate(source_uml_id, ' --( ', interface_uml_id, ' : ', requirement_yaml[1], sep='')
+                    self.generate(source_uml_id, ' "' + requirement_yaml[1] + '" --( ', interface_uml_id, sep='')
                 else:
-                    self.generate(substitution_mappings_uml_id, ' -- ', interface_uml_id, ' : ', requirement_name)
+                    self.generate(substitution_mappings_uml_id, ' --( ', interface_uml_id)
 
         self.generate('@enduml')
 
