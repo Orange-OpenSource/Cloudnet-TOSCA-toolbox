@@ -19,6 +19,9 @@ import os
 from sys import stderr
 
 import cloudnet.tosca.configuration as configuration
+configuration.DEFAULT_CONFIGURATION['Generator'] = {
+    'filename-format' : 'shortname'
+}
 configuration.DEFAULT_CONFIGURATION['logging']['loggers'][__name__] = {
     'level': 'WARNING',
 }
@@ -153,6 +156,13 @@ class Generator(Processor):
             self.info(target_directory + '/ created.')
         return target_directory
 
+    def get_filename(self, tosca_service_template):
+        format = self.configuration.get("Generator", "filename-format")
+        if format == "fullname":
+            return tosca_service_template.get_fullname().replace('./', '').replace('/', '_')
+        else:
+            return tosca_service_template.get_filename()
+
     def compute_filename(self, tosca_service_template, normalize=True):
         # Compute the file path.
         template_yaml = tosca_service_template.get_yaml()
@@ -166,7 +176,7 @@ class Generator(Processor):
             if template_version != None:
                 filename = filename + '-' + str(template_version)
         else:
-            tmp = tosca_service_template.get_fullname().replace('./', '').replace('/', '_')
+            tmp = self.get_filename(tosca_service_template)
             filename = tmp[:tmp.rfind('.')]
         if normalize:
             filename = normalize_name(filename)
@@ -192,7 +202,7 @@ class Generator(Processor):
             if extension != None:
                 filename = filename + '.ext'
         else:
-            filename = self.tosca_service_template.get_fullname().replace('./', '').replace('/', '_')
+            filename = self.get_filename(self.tosca_service_template)
         if extension != None:
             filename = filename[:filename.rfind('.')]
             if normalize:
