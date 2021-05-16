@@ -832,7 +832,7 @@ class PlantUMLGenerator(Generator):
             condition = trigger.get('condition')
             if condition != None:
                 self.generate('note over policy_trigger, target : **condition**:\\n%s'
-                    % self.yamlify_value(condition)
+                    % self.yamlify_value(condition, '   ', '   ')
                 )
 
             for action in trigger.get('action', []):
@@ -903,6 +903,7 @@ class PlantUMLGenerator(Generator):
             tmp = header
             for v in value:
                 result += tmp + '- ' + self.yamlify_value(v, '', ident + '  ')
+                tmp = '\\n' + ident
         else:
             result = repr(value)
         return result
