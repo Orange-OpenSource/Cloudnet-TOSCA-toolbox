@@ -74,6 +74,8 @@ class PlantUMLGenerator(Generator):
 
             self.generate_UML2_workflow_diagrams(topology_template)
 
+            self.generate_UML2_sequence_diagrams(topology_template)
+
     def generate_UML2_class_diagram(self):
         template_yaml = self.tosca_service_template.get_yaml()
         # Get types.
@@ -418,10 +420,25 @@ class PlantUMLGenerator(Generator):
             for policy_name, policy_yaml in policy.items():
                 policy_type = policy_yaml.get(TYPE)
                 policy_uml_id = 'policy_' + normalize_name(policy_name)
+                self.generate('agent %s <<policy>> #AliceBlue [' % policy_uml_id)
                 if policy_type in [ 'tosca.policies.nfv.VnfIndicator' ]:
-                    self.generate('agent "', policy_name, ': ', short_type_name(policy_type), '" <<policy>> as ', policy_uml_id, ' #AliceBlue', sep='')
+                    self.generate(policy_name, ': ', short_type_name(policy_type), sep='')
                 else:
-                    self.generate('agent "', short_type_name(policy_type), '" <<policy>> as ', policy_uml_id, ' #AliceBlue', sep='')
+                    self.generate(short_type_name(policy_type), sep='')
+                self.generate('---')
+                properties = policy_yaml.get('properties', {})
+                if len(properties) > 0:
+                    self.generate('.. properties ..')
+                    for prop_name, prop_value in properties.items():
+                        self.generate(prop_name, '=', self.stringify_value(prop_value))
+                triggers = policy_yaml.get('triggers', {})
+                if len(triggers) > 0:
+                    self.generate('.. triggers ..')
+                    for trigger_name, trigger in triggers.items():
+                        filename = self.get_filename(self.tosca_service_template)
+                        filename = filename[:filename.rfind('.')] + '-' + policy_name + '-' + trigger_name + '-sequence-diagram.svg'
+                        self.generate('[[%s %s]]' % (filename, trigger_name))
+                self.generate(']')
                 for target in policy_yaml.get(TARGETS, []):
                     if node_templates.get(target) != None:
                         target_uml_id = 'node_' + normalize_name(target)
@@ -791,3 +808,101 @@ class PlantUMLGenerator(Generator):
             # close the current workflow diagram
             self.generate('@enduml')
             self.close_file()
+
+    def generate_UML2_sequence_diagrams(self, topology_template):
+
+        def generate_sequence_diagram(policy_name, policy, trigger_name, trigger):
+            # open a file for each policy trigger
+            self.open_file('-%s-%s-sequence-diagram.plantuml' % (policy_name, trigger_name))
+            self.generate('@startuml')
+
+            self.generate('participant "%s\\n%s" as policy_trigger <<policy>>' % (policy_name, trigger_name))
+            for target in policy.get('targets', []):
+                if topology_template.get('node_templates', {}).get(target) != None:
+                    stereotype = ' <<node>>'
+                elif topology_template.get('groups', {}).get(target) != None:
+                    stereotype = ' <<group>>'
+                else:
+                    stereotype = ''
+#TODO                self.generate('participant "%s" as target_%s' % (target, normalize_name(target)))
+                self.generate('participant "%s" as target%s' % (target, stereotype))
+
+            self.generate('?-> policy_trigger : %s' % trigger.get('event'))
+            self.generate('activate policy_trigger')
+            condition = trigger.get('condition')
+            if condition != None:
+                self.generate('note over policy_trigger, target : **condition**:\\n%s'
+                    % self.yamlify_value(condition)
+                )
+
+            for action in trigger.get('action', []):
+                for activity_name, parameters in action.items():
+                    if activity_name == 'call_operation':
+                        target_participant = 'target'
+                        if isinstance(parameters, dict):
+                            message = parameters.get('operation')
+                            message += '('
+                            sep = ''
+                            for input_name, input_value in parameters.get('inputs', {}).items():
+                                message += sep
+                                message += input_name
+                                message += '='
+                                if isinstance(input_value, dict):
+                                    value = input_value.get('value')
+                                    if value != None:
+                                        input_value = value
+                                message += self.stringify_value(input_value)
+                                sep = ', '
+                            message += ')'
+                        else:
+                            message = '%s()' % parameters
+                    elif activity_name == 'set_state':
+                        target_participant = 'target'
+                        message = 'set_state: %s' % parameters
+                    elif activity_name == 'delegate':
+                        target_participant = 'target'
+                        message = 'delegate: %s' % parameters
+                    elif activity_name == 'inline':
+                        target_participant = 'orchestrator'
+                        message = 'inline: %s' % parameters
+                    else:
+                        target_participant = 'UNKNOWN'
+                        message = 'UNKNOWN ACTIVITY'
+                    self.generate('policy_trigger -> %s : %s' % (target_participant, message))
+                    self.generate('activate %s' % target_participant)
+                    self.generate('%s --> policy_trigger' % target_participant)
+                    self.generate('deactivate %s' % target_participant)
+
+            self.generate('deactivate policy_trigger')
+
+            # close the current sequence diagram
+            self.generate('@enduml')
+            self.close_file()
+
+        # iterate over all policies
+        for policy in topology_template.get('policies', []):
+            for policy_name, policy in policy.items():
+                for trigger_name, trigger in policy.get('triggers', {}).items():
+                    if trigger.get('action') != None:
+                        generate_sequence_diagram(policy_name, policy, trigger_name, trigger)
+
+    def stringify_value(self, value):
+        if not isinstance(value, (str, int, float)):
+            return '[[{' + self.yamlify_value(value) + '} ...]]'
+        else:
+            return repr(value)
+
+    def yamlify_value(self, value, header='', ident=''):
+        result = ''
+        if isinstance(value, dict):
+            tmp = header
+            for k, v in value.items():
+                result += tmp + str(k) + ': ' + self.yamlify_value(v, '\\n' + ident + '  ', ident + '  ')
+                tmp = '\\n' + ident
+        elif isinstance(value, list):
+            tmp = header
+            for v in value:
+                result += tmp + '- ' + self.yamlify_value(v, '', ident + '  ')
+        else:
+            result = repr(value)
+        return result
