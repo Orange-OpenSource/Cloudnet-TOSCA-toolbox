@@ -33,11 +33,15 @@ def short_type_name(type_name):
     return type_name[idx+1:]
 
 '''
-    Normalize a name, i.e., '.' and '-' characters are replaced by '_'.
+    Normalize a name, i.e.
+      - '.', '-', ' ' and ':' characters are replaced by '_'
+      - If first character is a digit then prefix '_' is added
 '''
 def normalize_name(label):
     for character in ['.', '-', ' ', ':']:
         label = label.replace(character, '_')
+    if label[0].isdigit():
+        label = '_' + label
     return label
 
 '''
