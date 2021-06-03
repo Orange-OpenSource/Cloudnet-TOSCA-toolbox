@@ -499,7 +499,7 @@ class AbstractAlloySigGenerator(Generator):
                     node_name = v[0]
                     if node_name == 'SELF':
                       node_name = self.SELF
-                    result += node_name + '.attribute_' + v[1]
+                    result += node_name + '.attribute_' + utils.normalize_name(v[1])
                 elif key == GET_ARTIFACT:
                     node_name = v[0]
                     if node_name == 'SELF':
@@ -2641,6 +2641,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             if imported_topology_template_yaml:
                 if imported_topology_template_yaml.get(SUBSTITUTION_MAPPINGS):
                     import_file = syntax.get_import_file(import_definition)
+                    import_file = import_file[import_file.rfind('/')+1:]
                     imported_topology_template_name = utils.normalize_name(import_file[:import_file.rfind('.')]) + '_topology_template'
                     # Add this imported topology template to the scope.
                     self.compute_scope_topology_template(acs, imported_topology_template_name, imported_topology_template_yaml)
