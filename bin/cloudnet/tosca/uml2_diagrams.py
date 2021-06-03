@@ -460,7 +460,7 @@ class PlantUMLGenerator(Generator):
                 if capability != None:
                     if type(capability) != list:
                         continue # TODO when capability is not a list
-                    target_node_uml_id = 'node_' + capability[0]
+                    target_node_uml_id = 'node_' + normalize_name(capability[0])
                     target_uml_id = target_node_uml_id + '_' + normalize_name(capability[1])
 
                     if already_generated_interfaces.get(target_uml_id) == None:
@@ -478,7 +478,7 @@ class PlantUMLGenerator(Generator):
                 if capability != None:
                     if type(capability) != list:
                         continue # TODO when capability is not a list
-                    target_node_uml_id = 'node_' + capability[0]
+                    target_node_uml_id = 'node_' + normalize_name(capability[0])
                     target_uml_id = target_node_uml_id + '_' + normalize_name(capability[1])
                     self.generate(capability_uml_id, '--(', target_uml_id)
                 else:
