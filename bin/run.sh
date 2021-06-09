@@ -239,7 +239,7 @@ show_menus() {
     echo "      4. Alloy syntax checking"
     echo "      5. Alloy solve"
     echo "      c. Clean results and logs directories"
-    echo "      D. Show the diagnostic (errors with line columns numbers) file (type q to leave)"
+    echo "      D. Show the diagnostic (errors with line and column numbers) file (type q to leave)"
     echo "      l. Show the log file (type q to leave)"
     echo "      w. Launch the whole process"
     echo "      x. Exit"
