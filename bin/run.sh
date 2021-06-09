@@ -222,7 +222,7 @@ AlloySolve()
 ################################################################################
 pause(){
   echo 
-  read -rp "         Press [Enter] key to continue..." fackEnterKey
+  read -rp "         Press [Enter] key to continue..."
 }
 
 ################################################################################
@@ -303,11 +303,14 @@ read_options(){
            # If logfilname is not set warn the user
            if [ "$SYNTAX_CHECK" = true ]; then 
                if [ -z ${_TRANSLATE_LOG+x} ]; then
-                 echo -e "\n\n"
-                 read -rp "          No diagnostic file created for this session. type any key to continue." choice
+                  echo -e "\n\n"
+                  read -rp "          No diagnostic file created for this session. type any key to continue." choice
                else
-                 diagnosticFormat ${_TRANSLATE_LOG}
-                 less -r "logs/${_FORMATTED_TRANSLATE_LOG}"
+                  # Test if file already generated
+                  if ! [ -f "logs/${_FORMATTED_TRANSLATE_LOG}" ]; then
+                     diagnosticFormat "${_TRANSLATE_LOG}"
+                  fi
+                  less -r "logs/${_FORMATTED_TRANSLATE_LOG}"
                fi
             else
                echo "You need to run \"TOSCA syntax checking\" before launching the alloy syntax checking"
@@ -318,8 +321,8 @@ read_options(){
            # If logfilname is set : show it
            # else, warn the user
            if [ -z ${_LOG+x} ]; then
-             echo -e "\n\n"
-             read -rp "          No log file created for this session, type any key to continue." choice
+               echo -e "\n\n"
+               read -rp "          No log file created for this session, type any key to continue." choice
            else
              less -r "logs/${_LOG}"
            fi
@@ -369,6 +372,26 @@ columnize2 () {
 }
 
 ################################################################################
+# Define which jq version to use
+################################################################################
+myJQ () {
+   # Test the linux version
+   case $(arch) in
+      x86_64) 
+         # Linux 64 bits architecture
+         ${CLOUDNET_BINDIR}/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
+         ;;
+      i386)
+         # Linux 32 bits architecture
+         ${CLOUDNET_BINDIR}/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
+         ;;
+      *) 
+         # Unknown linux architecture
+         echo -e "${bold}${red}Error${reset} Unknown architecture to run diagnostic menu..."
+         pause
+   esac
+}
+################################################################################
 # Display diagnostic file which is given in $1 parameter
 #     errors level, line and column numbers, and associated message
 ################################################################################
@@ -377,9 +400,12 @@ diagnosticFormat () {
    _FILENAME=$1
    _SORTED_FILENAME="${_FILENAME}_SORTED"
 
+   # Reinit output in case of multiple run
+   echo "" > logs/"${_FORMATTED_TRANSLATE_LOG}"
+
    # Verify if there are errors in the diagnostic file
    if [ "$(wc -l <${_FILENAME})" == "0" ]; then
-      echo -e "\n\n${bold}${magenta}**** No errors found in diagnostic file ${_FILENAME} ****${reset}" > logs/${_FORMATTED_TRANSLATE_LOG}
+      echo -e "\n\n${bold}${magenta}**** No errors found in diagnostic file ${_FILENAME} ****${reset}\n\n\n" > logs/"${_FORMATTED_TRANSLATE_LOG}"
    fi
 
    # Sort file on files names in case
@@ -390,9 +416,9 @@ diagnosticFormat () {
    _SEVERITY=""
    _MESSAGE=""
    _LINE=""
-   
+
    # Loop on the error log file
-   while read LREAD
+   while read -r LREAD
    do
        # remove double quotes in string
        LREAD=$(echo $LREAD | tr -d \" )
@@ -435,8 +461,7 @@ diagnosticFormat () {
        esac
        _INDEX=$((_INDEX+1))
    
-   done < <(jq '.file, .gravity, .message, .line, .column' ${_SORTED_FILENAME})
-
+   done < <(myJQ)
 }
 
 ################################################################################
