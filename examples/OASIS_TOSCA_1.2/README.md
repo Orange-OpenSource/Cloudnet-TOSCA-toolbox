@@ -10,7 +10,7 @@ You can experiment the TOSCA-toolbox with these yaml files.
 ## Table of contents
 
 1. [Manual procedure](#manual-procedure)
-2. [Usefull run.sh script](#A-Usefull-run.sh-script)
+2. [Usefull run.sh script](#a-usefull-runsh-script)
     - [Batch or cli mode](#batch-or-cli-mode)
     - [Using the interactive mode](#using-the-interactive-mode)
 3. [Examples description](#examples-description)
@@ -144,11 +144,12 @@ and display the following menu
       4. Alloy syntax checking
       5. Alloy solve
       c. Clean results and logs directories
+      D. Show the diagnostic (errors with line columns numbers) file (type q to leave)
       l. Show the log file (type q to leave)
       w. Launch the whole process
       x. Exit
 
-Enter choice [ 1-5 clwx ] 
+Enter choice [ 1-5 cDlwx ]
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

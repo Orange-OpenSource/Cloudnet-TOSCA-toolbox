@@ -140,11 +140,12 @@ and display the following menu
       4. Alloy syntax checking
       5. Alloy solve
       c. Clean results and logs directories
+      D. Show the diagnostic (errors with line columns numbers) file (type q to leave)
       l. Show the log file (type q to leave)
       w. Launch the whole process
       x. Exit
 
-Enter choice [ 1-5 clwx ] 
+Enter choice [ 1-5 cDlwx ] 
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
