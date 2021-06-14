@@ -379,11 +379,11 @@ myJQ () {
    case $(arch) in
       x86_64) 
          # Linux 64 bits architecture
-         ${CLOUDNET_BINDIR}/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
+         "${CLOUDNET_BINDIR}"/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
          ;;
       i386)
          # Linux 32 bits architecture
-         ${CLOUDNET_BINDIR}/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
+         "${CLOUDNET_BINDIR}"/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
          ;;
       *) 
          # Unknown linux architecture
@@ -405,7 +405,7 @@ diagnosticFormat () {
 
    # Verify if there are errors in the diagnostic file
    if [ "$(wc -l <${_FILENAME})" == "0" ]; then
-      echo -e "\n\n${bold}${magenta}**** No errors found in diagnostic file ${_FILENAME} ****${reset}\n\n\n" > logs/"${_FORMATTED_TRANSLATE_LOG}"
+      echo -e "\n\n${bold}${magenta}**** No errors found in diagnostic file ${_FILENAME} ****${reset}\n\n\n" > "logs/${_FORMATTED_TRANSLATE_LOG}"
    fi
 
    # Sort file on files names in case
@@ -426,7 +426,7 @@ diagnosticFormat () {
            1) # Filename
               if [ "$_OLDFILENAME" != "${LREAD}" ]; then
                   # print the new filename 
-                  echo -e "\n== ${bold}${magenta}${LREAD^^}${reset} =============" >> logs/${_FORMATTED_TRANSLATE_LOG}
+                  echo -e "\n== ${bold}${magenta}${LREAD^^}${reset} =============" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
                   # and store it
                   _OLDFILENAME="${LREAD}"
               fi
@@ -436,15 +436,17 @@ diagnosticFormat () {
               _SEVERITY=${LREAD}
               case ${LREAD} in
                  "error") 
-                      _COLOR="${bold}${red}"
-                      ;;
+                     _COLOR="${bold}${red}"
+                     ;;
                  "warning") 
-                      _COLOR="${bold}${yellow}"
-                      ;;
+                     _COLOR="${bold}${yellow}"
+                     ;;
                  "info") 
-                      _COLOR="${bold}$"
-                      ;;
-                  * ) echo -e "${bold}${red}Unexpected error ${_LOGSTRING[gravity]}${reset}" >> logs/${_FORMATTED_TRANSLATE_LOG};;
+                     _COLOR="${bold}$"
+                     ;;
+                  * ) 
+                     echo -e "${bold}${red}Unexpected error ${_LOGSTRING[gravity]}${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+                     ;;
               esac
               ;;
            3) # Get the message
@@ -454,8 +456,8 @@ diagnosticFormat () {
               _LINE=${LREAD}
               ;;
            5) #  Get the Column
-              echo -e "\011 [${_COLOR}${_SEVERITY^^}${reset}] line ${_LINE} column ${LREAD}" >> logs/${_FORMATTED_TRANSLATE_LOG}
-              columnize2 45 "                 $(tput setaf 4)MESSAGE$(tput sgr0) :" "${_MESSAGE}" >> logs/${_FORMATTED_TRANSLATE_LOG}
+              echo -e "\011 [${_COLOR}${_SEVERITY^^}${reset}] line ${_LINE} column ${LREAD}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+              columnize2 45 "                 $(tput setaf 4)MESSAGE$(tput sgr0) :" "${_MESSAGE}" >> "logs/${_FORMATTED_TRANSLATE_LOG}""
               _INDEX=0 
               ;;
        esac
