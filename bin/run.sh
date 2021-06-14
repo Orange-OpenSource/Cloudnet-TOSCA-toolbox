@@ -457,7 +457,7 @@ diagnosticFormat () {
               ;;
            5) #  Get the Column
               echo -e "\011 [${_COLOR}${_SEVERITY^^}${reset}] line ${_LINE} column ${LREAD}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
-              columnize2 45 "                 $(tput setaf 4)MESSAGE$(tput sgr0) :" "${_MESSAGE}" >> "logs/${_FORMATTED_TRANSLATE_LOG}""
+              columnize2 45 "                 $(tput setaf 4)MESSAGE$(tput sgr0) :" "${_MESSAGE}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
               _INDEX=0 
               ;;
        esac
