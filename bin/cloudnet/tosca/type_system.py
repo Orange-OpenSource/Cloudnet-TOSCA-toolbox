@@ -2804,7 +2804,19 @@ class TypeChecker(Checker):
     def check_property_mapping(self, property_name, property_mapping, property_definition, context_error_message):
 
         def check_mapping(mapping, cem):
+            expected_type = {
+                'type': 'list',
+                'entry_schema': {
+                    'type': 'string'
+                },
+                'constraints': [
+                    { 'length': 1 }
+                ]
+            }
+            self.check_value(mapping, expected_type, {}, cem)
             input_name = mapping[0]
+            if not isinstance(input_name, str):
+                return # as this is not a string
             # TODO: following could be factorized with function get_input
             input_definition = self.get_topology_template().get(syntax.INPUTS, {}).get(input_name)
             if input_definition is None:
