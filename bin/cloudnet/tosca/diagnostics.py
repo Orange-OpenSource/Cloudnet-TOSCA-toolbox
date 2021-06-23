@@ -17,8 +17,9 @@
 # simple structured logging
 import json
 import os
-from cloudnet.tosca.yaml_line_numbering import Coord
 import sys
+
+from cloudnet.tosca.yaml_line_numbering import Coord
 
 outfile = None  # file object to output to
 template = ""  # name of the template file
