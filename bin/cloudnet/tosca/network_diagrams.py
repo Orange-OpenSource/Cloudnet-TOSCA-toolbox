@@ -82,7 +82,7 @@ class NwdiagGenerator(Generator):
         )
         self.topology_template = topology_template
         if topology_template is None:
-            self.info("No network diagram generated.")
+            self.info("No topology template so no network diagram generated.")
         else:
             # generate network diagrams for TOSCA topology templates only
             self.generate_network_diagram(topology_template)
@@ -197,6 +197,7 @@ class NwdiagGenerator(Generator):
         if len(networks) == 0:  # no network node template found
             self.info("No network diagram generated.")
         else:
+            self.info("Network diagram generation ...")
             # network node templates found then
             # generate the network diagram file
             self.open_file(".nwdiag")

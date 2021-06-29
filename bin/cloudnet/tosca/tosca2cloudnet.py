@@ -150,6 +150,7 @@ def main(argv):
             HOTGenerator,
         ]:
             generator = generator_class(generator=type_checker)
+            print("TOSCA2CLOUDNET : " + generator_class.__name__ + " ...")
             generator.generation()
             nb_errors += generator.nb_errors
             nb_warnings += generator.nb_warnings

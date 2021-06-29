@@ -222,7 +222,7 @@ AlloySolve()
 ################################################################################
 pause(){
   echo 
-  read -rp "         Press [Enter] key to continue..." fackEnterKey
+  read -rp "         Press [Enter] key to continue..."
 }
 
 ################################################################################
@@ -239,6 +239,7 @@ show_menus() {
     echo "      4. Alloy syntax checking"
     echo "      5. Alloy solve"
     echo "      c. Clean results and logs directories"
+    echo "      D. Show the diagnostic (errors with line and column numbers) file (type q to leave)"
     echo "      l. Show the log file (type q to leave)"
     echo "      w. Launch the whole process"
     echo "      x. Exit"
@@ -251,7 +252,7 @@ show_menus() {
 ################################################################################
 read_options(){
     local choice
-    read -rp "Enter choice [ 1-5 clwx ] " choice
+    read -rp "Enter choice [ 1-5 cDlwx ] " choice
     case $choice in
         1) # Launch TOSCA syntax checking
            echo -e "\n"
@@ -298,12 +299,30 @@ read_options(){
            rm -rf "${RESULT_DIR}"
            pause
            ;;
+        D) # Show the diagnostic file formated
+           # If logfilname is not set warn the user
+           if [ "$SYNTAX_CHECK" = true ]; then 
+               if [ -z ${_TRANSLATE_LOG+x} ]; then
+                  echo -e "\n\n"
+                  read -rp "          No diagnostic file created for this session. type any key to continue." choice
+               else
+                  # Test if file already generated
+                  if ! [ -f "logs/${_FORMATTED_TRANSLATE_LOG}" ]; then
+                     diagnosticFormat "${_TRANSLATE_LOG}"
+                  fi
+                  less -r "logs/${_FORMATTED_TRANSLATE_LOG}"
+               fi
+            else
+               echo "You need to run \"TOSCA syntax checking\" before launching the alloy syntax checking"
+               pause
+            fi
+           ;;
         l) # Show the log file
            # If logfilname is set : show it
            # else, warn the user
            if [ -z ${_LOG+x} ]; then
-             echo -e "\n\n"
-             read -rp "          No log file created for this session, type any key to continue." choice
+               echo -e "\n\n"
+               read -rp "          No log file created for this session, type any key to continue." choice
            else
              less -r "logs/${_LOG}"
            fi
@@ -335,6 +354,117 @@ read_options(){
     esac
 }
 
+################################################################################
+# Print a string ($3 parameter) on a column of $1 width, after printing the 
+# first text ($2 parameter named keyname)
+# Is it clear ? I doubt ;-)
+################################################################################
+columnize2 () {
+    indent=$1; 
+    collen=$(($(tput cols)-indent)); 
+    keyname="$2"; 
+    value=$3; 
+    while [ -n "$value" ] ; do 
+        printf "%-26s  %-${indent}s\n" "$keyname" "${value:0:$collen}";  
+        keyname="";
+        value=${value:$collen}; 
+    done
+}
+
+################################################################################
+# Define which jq version to use
+################################################################################
+myJQ () {
+   # Test the linux version
+   case $(arch) in
+      x86_64) 
+         # Linux 64 bits architecture
+         "${CLOUDNET_BINDIR}"/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
+         ;;
+      i386)
+         # Linux 32 bits architecture
+         "${CLOUDNET_BINDIR}"/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
+         ;;
+      *) 
+         # Unknown linux architecture
+         echo -e "${bold}${red}Error${reset} Unknown architecture to run diagnostic menu..."
+         pause
+   esac
+}
+################################################################################
+# Display diagnostic file which is given in $1 parameter
+#     errors level, line and column numbers, and associated message
+################################################################################
+diagnosticFormat () {
+   # The translate file 
+   _FILENAME=$1
+   _SORTED_FILENAME="${_FILENAME}_SORTED"
+
+   # Reinit output in case of multiple run
+   echo "" > logs/"${_FORMATTED_TRANSLATE_LOG}"
+
+   # Verify if there are errors in the diagnostic file
+   if [ "$(wc -l <${_FILENAME})" == "0" ]; then
+      echo -e "\n\n${bold}${magenta}**** No errors found in diagnostic file ${_FILENAME} ****${reset}\n\n\n" > "logs/${_FORMATTED_TRANSLATE_LOG}"
+   fi
+
+   # Sort file on files names in case
+   sort -k 4 -o "${_SORTED_FILENAME}" "${_FILENAME}"
+   
+   _OLDFILENAME=""
+   _INDEX=1
+   _SEVERITY=""
+   _MESSAGE=""
+   _LINE=""
+
+   # Loop on the error log file
+   while read -r LREAD
+   do
+       # remove double quotes in string
+       LREAD=$(echo $LREAD | tr -d \" )
+       case $_INDEX in
+           1) # Filename
+              if [ "$_OLDFILENAME" != "${LREAD}" ]; then
+                  # print the new filename 
+                  echo -e "\n== ${bold}${magenta}${LREAD^^}${reset} =============" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+                  # and store it
+                  _OLDFILENAME="${LREAD}"
+              fi
+              ;;
+           2) # Gravity
+              # Set the color
+              _SEVERITY=${LREAD}
+              case ${LREAD} in
+                 "error") 
+                     _COLOR="${bold}${red}"
+                     ;;
+                 "warning") 
+                     _COLOR="${bold}${yellow}"
+                     ;;
+                 "info") 
+                     _COLOR="${bold}$"
+                     ;;
+                  * ) 
+                     echo -e "${bold}${red}Unexpected error ${_LOGSTRING[gravity]}${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+                     ;;
+              esac
+              ;;
+           3) # Get the message
+              _MESSAGE=${LREAD}
+              ;;
+           4) #  Get the Line
+              _LINE=${LREAD}
+              ;;
+           5) #  Get the Column
+              echo -e "\011 [${_COLOR}${_SEVERITY^^}${reset}] line ${_LINE} column ${LREAD}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+              columnize2 45 "                 $(tput setaf 4)MESSAGE$(tput sgr0) :" "${_MESSAGE}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+              _INDEX=0 
+              ;;
+       esac
+       _INDEX=$((_INDEX+1))
+   
+   done < <(myJQ)
+}
 
 ################################################################################
 # MAINtenant le programme commence  !!!!!!!!!!!!!                              #
@@ -351,7 +481,6 @@ cyan="36m"
 white="37m"
 reset="\033[m"
 blink="5m"
-
 
 # Guess where are located the software
 CLOUDNET_BINDIR="$PWD/.."
@@ -505,10 +634,17 @@ done
 ################################################################################
 # Create a _LOG variable in case we have privious results we want to reuse
 _LOG=$(basename "${PWD}")-$(date +%F_%H-%M-%S).log
-mkdir -p logs 2>/dev/null
-touch logs/"$_LOG"
+_TRANSLATE_LOG="Translate_diagnostics-"$(date +%F_%H-%M-%S).log
+_FORMATTED_TRANSLATE_LOG="FORMATTED_${_TRANSLATE_LOG}"
+_TRANSLATE_LOG="logs/"${_TRANSLATE_LOG}
 
+mkdir -p logs 2>/dev/null
 clear
+
+# SET environment variables to configure process execution
+# Network diagram generation
+export NWDIAG_OPTS=""
+export TOSCAWARE_OPTS="--diagnostics-file ${_TRANSLATE_LOG}"
 
 echo -e "\n\nGenerated files will be placed in the following directories"
 for var in "${dirArray[@]}"
@@ -516,6 +652,10 @@ do
   echo -e "      ${var} : ${normal}${blue}${!var}${reset}"
 done
 echo -e "\nA log file will be also available here ${normal}${blue}logs/${_LOG}${reset}"
+if [[ -n ${TOSCAWARE_OPTS} ]]; then
+   echo -e "\nA diagnostic error log file will be also available here ${normal}${blue}${_TRANSLATE_LOG}${reset}"
+   touch "$_TRANSLATE_LOG"
+fi
 pause
 
 ############################################################################

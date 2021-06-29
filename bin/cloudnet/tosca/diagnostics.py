@@ -17,8 +17,9 @@
 # simple structured logging
 import json
 import os
-from cloudnet.tosca.yaml_line_numbering import Coord
 import sys
+
+from cloudnet.tosca.yaml_line_numbering import Coord
 
 outfile = None  # file object to output to
 template = ""  # name of the template file
@@ -34,7 +35,7 @@ def configure(template_filename, log_filename):
 
 def diagnostic(gravity, file, message, cls, value=None, **kwargs):
     global return_code, outfile, template
-    if gravity == "info" or outfile == None:
+    if gravity == "info" or outfile is None:
         return
     return_code = 1
     if file == "":
