@@ -246,10 +246,11 @@ class NwdiagGenerator(Generator):
                     '    color = "%s"' % network_repr.get("color", "lightblue")
                 )
                 self.generate(
-                    '    textcolor = "%s"' % network_repr.get(
-                                                "textcolor",
-                                                "black",
-                                             )
+                    '    textcolor = "%s"'
+                    % network_repr.get(
+                        "textcolor",
+                        "black",
+                    )
                 )
 
                 # generate all the ports connected to the network

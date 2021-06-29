@@ -163,23 +163,31 @@ class Importer(object):
                 problem = "incorrect indentation or string must be quoted"
             if exc.context is None:
                 raise ValueError(
-                    StrCoord("%s at line %s column %s"
-                    % (problem, exc.problem_mark.line + 1, exc.problem_mark.column + 1),
-                    exc.problem_mark.line + 1,  exc.problem_mark.column + 1)
+                    StrCoord(
+                        "%s at line %s column %s"
+                        % (
+                            problem, 
+                            exc.problem_mark.line + 1, 
+                            exc.problem_mark.column + 1
+                        ),
+                        exc.problem_mark.line + 1,  
+                        exc.problem_mark.column + 1,
+                    )
                 )
             else:
                 raise ValueError(
-                    StrCoord("%s at line %s column %s %s at line %s column %s"
-                    % (
-                        problem,
+                    StrCoord(
+                        "%s at line %s column %s %s at line %s column %s"
+                        % (
+                            problem,
+                            exc.problem_mark.line + 1,
+                            exc.problem_mark.column + 1,
+                            exc.context,
+                            exc.context_mark.line + 1,
+                            exc.context_mark.column + 1,
+                        ),
                         exc.problem_mark.line + 1,
                         exc.problem_mark.column + 1,
-                        exc.context,
-                        exc.context_mark.line + 1,
-                        exc.context_mark.column + 1,
-                    ),
-                    exc.problem_mark.line + 1,
-                    exc.problem_mark.column + 1,
                     )
                 )
 
