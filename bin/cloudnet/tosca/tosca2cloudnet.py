@@ -112,11 +112,16 @@ def main(argv):
                 sep="",
                 file=sys.stderr,
             )
+            if len(e.args) != 0:
+                value = e.args[0]
+            else:
+                value = ""
             diagnostics.diagnostic(
                 gravity="error",
                 file=args.template_file,
                 message=str(e),
                 cls="tosca2cloudnet",
+                value=value,
             )
             return 2
 
