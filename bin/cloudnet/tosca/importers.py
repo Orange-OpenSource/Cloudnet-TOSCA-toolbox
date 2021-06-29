@@ -166,11 +166,11 @@ class Importer(object):
                     StrCoord(
                         "%s at line %s column %s"
                         % (
-                            problem, 
-                            exc.problem_mark.line + 1, 
+                            problem,
+                            exc.problem_mark.line + 1,
                             exc.problem_mark.column + 1
                         ),
-                        exc.problem_mark.line + 1,  
+                        exc.problem_mark.line + 1,
                         exc.problem_mark.column + 1,
                     )
                 )
