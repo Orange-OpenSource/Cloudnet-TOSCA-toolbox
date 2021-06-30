@@ -168,7 +168,7 @@ class Importer(object):
                         % (
                             problem,
                             exc.problem_mark.line + 1,
-                            exc.problem_mark.column + 1
+                            exc.problem_mark.column + 1,
                         ),
                         exc.problem_mark.line + 1,
                         exc.problem_mark.column + 1,
