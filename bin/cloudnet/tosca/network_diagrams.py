@@ -19,6 +19,7 @@ import shutil
 
 import cloudnet.tosca.syntax as syntax
 from cloudnet.tosca.configuration import DEFAULT_CONFIGURATION
+from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.processors import Generator
 
 NWDIAG = "nwdiag"
@@ -56,7 +57,6 @@ DEFAULT_CONFIGURATION[NWDIAG] = {
 DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
 }
-from cloudnet.tosca.diagnostics import diagnostic
 
 LOGGER = logging.getLogger(__name__)
 
@@ -113,12 +113,20 @@ class NwdiagGenerator(Generator):
 
         # iterates over all the requirements of the substitution mapping
         # in order to create external networks
-        substitution_mapping = topology_template.get(syntax.SUBSTITUTION_MAPPINGS)
+        substitution_mapping = topology_template.get(
+                                    syntax.SUBSTITUTION_MAPPINGS
+                               )
         if substitution_mapping is not None:
-            substitution_mapping_node_type = syntax.get_node_type(substitution_mapping)
+            substitution_mapping_node_type = syntax.get_node_type(
+                                                substitution_mapping
+                                             )
             if substitution_mapping_node_type is not None:
-                node_type = self.type_system.merge_type(substitution_mapping_node_type)
-                node_type_requirements = syntax.get_requirements_dict(node_type)
+                node_type = self.type_system.merge_type(
+                                substitution_mapping_node_type
+                            )
+                node_type_requirements = syntax.get_requirements_dict(
+                                            node_type
+                                         )
                 for (
                     requirement_name,
                     requirement_value,
@@ -134,8 +142,10 @@ class NwdiagGenerator(Generator):
                     if capability in self.configuration.get(
                         NWDIAG, "linkable_capability_types"
                     ):
-                        # is a requirement with capability in linkable capability types
-                        # create the Network associated to this external network requirement
+                        # is a requirement with capability in linkable
+                        # capability types
+                        # create the Network associated to this external
+                        # network requirement
                         network = get_network(requirement_name)
                         # the requirement node is in the external node
                         network.nodes[requirement_value[0]] = requirement_value[0]
@@ -147,9 +157,11 @@ class NwdiagGenerator(Generator):
             node_type = node_yaml.get(syntax.TYPE)
             node_type_type = self.type_system.merge_type(node_type)
 
-            # TODO: special case for Forwarding node which are both a port and a network
+            # TODO: special case for Forwarding node which are both a port and
+            #       a network
             if node_type == "tosca.nodes.nfv.Forwarding":
-                # a Forwarding node is a node of its associated Forwarding network
+                # a Forwarding node is a node of its associated Forwarding
+                # network
                 get_network(node_name).nodes[node_name] = node_name
 
             # iterate over all the node capabilities
@@ -168,7 +180,9 @@ class NwdiagGenerator(Generator):
                     get_network(node_name).network_node = node_yaml
 
             # iterate over all the requirements of the current node
-            node_type_requirements = syntax.get_requirements_dict(node_type_type)
+            node_type_requirements = syntax.get_requirements_dict(
+                                        node_type_type
+                                     )
             for requirement in syntax.get_requirements_list(node_yaml):
                 for requirement_name, requirement_yaml in requirement.items():
                     requirement_definition = node_type_requirements.get(
@@ -207,7 +221,8 @@ class NwdiagGenerator(Generator):
                 self.generate("  network %s {" % network_name)
                 network_node = network.network_node
                 if network_node is None:
-                    # this is an external network associated to a network requirement of the substitution mapping
+                    # this is an external network associated to a network
+                    # requirement of the substitution mapping
                     network_repr = {}  # use default graphical attributes
                     network_label = network_name
                     network_address = ""  # no network address
@@ -231,12 +246,17 @@ class NwdiagGenerator(Generator):
                     '    color = "%s"' % network_repr.get("color", "lightblue")
                 )
                 self.generate(
-                    '    textcolor = "%s"' % network_repr.get("textcolor", "black")
+                    '    textcolor = "%s"'
+                    % network_repr.get(
+                        "textcolor",
+                        "black",
+                    )
                 )
 
                 # generate all the ports connected to the network
                 if len(network.nodes) == 0:  # no node found
-                    # nwdiag tool requires that a network has nodes else an error is produced!
+                    # nwdiag tool requires that a network has nodes else an
+                    # error is produced!
                     # so generate a graphical note
                     self.generate(
                         '    empty_network_%s[label="This network\nis empty!", shape=note];'
@@ -255,7 +275,9 @@ class NwdiagGenerator(Generator):
                             bindings = ports.get(binding, [binding])
                             for binding in bindings:
                                 binding_node = node_templates.get(binding)
-                                binding_repr = self.get_representation(binding_node)
+                                binding_repr = self.get_representation(
+                                                    binding_node
+                                               )
                                 binding_label = self.resolve_attribute(
                                     binding_node, binding_repr, "label", "\n"
                                 )
@@ -263,7 +285,8 @@ class NwdiagGenerator(Generator):
                                     binding_label if binding_label != "" else binding
                                 )
                                 # generate the graphical node
-                                # TODO: add other graphical attributes font, etc.
+                                # TODO: add other graphical attributes font,
+                                #       etc.
                                 self.generate(
                                     '    "%s"[label="%s", address="%s", shape="%s", color="%s", textcolor="%s", style="%s"%s];'
                                     % (
@@ -287,7 +310,8 @@ class NwdiagGenerator(Generator):
     def get_representation(self, node_template):
         node_type_name = node_template.get(syntax.TYPE)
         while True:
-            # search the graphical representation for the current node type name
+            # search the graphical representation for the current node type
+            # name
             representation = self.configuration.get(NWDIAG, "node_types").get(
                 node_type_name
             )
@@ -305,7 +329,13 @@ class NwdiagGenerator(Generator):
         # so use default graphical representation
         return {}
 
-    def resolve_attribute(self, node, representation, attribute_name, separator):
+    def resolve_attribute(
+            self,
+            node,
+            representation,
+            attribute_name,
+            separator
+            ):
         address = ""
         sep1 = ""
         for item in representation.get(attribute_name, []):

@@ -19,7 +19,7 @@ import zipfile  # for reading ZIP files.
 import cloudnet.tosca.configuration as configuration
 import requests  # for HTTP GET requests.
 import yaml  # for parsing YAML.
-from cloudnet.tosca.yaml_line_numbering import SafeLineLoader
+from cloudnet.tosca.yaml_line_numbering import SafeLineLoader, StrCoord
 
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
@@ -163,19 +163,31 @@ class Importer(object):
                 problem = "incorrect indentation or string must be quoted"
             if exc.context is None:
                 raise ValueError(
-                    "%s at line %s column %s"
-                    % (problem, exc.problem_mark.line + 1, exc.problem_mark.column + 1)
+                    StrCoord(
+                        "%s at line %s column %s"
+                        % (
+                            problem,
+                            exc.problem_mark.line + 1,
+                            exc.problem_mark.column + 1,
+                        ),
+                        exc.problem_mark.line + 1,
+                        exc.problem_mark.column + 1,
+                    )
                 )
             else:
                 raise ValueError(
-                    "%s at line %s column %s %s at line %s column %s"
-                    % (
-                        problem,
+                    StrCoord(
+                        "%s at line %s column %s %s at line %s column %s"
+                        % (
+                            problem,
+                            exc.problem_mark.line + 1,
+                            exc.problem_mark.column + 1,
+                            exc.context,
+                            exc.context_mark.line + 1,
+                            exc.context_mark.column + 1,
+                        ),
                         exc.problem_mark.line + 1,
                         exc.problem_mark.column + 1,
-                        exc.context,
-                        exc.context_mark.line + 1,
-                        exc.context_mark.column + 1,
                     )
                 )
 
