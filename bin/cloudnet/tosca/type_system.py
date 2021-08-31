@@ -616,6 +616,7 @@ class TypeChecker(Checker):
         self.current_imperative_workflow = None
         self.reserved_function_keywords = {}
         self.all_the_node_template_requirements = {}
+        self.substituting_topology_templates = []
 
         self.info('TOSCA type checking...')
 
@@ -726,6 +727,16 @@ class TypeChecker(Checker):
                     self.warning(' - ' + path + " - file extension '" + file_ext + "' already associated to " + artifact_type)
                     continue
                 self.type_system.artifact_types_by_file_ext[file_ext] = namescape_prefix + artifact_name
+
+        # record substituting topology templates
+        substitution_mappings_node_type = \
+            template_yaml.get('topology_template', {}) \
+            .get('substitution_mappings', {}) \
+            .get('node_type')
+        if substitution_mappings_node_type != None:
+            self.info("record %s as susbtitution topology template for %s node type" \
+                % ( tosca_service_template.get_fullname(), substitution_mappings_node_type ))
+            self.substituting_topology_templates.append(tosca_service_template)
 
     def get_topology_template(self):
         return self.tosca_service_template.get_yaml().get(syntax.TOPOLOGY_TEMPLATE, {})
@@ -1684,8 +1695,8 @@ class TypeChecker(Checker):
         iterate_over_map(self.check_imperative_workflow_definition, syntax.WORKFLOWS)
 
         for req_id, requirement in self.all_the_node_template_requirements.items():
+            cem = 'topology_template:node_templates:' + requirement.node_template_name + ':requirements:' + requirement.requirement_name
             if requirement.connections < requirement.lower_bound:
-                cem = 'topology_template:node_templates:' + requirement.node_template_name + ':requirements:' + requirement.requirement_name
                 node_type_names = []
                 # get the requirement node
                 requirement_node = requirement.requirement_definition.get('node')
@@ -1709,7 +1720,7 @@ class TypeChecker(Checker):
                     node_templates.extend(self.select_node_templates(node_type_name, None, cem))
 
                 if len(node_templates) == 0:
-                    self.error(cem + ' - no node template matching ' + node_type_name)
+                    self.error(cem + ' - no node template matching ' + array_to_string_with_or_separator(node_type_names))
                     continue
                 update_requirement_node = node_templates[0]
                 if len(node_templates) == 1:
@@ -2320,7 +2331,7 @@ class TypeChecker(Checker):
         if update_requirement_node != None:
             requirement_assignment[syntax.NODE] = update_requirement_node
 
-    def select_node_templates(self, node_type_name, node_filter, context_error_message):
+    def eval_node_filter(self, node_filter, node_template, context_error_message):
 
         def eval_property_filters(filter, template, template_type):
             template_properties = template.get(syntax.PROPERTIES,{})
@@ -2329,9 +2340,9 @@ class TypeChecker(Checker):
                 for property_name, property_constraint_clauses in property_filter.items():
                     property_value = template_properties.get(property_name)
                     property_type = template_type_properties.get(property_name, {}).get(syntax.TYPE)
-                    if property_value is None:
-                        # TODO: dealt with default or value defined in the property definition
-                        return False # no value for the property
+#                    if property_value is None:
+#                        # TODO: dealt with default or value defined in the property definition
+#                        return False # no value for the property
                     if type(property_constraint_clauses) != list:
                         property_constraint_clauses = [ property_constraint_clauses ]
                     for property_constraint_clause in property_constraint_clauses:
@@ -2352,35 +2363,50 @@ class TypeChecker(Checker):
             # all property constraints are matched ;-)
             return True
 
-        def eval_node_filter(node_filter, node_template):
-            node_template_type = self.type_system.merge_type(node_template.get(syntax.TYPE))
-            # evaluation node_filter properties
-            if not eval_property_filters(node_filter, node_template, node_template_type):
-                return False
-            # evaluation node_filter capabilities
-            node_template_capabilities = node_template.get(syntax.CAPABILITIES,{})
-            node_template_type_capabilities = node_template_type.get(syntax.CAPABILITIES,{})
-            for node_filter_capability in node_filter.get(syntax.CAPABILITIES, []):
-                for capability_name, capability_filter in node_filter_capability.items():
-                    capability_type_name = node_template_type_capabilities.get(capability_name, {}).get(syntax.TYPE)
-                    if capability_type_name is None: # capability not found! so node_filter is incorrectly typed!
-                        return False
-                    capability_type = self.type_system.merge_type(capability_type_name)
-                    if not eval_property_filters(capability_filter, \
-                                                 node_template_capabilities.get(capability_name, {}), \
-                                                 capability_type):
-                        return False
-            # all node constraints are matched ;-)
-            return True
+        node_template_type = self.type_system.merge_type(node_template.get(syntax.TYPE))
+        # evaluation node_filter properties
+        if not eval_property_filters(node_filter, node_template, node_template_type):
+            return False
+        # evaluation node_filter capabilities
+        node_template_capabilities = node_template.get(syntax.CAPABILITIES,{})
+        node_template_type_capabilities = node_template_type.get(syntax.CAPABILITIES,{})
+        for node_filter_capability in node_filter.get(syntax.CAPABILITIES, []):
+            for capability_name, capability_filter in node_filter_capability.items():
+                capability_type_name = node_template_type_capabilities.get(capability_name, {}).get(syntax.TYPE)
+                if capability_type_name is None: # capability not found! so node_filter is incorrectly typed!
+                    return False
+                capability_type = self.type_system.merge_type(capability_type_name)
+                if not eval_property_filters(capability_filter, \
+                                             node_template_capabilities.get(capability_name, {}), \
+                                             capability_type):
+                    return False
+        # all node filter constraints are matched ;-)
+        return True
 
-        self.logger.debug(context_error_message, '- select_node_templates with node_filter =', node_filter)
+    def select_node_templates(self, node_type_name, node_filter, context_error_message):
+        self.logger.debug(context_error_message + '- select_node_templates with node_filter =%s' % node_filter)
         found_node_templates = []
         for node_template_name, node_template in self.get_topology_template().get(syntax.NODE_TEMPLATES, {}).items():
             if self.type_system.is_derived_from(node_template.get(syntax.TYPE), node_type_name):
-                if node_filter is None or eval_node_filter(node_filter, node_template):
+                if node_filter is None or self.eval_node_filter(node_filter, node_template, context_error_message):
                     found_node_templates.append(node_template_name)
-        self.logger.debug(context_error_message, '- select_node_templates found_node_templates =', found_node_templates)
+        self.logger.debug(context_error_message + '- select_node_templates found_node_templates =%s' % found_node_templates)
         return found_node_templates
+
+    def search_substituting_topology_templates(self, node_template, context_error_message):
+        node_template_type = node_template['type']
+        self.debug(context_error_message + ' - search_substituting_topology_templates %s' % node_template_type)
+        found_substituting_topology_templates = []
+        for tosca_service_template in self.substituting_topology_templates:
+            substitution_mappings = tosca_service_template.get_yaml()['topology_template']['substitution_mappings']
+            self.debug('substitution_mappings = %s' % substitution_mappings)
+            if self.type_system.is_derived_from(node_template_type, substitution_mappings['node_type']):
+                substitution_filter = substitution_mappings.get('substitution_filter')
+                self.debug('substitution_filter = %s' % substitution_filter)
+                if substitution_filter is None or self.eval_node_filter(substitution_filter, node_template, context_error_message):
+                    found_substituting_topology_templates.append(tosca_service_template)
+        self.debug(context_error_message + '- search_substituting_topology_templates returns %s' % found_substituting_topology_templates)
+        return found_substituting_topology_templates
 
     def check_interface_assignment(self, interface_name, interface_assignment, interface_definition, context_error_message):
         # check description - nothing to do
@@ -2420,8 +2446,34 @@ class TypeChecker(Checker):
         checked, node_type_name, node_type = self.check_type_in_template('node', node_template, syntax.TYPE, context_error_message)
         # check description - nothing to do
         # check metadata - nothing to do
-        # check directives - TODO
-        self.unchecked(node_template, syntax.DIRECTIVES, context_error_message)
+        # check directives
+        def check_directive_substitute(cem):
+            substituting_topology_templates = self.search_substituting_topology_templates(node_template, cem)
+            nb_substituting_topology_templates = len(substituting_topology_templates)
+            if nb_substituting_topology_templates == 0:
+                self.error(cem + " - no substituting topology template found for %s node type" % node_type_name)
+            elif nb_substituting_topology_templates == 1:
+                self.info(cem + " - one substituting topology template found: " + substituting_topology_templates[0].get_fullname())
+            else:
+                self.warning(cem + " - several substituting topology templates found: " + \
+                    array_to_string_with_or_separator([item.get_fullname for item in substituting_topology_templates]))
+
+        idx = 0
+        for directive in node_template.get(syntax.DIRECTIVES, []):
+            cem = context_error_message + ':' + syntax.DIRECTIVES + '[' + str(idx) + ']: ' + directive
+            if directive == 'substitute':
+                check_directive_substitute(cem)
+            elif directive == 'substitutable':
+                self.warning(cem + ' - deprecated directive, instead use substitute directive')
+                check_directive_substitute(cem)
+            elif directive == 'select':
+                self.error(cem + ' - unchecked currently')
+            elif directive == 'selectable':
+                self.warning(cem + ' - deprecated directive, instead use select directive')
+                self.error(cem + ' - unchecked currently')
+            else:
+                self.error(cem + ' - unsupported directive')
+            idx += 1
         # check properties
         self.iterate_over_map_of_assignments(self.check_property_assignment, syntax.PROPERTIES, node_template, node_type, node_type_name, context_error_message)
         node_filter = node_template.get(syntax.NODE_FILTER)
@@ -2814,6 +2866,8 @@ class TypeChecker(Checker):
                 ]
             }
             self.check_value(mapping, expected_type, {}, cem)
+            if not isinstance(mapping, list):
+                return # as this is not a list
             input_name = mapping[0]
             if not isinstance(input_name, str):
                 return # as this is not a string
