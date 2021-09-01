@@ -26,10 +26,12 @@ profiles_directory = 'file:' + os.path.dirname(__file__) + '/profiles'
 import cloudnet.tosca.configuration as configuration
 
 TYPE_SYSTEM = 'TypeSystem'
+SERVICE_TEMPLATE_CATALOG = 'Service-Template-Catalog'
 TOSCA_NORMATIVE_TYPES = 'tosca_normative_types'
 DEFAULT_TOSCA_NORMATIVE_TYPES = 'default_tosca_normative_types'
 SHORT_NAMES = 'short_names'
 configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
+    SERVICE_TEMPLATE_CATALOG: None,
     TOSCA_NORMATIVE_TYPES: {
         'tosca_simple_yaml_1_0': profiles_directory + '/tosca_simple_yaml_1_0/types.yaml',
         'tosca_simple_yaml_1_1': profiles_directory + '/tosca_simple_yaml_1_1/types.yaml',
@@ -605,6 +607,20 @@ class TypeChecker(Checker):
     '''
         TOSCA type system checker
     '''
+
+    def _processor_initialize_(self):
+        self.substituting_topology_templates = []
+        service_template_catalog = self.configuration.get(TYPE_SYSTEM, SERVICE_TEMPLATE_CATALOG)
+        if service_template_catalog is None:
+            self.info("No service template catalog to load.")
+        else:
+            self.info("Loading service template catalog...")
+            from cloudnet.tosca.importers import FilesystemImporter
+            importer = FilesystemImporter('')
+            for service_template in service_template_catalog:
+                self.load_tosca_yaml_template(service_template, importer)
+            self.info("Service template catalog loaded.")
+
     def check(self):
         # initialize global variables
         self.current_type_name = None
@@ -616,7 +632,6 @@ class TypeChecker(Checker):
         self.current_imperative_workflow = None
         self.reserved_function_keywords = {}
         self.all_the_node_template_requirements = {}
-        self.substituting_topology_templates = []
 
         self.info('TOSCA type checking...')
 
@@ -728,13 +743,13 @@ class TypeChecker(Checker):
                     continue
                 self.type_system.artifact_types_by_file_ext[file_ext] = namescape_prefix + artifact_name
 
-        # record substituting topology templates
+        # register substituting topology templates
         substitution_mappings_node_type = \
             template_yaml.get('topology_template', {}) \
             .get('substitution_mappings', {}) \
             .get('node_type')
         if substitution_mappings_node_type != None:
-            self.info("record %s as susbtitution topology template for %s node type" \
+            self.info("register %s as susbtitution topology template for %s node type" \
                 % ( tosca_service_template.get_fullname(), substitution_mappings_node_type ))
             self.substituting_topology_templates.append(tosca_service_template)
 

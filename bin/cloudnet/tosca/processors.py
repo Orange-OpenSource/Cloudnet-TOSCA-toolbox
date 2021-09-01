@@ -50,6 +50,10 @@ class Processor(object):
         self.nb_errors = 0
         self.nb_warnings = 0
         self.logger = logging.getLogger(self.__class__.__module__)
+        self._processor_initialize_()
+
+    def _processor_initialize_(self):
+        pass
 
     def get_mapping(self, key, mappings):
         previous = None
