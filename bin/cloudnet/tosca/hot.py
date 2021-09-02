@@ -89,7 +89,8 @@ class HOTGenerator(Generator):
         self.substitution_mappings = {}
 
         # Iterate over imported files.
-        for imported_file in get_list(template_yaml, IMPORTS):
+        for import_yaml in get_list(template_yaml, IMPORTS):
+            imported_file = syntax.get_import_file(import_yaml)
             imported_file_yaml = self.tosca_service_template.imports(imported_file).get_yaml()
             substitution_mappings = get_dict(get_dict(imported_file_yaml, TOPOLOGY_TEMPLATE), SUBSTITUTION_MAPPINGS)
             node_type = substitution_mappings.get(NODE_TYPE)
