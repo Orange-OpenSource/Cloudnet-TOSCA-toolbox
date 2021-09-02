@@ -478,9 +478,14 @@ class AbstractAlloySigGenerator(Generator):
             for key, v in value.items():
                 PARAMETER_STRING_TYPE = { TYPE: 'string' }
                 if key == GET_INPUT:
-                    if type(v) != str:
-                        self.error(context_error_message + ': get_input has only one string parameter')
-                    result = result + key + '["' + v + '"]'
+                    if type(v) is str:
+                        input_name = v
+                    elif type(v) is list:
+                        input_name = v[0]
+                    else:
+                        self.error(context_error_message + ': get_input - string or list expected')
+                        break
+                    result = result + key + '["' + input_name + '"]'
                 elif key == GET_PROPERTY:
                     nb_params = len(v)
                     node_name = v[0]

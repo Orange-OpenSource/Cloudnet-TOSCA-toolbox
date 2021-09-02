@@ -2110,14 +2110,37 @@ class TypeChecker(Checker):
                 return
 
             if syntax.GET_INPUT in value:
-                parameter = value[syntax.GET_INPUT]
-                if type(parameter) != str:
-                    self.error(context_error_message + ': ' + str(value) + ' - input name expected')
+                parameters = value[syntax.GET_INPUT]
+                if type(parameters) is str:
+                    input_name = parameters
+                    parameters = []
+                elif type(parameters) is list:
+                    input_name = parameters[0]
+                    parameters = parameters[1:]
+                else:
+                    self.error(context_error_message + ': ' + str(value) + ' - string or list expected')
                     return
-                input_definition = self.get_topology_template().get(syntax.INPUTS, {}).get(parameter)
+                input_definition = self.get_topology_template().get(syntax.INPUTS, {}).get(input_name)
                 if input_definition is None:
-                    self.error(context_error_message + ': ' + str(value) + ' - ' + parameter + ' input undefined')
+                    self.error(context_error_message + ': ' + str(value) + ' - ' + input_name + ' input undefined')
                     return
+
+                for parameter in parameters:
+                    t = input_definition.get(syntax.TYPE)
+                    rt = self.get_root_data_type_name(t)
+                    if rt == 'map':
+                        type_checker = self.get_type_checker({ syntax.TYPE: input_definition.get(syntax.KEY_SCHEMA, {}).get(syntax.TYPE, 'string')}, {}, context_error_message + ': ' + str(value))
+                        type_checker.check_type(parameter, self, context_error_message + ': ' + str(value))
+                        input_definition = input_definition.get(syntax.ENTRY_SCHEMA)
+                    elif rt == 'list':
+                        BASIC_TYPE_CHECKERS['integer'].check_type(parameter, self, context_error_message + ': ' + str(value))
+                        input_definition = input_definition.get(syntax.ENTRY_SCHEMA)
+                    else:
+                        input_definition = self.type_system.merge_type(self.type_system.get_type_uri(t)).get(syntax.PROPERTIES, {}).get(parameter)
+                        if input_definition is None:
+                            self.error(context_error_message + ': ' + str(value) + ' - ' + str(parameter) + ' property undefined')
+                            return
+
                 input_type = input_definition.get(syntax.TYPE)
                 value_type = definition.get(syntax.TYPE)
                 if value_type != None and not self.type_system.is_derived_from(input_type, value_type):
