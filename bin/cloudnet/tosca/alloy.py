@@ -2194,13 +2194,33 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             self.generate('  substitution_mappings[substitution_mappings]')
             self.generate('  substitution_mappings.node_type_name = "' + self.type_system.get_type_uri(substitution_mappings_node_type) + '"', sep='')
 
-            # Translate properties.
-            self.generate_all_properties(get_dict(self.type_system.merge_type(substitution_mappings_node_type), PROPERTIES),
-                                         get_dict(substitution_mappings, PROPERTIES),
-                                         SUBSTITUTION_MAPPINGS,
-                                         TOPOLOGY_TEMPLATE + ':' + SUBSTITUTION_MAPPINGS + ':' + PROPERTIES,
-                                         generate_no_value=False,
-                                         required_properties_must_be_set=False)
+            # Map properties.
+            substitution_mappings_properties = get_dict(substitution_mappings, PROPERTIES)
+            if substitution_mappings_properties != None:
+                substitution_mappings_node_type_properties = get_dict(self.type_system.merge_type(substitution_mappings_node_type), PROPERTIES)
+                cem = TOPOLOGY_TEMPLATE + ':' + SUBSTITUTION_MAPPINGS + ':' + PROPERTIES + ':'
+                for property_name, property_yaml in substitution_mappings_properties.items():
+                    self.generate('  // YAML ', property_name, ': ', property_yaml, sep='')
+                    mapping = None
+                    value = None
+                    is_mapping = lambda v : type(v) is list and len(v) == 1 and type(v[0]) is str
+                    if type(property_yaml) is dict and len(property_yaml) == 1:
+                        tmp = property_yaml.get("mapping")
+                        if is_mapping(tmp):
+                            mapping = tmp[0]
+                        value = property_yaml.get("value")
+                    elif is_mapping(property_yaml):
+                        mapping = property_yaml[0]
+                    else:
+                        value = property_yaml
+                    if mapping != None:
+                        self.generate('  input["', mapping, '"].value = substitution_mappings.property_', utils.normalize_name(property_name), sep='')
+                    if value != None:
+                        self.generate_property(
+                            "substitution_mappings.property_" + utils.normalize_name(property_name),
+                            value,
+                            substitution_mappings_node_type_properties.get(property_name),
+                            cem + property_name)
 
             # Translate capabilities.
             capabilities = substitution_mappings.get(CAPABILITIES)
