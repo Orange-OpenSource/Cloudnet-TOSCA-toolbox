@@ -988,7 +988,7 @@ definitions:
               default:
                 $ref: "#/definitions/value"
               mapping:
-                $ref: "#/definitions/attribut_selection_format"
+                $ref: "#/definitions/attribute_selection_format"
               status:
                 $ref: "#/definitions/status"
               constraints:
@@ -1014,7 +1014,7 @@ definitions:
 # Section 4.4.13 Parameter mapping assignment
 
   parameter_mapping_assignment:
-    $ref: "#/definitions/attribut_selection_format"
+    $ref: "#/definitions/attribute_selection_format"
 
 # Section 4.4.13.3 Attribute selection format
 
