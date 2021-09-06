@@ -417,6 +417,10 @@ definitions:
             type: object
             additionalProperties:
               $ref: "#/definitions/property_assignment"
+          outputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/attribute_mapping"
         additionalProperties: false
 
   # Section 3.6.18
