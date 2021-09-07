@@ -645,8 +645,6 @@ node_types:
       snapshot_id:
         type: string
         required: false
-      volume_id:
-        type: string
     capabilities:
       attachment:
         type: tosca.capabilities.Attachment
