@@ -606,8 +606,6 @@ node_types:
       snapshot_id:
         type: string
         required: false
-      volume_id:
-        type: string
     capabilities:
       attachment:
         type: tosca.capabilities.Attachment
@@ -627,10 +625,9 @@ node_types:
     derived_from: tosca.nodes.Root
     requirements:
       - host:
-          capability: tosca.capabilities.Conrainer
+          capability: tosca.capabilities.Container
           node: tosca.nodes.Container
           relationship: tosca.relationships.HostedOn
-o
 
   # Section 5.8.12 tosca.nodes.LoadBalancer
   tosca.nodes.LoadBalancer:
