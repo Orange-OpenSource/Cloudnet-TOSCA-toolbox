@@ -1186,10 +1186,27 @@ class TypeChecker(Checker):
 
         # check relationship
         requirement_relationship = syntax.get_requirement_relationship(requirement_definition)
-        if requirement_relationship == None:
+        if requirement_relationship is None:
             # relationship undefined
             if requirement_capability != None:
-                self.search_relationship_types_compatible_with_capability_type(
+                # but capability defined
+                previous_relationship = syntax.get_requirement_relationship(previous_requirement_definition)
+                if previous_relationship != None:
+                    # Check if capability is compatible with previous defined relationship
+                    if type(previous_relationship) is str:
+                        relationship_type_name = previous_relationship
+                    else:
+                        relationship_type_name = previous_relationship.get(TYPE)
+                    if not self.is_relationship_type_compatible_with_capability_type(
+                                relationship_type_name,
+                                requirement_capability
+                            ):
+                        self.error(context_error_message + ':' + syntax.CAPABILITY + ': ' + requirement_capability + ' - incompatible with ' + relationship_type_name)
+                    else:
+                        self.info(context_error_message + ':' + syntax.CAPABILITY + ': ' + requirement_capability + ' - compatible with ' + relationship_type_name)
+                else:
+                    # Search relationship types compatible with defined capability
+                    self.search_relationship_types_compatible_with_capability_type(
                         requirement_capability,
                         context_error_message + ':relationship'
                     )
