@@ -2395,9 +2395,9 @@ class TypeChecker(Checker):
                 for property_name, property_constraint_clauses in property_filter.items():
                     property_value = template_properties.get(property_name)
                     property_type = template_type_properties.get(property_name, {}).get(syntax.TYPE)
-#                    if property_value is None:
-#                        # TODO: dealt with default or value defined in the property definition
-#                        return False # no value for the property
+                    if property_value is None:
+                        # TODO: dealt with default or value defined in the property definition
+                        return False # no value for the property
                     if type(property_constraint_clauses) != list:
                         property_constraint_clauses = [ property_constraint_clauses ]
                     for property_constraint_clause in property_constraint_clauses:
