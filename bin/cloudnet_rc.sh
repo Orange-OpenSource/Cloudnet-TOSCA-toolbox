@@ -96,15 +96,20 @@ generate_network_diagrams()
   echo Generating network diagrams...
   for file in "$@"
   do
-    echo "-" $file
-    current_directory="$PWD" # store current directory
-    # double quote to deal with spaces in the path
-    cd $(dirname $file) # go to directory containing generated network diagrams
-    # generate network diagram as a PNG image
-    ${CLOUDNET_BINDIR}/nwdiag/nwdiag -a -Tpng "$(basename $file)"
-    # generate network diagram as a SVG file
-    ${CLOUDNET_BINDIR}/nwdiag/nwdiag -Tsvg "$(basename $file)"
-    cd "${current_directory}" # back to current directory
+    if [ -e $(dirname $file) ]
+    then
+        echo "-" $file
+        current_directory="$PWD" # store current directory
+        # double quote to deal with spaces in the path
+        cd $(dirname $file) # go to directory containing generated network diagrams
+        # generate network diagram as a PNG image
+        ${CLOUDNET_BINDIR}/nwdiag/nwdiag -a -Tpng "$(basename $file)"
+        # generate network diagram as a SVG file
+        ${CLOUDNET_BINDIR}/nwdiag/nwdiag -Tsvg "$(basename $file)"
+        cd "${current_directory}" # back to current directory
+    else
+        echo No generated network diagrams.
+    fi
   done
 }
 
