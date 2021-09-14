@@ -1,8 +1,8 @@
 ######################################################################
 #
-# Software Name : Cloudnet TOSCA toolbox 
+# Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -58,6 +58,10 @@ class ToscaDiagramGenerator(Generator):
         self.generate('graph ToscaDiagram {')
         self.generate('  rankdir="LR"')
 
+        target_capability_ids = {} # map<requirement_assignment_id,capability_id>
+        show_feature_capabilities = set() # set<node_name>
+        show_dependency_requirements = set() # set<node_name>
+
         substitution_mappings = syntax.get_substitution_mappings(topology_template)
         if substitution_mappings != None:
             for capability_name, capability_yaml in syntax.get_capabilities(substitution_mappings).items():
@@ -67,15 +71,14 @@ class ToscaDiagramGenerator(Generator):
                     capability_name_id = normalize_name(capability_name)
                     self.generate('  ', capability_name_id, '[label="', capability_name, '" shape=cds style=filled fillcolor=orange]', sep='')
                     self.generate('  ', capability_name_id, ' -- ', normalize_name(capability_yaml[0]), '_capability_', normalize_name(capability_yaml[1]), '[style=dotted]', sep='')
+                    if capability_yaml[1] == 'feature':
+                        show_feature_capabilities.add(capability_yaml[0])
+
             substitution_mappings_node_type = syntax.get_node_type(substitution_mappings)
             self.generate('  subgraph clusterSubstitutionMappings {')
             self.generate('    label="', substitution_mappings_node_type, '"', sep='')
 
         node_templates = syntax.get_node_templates(topology_template)
-
-        target_capability_ids = {} # map<requirement_assignment_id,capability_id>
-        show_feature_capabilities = set() # set<node_name>
-        show_dependency_requirements = set() # set<node_name>
 
         for node_name, node_yaml in node_templates.items():
             node_type_requirements = syntax.get_requirements_dict(self.type_system.merge_type(syntax.get_type(node_yaml)))
