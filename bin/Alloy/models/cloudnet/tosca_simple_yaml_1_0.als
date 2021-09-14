@@ -59,14 +59,6 @@ run Show_tosca_datatypes_Root {
   expect 1
 
 //
-// The TOSCA data Type used to define a string that contains data in the JavaScript Object Notation (JSON) format
-//
-let tosca_datatypes_json = string
-//
-// The TOSCA data Type used to define a string that contains data in the Extensible Markup Language (XML) format
-//
-let tosca_datatypes_xml = string
-//
 // The TOSCA data Type used when describing authorization credentials used to access network accessible resources
 //
 sig tosca_datatypes_Credential extends tosca_datatypes_Root
@@ -130,54 +122,6 @@ run Show_tosca_datatypes_Credential {
   exactly 0 TOSCA/Interface,
   exactly 0 TOSCA/Operation,
   exactly 1 tosca_datatypes_Credential
-  expect 1
-
-//
-// The TOSCA data Type used when describing a period of time using the YAML ISO 8601 format to declare the start and end times
-//
-sig tosca_datatypes_TimeInterval extends tosca_datatypes_Root
-{
-  // --------------------------------------------------
-  // Properties
-  // --------------------------------------------------
-
-  // YAML start_time: {'description': 'The inclusive start time for the time interval', 'type': 'timestamp', 'required': True}
-  //
-  // The inclusive start time for the time interval
-  //
-  start_time: one timestamp,
-
-  // YAML end_time: {'description': 'The inclusive end time for the time interval', 'type': 'timestamp', 'required': True}
-  //
-  // The inclusive end time for the time interval
-  //
-  end_time: one timestamp,
-
-} {
-  // --------------------------------------------------
-  // Properties
-  // --------------------------------------------------
-
-
-}
-
-/** There exists some tosca.datatypes.TimeInterval */
-run Show_tosca_datatypes_TimeInterval {
-} for 5 but
-  8 Int,
-  5 seq,
-  // NOTE: Setting following scopes strongly reduces the research space.
-  exactly 0 LocationGraphs/LocationGraph,
-  exactly 0 LocationGraphs/Location,
-  exactly 0 LocationGraphs/Name,
-  exactly 0 LocationGraphs/Role,
-  exactly 0 LocationGraphs/Process,
-  exactly 0 LocationGraphs/Sort,
-  exactly 0 TOSCA/Artifact,
-  exactly 0 TOSCA/Attribute,
-  exactly 0 TOSCA/Interface,
-  exactly 0 TOSCA/Operation,
-  exactly 1 tosca_datatypes_TimeInterval
   expect 1
 
 sig tosca_datatypes_network_NetworkInfo extends tosca_datatypes_Root
@@ -605,14 +549,11 @@ run Show_tosca_capabilities_Node {
   exactly 1 tosca_capabilities_Node
   expect 1
 
-sig tosca_capabilities_Compute extends tosca_capabilities_Container
+sig tosca_capabilities_Container extends tosca_capabilities_Root
 {
   // --------------------------------------------------
   // Properties
   // --------------------------------------------------
-
-  // YAML name: {'type': 'string', 'required': False}
-  property_name: lone string,
 
   // YAML num_cpus: {'type': 'integer', 'required': False, 'constraints': [{'greater_or_equal': 1}]}
   property_num_cpus: lone integer,
@@ -636,108 +577,6 @@ sig tosca_capabilities_Compute extends tosca_capabilities_Container
   property_disk_size.greater_or_equal[0, MB]
   property_mem_size.greater_or_equal[0, MB]
 
-}
-
-/** There exists some tosca.capabilities.Compute */
-run Show_tosca_capabilities_Compute {
-  tosca_capabilities_Compute.no_name[]
-} for 5 but
-  8 Int,
-  5 seq,
-  // NOTE: Setting following scopes strongly reduces the research space.
-  exactly 0 LocationGraphs/LocationGraph,
-  exactly 0 LocationGraphs/Location,
-  exactly 0 LocationGraphs/Name,
-  exactly 1 LocationGraphs/Role,
-  exactly 0 LocationGraphs/Process,
-  exactly 0 LocationGraphs/Sort,
-  exactly 0 TOSCA/Artifact,
-  exactly 0 TOSCA/Attribute,
-  exactly 0 TOSCA/Interface,
-  exactly 0 TOSCA/Requirement,
-  exactly 0 TOSCA/Operation,
-  exactly 1 tosca_capabilities_Compute
-  expect 1
-
-sig tosca_capabilities_Network extends tosca_capabilities_Root
-{
-  // --------------------------------------------------
-  // Properties
-  // --------------------------------------------------
-
-  // YAML name: {'type': 'string', 'required': False}
-  property_name: lone string,
-
-} {
-  // --------------------------------------------------
-  // Properties
-  // --------------------------------------------------
-
-
-}
-
-/** There exists some tosca.capabilities.Network */
-run Show_tosca_capabilities_Network {
-  tosca_capabilities_Network.no_name[]
-} for 5 but
-  8 Int,
-  5 seq,
-  // NOTE: Setting following scopes strongly reduces the research space.
-  exactly 0 LocationGraphs/LocationGraph,
-  exactly 0 LocationGraphs/Location,
-  exactly 0 LocationGraphs/Name,
-  exactly 1 LocationGraphs/Role,
-  exactly 0 LocationGraphs/Process,
-  exactly 0 LocationGraphs/Sort,
-  exactly 0 TOSCA/Artifact,
-  exactly 0 TOSCA/Attribute,
-  exactly 0 TOSCA/Interface,
-  exactly 0 TOSCA/Requirement,
-  exactly 0 TOSCA/Operation,
-  exactly 1 tosca_capabilities_Network
-  expect 1
-
-sig tosca_capabilities_Storage extends tosca_capabilities_Root
-{
-  // --------------------------------------------------
-  // Properties
-  // --------------------------------------------------
-
-  // YAML name: {'type': 'string', 'required': False}
-  property_name: lone string,
-
-} {
-  // --------------------------------------------------
-  // Properties
-  // --------------------------------------------------
-
-
-}
-
-/** There exists some tosca.capabilities.Storage */
-run Show_tosca_capabilities_Storage {
-  tosca_capabilities_Storage.no_name[]
-} for 5 but
-  8 Int,
-  5 seq,
-  // NOTE: Setting following scopes strongly reduces the research space.
-  exactly 0 LocationGraphs/LocationGraph,
-  exactly 0 LocationGraphs/Location,
-  exactly 0 LocationGraphs/Name,
-  exactly 1 LocationGraphs/Role,
-  exactly 0 LocationGraphs/Process,
-  exactly 0 LocationGraphs/Sort,
-  exactly 0 TOSCA/Artifact,
-  exactly 0 TOSCA/Attribute,
-  exactly 0 TOSCA/Interface,
-  exactly 0 TOSCA/Requirement,
-  exactly 0 TOSCA/Operation,
-  exactly 1 tosca_capabilities_Storage
-  expect 1
-
-sig tosca_capabilities_Container extends tosca_capabilities_Root
-{
-} {
 }
 
 /** There exists some tosca.capabilities.Container */
@@ -1722,45 +1561,7 @@ run Show_tosca_nodes_Root {
   exactly 1 tosca_nodes_Root
   expect 1
 
-sig tosca_nodes_Abstract_Compute extends tosca_nodes_Root
-{
-  // --------------------------------------------------
-  // Capabilities
-  // --------------------------------------------------
-
-  // YAML host: {'type': 'tosca.capabilities.Compute'}
-  capability_host: some tosca_capabilities_Compute,
-
-} {
-  // --------------------------------------------------
-  // Capabilities
-  // --------------------------------------------------
-
-  // YAML host: {'type': 'tosca.capabilities.Compute'}
-  capability_host.name["host"]
-  capability[capability_host]
-
-}
-
-/** There exists some tosca.nodes.Abstract.Compute */
-run Show_tosca_nodes_Abstract_Compute {
-  tosca_nodes_Abstract_Compute.no_name[]
-} for 5 but
-  8 Int,
-  5 seq,
-  // NOTE: Setting following scopes strongly reduces the research space.
-  exactly 0 LocationGraphs/LocationGraph,
-  exactly 1 LocationGraphs/Location,
-  exactly 35 LocationGraphs/Value,
-  exactly 1 LocationGraphs/Name,
-  exactly 1 LocationGraphs/Sort,
-  exactly 1 LocationGraphs/Process,
-  exactly 0 TOSCA/Group,
-  exactly 0 TOSCA/Policy,
-  exactly 1 tosca_nodes_Abstract_Compute
-  expect 1
-
-sig tosca_nodes_Compute extends tosca_nodes_Abstract_Compute
+sig tosca_nodes_Compute extends tosca_nodes_Root
 {
   // --------------------------------------------------
   // Attributes
@@ -1782,8 +1583,8 @@ sig tosca_nodes_Compute extends tosca_nodes_Abstract_Compute
   // Capabilities
   // --------------------------------------------------
 
-  // YAML host: {'type': 'tosca.capabilities.Compute', 'valid_source_types': ['tosca.nodes.SoftwareComponent']}
-  // host overloaded
+  // YAML host: {'type': 'tosca.capabilities.Container', 'valid_source_types': ['tosca.nodes.SoftwareComponent']}
+  capability_host: some tosca_capabilities_Container,
 
   // YAML endpoint: {'type': 'tosca.capabilities.Endpoint.Admin'}
   capability_endpoint: some tosca_capabilities_Endpoint_Admin,
@@ -1801,7 +1602,7 @@ sig tosca_nodes_Compute extends tosca_nodes_Abstract_Compute
   // Requirements
   // --------------------------------------------------
 
-  // YAML local_storage: {'capability': 'tosca.capabilities.Attachment', 'node': 'tosca.nodes.Storage.BlockStorage', 'relationship': 'tosca.relationships.AttachesTo', 'occurrences': [0, 'UNBOUNDED']}
+  // YAML local_storage: {'capability': 'tosca.capabilities.Attachment', 'node': 'tosca.nodes.BlockStorage', 'relationship': 'tosca.relationships.AttachesTo', 'occurrences': [0, 'UNBOUNDED']}
   requirement_local_storage: set TOSCA/Requirement,
 
 } {
@@ -1817,7 +1618,9 @@ sig tosca_nodes_Compute extends tosca_nodes_Abstract_Compute
   // Capabilities
   // --------------------------------------------------
 
-  // YAML host: {'type': 'tosca.capabilities.Compute', 'valid_source_types': ['tosca.nodes.SoftwareComponent']}
+  // YAML host: {'type': 'tosca.capabilities.Container', 'valid_source_types': ['tosca.nodes.SoftwareComponent']}
+  capability_host.name["host"]
+  capability[capability_host]
   capability_host.valid_source_types[tosca_nodes_SoftwareComponent]
 
   // YAML endpoint: {'type': 'tosca.capabilities.Endpoint.Admin'}
@@ -1840,11 +1643,11 @@ sig tosca_nodes_Compute extends tosca_nodes_Abstract_Compute
   // Requirements
   // --------------------------------------------------
 
-  // YAML local_storage: {'capability': 'tosca.capabilities.Attachment', 'node': 'tosca.nodes.Storage.BlockStorage', 'relationship': 'tosca.relationships.AttachesTo', 'occurrences': [0, 'UNBOUNDED']}
+  // YAML local_storage: {'capability': 'tosca.capabilities.Attachment', 'node': 'tosca.nodes.BlockStorage', 'relationship': 'tosca.relationships.AttachesTo', 'occurrences': [0, 'UNBOUNDED']}
   requirement["local_storage", requirement_local_storage]
   requirement_local_storage.capability[tosca_capabilities_Attachment]
   requirement_local_storage.relationship[tosca_relationships_AttachesTo]
-  requirement_local_storage.node[tosca_nodes_Storage_BlockStorage]
+  requirement_local_storage.node[tosca_nodes_BlockStorage]
   // YAML occurrences: [0, 'UNBOUNDED']
 
 }
@@ -1883,7 +1686,7 @@ sig tosca_nodes_SoftwareComponent extends tosca_nodes_Root
   // Requirements
   // --------------------------------------------------
 
-  // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.Compute', 'relationship': 'tosca.relationships.HostedOn'}
+  // YAML host: {'capability': 'tosca.capabilities.Container', 'node': 'tosca.nodes.Compute', 'relationship': 'tosca.relationships.HostedOn'}
   requirement_host: one TOSCA/Requirement,
 
 } {
@@ -1896,9 +1699,9 @@ sig tosca_nodes_SoftwareComponent extends tosca_nodes_Root
   // Requirements
   // --------------------------------------------------
 
-  // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.Compute', 'relationship': 'tosca.relationships.HostedOn'}
+  // YAML host: {'capability': 'tosca.capabilities.Container', 'node': 'tosca.nodes.Compute', 'relationship': 'tosca.relationships.HostedOn'}
   requirement["host", requirement_host]
-  requirement_host.capability[tosca_capabilities_Compute]
+  requirement_host.capability[tosca_capabilities_Container]
   requirement_host.relationship[tosca_relationships_HostedOn]
   requirement_host.node[tosca_nodes_Compute]
 
@@ -1934,8 +1737,8 @@ sig tosca_nodes_WebServer extends tosca_nodes_SoftwareComponent
   // YAML admin_endpoint: tosca.capabilities.Endpoint.Admin
   capability_admin_endpoint: some tosca_capabilities_Endpoint_Admin,
 
-  // YAML host: {'type': 'tosca.capabilities.Compute', 'valid_source_types': ['tosca.nodes.WebApplication']}
-  capability_host: some tosca_capabilities_Compute,
+  // YAML host: {'type': 'tosca.capabilities.Container', 'valid_source_types': ['tosca.nodes.WebApplication']}
+  capability_host: some tosca_capabilities_Container,
 
 } {
   // --------------------------------------------------
@@ -1950,7 +1753,7 @@ sig tosca_nodes_WebServer extends tosca_nodes_SoftwareComponent
   capability_admin_endpoint.name["admin_endpoint"]
   capability[capability_admin_endpoint]
 
-  // YAML host: {'type': 'tosca.capabilities.Compute', 'valid_source_types': ['tosca.nodes.WebApplication']}
+  // YAML host: {'type': 'tosca.capabilities.Container', 'valid_source_types': ['tosca.nodes.WebApplication']}
   capability_host.name["host"]
   capability[capability_host]
   capability_host.valid_source_types[tosca_nodes_WebApplication]
@@ -1995,7 +1798,7 @@ sig tosca_nodes_WebApplication extends tosca_nodes_Root
   // Requirements
   // --------------------------------------------------
 
-  // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.WebServer', 'relationship': 'tosca.relationships.HostedOn'}
+  // YAML host: {'capability': 'tosca.capabilities.Container', 'node': 'tosca.nodes.WebServer', 'relationship': 'tosca.relationships.HostedOn'}
   requirement_host: one TOSCA/Requirement,
 
 } {
@@ -2016,9 +1819,9 @@ sig tosca_nodes_WebApplication extends tosca_nodes_Root
   // Requirements
   // --------------------------------------------------
 
-  // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.WebServer', 'relationship': 'tosca.relationships.HostedOn'}
+  // YAML host: {'capability': 'tosca.capabilities.Container', 'node': 'tosca.nodes.WebServer', 'relationship': 'tosca.relationships.HostedOn'}
   requirement["host", requirement_host]
-  requirement_host.capability[tosca_capabilities_Compute]
+  requirement_host.capability[tosca_capabilities_Container]
   requirement_host.relationship[tosca_relationships_HostedOn]
   requirement_host.node[tosca_nodes_WebServer]
 
@@ -2064,8 +1867,8 @@ sig tosca_nodes_DBMS extends tosca_nodes_SoftwareComponent
   // Capabilities
   // --------------------------------------------------
 
-  // YAML host: {'type': 'tosca.capabilities.Compute', 'valid_source_types': ['tosca.nodes.Database']}
-  capability_host: some tosca_capabilities_Compute,
+  // YAML host: {'type': 'tosca.capabilities.Container', 'valid_source_types': ['tosca.nodes.Database']}
+  capability_host: some tosca_capabilities_Container,
 
 } {
   // --------------------------------------------------
@@ -2077,7 +1880,7 @@ sig tosca_nodes_DBMS extends tosca_nodes_SoftwareComponent
   // Capabilities
   // --------------------------------------------------
 
-  // YAML host: {'type': 'tosca.capabilities.Compute', 'valid_source_types': ['tosca.nodes.Database']}
+  // YAML host: {'type': 'tosca.capabilities.Container', 'valid_source_types': ['tosca.nodes.Database']}
   capability_host.name["host"]
   capability[capability_host]
   capability_host.valid_source_types[tosca_nodes_Database]
@@ -2143,7 +1946,7 @@ sig tosca_nodes_Database extends tosca_nodes_Root
   // Requirements
   // --------------------------------------------------
 
-  // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.DBMS', 'relationship': 'tosca.relationships.HostedOn'}
+  // YAML host: {'capability': 'tosca.capabilities.Container', 'node': 'tosca.nodes.DBMS', 'relationship': 'tosca.relationships.HostedOn'}
   requirement_host: one TOSCA/Requirement,
 
 } {
@@ -2164,9 +1967,9 @@ sig tosca_nodes_Database extends tosca_nodes_Root
   // Requirements
   // --------------------------------------------------
 
-  // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.DBMS', 'relationship': 'tosca.relationships.HostedOn'}
+  // YAML host: {'capability': 'tosca.capabilities.Container', 'node': 'tosca.nodes.DBMS', 'relationship': 'tosca.relationships.HostedOn'}
   requirement["host", requirement_host]
-  requirement_host.capability[tosca_capabilities_Compute]
+  requirement_host.capability[tosca_capabilities_Container]
   requirement_host.relationship[tosca_relationships_HostedOn]
   requirement_host.node[tosca_nodes_DBMS]
 
@@ -2190,7 +1993,7 @@ run Show_tosca_nodes_Database {
   exactly 1 tosca_nodes_Database
   expect 1
 
-sig tosca_nodes_Abstract_Storage extends tosca_nodes_Root
+sig tosca_nodes_ObjectStorage extends tosca_nodes_Root
 {
   // --------------------------------------------------
   // Properties
@@ -2199,44 +2002,11 @@ sig tosca_nodes_Abstract_Storage extends tosca_nodes_Root
   // YAML name: {'type': 'string'}
   property_name: one string,
 
-  // YAML size: {'type': 'scalar-unit.size', 'default': '0 MB', 'constraints': [{'greater_or_equal': '0 MB'}], 'required': False}
+  // YAML size: {'type': 'scalar-unit.size', 'constraints': [{'greater_or_equal': '0 GB'}], 'required': False}
   property_size: lone scalar_unit_size,
 
-} {
-  // --------------------------------------------------
-  // Properties
-  // --------------------------------------------------
-
-  property_size.greater_or_equal[0, MB]
-
-}
-
-/** There exists some tosca.nodes.Abstract.Storage */
-run Show_tosca_nodes_Abstract_Storage {
-  tosca_nodes_Abstract_Storage.no_name[]
-} for 5 but
-  8 Int,
-  5 seq,
-  // NOTE: Setting following scopes strongly reduces the research space.
-  exactly 0 LocationGraphs/LocationGraph,
-  exactly 1 LocationGraphs/Location,
-  exactly 35 LocationGraphs/Value,
-  exactly 1 LocationGraphs/Name,
-  exactly 1 LocationGraphs/Sort,
-  exactly 1 LocationGraphs/Process,
-  exactly 0 TOSCA/Group,
-  exactly 0 TOSCA/Policy,
-  exactly 1 tosca_nodes_Abstract_Storage
-  expect 1
-
-sig tosca_nodes_Storage_ObjectStorage extends tosca_nodes_Abstract_Storage
-{
-  // --------------------------------------------------
-  // Properties
-  // --------------------------------------------------
-
-  // YAML maxsize: {'type': 'scalar-unit.size', 'constraints': [{'greater_or_equal': '0 GB'}]}
-  property_maxsize: one scalar_unit_size,
+  // YAML maxsize: {'type': 'scalar-unit.size', 'constraints': [{'greater_or_equal': '0 GB'}], 'required': False}
+  property_maxsize: lone scalar_unit_size,
 
   // --------------------------------------------------
   // Capabilities
@@ -2250,6 +2020,7 @@ sig tosca_nodes_Storage_ObjectStorage extends tosca_nodes_Abstract_Storage
   // Properties
   // --------------------------------------------------
 
+  property_size.greater_or_equal[0, GB]
   property_maxsize.greater_or_equal[0, GB]
 
   // --------------------------------------------------
@@ -2262,9 +2033,9 @@ sig tosca_nodes_Storage_ObjectStorage extends tosca_nodes_Abstract_Storage
 
 }
 
-/** There exists some tosca.nodes.Storage.ObjectStorage */
-run Show_tosca_nodes_Storage_ObjectStorage {
-  tosca_nodes_Storage_ObjectStorage.no_name[]
+/** There exists some tosca.nodes.ObjectStorage */
+run Show_tosca_nodes_ObjectStorage {
+  tosca_nodes_ObjectStorage.no_name[]
 } for 5 but
   8 Int,
   5 seq,
@@ -2277,10 +2048,10 @@ run Show_tosca_nodes_Storage_ObjectStorage {
   exactly 1 LocationGraphs/Process,
   exactly 0 TOSCA/Group,
   exactly 0 TOSCA/Policy,
-  exactly 1 tosca_nodes_Storage_ObjectStorage
+  exactly 1 tosca_nodes_ObjectStorage
   expect 1
 
-sig tosca_nodes_Storage_BlockStorage extends tosca_nodes_Abstract_Storage
+sig tosca_nodes_BlockStorage extends tosca_nodes_Root
 {
   // --------------------------------------------------
   // Properties
@@ -2291,13 +2062,6 @@ sig tosca_nodes_Storage_BlockStorage extends tosca_nodes_Abstract_Storage
 
   // YAML snapshot_id: {'type': 'string', 'required': False}
   property_snapshot_id: lone string,
-
-  // --------------------------------------------------
-  // Attributes
-  // --------------------------------------------------
-
-  // YAML volume_id: {'type': 'string'}
-  attribute_volume_id: one string,
 
   // --------------------------------------------------
   // Capabilities
@@ -2313,11 +2077,6 @@ sig tosca_nodes_Storage_BlockStorage extends tosca_nodes_Abstract_Storage
 
 
   // --------------------------------------------------
-  // Attributes
-  // --------------------------------------------------
-
-
-  // --------------------------------------------------
   // Capabilities
   // --------------------------------------------------
 
@@ -2327,9 +2086,9 @@ sig tosca_nodes_Storage_BlockStorage extends tosca_nodes_Abstract_Storage
 
 }
 
-/** There exists some tosca.nodes.Storage.BlockStorage */
-run Show_tosca_nodes_Storage_BlockStorage {
-  tosca_nodes_Storage_BlockStorage.no_name[]
+/** There exists some tosca.nodes.BlockStorage */
+run Show_tosca_nodes_BlockStorage {
+  tosca_nodes_BlockStorage.no_name[]
 } for 5 but
   8 Int,
   5 seq,
@@ -2342,7 +2101,7 @@ run Show_tosca_nodes_Storage_BlockStorage {
   exactly 1 LocationGraphs/Process,
   exactly 0 TOSCA/Group,
   exactly 0 TOSCA/Policy,
-  exactly 1 tosca_nodes_Storage_BlockStorage
+  exactly 1 tosca_nodes_BlockStorage
   expect 1
 
 sig tosca_nodes_Container_Runtime extends tosca_nodes_SoftwareComponent
@@ -2351,8 +2110,8 @@ sig tosca_nodes_Container_Runtime extends tosca_nodes_SoftwareComponent
   // Capabilities
   // --------------------------------------------------
 
-  // YAML host: {'type': 'tosca.capabilities.Compute', 'valid_source_types': ['tosca.nodes.Container.Application']}
-  capability_host: some tosca_capabilities_Compute,
+  // YAML host: {'type': 'tosca.capabilities.Container', 'valid_source_types': ['tosca.nodes.Container.Application']}
+  capability_host: some tosca_capabilities_Container,
 
   // YAML scalable: {'type': 'tosca.capabilities.Scalable'}
   capability_scalable: some tosca_capabilities_Scalable,
@@ -2362,7 +2121,7 @@ sig tosca_nodes_Container_Runtime extends tosca_nodes_SoftwareComponent
   // Capabilities
   // --------------------------------------------------
 
-  // YAML host: {'type': 'tosca.capabilities.Compute', 'valid_source_types': ['tosca.nodes.Container.Application']}
+  // YAML host: {'type': 'tosca.capabilities.Container', 'valid_source_types': ['tosca.nodes.Container.Application']}
   capability_host.name["host"]
   capability[capability_host]
   capability_host.valid_source_types[tosca_nodes_Container_Application]
@@ -2397,27 +2156,19 @@ sig tosca_nodes_Container_Application extends tosca_nodes_Root
   // Requirements
   // --------------------------------------------------
 
-  // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.Container.Runtime', 'relationship': 'tosca.relationships.HostedOn'}
+  // YAML host: {'capability': 'tosca.capabilities.Container', 'node': 'tosca.nodes.Container.Runtime', 'relationship': 'tosca.relationships.HostedOn'}
   requirement_host: one TOSCA/Requirement,
-
-  // YAML network: {'capability': 'tosca.capabilities.network.Linkable', 'relationship': 'tosca.relationships.network.LinksTo'}
-  requirement_network: one TOSCA/Requirement,
 
 } {
   // --------------------------------------------------
   // Requirements
   // --------------------------------------------------
 
-  // YAML host: {'capability': 'tosca.capabilities.Compute', 'node': 'tosca.nodes.Container.Runtime', 'relationship': 'tosca.relationships.HostedOn'}
+  // YAML host: {'capability': 'tosca.capabilities.Container', 'node': 'tosca.nodes.Container.Runtime', 'relationship': 'tosca.relationships.HostedOn'}
   requirement["host", requirement_host]
-  requirement_host.capability[tosca_capabilities_Compute]
+  requirement_host.capability[tosca_capabilities_Container]
   requirement_host.relationship[tosca_relationships_HostedOn]
   requirement_host.node[tosca_nodes_Container_Runtime]
-
-  // YAML network: {'capability': 'tosca.capabilities.network.Linkable', 'relationship': 'tosca.relationships.network.LinksTo'}
-  requirement["network", requirement_network]
-  requirement_network.capability[tosca_capabilities_network_Linkable]
-  requirement_network.relationship[tosca_relationships_network_LinksTo]
 
 }
 
@@ -2429,9 +2180,9 @@ run Show_tosca_nodes_Container_Application {
   5 seq,
   // NOTE: Setting following scopes strongly reduces the research space.
   exactly 0 LocationGraphs/LocationGraph,
-  exactly 6 LocationGraphs/Location,
+  exactly 5 LocationGraphs/Location,
   exactly 35 LocationGraphs/Value,
-  exactly 6 LocationGraphs/Name,
+  exactly 5 LocationGraphs/Name,
   exactly 1 LocationGraphs/Sort,
   exactly 1 LocationGraphs/Process,
   exactly 0 TOSCA/Group,
@@ -2555,9 +2306,6 @@ sig tosca_nodes_network_Network extends tosca_nodes_Root
   // YAML physical_network: {'type': 'string', 'required': False}
   property_physical_network: lone string,
 
-  // YAML dhcp_enabled: {'type': 'boolean', 'required': False, 'default': True}
-  property_dhcp_enabled: lone boolean,
-
   // --------------------------------------------------
   // Capabilities
   // --------------------------------------------------
@@ -2622,13 +2370,6 @@ sig tosca_nodes_network_Port extends tosca_nodes_Root
   property_ip_range_end: lone string,
 
   // --------------------------------------------------
-  // Attributes
-  // --------------------------------------------------
-
-  // YAML ip_address: {'type': 'string'}
-  attribute_ip_address: one string,
-
-  // --------------------------------------------------
   // Requirements
   // --------------------------------------------------
 
@@ -2644,11 +2385,6 @@ sig tosca_nodes_network_Port extends tosca_nodes_Root
   // --------------------------------------------------
 
   property_order.greater_or_equal[0]
-
-  // --------------------------------------------------
-  // Attributes
-  // --------------------------------------------------
-
 
   // --------------------------------------------------
   // Requirements

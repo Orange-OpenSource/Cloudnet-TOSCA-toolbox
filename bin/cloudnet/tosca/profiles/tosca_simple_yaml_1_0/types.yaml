@@ -9,7 +9,7 @@
 # the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
 # or see the "LICENSE-2.0.txt" file for more details.
 #
-# Author: 
+# Author:
 #    - Frédéric Klamm <frederic.klamm@orange.com>
 #    - Philippe Merle <philippe.merle@inria.fr>
 
@@ -327,6 +327,9 @@ capability_types:
   tosca.capabilities.network.Bindable:
     derived_from: tosca.capabilities.Node
 
+  # Section 7.5.3 tosca.capabilities.network.Linkable
+  tosca.capabilities.network.Linkable:
+    derived_from: tosca.capabilities.Node
 
 relationship_types:
 
@@ -379,13 +382,20 @@ relationship_types:
     derived_from: tosca.relationships.ConnectsTo
     valid_target_types: [ tosca.capabilities.Endpoint ]
 
+  # Section 7.5.4 tosca.relationships.network.LinksTo
+  tosca.relationships.network.LinksTo:
+    derived_from: tosca.relationships.DependsOn
+    valid_target_types: [ tosca.capabilities.network.Linkable ]
+
+  # Section 7.5.5 tosca.relationships.network.BindsTo
+  tosca.relationships.network.BindsTo:
+    derived_from: tosca.relationships.DependsOn
+    valid_target_types: [ tosca.capabilities.network.Bindable ]
 
 interface_types:
 
   # Section 5.7.3 tosca.interfaces.Root
   tosca.interfaces.Root:
-# ISSUE: tosca.entity.Root undefined!
-#    derived_from: tosca.entity.Root
     description: The TOSCA root Interface Type all other TOSCA base Interface Types derive from
 
   # Section 5.7.4 tosca.interfaces.node.lifecycle.Standard
@@ -427,8 +437,6 @@ node_types:
 
   # Section 5.8.1 tosca.nodes.Root
   tosca.nodes.Root:
-# ISSUE: tosca.entity.Root undefined!
-#    derived_from: tosca.entity.Root
     description: The TOSCA Node Type all other TOSCA base Node Types derive from
     attributes:
       tosca_id:
@@ -470,13 +478,12 @@ node_types:
     requirements:
       - local_storage:
           capability: tosca.capabilities.Attachment
-#          node: tosca.nodes.BlockStorage # ISSUE: undefined type!
-          node: tosca.nodes.Storage.BlockStorage
+          node: tosca.nodes.BlockStorage
           relationship: tosca.relationships.AttachesTo
           occurrences: [0, UNBOUNDED]
     capabilities:
       host:
-        type: tosca.capabilities.Compute
+        type: tosca.capabilities.Container
         valid_source_types: [tosca.nodes.SoftwareComponent]
       endpoint:
         type: tosca.capabilities.Endpoint.Admin
@@ -500,7 +507,7 @@ node_types:
         required: false
     requirements:
       - host:
-          capability: tosca.capabilities.Compute
+          capability: tosca.capabilities.Container
           node: tosca.nodes.Compute
           relationship: tosca.relationships.HostedOn
 
@@ -512,7 +519,7 @@ node_types:
       data_endpoint: tosca.capabilities.Endpoint
       admin_endpoint: tosca.capabilities.Endpoint.Admin
       host:
-        type: tosca.capabilities.Compute
+        type: tosca.capabilities.Container
         valid_source_types: [ tosca.nodes.WebApplication ]
 
   # Section 5.8.5 tosca.nodes.WebApplication
@@ -527,7 +534,7 @@ node_types:
         type: tosca.capabilities.Endpoint
     requirements:
       - host:
-          capability: tosca.capabilities.Compute
+          capability: tosca.capabilities.Container
           node: tosca.nodes.WebServer
           relationship: tosca.relationships.HostedOn
 
@@ -545,7 +552,7 @@ node_types:
         description: the port the DBMS service will listen to for data and requests
     capabilities:
       host:
-        type: tosca.capabilities.Compute
+        type: tosca.capabilities.Container
         valid_source_types: [ tosca.nodes.Database ]
 
   # Section 5.8.7 tosca.nodes.Database
@@ -569,7 +576,7 @@ node_types:
         required: false
     requirements:
       - host:
-          capability: tosca.capabilities.Compute
+          capability: tosca.capabilities.Container
           node: tosca.nodes.DBMS
           relationship: tosca.relationships.HostedOn
     capabilities:
@@ -577,7 +584,7 @@ node_types:
         type: tosca.capabilities.Endpoint.Database
 
   # Section 5.8.8 tosca.nodes.ObjectStorage
-  tosca.nodes.Storage.ObjectStorage:
+  tosca.nodes.ObjectStorage:
     derived_from: tosca.nodes.Root
     properties:
       name:
@@ -597,7 +604,7 @@ node_types:
         type: tosca.capabilities.Endpoint
 
   # Section 5.8.9 tosca.nodes.BlockStorage
-  tosca.nodes.Storage.BlockStorage:
+  tosca.nodes.BlockStorage:
     derived_from: tosca.nodes.Root
     properties:
       volume_id:
@@ -615,7 +622,7 @@ node_types:
     derived_from: tosca.nodes.SoftwareComponent
     capabilities:
       host:
-        type: tosca.capabilities.Compute
+        type: tosca.capabilities.Container
         valid_source_types: [ tosca.nodes.Container.Application ]
       scalable:
         type: tosca.capabilities.Scalable
@@ -626,7 +633,7 @@ node_types:
     requirements:
       - host:
           capability: tosca.capabilities.Container
-          node: tosca.nodes.Container
+          node: tosca.nodes.Container.Runtime
           relationship: tosca.relationships.HostedOn
 
   # Section 5.8.12 tosca.nodes.LoadBalancer
@@ -649,6 +656,77 @@ node_types:
           occurrences: [0, UNBOUNDED]
           description: Connection to one or more load balanced applications
 
+  # Section 7.5.1 tosca.nodes.network.Network
+  tosca.nodes.network.Network:
+    derived_from: tosca.nodes.Root
+    properties:
+      ip_version:
+        type: integer
+        required: false
+        default: 4
+        constraints:
+          - valid_values: [ 4, 6 ]
+      cidr:
+        type: string
+        required: false
+      start_ip:
+        type: string
+        required: false
+      end_ip:
+        type: string
+        required: false
+      gateway_ip:
+        type: string
+        required: false
+      network_name:
+        type: string
+        required: false
+      network_id:
+        type: string
+        required: false
+      segmentation_id:
+        type: string
+        required: false
+      network_type:
+        type: string
+        required: false
+      physical_network:
+        type: string
+        required: false
+    capabilities:
+      link:
+        type: tosca.capabilities.network.Linkable
+
+  # Section 7.5.2 tosca.nodes.network.Port
+  tosca.nodes.network.Port:
+    derived_from: tosca.nodes.Root
+    properties:
+      ip_address:
+        type: string
+        required: false
+      order:
+        type: integer
+        required: true
+        default: 0
+        constraints:
+          - greater_or_equal: 0
+      is_default:
+        type: boolean
+        required: false
+        default: false
+      ip_range_start:
+        type: string
+        required: false
+      ip_range_end:
+        type: string
+        required: false
+    requirements:
+     - link:
+        capability: tosca.capabilities.network.Linkable
+        relationship: tosca.relationships.network.LinksTo
+     - binding:
+        capability: tosca.capabilities.network.Bindable
+        relationship: tosca.relationships.network.BindsTo
 
 group_types:
 
@@ -684,4 +762,3 @@ policy_types:
   tosca.policies.Performance:
     derived_from: tosca.policies.Root
     description: The TOSCA Policy Type definition that is used to declare performance requirements for TOSCA nodes or groups of nodes.
-
