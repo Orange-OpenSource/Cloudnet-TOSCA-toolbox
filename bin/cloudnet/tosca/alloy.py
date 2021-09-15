@@ -262,16 +262,6 @@ class TOSCA(object):
     Alloy.declare_signature(Property, AbstractProperty)
     Alloy.declare_signature(Parameter, AbstractProperty)
 
-    # Declare signatures of tosca_simple_yaml_1_x.als
-    Alloy.declare_signature('tosca_datatypes_Root', Data)
-    Alloy.declare_signature('tosca_artifacts_Root', Artifact)
-    Alloy.declare_signature('tosca_capabilities_Root', Capability)
-    Alloy.declare_signature('tosca_relationships_Root', Relationship)
-    Alloy.declare_signature('tosca_interfaces_Root', Interface)
-    Alloy.declare_signature('tosca_nodes_Root', Node)
-    Alloy.declare_signature('tosca_groups_Root', Group)
-    Alloy.declare_signature('tosca_policies_Root', Policy)
-
 # TODO: Would be removed.
 def test(stream):
     acs = AlloyCommandScope()
@@ -2703,19 +2693,84 @@ class AlloyGenerator(AbstractAlloySigGenerator):
 
         self.open_file('.als', normalize=True)
 
-        # Init Alloy signatures.
-        for type_name, type_yaml in self.type_system.types.items():
-            derived_from = syntax.get_derived_from(type_yaml)
-            # No Alloy signature for TOSCA data types derived from basic YAML types.
-            if not self.type_system.is_yaml_type(derived_from):
-                # Declare the Alloy signature related to this TOSCA type.
+        # Declare Alloy signatures.
+        all_the_types = [
+            (
+                self.type_system.artifact_types,
+                TOSCA.Artifact,
+                []
+            ),
+            (
+                self.type_system.data_types,
+                TOSCA.Data,
+                [
+                    # YAML types
+                    'string',
+                    'integer',
+                    'float',
+                    'boolean',
+                    'timestamp',
+                    'null',
+                    # TOSCA types
+                    'version',
+                    'range',
+                    'list',
+                    'map',
+                    'scalar-unit.size',
+                    'scalar-unit.time',
+                    'scalar-unit.frequency',
+                    'scalar-unit.bitrate',
+                ]
+            ),
+            (
+                self.type_system.capability_types,
+                TOSCA.Capability,
+                []
+            ),
+            (
+                self.type_system.interface_types,
+                TOSCA.Interface,
+                []
+            ),
+            (
+                self.type_system.relationship_types,
+                TOSCA.Relationship,
+                []
+            ),
+            (
+                self.type_system.node_types,
+                TOSCA.Node,
+                []
+            ),
+            (
+                self.type_system.group_types,
+                TOSCA.Group,
+                []
+            ),
+            (
+                self.type_system.policy_types,
+                TOSCA.Policy,
+                []
+            ),
+        ]
+        for item in all_the_types:
+            types, root_signature, excluded_types = item
+            for type_name, type_yaml in types.items():
+                if type_name in excluded_types:
+                    continue # skip this type
                 type_sig = utils.normalize_name(type_name)
-                if not Alloy.is_signature_declared(type_sig):
-                    if derived_from:
-                        derived_from_sig = self.alloy_sig(derived_from)
-                    else:
-                        derived_from_sig = None
-                    Alloy.declare_signature(type_sig, derived_from_sig)
+                if Alloy.is_signature_declared(type_sig):
+                    self.warning("WARNING: %s is already declared!" % type_sig)
+                    continue # skip this type
+                derived_from = syntax.get_derived_from(type_yaml)
+                if derived_from in excluded_types:
+                    continue # skip this type
+                if derived_from is None:
+                    derived_from_sig = root_signature
+                else:
+                    derived_from_sig = self.alloy_sig(derived_from)
+                self.debug("declare signature %s extends %s" % (type_sig, derived_from_sig))
+                Alloy.declare_signature(type_sig, derived_from_sig)
 
         #
         # Generate metadata
