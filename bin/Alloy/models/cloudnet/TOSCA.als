@@ -2,7 +2,7 @@
  *
  * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
- * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+ * SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
  * SPDX-License-Identifier: Apache-2.0
  *
  * This software is distributed under the Apache License 2.0
@@ -142,6 +142,11 @@ pred scalar_unit_time.greater_than[sut: one scalar_unit_time]
 /*******************************************************************************
  * TOSCA scalar predicates.
  *******************************************************************************/
+
+pred boolean.valid_values[values: set boolean]
+{
+  this in values
+}
 
 pred valid_values[variable: one String, values: set String]
 {
