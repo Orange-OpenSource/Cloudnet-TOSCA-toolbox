@@ -496,7 +496,7 @@ class PlantUMLGenerator(Generator):
                     target_uml_id = target_node_uml_id + '_' + normalize_name(capability[1])
 
                     if already_generated_interfaces.get(target_uml_id) == None:
-                        self.generate('interface "', capability_name, '" as ', target_uml_id, sep='')
+                        self.generate('interface "', normalize_name(capability[1]), '" as ', target_uml_id, sep='')
                         # Connect the capability UML interface to the node template UML component.
                         self.generate(target_uml_id, '--', target_node_uml_id)
                         already_generated_interfaces[target_uml_id] = target_uml_id
