@@ -163,13 +163,6 @@ pred integer.valid_values[values: set integer]
   this in values
 }
 
-/*
-pred valid_values[variable: one String, value1: one Int, value2: one Int]
-{
-// TODO:  variable in values
-}
-*/
-
 pred in_range[variable: one range, value1: one Int, value2: one Int]
 {
   // NOTE: Always true because not supported currently.
@@ -313,27 +306,19 @@ fun ToscaComponent.interface[name: one String] : one Interface
  * TOSCA requirements and capabilities are named LG roles.
  *******************************************************************************/
 
+//TODO: remove following useless signature
 abstract sig ToscaRole extends LG/Role {
-  _name_: one String,
 } {
 }
 
+//TODO: remove following useless predicate
 pred ToscaRole.no_name[]
 {
-  this._name_= "(anonymous)"
 }
 
+//TODO: remove following useless predicate
 pred ToscaRole.name[n: one String]
 {
-  this._name_ in n
-// NOTE: Could be also
-// some this implies this.name = n
-// but this produces more SAT vars and clauses.
-}
-
-fun role[roles: set ToscaRole, role_name: one String] : set ToscaRole
-{
-  { r : roles { r._name_ = role_name } }
 }
 
 /*******************************************************************************
@@ -407,7 +392,6 @@ sig TopologyTemplate extends LG/LocationGraph
   //
   // nodes, relationships, groups and policies are locations of this location graph.
   locations = nodes + relationships + groups + policies + nodes.requirements.relationship
-  // TBR: locations = nodes + relationships + groups + policies + (String.(nodes.requirements)).relationship
   // NOTE: substitution_mapping is not a location of this location graph but
   // will be part of the location graphs where it will be substituted.
 }
@@ -551,7 +535,6 @@ pred TopologyTemplate.apply_substitution[]
 abstract sig Node extends ToscaComponent {
   node_type_name: lone String, // NOTE: Used by the substitution algorithm.
   requirements : set Requirement,
-  // TBR: requirements :  String -> Requirement,
   capabilities : set Capability,
   artifacts : set Artifact,
 } {
@@ -563,7 +546,6 @@ abstract sig Node extends ToscaComponent {
   //
   // Requirements are required roles of this location.
   required = requirements
-// TBR: required = String.requirements
   //
   // Capabilities are provided roles of this location.
   provided = capabilities
@@ -575,23 +557,12 @@ pred Node.capability[capability: one Capability]
   capability in this.capabilities
 }
 
-fun Node.capability[name: one String] : set Capability
-{
-  role[this.capabilities, name]
-}
-
 /** A requirement is owned by this node. */
+//TODO: remove the name parameter as useless
 pred Node.requirement[name: String, requirement:  one Requirement]
 {
   requirement in this.requirements
-// TBR: (name -> requirement) in this.requirements
 }
-
-// TBR
-// fun Node.requirement[name: one String] : set Requirement
-// {
-//  this.requirements[name]
-// }
 
 /** An artefact is owned by this node. */
 pred Node.artifact[artifact: one Artifact]
@@ -631,7 +602,6 @@ sig Requirement extends ToscaRole {
 /* Return the node owning a given requirement. */
 fun Requirement.node[] : set Node {
   ~(Node<:requirements)[this]
-// TBR: (requirements.this).String
 }
 
 /** The capability targetted by this requirement is of given capability types. */
