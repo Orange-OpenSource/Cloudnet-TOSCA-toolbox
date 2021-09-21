@@ -206,6 +206,11 @@ pred min_length[variable: one String, value: one Int]
   // NOTE: Always true because not supported currently.
 }
 
+pred max_length[variable: one String, value: one Int]
+{
+  // NOTE: Always true because not supported currently.
+}
+
 /*
 pred min_length[variable: set String -> univ, value: one Int]
 {
