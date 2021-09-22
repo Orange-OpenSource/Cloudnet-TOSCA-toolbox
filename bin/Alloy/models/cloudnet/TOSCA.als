@@ -224,6 +224,11 @@ pred min_length[variable: seq univ, value: one Int]
   #variable >= value
 }
 
+pred max_length[variable: seq univ, value: one Int]
+{
+  #variable <= value
+}
+
 pred boolean.equal[value: one boolean]
 {
   this = value
