@@ -27,11 +27,11 @@ from cloudnet.tosca.utils import merge_dict, normalize_dict
 
 profiles_directory = "file:" + os.path.dirname(__file__) + "/profiles"
 
-TYPE_SYSTEM = 'TypeSystem'
-SERVICE_TEMPLATE_CATALOG = 'Service-Template-Catalog'
-TOSCA_NORMATIVE_TYPES = 'tosca_normative_types'
-DEFAULT_TOSCA_NORMATIVE_TYPES = 'default_tosca_normative_types'
-SHORT_NAMES = 'short_names'
+TYPE_SYSTEM = "TypeSystem"
+SERVICE_TEMPLATE_CATALOG = "Service-Template-Catalog"
+TOSCA_NORMATIVE_TYPES = "tosca_normative_types"
+DEFAULT_TOSCA_NORMATIVE_TYPES = "default_tosca_normative_types"
+SHORT_NAMES = "short_names"
 configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
     SERVICE_TEMPLATE_CATALOG: None,
     TOSCA_NORMATIVE_TYPES: {
@@ -44,30 +44,30 @@ configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
         "tosca_simple_yaml_1_3": profiles_directory
         + "/tosca_simple_yaml_1_3/types.yaml",
     },
-    DEFAULT_TOSCA_NORMATIVE_TYPES: None, # 'tosca_simple_yaml_1_2',
-    SHORT_NAMES: { # TODO: separate short names for TOSCA 1.0, TOSCA 1.1, TOSCA 1.2 and TOSCA 1.3
-        'AttachesTo': 'tosca.relationships.AttachesTo',
-        'BlockStorage': 'tosca.nodes.BlockStorage', # TODO warning not same in 1.0 and 1.2 Storage. removed
-        'ObjectStorage': 'tosca.nodes.ObjectStorage',
-        'Compute': 'tosca.nodes.Compute',
-        'ConnectsTo': 'tosca.relationships.ConnectsTo',
-        'Database': 'tosca.nodes.Database',
-        'DBMS': 'tosca.nodes.DBMS',
-        'DependsOn': 'tosca.relationships.DependsOn',
-        'Deployment.Image.VM': 'tosca.artifacts.Deployment.Image.VM',
-        'Endpoint': 'tosca.capabilities.Endpoint',
-        'LoadBalancer': 'tosca.nodes.LoadBalancer',
-        'HostedOn': 'tosca.relationships.HostedOn',
-        'Node': 'tosca.capabilities.Node',
-        'PortDef': 'tosca.datatypes.network.PortDef',
-        'PortInfo': 'tosca.datatypes.network.PortInfo',
-        'PortSpec': 'tosca.datatypes.network.PortSpec',
-        'SoftwareComponent': 'tosca.nodes.SoftwareComponent',
-        'Root': 'tosca.nodes.Root',
-        'WebApplication': 'tosca.nodes.WebApplication',
-        'WebServer': 'tosca.nodes.WebServer',
-        'tosca:Compute': 'tosca.nodes.Compute',
-        'tosca:WebApplication': 'tosca.nodes.WebApplication',
+    DEFAULT_TOSCA_NORMATIVE_TYPES: None,  # 'tosca_simple_yaml_1_2',
+    SHORT_NAMES: {  # TODO: separate short names for TOSCA 1.0, TOSCA 1.1, TOSCA 1.2 and TOSCA 1.3
+        "AttachesTo": "tosca.relationships.AttachesTo",
+        "BlockStorage": "tosca.nodes.BlockStorage",  # TODO warning not same in 1.0 and 1.2 Storage. removed
+        "ObjectStorage": "tosca.nodes.ObjectStorage",
+        "Compute": "tosca.nodes.Compute",
+        "ConnectsTo": "tosca.relationships.ConnectsTo",
+        "Database": "tosca.nodes.Database",
+        "DBMS": "tosca.nodes.DBMS",
+        "DependsOn": "tosca.relationships.DependsOn",
+        "Deployment.Image.VM": "tosca.artifacts.Deployment.Image.VM",
+        "Endpoint": "tosca.capabilities.Endpoint",
+        "LoadBalancer": "tosca.nodes.LoadBalancer",
+        "HostedOn": "tosca.relationships.HostedOn",
+        "Node": "tosca.capabilities.Node",
+        "PortDef": "tosca.datatypes.network.PortDef",
+        "PortInfo": "tosca.datatypes.network.PortInfo",
+        "PortSpec": "tosca.datatypes.network.PortSpec",
+        "SoftwareComponent": "tosca.nodes.SoftwareComponent",
+        "Root": "tosca.nodes.Root",
+        "WebApplication": "tosca.nodes.WebApplication",
+        "WebServer": "tosca.nodes.WebServer",
+        "tosca:Compute": "tosca.nodes.Compute",
+        "tosca:WebApplication": "tosca.nodes.WebApplication",
         # TODO: must be completed with all short names
         "tosca.nodes.ObjectStorage": "tosca.nodes.Storage.ObjectStorage",  # TODO remove later
         "tosca.nodes.BlockStorage": "tosca.nodes.Storage.BlockStorage",  # TODO remove later
@@ -371,7 +371,12 @@ class ListTypeChecker(AbstractTypeChecker):
             idx = 0
             result = True
             for item in the_list:
-                processor.check_value_assignment('item', item, self.item_type_definition, context_error_message + '[' + str(idx) + ']')
+                processor.check_value_assignment(
+                    "item",
+                    item,
+                    self.item_type_definition,
+                    context_error_message + "[" + str(idx) + "]",
+                )
                 idx += 1
             return result
         return False
@@ -387,8 +392,18 @@ class MapTypeChecker(AbstractTypeChecker):
     def check_type(self, the_map, processor, context_error_message):
         if self.type_checker.check_type(the_map, processor, context_error_message):
             for key, value in the_map.items():
-                processor.check_value_assignment('key', key, self.key_type_definition, context_error_message + ':' + str(key))
-                processor.check_value_assignment('value', value, self.value_type_definition, context_error_message + ':' + str(key))
+                processor.check_value_assignment(
+                    "key",
+                    key,
+                    self.key_type_definition,
+                    context_error_message + ":" + str(key),
+                )
+                processor.check_value_assignment(
+                    "value",
+                    value,
+                    self.value_type_definition,
+                    context_error_message + ":" + str(key),
+                )
             return True
         return False
 
@@ -423,7 +438,9 @@ class DataTypeChecker(AbstractTypeChecker):
                 properties, self.data_type, context_error_message
             )
 
+
 isInt = lambda value: not isinstance(value, bool) and isinstance(value, int)
+
 
 class ValidValuesChecker(AbstractTypeChecker):
     def __init__(self, type_checker, item_type_checker):
@@ -436,11 +453,14 @@ class ValidValuesChecker(AbstractTypeChecker):
             idx = 0
             result = True
             for item in the_list:
-                if not self.item_type_checker.check_type(item, processor, context_error_message + '[' + str(idx) + ']'):
+                if not self.item_type_checker.check_type(
+                    item, processor, context_error_message + "[" + str(idx) + "]"
+                ):
                     result = False
                 idx += 1
             return result
         return False
+
 
 BASIC_TYPE_CHECKERS = {
     # YAML types
@@ -875,7 +895,7 @@ class NodeTemplateRequirement(object):
         self.node_template_name = node_template_name
         self.requirement_name = requirement_name
         self.requirement_definition = requirement_definition
-        self.occurrences = requirement_definition.get(syntax.OCCURRENCES, [ 1, 1 ])
+        self.occurrences = requirement_definition.get(syntax.OCCURRENCES, [1, 1])
         self.lower_bound = self.occurrences[0]
         self.upper_bound = self.occurrences[1]
         self.connections = 0
@@ -885,19 +905,22 @@ class NodeTemplateRequirement(object):
 
 
 class TypeChecker(Checker):
-    '''
-        TOSCA type system checker
-    '''
+    """
+    TOSCA type system checker
+    """
 
     def _processor_initialize_(self):
         self.substituting_topology_templates = []
-        service_template_catalog = self.configuration.get(TYPE_SYSTEM, SERVICE_TEMPLATE_CATALOG)
+        service_template_catalog = self.configuration.get(
+            TYPE_SYSTEM, SERVICE_TEMPLATE_CATALOG
+        )
         if service_template_catalog is None:
             self.info("No service template catalog to load.")
         else:
             self.info("Loading service template catalog...")
             from cloudnet.tosca.importers import FilesystemImporter
-            importer = FilesystemImporter('')
+
+            importer = FilesystemImporter("")
             for service_template in service_template_catalog:
                 self.load_tosca_yaml_template(service_template, importer)
             self.info("Service template catalog loaded.")
@@ -981,7 +1004,10 @@ class TypeChecker(Checker):
         #    return
         tosca_service_template = importer.imports(path)
         import os.path
-        fullname = namescape_prefix + os.path.normpath(tosca_service_template.get_fullname())
+
+        fullname = namescape_prefix + os.path.normpath(
+            tosca_service_template.get_fullname()
+        )
         if already_loaded_paths.get(fullname) is None:
             already_loaded_paths[fullname] = tosca_service_template
         else:
@@ -995,12 +1021,16 @@ class TypeChecker(Checker):
             try:
                 import_filepath = self.get_import_full_filepath(import_yaml)
             except ValueError as exc:
-                self.error('imports[%d]:%s' % (index, exc))
+                self.error("imports[%d]:%s" % (index, exc))
                 continue
             try:
-                import_namespace_prefix = syntax.get_import_namespace_prefix(import_yaml)
+                import_namespace_prefix = syntax.get_import_namespace_prefix(
+                    import_yaml
+                )
                 if import_namespace_prefix is None:
-                    import_namespace_prefix = namescape_prefix # reuse current namespace_prefix
+                    import_namespace_prefix = (
+                        namescape_prefix  # reuse current namespace_prefix
+                    )
                 else:
                     import_namespace_prefix = import_namespace_prefix + ":"
                 self.load_tosca_yaml_template(
@@ -1012,8 +1042,8 @@ class TypeChecker(Checker):
             except FileNotFoundError:
                 # It seems that we get a program crash here but I didn't figure out
                 # how to deal with yet !
-                #    This case occurs when a file imported is not present
-                #    JLC 20201126
+                #    This case occurs when a file imported is not present
+                #    JLC 20201126
                 self.error(
                     "imports["
                     + str(index)
@@ -1051,16 +1081,27 @@ class TypeChecker(Checker):
                 full_type_name = namescape_prefix + type_name
                 # check that this type is not already defined
                 if self.type_system.types.get(full_type_name):
-                    self.error(' - ' + path + ':' + type_kind + ':' + type_name + ' - type already defined')
+                    self.error(
+                        " - "
+                        + path
+                        + ":"
+                        + type_kind
+                        + ":"
+                        + type_name
+                        + " - type already defined"
+                    )
                 else:
                     self.type_system.types[full_type_name] = type_yaml
                     getattr(self.type_system, type_kind)[full_type_name] = type_yaml
-                    self.debug(' %s registered' % full_type_name)
+                    self.debug(" %s registered" % full_type_name)
 
-                if namescape_prefix != '':
+                if namescape_prefix != "":
                     osn = self.type_system.short_names.get(type_name)
                     if osn != None:
-                        self.warning("short_names[%s] = %s replaced by %s" % (type_name, osn, full_type_name))
+                        self.warning(
+                            "short_names[%s] = %s replaced by %s"
+                            % (type_name, osn, full_type_name)
+                        )
                     self.debug("short_names[%s] = %s" % (type_name, full_type_name))
                     self.type_system.short_names[type_name] = full_type_name
 
@@ -1072,20 +1113,33 @@ class TypeChecker(Checker):
             for file_ext in artifact_yaml.get(syntax.FILE_EXT, []):
                 artifact_type = self.type_system.get_artifact_type_by_file_ext(file_ext)
                 if artifact_type:
-                    self.warning(' - ' + path + " - file extension '" + file_ext + "' already associated to " + artifact_type)
+                    self.warning(
+                        " - "
+                        + path
+                        + " - file extension '"
+                        + file_ext
+                        + "' already associated to "
+                        + artifact_type
+                    )
                     continue
                 self.type_system.artifact_types_by_file_ext[file_ext] = (
                     namescape_prefix + artifact_name
                 )
 
         # register substituting topology templates
-        substitution_mappings_node_type = \
-            template_yaml.get('topology_template', {}) \
-            .get('substitution_mappings', {}) \
-            .get('node_type')
+        substitution_mappings_node_type = (
+            template_yaml.get("topology_template", {})
+            .get("substitution_mappings", {})
+            .get("node_type")
+        )
         if substitution_mappings_node_type != None:
-            self.info("register %s as susbtitution topology template for %s node type" \
-                % ( tosca_service_template.get_fullname(), substitution_mappings_node_type ))
+            self.info(
+                "register %s as susbtitution topology template for %s node type"
+                % (
+                    tosca_service_template.get_fullname(),
+                    substitution_mappings_node_type,
+                )
+            )
             self.substituting_topology_templates.append(tosca_service_template)
 
     def get_topology_template(self):
@@ -1290,38 +1344,50 @@ class TypeChecker(Checker):
                 previous_value = PREVIOUSLY_UNDEFINED
             method(key, value, previous_value, context_error_message + key)
 
-
     def is_relationship_type_compatible_with_capability_type(
-            self,
-            relationship_type_name,
-            capability_type_name
-            ):
+        self, relationship_type_name, capability_type_name
+    ):
         relationship_type = self.type_system.merge_type(relationship_type_name)
         for valid_target_type in relationship_type.get(syntax.VALID_TARGET_TYPES, []):
-            if self.type_system.is_derived_from(capability_type_name, valid_target_type):
+            if self.type_system.is_derived_from(
+                capability_type_name, valid_target_type
+            ):
                 return True
         return False
 
     def search_relationship_types_compatible_with_capability_type(
-            self,
-            capability_type_name,
-            context_error_message
-            ):
+        self, capability_type_name, context_error_message
+    ):
         # Check that there is one relationship where capability_type_name is compatible with at least one valid target type
         found_relationship_types = []
         for relationship_type_name in list(self.type_system.relationship_types):
             if self.is_relationship_type_compatible_with_capability_type(
-                        relationship_type_name,
-                        capability_type_name
-                    ):
+                relationship_type_name, capability_type_name
+            ):
                 found_relationship_types.append(relationship_type_name)
         nb_found_relationship_types = len(found_relationship_types)
         if nb_found_relationship_types == 0:
-            self.error(context_error_message + ' undefined but no relationship type is compatible with ' + capability_type_name)
+            self.error(
+                context_error_message
+                + " undefined but no relationship type is compatible with "
+                + capability_type_name
+            )
         elif nb_found_relationship_types == 1:
-            self.warning(context_error_message + ' undefined but ' + found_relationship_types[0] + ' is compatible with ' + capability_type_name)
+            self.warning(
+                context_error_message
+                + " undefined but "
+                + found_relationship_types[0]
+                + " is compatible with "
+                + capability_type_name
+            )
         else:
-            self.warning(context_error_message + ': undefined but ' + array_to_string_with_or_separator(found_relationship_types) + ' are compatible with ' + capability_type_name)
+            self.warning(
+                context_error_message
+                + ": undefined but "
+                + array_to_string_with_or_separator(found_relationship_types)
+                + " are compatible with "
+                + capability_type_name
+            )
         return found_relationship_types
 
     def check_service_template_definition(self, service_template_definition):
@@ -1580,18 +1646,18 @@ class TypeChecker(Checker):
         )
         if type_checker is not None:
             # TODO: factorize following code
-            if data_type_name == 'list':
-                entry_schema = definition.get(syntax.ENTRY_SCHEMA, 'string')
+            if data_type_name == "list":
+                entry_schema = definition.get(syntax.ENTRY_SCHEMA, "string")
                 if isinstance(entry_schema, str):
-                    entry_schema = { syntax.TYPE: entry_schema }
+                    entry_schema = {syntax.TYPE: entry_schema}
                 type_checker = ListTypeChecker(type_checker, entry_schema)
-            elif data_type_name == 'map':
-                key_schema = definition.get(syntax.KEY_SCHEMA, 'string')
+            elif data_type_name == "map":
+                key_schema = definition.get(syntax.KEY_SCHEMA, "string")
                 if isinstance(key_schema, str):
-                    key_schema = { syntax.TYPE: key_schema }
-                entry_schema = definition.get(syntax.ENTRY_SCHEMA, 'string')
+                    key_schema = {syntax.TYPE: key_schema}
+                entry_schema = definition.get(syntax.ENTRY_SCHEMA, "string")
                 if isinstance(entry_schema, str):
-                    entry_schema = { syntax.TYPE: entry_schema }
+                    entry_schema = {syntax.TYPE: entry_schema}
                 type_checker = MapTypeChecker(type_checker, key_schema, entry_schema)
         else:
             # definition_type could be a data type
@@ -1613,7 +1679,12 @@ class TypeChecker(Checker):
         )
         if type_checker is None:
             # ISSUE: I don't know what to do when no type checker found :-(
-            self.warning(context_error_message + ': ' + str(value) + ' - no type found to check the value')
+            self.warning(
+                context_error_message
+                + ": "
+                + str(value)
+                + " - no type found to check the value"
+            )
             return
 
         if not type_checker.check_type(value, self, context_error_message):
@@ -1655,8 +1726,12 @@ class TypeChecker(Checker):
                             constraint_name,
                         )
                         continue
-                    definition_type = definition.get(syntax.TYPE) or previous_definition.get(syntax.TYPE)
-                    constraint_clause_checker = get_constraint_clause_checker(definition_type, constraint_clause_checkers)
+                    definition_type = definition.get(
+                        syntax.TYPE
+                    ) or previous_definition.get(syntax.TYPE)
+                    constraint_clause_checker = get_constraint_clause_checker(
+                        definition_type, constraint_clause_checkers
+                    )
                     if constraint_clause_checker is None:
                         self.error(
                             context_error_message
@@ -1734,8 +1809,10 @@ class TypeChecker(Checker):
                 continue
 
             # check that the constraint operand is valid
-            if constraint_operator == 'valid_values':
-                check_constraint_operand = lambda operand : ValidValuesChecker(BASIC_TYPE_CHECKERS.get('list'), type_checker).check_type(operand, self, cem)
+            if constraint_operator == "valid_values":
+                check_constraint_operand = lambda operand: ValidValuesChecker(
+                    BASIC_TYPE_CHECKERS.get("list"), type_checker
+                ).check_type(operand, self, cem)
             else:
                 check_constraint_operand = lambda operand: type_checker.check_type(
                     operand, self, cem
@@ -1892,9 +1969,17 @@ class TypeChecker(Checker):
                 node_type = self.type_system.merge_type(requirement_node)
                 capability_not_compatible = True
                 for cap_name, cap_def in syntax.get_capabilities(node_type).items():
-                    if self.type_system.is_derived_from(syntax.get_capability_type(cap_def), requirement_capability):
-                        cap_valid_source_types = cap_def.get(syntax.VALID_SOURCE_TYPES) if isinstance(cap_def, dict) else []
-                        if self.check_type_compatible_with_valid_source_types(self.current_type_name, cap_valid_source_types):
+                    if self.type_system.is_derived_from(
+                        syntax.get_capability_type(cap_def), requirement_capability
+                    ):
+                        cap_valid_source_types = (
+                            cap_def.get(syntax.VALID_SOURCE_TYPES)
+                            if isinstance(cap_def, dict)
+                            else []
+                        )
+                        if self.check_type_compatible_with_valid_source_types(
+                            self.current_type_name, cap_valid_source_types
+                        ):
                             capability_not_compatible = False
                             break
                 if capability_not_compatible:
@@ -1910,12 +1995,16 @@ class TypeChecker(Checker):
                     )
 
         # check relationship
-        requirement_relationship = syntax.get_requirement_relationship(requirement_definition)
+        requirement_relationship = syntax.get_requirement_relationship(
+            requirement_definition
+        )
         if requirement_relationship is None:
             # relationship undefined
             if requirement_capability != None:
                 # but capability defined
-                previous_relationship = syntax.get_requirement_relationship(previous_requirement_definition)
+                previous_relationship = syntax.get_requirement_relationship(
+                    previous_requirement_definition
+                )
                 if previous_relationship != None:
                     # Check if capability is compatible with previous defined relationship
                     if type(previous_relationship) is str:
@@ -1923,17 +2012,31 @@ class TypeChecker(Checker):
                     else:
                         relationship_type_name = previous_relationship.get(TYPE)
                     if not self.is_relationship_type_compatible_with_capability_type(
-                                relationship_type_name,
-                                requirement_capability
-                            ):
-                        self.error(context_error_message + ':' + syntax.CAPABILITY + ': ' + requirement_capability + ' - incompatible with ' + relationship_type_name)
+                        relationship_type_name, requirement_capability
+                    ):
+                        self.error(
+                            context_error_message
+                            + ":"
+                            + syntax.CAPABILITY
+                            + ": "
+                            + requirement_capability
+                            + " - incompatible with "
+                            + relationship_type_name
+                        )
                     else:
-                        self.info(context_error_message + ':' + syntax.CAPABILITY + ': ' + requirement_capability + ' - compatible with ' + relationship_type_name)
+                        self.info(
+                            context_error_message
+                            + ":"
+                            + syntax.CAPABILITY
+                            + ": "
+                            + requirement_capability
+                            + " - compatible with "
+                            + relationship_type_name
+                        )
                 else:
                     # Search relationship types compatible with defined capability
                     self.search_relationship_types_compatible_with_capability_type(
-                        requirement_capability,
-                        context_error_message + ':relationship'
+                        requirement_capability, context_error_message + ":relationship"
                     )
         else:
             # relationship defined
@@ -2309,21 +2412,54 @@ class TypeChecker(Checker):
                 implementation, context_error_message + ":" + syntax.IMPLEMENTATION
             )
         # check outputs
-        self.iterate_over_map_of_definitions(self.check_output_notification_definition, syntax.OUTPUTS, notification_definition, previous_notification_definition, REFINE_OR_NEW, context_error_message)
+        self.iterate_over_map_of_definitions(
+            self.check_output_notification_definition,
+            syntax.OUTPUTS,
+            notification_definition,
+            previous_notification_definition,
+            REFINE_OR_NEW,
+            context_error_message,
+        )
 
-    check_notification_implementation_definition = check_operation_implementation_definition
+    check_notification_implementation_definition = (
+        check_operation_implementation_definition
+    )
 
-    def check_output_notification_definition(self, output_name, output_definition, previous_output_definition, context_error_message):
+    def check_output_notification_definition(
+        self,
+        output_name,
+        output_definition,
+        previous_output_definition,
+        context_error_message,
+    ):
         if isinstance(output_definition, list):
             # TOSCA 1.3 grammar
-            self.check_attribute_mapping_definition(output_name, output_definition, previous_output_definition, context_error_message)
+            self.check_attribute_mapping_definition(
+                output_name,
+                output_definition,
+                previous_output_definition,
+                context_error_message,
+            )
         elif isinstance(output_definition, dict):
             # TOSCA 2.0 grammar
-            self.check_parameter_definition(output_name, output_definition, context_error_message)
+            self.check_parameter_definition(
+                output_name, output_definition, context_error_message
+            )
         else:
-            self.error(context_error_message + ': ' + str(output_definition) + ' - unexpected grammar')
+            self.error(
+                context_error_message
+                + ": "
+                + str(output_definition)
+                + " - unexpected grammar"
+            )
 
-    def check_attribute_mapping_definition(self, attribute_mapping_name, attribute_mapping_definition, previous_attribute_mapping_definition, context_error_message):
+    def check_attribute_mapping_definition(
+        self,
+        attribute_mapping_name,
+        attribute_mapping_definition,
+        previous_attribute_mapping_definition,
+        context_error_message,
+    ):
         if len(attribute_mapping_definition) != 2:
             self.error(
                 context_error_message
@@ -2442,11 +2578,19 @@ class TypeChecker(Checker):
                 # check that the artifact file is supported by the artifact type
                 found = True
                 for file_ext in artifact_type.get(syntax.FILE_EXT, []):
-                    found = artifact_file.endswith('.' + file_ext)
+                    found = artifact_file.endswith("." + file_ext)
                     if found:
                         break
                 if not found:
-                    self.error(context_error_message + ':' + syntax.FILE + ': ' + artifact_file + ' - file extension not in %s as expected for %s' % (artifact_type.get(syntax.FILE_EXT), artifact_type_name))
+                    self.error(
+                        context_error_message
+                        + ":"
+                        + syntax.FILE
+                        + ": "
+                        + artifact_file
+                        + " - file extension not in %s as expected for %s"
+                        % (artifact_type.get(syntax.FILE_EXT), artifact_type_name)
+                    )
 
             # check that the file exists
             # self.warning(context_error_message + ':' + syntax.FILE + ': ' + artifact_definition.get(syntax.FILE) + ' - file currently unchecked')
@@ -2683,8 +2827,12 @@ class TypeChecker(Checker):
 
         # check the short notation
         if type(call_operation) is str:
-            operation_definition = check_operation(call_operation, context_error_message)
-            self.check_required_parameters({}, operation_definition, context_error_message + ': ' + call_operation)
+            operation_definition = check_operation(
+                call_operation, context_error_message
+            )
+            self.check_required_parameters(
+                {}, operation_definition, context_error_message + ": " + call_operation
+            )
             return
         # check the extended notation
         # check operation
@@ -2696,8 +2844,19 @@ class TypeChecker(Checker):
             operation_name, context_error_message + ":operation"
         )
         # check inputs
-        self.iterate_over_map_of_assignments(self.check_parameter_assignment, syntax.INPUTS, call_operation, operation_definition, operation_name, context_error_message)
-        self.check_required_parameters(call_operation, operation_definition, context_error_message + ': ' + operation_name)
+        self.iterate_over_map_of_assignments(
+            self.check_parameter_assignment,
+            syntax.INPUTS,
+            call_operation,
+            operation_definition,
+            operation_name,
+            context_error_message,
+        )
+        self.check_required_parameters(
+            call_operation,
+            operation_definition,
+            context_error_message + ": " + operation_name,
+        )
 
     def check_inline_activity(self, inline, context_error_message):
         def check_workflow_and_inputs(workflow_name, delegate_definition):
@@ -3126,21 +3285,37 @@ class TypeChecker(Checker):
         iterate_over_map(self.check_imperative_workflow_definition, syntax.WORKFLOWS)
 
         for req_id, requirement in self.all_the_node_template_requirements.items():
-            cem = 'topology_template:node_templates:' + requirement.node_template_name + ':requirements:' + requirement.requirement_name
+            cem = (
+                "topology_template:node_templates:"
+                + requirement.node_template_name
+                + ":requirements:"
+                + requirement.requirement_name
+            )
             if requirement.connections < requirement.lower_bound:
                 node_type_names = []
                 # get the requirement node
-                requirement_node = requirement.requirement_definition.get('node')
+                requirement_node = requirement.requirement_definition.get("node")
                 if requirement_node is None:
                     # search all the node types which have a capability compatible with the requirement capability
-                    requirement_capability = requirement.requirement_definition.get('capability')
-                    for node_type_name, node_type_def in self.type_system.node_types.items():
-                        for cap_name, cap_def in node_type_def.get('capabilities', {}).items():
+                    requirement_capability = requirement.requirement_definition.get(
+                        "capability"
+                    )
+                    for (
+                        node_type_name,
+                        node_type_def,
+                    ) in self.type_system.node_types.items():
+                        for cap_name, cap_def in node_type_def.get(
+                            "capabilities", {}
+                        ).items():
                             cap_type = syntax.get_capability_type(cap_def)
-                            if self.type_system.is_derived_from(cap_type, requirement_capability):
+                            if self.type_system.is_derived_from(
+                                cap_type, requirement_capability
+                            ):
                                 node_type_names.append(node_type_name)
                     if len(node_type_names) == 0:
-                        self.error(cem + ' - no node type matching ' + requirement_capability)
+                        self.error(
+                            cem + " - no node type matching " + requirement_capability
+                        )
                         continue
                 else:
                     node_type_names.append(requirement_node)
@@ -3148,27 +3323,59 @@ class TypeChecker(Checker):
                 node_templates = []
                 for node_type_name in node_type_names:
                     # search node templates of this type
-                    node_templates.extend(self.select_node_templates(node_type_name, None, cem))
+                    node_templates.extend(
+                        self.select_node_templates(node_type_name, None, cem)
+                    )
 
                 if len(node_templates) == 0:
-                    self.error(cem + ' - no node template matching ' + array_to_string_with_or_separator(node_type_names))
+                    self.error(
+                        cem
+                        + " - no node template matching "
+                        + array_to_string_with_or_separator(node_type_names)
+                    )
                     continue
                 update_requirement_node = node_templates[0]
                 if len(node_templates) == 1:
-                    self.info(cem + ' - ' + update_requirement_node + ' node template found')
+                    self.info(
+                        cem + " - " + update_requirement_node + " node template found"
+                    )
                 else:
-                    self.warning(cem + ' - ' + array_to_string_with_or_separator(node_templates) + ' node templates found, then ' + update_requirement_node + ' selected')
-                node_template = self.get_topology_template()['node_templates'][requirement.node_template_name]
-                requirements = node_template.get('requirements')
+                    self.warning(
+                        cem
+                        + " - "
+                        + array_to_string_with_or_separator(node_templates)
+                        + " node templates found, then "
+                        + update_requirement_node
+                        + " selected"
+                    )
+                node_template = self.get_topology_template()["node_templates"][
+                    requirement.node_template_name
+                ]
+                requirements = node_template.get("requirements")
                 if requirements is None:
                     requirements = []
-                    node_template['requirements'] = requirements
-                requirements.append({ requirement.requirement_name: update_requirement_node })
+                    node_template["requirements"] = requirements
+                requirements.append(
+                    {requirement.requirement_name: update_requirement_node}
+                )
 
-            if requirement.upper_bound != syntax.UNBOUNDED and requirement.connections > requirement.upper_bound:
-                self.error(cem + ' - expected occurrences: ' + str(requirement.occurrences) + ' but ' + str(requirement.connections) + ' connections' + ' - too many connections')
+            if (
+                requirement.upper_bound != syntax.UNBOUNDED
+                and requirement.connections > requirement.upper_bound
+            ):
+                self.error(
+                    cem
+                    + " - expected occurrences: "
+                    + str(requirement.occurrences)
+                    + " but "
+                    + str(requirement.connections)
+                    + " connections"
+                    + " - too many connections"
+                )
 
-    def check_type_in_template(self, type_kinds, template, keyword, context_error_message):
+    def check_type_in_template(
+        self, type_kinds, template, keyword, context_error_message
+    ):
         type_name = template.get(keyword)
         checked = self.check_type_existence(
             type_kinds, type_name, context_error_message + ":" + keyword
@@ -3179,30 +3386,42 @@ class TypeChecker(Checker):
     def has_no_default_value(self, definition):
         default = definition.get(syntax.DEFAULT)
         if default != None:
-            return False # default is set
+            return False  # default is set
         # default is not set
         # get the type definition
         type_def = self.type_system.merge_type(definition.get(syntax.TYPE))
         type_properties = type_def.get(syntax.PROPERTIES, {})
-        if len(type_properties) == 0: # no property
-            return True # no default value
+        if len(type_properties) == 0:  # no property
+            return True  # no default value
         # the type has some properties
         # iterate over all properties
         for property_name, property_definition in type_properties.items():
-            if property_definition.get(syntax.REQUIRED, True) \
-               and self.has_no_default_value(property_definition):
-                return True # this is a required property without a default value
+            if property_definition.get(
+                syntax.REQUIRED, True
+            ) and self.has_no_default_value(property_definition):
+                return True  # this is a required property without a default value
         # all required properties have a default value
         return False
 
-    def check_required_fields(self, keyword, kind, definition, definition_type, default_fields_definition, default_fields_definition_location, context_error_message):
+    def check_required_fields(
+        self,
+        keyword,
+        kind,
+        definition,
+        definition_type,
+        default_fields_definition,
+        default_fields_definition_location,
+        context_error_message,
+    ):
         fields = definition.get(keyword, {})
         for field_name, field_definition in definition_type.get(keyword, {}).items():
-            if isinstance(field_definition, dict) \
-               and field_definition.get(syntax.TYPE) != None \
-               and field_definition.get(syntax.REQUIRED, True) \
-               and self.has_no_default_value(field_definition) \
-               and fields.get(field_name) is None:
+            if (
+                isinstance(field_definition, dict)
+                and field_definition.get(syntax.TYPE) != None
+                and field_definition.get(syntax.REQUIRED, True)
+                and self.has_no_default_value(field_definition)
+                and fields.get(field_name) is None
+            ):
                 default_field_definition = default_fields_definition.get(field_name)
                 if default_field_definition is None:
                     self.error(
@@ -3363,24 +3582,34 @@ class TypeChecker(Checker):
 
     def check_value_assignment(self, name, value, definition, context_error_message):
         if type(value) is dict and len(value) == 1:
-            if 'concat' in value:
-                parameters = value['concat']
+            if "concat" in value:
+                parameters = value["concat"]
                 # check that parameters are a list of strings
                 expected_type_of_parameters = {
-                    'type': 'list',
-                    'entry_schema': {
-                        'type': 'string'
-                    },
-                    'constraints': [
-                        { 'min_length': 1 }
-                    ]
+                    "type": "list",
+                    "entry_schema": {"type": "string"},
+                    "constraints": [{"min_length": 1}],
                 }
-                self.check_value_assignment('concat', parameters, expected_type_of_parameters, context_error_message + ':concat')
+                self.check_value_assignment(
+                    "concat",
+                    parameters,
+                    expected_type_of_parameters,
+                    context_error_message + ":concat",
+                )
 
                 # check that definition type is a string
                 def_type = definition.get(syntax.TYPE)
-                if def_type != None and not self.type_system.is_derived_from('string', def_type):
-                    self.error(context_error_message + ': ' + str(value) + ' - ' + def_type + ' type expected')
+                if def_type != None and not self.type_system.is_derived_from(
+                    "string", def_type
+                ):
+                    self.error(
+                        context_error_message
+                        + ": "
+                        + str(value)
+                        + " - "
+                        + def_type
+                        + " type expected"
+                    )
                     return
 
                 return
@@ -3545,45 +3774,103 @@ class TypeChecker(Checker):
                 parameters_idx = 2
 
                 attribute_name = parameters[1]
-                attribute_definition = entity_type.get(syntax.ATTRIBUTES, {}).get(attribute_name)
+                attribute_definition = entity_type.get(syntax.ATTRIBUTES, {}).get(
+                    attribute_name
+                )
                 if attribute_definition != None:
-                    attribute_value = entity.get(syntax.ATTRIBUTES, {}).get(attribute_name)
+                    attribute_value = entity.get(syntax.ATTRIBUTES, {}).get(
+                        attribute_name
+                    )
                 else:
-                    attribute_definition = entity_type.get(syntax.PROPERTIES, {}).get(attribute_name)
+                    attribute_definition = entity_type.get(syntax.PROPERTIES, {}).get(
+                        attribute_name
+                    )
                     if attribute_definition != None:
-                        attribute_value = entity.get(syntax.PROPERTIES, {}).get(attribute_name)
+                        attribute_value = entity.get(syntax.PROPERTIES, {}).get(
+                            attribute_name
+                        )
                     else:
-                        capability_definition = entity_type.get(syntax.CAPABILITIES, {}).get(attribute_name)
-                        capability_value = entity.get(syntax.CAPABILITIES, {}).get(attribute_name)
+                        capability_definition = entity_type.get(
+                            syntax.CAPABILITIES, {}
+                        ).get(attribute_name)
+                        capability_value = entity.get(syntax.CAPABILITIES, {}).get(
+                            attribute_name
+                        )
                         if capability_definition is None:
-                            self.error(context_error_message + ': ' + str(value) + ' - ' + attribute_name + ' attribute undefined')
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + attribute_name
+                                + " attribute undefined"
+                            )
                             return
-                        capability_type = syntax.get_capability_type(capability_definition)
-                        capability_definition_type = self.type_system.merge_type(self.type_system.get_type_uri(capability_type))
+                        capability_type = syntax.get_capability_type(
+                            capability_definition
+                        )
+                        capability_definition_type = self.type_system.merge_type(
+                            self.type_system.get_type_uri(capability_type)
+                        )
                         if capability_definition_type is None:
-                            self.error(context_error_message + ': ' + str(value) + ' - ' + capability_type + ' capability type undefined')
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + capability_type
+                                + " capability type undefined"
+                            )
                             return
                         attribute_name = parameters[2]
-                        attribute_definition = capability_definition_type.get(syntax.ATTRIBUTES, {}).get(attribute_name)
+                        attribute_definition = capability_definition_type.get(
+                            syntax.ATTRIBUTES, {}
+                        ).get(attribute_name)
                         if attribute_definition is None:
-                            self.error(context_error_message + ': ' + str(value) + ' - ' + attribute_name + ' attribute undefined in ' + capability_type)
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + attribute_name
+                                + " attribute undefined in "
+                                + capability_type
+                            )
                             return
                         if capability_value != None:
-                            attribute_value = capability_value.get(syntax.ATTRIBUTES, {}).get(attribute_name)
+                            attribute_value = capability_value.get(
+                                syntax.ATTRIBUTES, {}
+                            ).get(attribute_name)
                         parameters_idx = 3
 
                 for parameter in parameters[parameters_idx:]:
-                    t =  attribute_definition.get(syntax.TYPE)
+                    t = attribute_definition.get(syntax.TYPE)
                     rt = self.get_root_data_type_name(t)
-                    if rt == 'map':
-                        type_checker = self.get_type_checker({ syntax.TYPE: attribute_definition.get(syntax.KEY_SCHEMA, {}).get(syntax.TYPE, 'string')}, {}, context_error_message + ': ' + str(value))
-                        type_checker.check_type(parameter, self, context_error_message + ': ' + str(value))
-                        attribute_definition = attribute_definition.get(syntax.ENTRY_SCHEMA)
+                    if rt == "map":
+                        type_checker = self.get_type_checker(
+                            {
+                                syntax.TYPE: attribute_definition.get(
+                                    syntax.KEY_SCHEMA, {}
+                                ).get(syntax.TYPE, "string")
+                            },
+                            {},
+                            context_error_message + ": " + str(value),
+                        )
+                        type_checker.check_type(
+                            parameter, self, context_error_message + ": " + str(value)
+                        )
+                        attribute_definition = attribute_definition.get(
+                            syntax.ENTRY_SCHEMA
+                        )
                         if attribute_value != None:
                             attribute_value = attribute_value.get(parameter)
-                    elif rt == 'list':
-                        BASIC_TYPE_CHECKERS['integer'].check_type(parameter, self, context_error_message + ': ' + str(value))
-                        attribute_definition = attribute_definition.get(syntax.ENTRY_SCHEMA)
+                    elif rt == "list":
+                        BASIC_TYPE_CHECKERS["integer"].check_type(
+                            parameter, self, context_error_message + ": " + str(value)
+                        )
+                        attribute_definition = attribute_definition.get(
+                            syntax.ENTRY_SCHEMA
+                        )
                         if attribute_value != None:
                             attribute_value = attribute_value[parameter]
                     else:
@@ -3627,8 +3914,20 @@ class TypeChecker(Checker):
                     return
 
                 # check if the assigned definition is required then the assigning attribute is required
-                if attribute_value is None and value_type != None and definition.get(syntax.REQUIRED, True) and attribute_definition.get(syntax.REQUIRED, True) is False:
-                    self.warning(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' is not required, but the actual value is expected from the system')
+                if (
+                    attribute_value is None
+                    and value_type != None
+                    and definition.get(syntax.REQUIRED, True)
+                    and attribute_definition.get(syntax.REQUIRED, True) is False
+                ):
+                    self.warning(
+                        context_error_message
+                        + ": "
+                        + str(value)
+                        + " - property "
+                        + str(parameters)
+                        + " is not required, but the actual value is expected from the system"
+                    )
 
                 return
 
@@ -3693,82 +3992,199 @@ class TypeChecker(Checker):
                 parameters_idx = 2
 
                 property_name = parameters[1]
-                property_definition = entity_type.get(syntax.PROPERTIES, {}).get(property_name)
+                property_definition = entity_type.get(syntax.PROPERTIES, {}).get(
+                    property_name
+                )
                 if property_definition != None:
-                    property_value = entity.get(syntax.PROPERTIES, {}).get(property_name)
+                    property_value = entity.get(syntax.PROPERTIES, {}).get(
+                        property_name
+                    )
                 else:
-                    capability_definition = entity_type.get(syntax.CAPABILITIES, {}).get(property_name)
-                    capability_value = entity.get(syntax.CAPABILITIES, {}).get(property_name)
+                    capability_definition = entity_type.get(
+                        syntax.CAPABILITIES, {}
+                    ).get(property_name)
+                    capability_value = entity.get(syntax.CAPABILITIES, {}).get(
+                        property_name
+                    )
                     if capability_definition != None:
-                        capability_type = syntax.get_capability_type(capability_definition)
-                        capability_definition_type = self.type_system.merge_type(self.type_system.get_type_uri(capability_type))
+                        capability_type = syntax.get_capability_type(
+                            capability_definition
+                        )
+                        capability_definition_type = self.type_system.merge_type(
+                            self.type_system.get_type_uri(capability_type)
+                        )
                         if capability_definition_type is None:
-                            self.error(context_error_message + ': ' + str(value) + ' - ' + capability_type + ' capability type undefined')
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + capability_type
+                                + " capability type undefined"
+                            )
                             return
                         property_name = parameters[2]
-                        property_definition = capability_definition_type.get(syntax.PROPERTY, {}).get(property_name)
+                        property_definition = capability_definition_type.get(
+                            syntax.PROPERTY, {}
+                        ).get(property_name)
                         if property_definition is None:
-                            self.error(context_error_message + ': ' + str(value) + ' - ' + property_name + ' property undefined in ' + capability_type)
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + property_name
+                                + " property undefined in "
+                                + capability_type
+                            )
                             return
                         if capability_value != None:
-                            property_value = capability_value.get(syntax.PROPERTY, {}).get(property_name)
+                            property_value = capability_value.get(
+                                syntax.PROPERTY, {}
+                            ).get(property_name)
                     else:
-                        requirement_definition = entity_type.get(syntax.REQUIREMENTS, {}).get(property_name)
+                        requirement_definition = entity_type.get(
+                            syntax.REQUIREMENTS, {}
+                        ).get(property_name)
                         if requirement_definition is None:
-                            self.error(context_error_message + ': ' + str(value) + ' - ' + property_name + ' capability or requirement undefined')
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + property_name
+                                + " capability or requirement undefined"
+                            )
                             return
-                        requirement = syntax.get_requirements_dict(entity).get(property_name)
-                        requirement_capability = requirement_definition.get(syntax.CAPABILITY)
-                        capability_definition_type = self.type_system.merge_type(self.type_system.get_type_uri(requirement_capability))
-                        capability_name = property_name # TODO: could be different
+                        requirement = syntax.get_requirements_dict(entity).get(
+                            property_name
+                        )
+                        requirement_capability = requirement_definition.get(
+                            syntax.CAPABILITY
+                        )
+                        capability_definition_type = self.type_system.merge_type(
+                            self.type_system.get_type_uri(requirement_capability)
+                        )
+                        capability_name = property_name  # TODO: could be different
                         property_name = parameters[2]
-                        property_definition = capability_definition_type.get(syntax.PROPERTIES, {}).get(property_name)
+                        property_definition = capability_definition_type.get(
+                            syntax.PROPERTIES, {}
+                        ).get(property_name)
                         if property_definition is None:
-                            self.error(context_error_message + ': ' + str(value) + ' - ' + property_name + ' property undefined in ' + requirement_capability)
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + property_name
+                                + " property undefined in "
+                                + requirement_capability
+                            )
                             return
-                        requirement_node = syntax.get_requirement_node_template(requirement)
+                        requirement_node = syntax.get_requirement_node_template(
+                            requirement
+                        )
                         if requirement_node is None:
                             property_value = None
                         else:
-                            entity = topology_template.get(syntax.NODE_TEMPLATES, {}).get(requirement_node)
+                            entity = topology_template.get(
+                                syntax.NODE_TEMPLATES, {}
+                            ).get(requirement_node)
                             if entity is None:
                                 property_value = None
                             else:
-                                property_value = entity.get(syntax.CAPABILITIES, {}).get(capability_name, {}).get(syntax.PROPERTIES, {}).get(property_name)
+                                property_value = (
+                                    entity.get(syntax.CAPABILITIES, {})
+                                    .get(capability_name, {})
+                                    .get(syntax.PROPERTIES, {})
+                                    .get(property_name)
+                                )
 
                     parameters_idx = 3
 
                 for parameter in parameters[parameters_idx:]:
                     t = property_definition.get(syntax.TYPE)
                     rt = self.get_root_data_type_name(t)
-                    if rt == 'map':
-                        type_checker = self.get_type_checker({ syntax.TYPE: property_definition.get(syntax.KEY_SCHEMA, {}).get(syntax.TYPE, 'string')}, {}, context_error_message + ': ' + str(value))
-                        type_checker.check_type(parameter, self, context_error_message + ': ' + str(value))
-                        property_definition = property_definition.get(syntax.ENTRY_SCHEMA)
+                    if rt == "map":
+                        type_checker = self.get_type_checker(
+                            {
+                                syntax.TYPE: property_definition.get(
+                                    syntax.KEY_SCHEMA, {}
+                                ).get(syntax.TYPE, "string")
+                            },
+                            {},
+                            context_error_message + ": " + str(value),
+                        )
+                        type_checker.check_type(
+                            parameter, self, context_error_message + ": " + str(value)
+                        )
+                        property_definition = property_definition.get(
+                            syntax.ENTRY_SCHEMA
+                        )
                         if property_value != None:
                             property_value = property_value.get(parameter)
-                    elif rt == 'list':
-                        BASIC_TYPE_CHECKERS['integer'].check_type(parameter, self, context_error_message + ': ' + str(value))
-                        property_definition = property_definition.get(syntax.ENTRY_SCHEMA)
+                    elif rt == "list":
+                        BASIC_TYPE_CHECKERS["integer"].check_type(
+                            parameter, self, context_error_message + ": " + str(value)
+                        )
+                        property_definition = property_definition.get(
+                            syntax.ENTRY_SCHEMA
+                        )
                         if property_value != None:
                             property_value = property_value[parameter]
                     else:
-                        property_definition = self.type_system.merge_type(self.type_system.get_type_uri(t)).get(syntax.PROPERTIES, {}).get(parameter)
+                        property_definition = (
+                            self.type_system.merge_type(
+                                self.type_system.get_type_uri(t)
+                            )
+                            .get(syntax.PROPERTIES, {})
+                            .get(parameter)
+                        )
                         if property_definition is None:
-                            self.error(context_error_message + ': ' + str(value) + ' - ' + str(parameter) + ' property undefined')
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + str(parameter)
+                                + " property undefined"
+                            )
                             return
                         if property_value != None:
                             property_value = property_value.get(parameter)
 
                 property_type = property_definition.get(syntax.TYPE)
                 value_type = definition.get(syntax.TYPE)
-                if value_type != None and not self.type_system.is_derived_from(property_type, value_type):
-                    self.error(context_error_message + ': ' + str(value) + ' - ' + property_type + ' type but ' + value_type + ' type expected')
+                if value_type != None and not self.type_system.is_derived_from(
+                    property_type, value_type
+                ):
+                    self.error(
+                        context_error_message
+                        + ": "
+                        + str(value)
+                        + " - "
+                        + property_type
+                        + " type but "
+                        + value_type
+                        + " type expected"
+                    )
                     return
 
                 # check if the assigned definition is required then the assigning property is required
-                if property_value is None and value_type != None and definition.get(syntax.REQUIRED, True) and property_definition.get(syntax.REQUIRED, True) is False:
-                    self.warning(context_error_message + ': ' + str(value) + ' - property ' + str(parameters) + ' is not required, but the actual value is expected from the system')
+                if (
+                    property_value is None
+                    and value_type != None
+                    and definition.get(syntax.REQUIRED, True)
+                    and property_definition.get(syntax.REQUIRED, True) is False
+                ):
+                    self.warning(
+                        context_error_message
+                        + ": "
+                        + str(value)
+                        + " - property "
+                        + str(parameters)
+                        + " is not required, but the actual value is expected from the system"
+                    )
 
                 return
 
@@ -3781,27 +4197,66 @@ class TypeChecker(Checker):
                     input_name = parameters[0]
                     parameters = parameters[1:]
                 else:
-                    self.error(context_error_message + ': ' + str(value) + ' - string or list expected')
+                    self.error(
+                        context_error_message
+                        + ": "
+                        + str(value)
+                        + " - string or list expected"
+                    )
                     return
-                input_definition = self.get_topology_template().get(syntax.INPUTS, {}).get(input_name)
+                input_definition = (
+                    self.get_topology_template().get(syntax.INPUTS, {}).get(input_name)
+                )
                 if input_definition is None:
-                    self.error(context_error_message + ': ' + str(value) + ' - ' + input_name + ' input undefined')
+                    self.error(
+                        context_error_message
+                        + ": "
+                        + str(value)
+                        + " - "
+                        + input_name
+                        + " input undefined"
+                    )
                     return
 
                 for parameter in parameters:
                     t = input_definition.get(syntax.TYPE)
                     rt = self.get_root_data_type_name(t)
-                    if rt == 'map':
-                        type_checker = self.get_type_checker({ syntax.TYPE: input_definition.get(syntax.KEY_SCHEMA, {}).get(syntax.TYPE, 'string')}, {}, context_error_message + ': ' + str(value))
-                        type_checker.check_type(parameter, self, context_error_message + ': ' + str(value))
+                    if rt == "map":
+                        type_checker = self.get_type_checker(
+                            {
+                                syntax.TYPE: input_definition.get(
+                                    syntax.KEY_SCHEMA, {}
+                                ).get(syntax.TYPE, "string")
+                            },
+                            {},
+                            context_error_message + ": " + str(value),
+                        )
+                        type_checker.check_type(
+                            parameter, self, context_error_message + ": " + str(value)
+                        )
                         input_definition = input_definition.get(syntax.ENTRY_SCHEMA)
-                    elif rt == 'list':
-                        BASIC_TYPE_CHECKERS['integer'].check_type(parameter, self, context_error_message + ': ' + str(value))
+                    elif rt == "list":
+                        BASIC_TYPE_CHECKERS["integer"].check_type(
+                            parameter, self, context_error_message + ": " + str(value)
+                        )
                         input_definition = input_definition.get(syntax.ENTRY_SCHEMA)
                     else:
-                        input_definition = self.type_system.merge_type(self.type_system.get_type_uri(t)).get(syntax.PROPERTIES, {}).get(parameter)
+                        input_definition = (
+                            self.type_system.merge_type(
+                                self.type_system.get_type_uri(t)
+                            )
+                            .get(syntax.PROPERTIES, {})
+                            .get(parameter)
+                        )
                         if input_definition is None:
-                            self.error(context_error_message + ': ' + str(value) + ' - ' + str(parameter) + ' property undefined')
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + str(parameter)
+                                + " property undefined"
+                            )
                             return
 
                 input_type = input_definition.get(syntax.TYPE)
@@ -3823,8 +4278,19 @@ class TypeChecker(Checker):
                     return
 
                 # check if the assigned definition is required then the assigning input is required
-                if value_type != None and definition.get(syntax.REQUIRED, True) and input_definition.get(syntax.REQUIRED, True) is False:
-                    self.warning(context_error_message + ': ' + str(value) + ' - input ' + str(parameter) + ' is not required, but the actual value is expected from the system')
+                if (
+                    value_type != None
+                    and definition.get(syntax.REQUIRED, True)
+                    and input_definition.get(syntax.REQUIRED, True) is False
+                ):
+                    self.warning(
+                        context_error_message
+                        + ": "
+                        + str(value)
+                        + " - input "
+                        + str(parameter)
+                        + " is not required, but the actual value is expected from the system"
+                    )
                 return
 
         self.check_value(value, definition, {}, context_error_message)
@@ -3885,8 +4351,10 @@ class TypeChecker(Checker):
     ):
         # obtain the capability type
         if isinstance(capability_definition, str):
-            capability_definition = { 'type': capability_definition }
-        checked, capability_type_name, capability_type = self.check_type_in_definition('capability', syntax.TYPE, capability_definition, {}, context_error_message)
+            capability_definition = {"type": capability_definition}
+        checked, capability_type_name, capability_type = self.check_type_in_definition(
+            "capability", syntax.TYPE, capability_definition, {}, context_error_message
+        )
         # check properties
         self.iterate_over_map_of_assignments(
             self.check_property_assignment,
@@ -3932,24 +4400,63 @@ class TypeChecker(Checker):
                     requirement_assignment,
                 )
             else:
-              requirement_node_type_name = requirement_definition.get(syntax.NODE)
-              if requirement_node_type_name is None:
-                  requirement_capability = requirement_definition.get(syntax.CAPABILITY)
-                  if requirement_capability is None:
-                      self.error(context_error_message + ':' + syntax.NODE + ': ' + requirement_assignment + ' - no capability type in ' + str(requirement_definition))
-                  else:
-                      node_template_type = self.type_system.merge_type(self.type_system.get_type_uri(node_template.get(syntax.TYPE)))
-                      compatible_with_capability = False
-                      for cap_name, cap_def in node_template_type.get(syntax.CAPABILITIES, {}).items():
-                          if self.type_system.is_derived_from(syntax.get_capability_type(cap_def), requirement_capability):
-                              compatible_with_capability = True
-                              break
-                      if compatible_with_capability is False:
-                          self.error(context_error_message + ':' + syntax.NODE + ': ' + requirement_assignment + ' - ' + requirement_capability + ' capability expected')
-              else:
-                  # check node_template type is compatible with requirement_definition node
-                  if not self.type_system.is_derived_from(node_template.get(syntax.TYPE), requirement_node_type_name):
-                      self.error(context_error_message + ': ' + requirement_assignment + ' - ' + node_template.get(syntax.TYPE) + ' but ' + requirement_node_type_name + ' expected')
+                requirement_node_type_name = requirement_definition.get(syntax.NODE)
+                if requirement_node_type_name is None:
+                    requirement_capability = requirement_definition.get(
+                        syntax.CAPABILITY
+                    )
+                    if requirement_capability is None:
+                        self.error(
+                            context_error_message
+                            + ":"
+                            + syntax.NODE
+                            + ": "
+                            + requirement_assignment
+                            + " - no capability type in "
+                            + str(requirement_definition)
+                        )
+                    else:
+                        node_template_type = self.type_system.merge_type(
+                            self.type_system.get_type_uri(
+                                node_template.get(syntax.TYPE)
+                            )
+                        )
+                        compatible_with_capability = False
+                        for cap_name, cap_def in node_template_type.get(
+                            syntax.CAPABILITIES, {}
+                        ).items():
+                            if self.type_system.is_derived_from(
+                                syntax.get_capability_type(cap_def),
+                                requirement_capability,
+                            ):
+                                compatible_with_capability = True
+                                break
+                        if compatible_with_capability is False:
+                            self.error(
+                                context_error_message
+                                + ":"
+                                + syntax.NODE
+                                + ": "
+                                + requirement_assignment
+                                + " - "
+                                + requirement_capability
+                                + " capability expected"
+                            )
+                else:
+                    # check node_template type is compatible with requirement_definition node
+                    if not self.type_system.is_derived_from(
+                        node_template.get(syntax.TYPE), requirement_node_type_name
+                    ):
+                        self.error(
+                            context_error_message
+                            + ": "
+                            + requirement_assignment
+                            + " - "
+                            + node_template.get(syntax.TYPE)
+                            + " but "
+                            + requirement_node_type_name
+                            + " expected"
+                        )
             return
 
         # check the extended notation
@@ -3991,8 +4498,16 @@ class TypeChecker(Checker):
                             )
                         )
                         compatible_with_capability = False
-                        for cap_name, cap_def in node_template_type.get(syntax.CAPABILITIES, {}).items():
-                            if cap_name == requirement_capability or self.type_system.is_derived_from(syntax.get_capability_type(cap_def), requirement_capability):
+                        for cap_name, cap_def in node_template_type.get(
+                            syntax.CAPABILITIES, {}
+                        ).items():
+                            if (
+                                cap_name == requirement_capability
+                                or self.type_system.is_derived_from(
+                                    syntax.get_capability_type(cap_def),
+                                    requirement_capability,
+                                )
+                            ):
                                 compatible_with_capability = True
                                 break
                         if compatible_with_capability is False:
@@ -4073,8 +4588,16 @@ class TypeChecker(Checker):
                         )
                     else:
                         compatible_with_capability = False
-                        for cap_name, cap_def in node_type.get(syntax.CAPABILITIES, {}).items():
-                            if cap_name == requirement_capability or self.type_system.is_derived_from(syntax.get_capability_type(cap_def), requirement_capability):
+                        for cap_name, cap_def in node_type.get(
+                            syntax.CAPABILITIES, {}
+                        ).items():
+                            if (
+                                cap_name == requirement_capability
+                                or self.type_system.is_derived_from(
+                                    syntax.get_capability_type(cap_def),
+                                    requirement_capability,
+                                )
+                            ):
                                 compatible_with_capability = True
                                 break
                         if compatible_with_capability is False:
@@ -4142,18 +4665,42 @@ class TypeChecker(Checker):
                         )
                 else:
                     relationship_type = relationship_template.get(syntax.TYPE)
-                requirement_relationship = requirement_definition.get(syntax.RELATIONSHIP)
+                requirement_relationship = requirement_definition.get(
+                    syntax.RELATIONSHIP
+                )
                 if requirement_relationship != None:
-                    if not self.type_system.is_derived_from(relationship_type, requirement_relationship):
-                        self.error(cem + ': ' + relationship + ' - ' + relationship_type + ' but ' + requirement_relationship + ' relationship type expected')
+                    if not self.type_system.is_derived_from(
+                        relationship_type, requirement_relationship
+                    ):
+                        self.error(
+                            cem
+                            + ": "
+                            + relationship
+                            + " - "
+                            + relationship_type
+                            + " but "
+                            + requirement_relationship
+                            + " relationship type expected"
+                        )
                 else:
                     if not self.is_relationship_type_compatible_with_capability_type(
-                            relationship_type,
-                            requirement_capability
-                        ):
-                        self.error(cem + ': ' + relationship + ' not compatible with ' + requirement_capability)
+                        relationship_type, requirement_capability
+                    ):
+                        self.error(
+                            cem
+                            + ": "
+                            + relationship
+                            + " not compatible with "
+                            + requirement_capability
+                        )
                     else:
-                        self.info(cem + ': ' + relationship + ' compatible with ' + requirement_capability)
+                        self.info(
+                            cem
+                            + ": "
+                            + relationship
+                            + " compatible with "
+                            + requirement_capability
+                        )
             else:
                 # check extended notation
                 # check relationship type
@@ -4166,14 +4713,26 @@ class TypeChecker(Checker):
                         "relationship", syntax.TYPE, relationship, {}, cem
                     )
                 else:
-                    checked, relationship_type_name, relationship_type = self.check_type_in_definition('relationship', syntax.RELATIONSHIP, requirement_definition, {}, cem)
+                    (
+                        checked,
+                        relationship_type_name,
+                        relationship_type,
+                    ) = self.check_type_in_definition(
+                        "relationship",
+                        syntax.RELATIONSHIP,
+                        requirement_definition,
+                        {},
+                        cem,
+                    )
                 # Keep in mind current reserved_function_keywords
                 previous_reserved_function_keywords = self.reserved_function_keywords
                 # change reserved_function_keywords for relationship
                 self.reserved_function_keywords = {
-                    'SELF': relationship,
-                    'SOURCE': self.reserved_function_keywords['SELF'], # SOURCE is the current SELF
-#                    'TARGET': , #TODO
+                    "SELF": relationship,
+                    "SOURCE": self.reserved_function_keywords[
+                        "SELF"
+                    ],  # SOURCE is the current SELF
+                    #                    'TARGET': , #TODO
                 }
                 # check relationship properties
                 self.iterate_over_map_of_assignments(
@@ -4188,25 +4747,41 @@ class TypeChecker(Checker):
                     relationship, relationship_type, context_error_message
                 )
                 # check relationship interfaces
-                self.iterate_over_map_of_assignments(self.check_interface_assignment, syntax.INTERFACES, relationship, relationship_type, relationship_type_name, cem)
+                self.iterate_over_map_of_assignments(
+                    self.check_interface_assignment,
+                    syntax.INTERFACES,
+                    relationship,
+                    relationship_type,
+                    relationship_type_name,
+                    cem,
+                )
                 # Restore previous reserved_function_keywords
                 self.reserved_function_keywords = previous_reserved_function_keywords
         else:
             # no relationship declared
-            cem = context_error_message + ':' + syntax.RELATIONSHIP
+            cem = context_error_message + ":" + syntax.RELATIONSHIP
             if requirement_definition.get(syntax.RELATIONSHIP) != None:
-                checked, relationship_type_name, relationship_type = \
-                        self.check_type_in_definition('relationship',
-                        syntax.RELATIONSHIP,
-                        requirement_definition,
-                        {},
-                        context_error_message)
+                (
+                    checked,
+                    relationship_type_name,
+                    relationship_type,
+                ) = self.check_type_in_definition(
+                    "relationship",
+                    syntax.RELATIONSHIP,
+                    requirement_definition,
+                    {},
+                    context_error_message,
+                )
                 # but the required properties without default of the relationship type must be assigned
                 self.check_required_properties({}, relationship_type, cem)
             else:
-                relationship_types = self.search_relationship_types_compatible_with_capability_type(requirement_capability, cem)
+                relationship_types = (
+                    self.search_relationship_types_compatible_with_capability_type(
+                        requirement_capability, cem
+                    )
+                )
                 if len(relationship_types) > 0:
-                    self.warning(cem + ' - set to ' + relationship_types[0])
+                    self.warning(cem + " - set to " + relationship_types[0])
                     # WARNING: modify the template
                     requirement_assignment[syntax.RELATIONSHIP] = relationship_types[0]
 
@@ -4259,7 +4834,6 @@ class TypeChecker(Checker):
             requirement_assignment[syntax.NODE] = update_requirement_node
 
     def eval_node_filter(self, node_filter, node_template, context_error_message):
-
         def eval_property_filters(filter, template, template_type):
             template_properties = template.get(syntax.PROPERTIES, {})
             template_type_properties = template_type.get(syntax.PROPERTIES, {})
@@ -4332,47 +4906,88 @@ class TypeChecker(Checker):
         if not eval_property_filters(node_filter, node_template, node_template_type):
             return False
         # evaluation node_filter capabilities
-        node_template_capabilities = node_template.get(syntax.CAPABILITIES,{})
-        node_template_type_capabilities = node_template_type.get(syntax.CAPABILITIES,{})
+        node_template_capabilities = node_template.get(syntax.CAPABILITIES, {})
+        node_template_type_capabilities = node_template_type.get(
+            syntax.CAPABILITIES, {}
+        )
         for node_filter_capability in node_filter.get(syntax.CAPABILITIES, []):
             for capability_name, capability_filter in node_filter_capability.items():
-                capability_type_name = node_template_type_capabilities.get(capability_name, {}).get(syntax.TYPE)
-                if capability_type_name is None: # capability not found! so node_filter is incorrectly typed!
+                capability_type_name = node_template_type_capabilities.get(
+                    capability_name, {}
+                ).get(syntax.TYPE)
+                if (
+                    capability_type_name is None
+                ):  # capability not found! so node_filter is incorrectly typed!
                     return False
                 capability_type = self.type_system.merge_type(capability_type_name)
-                if not eval_property_filters(capability_filter, \
-                                             node_template_capabilities.get(capability_name, {}), \
-                                             capability_type):
+                if not eval_property_filters(
+                    capability_filter,
+                    node_template_capabilities.get(capability_name, {}),
+                    capability_type,
+                ):
                     return False
         # all node filter constraints are matched ;-)
         return True
 
     def select_node_templates(self, node_type_name, node_filter, context_error_message):
-        self.logger.debug(context_error_message + '- select_node_templates with node_filter =%s' % node_filter)
+        self.logger.debug(
+            context_error_message
+            + "- select_node_templates with node_filter =%s" % node_filter
+        )
         found_node_templates = []
-        for node_template_name, node_template in self.get_topology_template().get(syntax.NODE_TEMPLATES, {}).items():
-            if self.type_system.is_derived_from(node_template.get(syntax.TYPE), node_type_name):
-                if node_filter is None or self.eval_node_filter(node_filter, node_template, context_error_message):
+        for node_template_name, node_template in (
+            self.get_topology_template().get(syntax.NODE_TEMPLATES, {}).items()
+        ):
+            if self.type_system.is_derived_from(
+                node_template.get(syntax.TYPE), node_type_name
+            ):
+                if node_filter is None or self.eval_node_filter(
+                    node_filter, node_template, context_error_message
+                ):
                     found_node_templates.append(node_template_name)
-        self.logger.debug(context_error_message + '- select_node_templates found_node_templates =%s' % found_node_templates)
+        self.logger.debug(
+            context_error_message
+            + "- select_node_templates found_node_templates =%s" % found_node_templates
+        )
         return found_node_templates
 
-    def search_substituting_topology_templates(self, node_template, context_error_message):
-        node_template_type = node_template['type']
-        self.debug(context_error_message + ' - search_substituting_topology_templates %s' % node_template_type)
+    def search_substituting_topology_templates(
+        self, node_template, context_error_message
+    ):
+        node_template_type = node_template["type"]
+        self.debug(
+            context_error_message
+            + " - search_substituting_topology_templates %s" % node_template_type
+        )
         found_substituting_topology_templates = []
         for tosca_service_template in self.substituting_topology_templates:
-            substitution_mappings = tosca_service_template.get_yaml()['topology_template']['substitution_mappings']
-            self.debug('substitution_mappings = %s' % substitution_mappings)
-            if self.type_system.is_derived_from(node_template_type, substitution_mappings['node_type']):
-                substitution_filter = substitution_mappings.get('substitution_filter')
-                self.debug('substitution_filter = %s' % substitution_filter)
-                if substitution_filter is None or self.eval_node_filter(substitution_filter, node_template, context_error_message):
+            substitution_mappings = tosca_service_template.get_yaml()[
+                "topology_template"
+            ]["substitution_mappings"]
+            self.debug("substitution_mappings = %s" % substitution_mappings)
+            if self.type_system.is_derived_from(
+                node_template_type, substitution_mappings["node_type"]
+            ):
+                substitution_filter = substitution_mappings.get("substitution_filter")
+                self.debug("substitution_filter = %s" % substitution_filter)
+                if substitution_filter is None or self.eval_node_filter(
+                    substitution_filter, node_template, context_error_message
+                ):
                     found_substituting_topology_templates.append(tosca_service_template)
-        self.debug(context_error_message + '- search_substituting_topology_templates returns %s' % found_substituting_topology_templates)
+        self.debug(
+            context_error_message
+            + "- search_substituting_topology_templates returns %s"
+            % found_substituting_topology_templates
+        )
         return found_substituting_topology_templates
 
-    def check_interface_assignment(self, interface_name, interface_assignment, interface_definition, context_error_message):
+    def check_interface_assignment(
+        self,
+        interface_name,
+        interface_assignment,
+        interface_definition,
+        context_error_message,
+    ):
         # check description - nothing to do
         # check type
         checked, interface_type_name, interface_type = self.check_type_in_definition(
@@ -4455,31 +5070,58 @@ class TypeChecker(Checker):
         # check metadata - nothing to do
         # check directives
         def check_directive_substitute(cem):
-            substituting_topology_templates = self.search_substituting_topology_templates(node_template, cem)
+            substituting_topology_templates = (
+                self.search_substituting_topology_templates(node_template, cem)
+            )
             nb_substituting_topology_templates = len(substituting_topology_templates)
             if nb_substituting_topology_templates == 0:
-                self.error(cem + " - no substituting topology template found for %s node type" % node_type_name)
+                self.error(
+                    cem
+                    + " - no substituting topology template found for %s node type"
+                    % node_type_name
+                )
             elif nb_substituting_topology_templates == 1:
-                self.info(cem + " - one substituting topology template found: " + substituting_topology_templates[0].get_fullname())
+                self.info(
+                    cem
+                    + " - one substituting topology template found: "
+                    + substituting_topology_templates[0].get_fullname()
+                )
             else:
-                self.warning(cem + " - several substituting topology templates found: " + \
-                    array_to_string_with_or_separator([item.get_fullname for item in substituting_topology_templates]))
+                self.warning(
+                    cem
+                    + " - several substituting topology templates found: "
+                    + array_to_string_with_or_separator(
+                        [item.get_fullname for item in substituting_topology_templates]
+                    )
+                )
 
         idx = 0
         for directive in node_template.get(syntax.DIRECTIVES, []):
-            cem = context_error_message + ':' + syntax.DIRECTIVES + '[' + str(idx) + ']: ' + directive
-            if directive == 'substitute':
+            cem = (
+                context_error_message
+                + ":"
+                + syntax.DIRECTIVES
+                + "["
+                + str(idx)
+                + "]: "
+                + directive
+            )
+            if directive == "substitute":
                 check_directive_substitute(cem)
-            elif directive == 'substitutable':
-                self.warning(cem + ' - deprecated directive, instead use substitute directive')
+            elif directive == "substitutable":
+                self.warning(
+                    cem + " - deprecated directive, instead use substitute directive"
+                )
                 check_directive_substitute(cem)
-            elif directive == 'select':
-                self.error(cem + ' - unchecked currently')
-            elif directive == 'selectable':
-                self.warning(cem + ' - deprecated directive, instead use select directive')
-                self.error(cem + ' - unchecked currently')
+            elif directive == "select":
+                self.error(cem + " - unchecked currently")
+            elif directive == "selectable":
+                self.warning(
+                    cem + " - deprecated directive, instead use select directive"
+                )
+                self.error(cem + " - unchecked currently")
             else:
-                self.error(cem + ' - unsupported directive')
+                self.error(cem + " - unsupported directive")
             idx += 1
         # check properties
         self.iterate_over_map_of_assignments(
@@ -4508,8 +5150,15 @@ class TypeChecker(Checker):
         node_type_requirements = syntax.get_requirements_dict(node_type)
         if node_filter is None:
             # declare all the requirements of this node template
-            for requirement_name, requirement_definition in node_type_requirements.items():
-                self.all_the_node_template_requirements[node_name + '.' + requirement_name]= NodeTemplateRequirement(node_name, requirement_name, requirement_definition)
+            for (
+                requirement_name,
+                requirement_definition,
+            ) in node_type_requirements.items():
+                self.all_the_node_template_requirements[
+                    node_name + "." + requirement_name
+                ] = NodeTemplateRequirement(
+                    node_name, requirement_name, requirement_definition
+                )
         idx = 0
         for requirement in node_template.get(syntax.REQUIREMENTS, []):
             cem1 = (
@@ -5061,11 +5710,16 @@ class TypeChecker(Checker):
             context_error_message,
         )
         # check condition
-        condition = trigger_definition.get('condition')
+        condition = trigger_definition.get("condition")
         if isinstance(condition, list):
-            self.iterate_over_list(trigger_definition, 'condition', self.check_condition_clause_definition, context_error_message)
+            self.iterate_over_list(
+                trigger_definition,
+                "condition",
+                self.check_condition_clause_definition,
+                context_error_message,
+            )
         elif isinstance(condition, dict):
-            cem = context_error_message + ':' + 'condition'
+            cem = context_error_message + ":" + "condition"
             # duplicate condition
             condition = dict(condition)
             # check the extended notation
@@ -5172,11 +5826,24 @@ class TypeChecker(Checker):
         def check_ummapped_attribute_definition(attribute_name, attribute_definition):
             # produce an info message for each unmmapped attribute
             return self.info, None
-        check_unmapped_definitions(node_type, syntax.ATTRIBUTES, 'attribute', check_ummapped_attribute_definition)
+
+        check_unmapped_definitions(
+            node_type,
+            syntax.ATTRIBUTES,
+            "attribute",
+            check_ummapped_attribute_definition,
+        )
         # check properties
-        self.iterate_over_map_of_assignments(self.check_property_mapping, syntax.PROPERTIES, substitution_mapping, node_type, node_type_name, context_error_message)
-#TBR: it is not needed to check required properties of a substitution mapping
-#TBR:        self.check_required_properties(substitution_mapping, node_type, context_error_message)
+        self.iterate_over_map_of_assignments(
+            self.check_property_mapping,
+            syntax.PROPERTIES,
+            substitution_mapping,
+            node_type,
+            node_type_name,
+            context_error_message,
+        )
+        # TBR: it is not needed to check required properties of a substitution mapping
+        # TBR:        self.check_required_properties(substitution_mapping, node_type, context_error_message)
         # check that all properties are mapped
 
         def check_ummapped_property_definition(property_name, property_definition):
@@ -5185,7 +5852,7 @@ class TypeChecker(Checker):
                 and property_definition.get(syntax.DEFAULT) is None
             ):
                 # produce a warning for each unmmapped required property without default
-                return self.info, 'required: true, no default value'
+                return self.info, "required: true, no default value"
             return None, None
 
         check_unmapped_definitions(
@@ -5202,19 +5869,21 @@ class TypeChecker(Checker):
         )
 
         # check that all capabilities are mapped
-        def check_ummapped_capability_definition(capability_name, capability_definition):
+        def check_ummapped_capability_definition(
+            capability_name, capability_definition
+        ):
             # TODO factorize in syntax.py
             occurrences = [1, syntax.UNBOUNDED]
             if isinstance(capability_definition, dict):
                 occurrences = capability_definition.get(syntax.OCCURRENCES, occurrences)
-            if capability_name == 'feature':
+            if capability_name == "feature":
                 # produce an info message for the feature capability
-                return self.info, 'occurrences: ' + str(occurrences)
-#TBR
-            elif occurrences[0] == 0: # lower occurrence equals to 0
+                return self.info, "occurrences: " + str(occurrences)
+            # TBR
+            elif occurrences[0] == 0:  # lower occurrence equals to 0
                 # produce an info message for each optional requirement
-                return self.warning, 'occurrences: ' + str(occurrences)
-###
+                return self.warning, "occurrences: " + str(occurrences)
+            ###
             else:
                 # produce an error for each other unmapped capability
                 return self.error, "occurrences: " + str(occurrences)
@@ -5280,42 +5949,66 @@ class TypeChecker(Checker):
             # produce an info message for each unmapped interface
             return self.info, None
 
-    def check_property_mapping(self, property_name, property_mapping, property_definition, context_error_message):
-
+    def check_property_mapping(
+        self,
+        property_name,
+        property_mapping,
+        property_definition,
+        context_error_message,
+    ):
         def check_mapping(mapping, cem):
             expected_type = {
-                'type': 'list',
-                'entry_schema': {
-                    'type': 'string'
-                },
-                'constraints': [
-                    { 'length': 1 }
-                ]
+                "type": "list",
+                "entry_schema": {"type": "string"},
+                "constraints": [{"length": 1}],
             }
             self.check_value(mapping, expected_type, {}, cem)
             if not isinstance(mapping, list):
-                return # as this is not a list
+                return  # as this is not a list
             input_name = mapping[0]
             if not isinstance(input_name, str):
-                return # as this is not a string
+                return  # as this is not a string
             # TODO: following could be factorized with function get_input
-            input_definition = self.get_topology_template().get(syntax.INPUTS, {}).get(input_name)
+            input_definition = (
+                self.get_topology_template().get(syntax.INPUTS, {}).get(input_name)
+            )
             if input_definition is None:
-                self.error(cem + ': ' + str(mapping) + ' - ' + input_name + ' input undefined')
+                self.error(
+                    cem + ": " + str(mapping) + " - " + input_name + " input undefined"
+                )
                 return
             input_type = input_definition.get(syntax.TYPE)
             value_type = property_definition.get(syntax.TYPE)
             if not self.type_system.is_derived_from(input_type, value_type):
-                self.error(cem + ': ' + str(mapping) + ' - property of type ' + value_type + ' incompatible with input of type ' + input_type)
+                self.error(
+                    cem
+                    + ": "
+                    + str(mapping)
+                    + " - property of type "
+                    + value_type
+                    + " incompatible with input of type "
+                    + input_type
+                )
                 return
 
             # check if the mapped input is required but the property is not required
-            if property_definition.get(syntax.REQUIRED, True) is False and input_definition.get(syntax.REQUIRED, True):
-                self.warning(cem + ': ' + str(mapping) + ' - input ' + input_name + ' is required, but property ' + str(property_name) + ' is not required')
+            if property_definition.get(
+                syntax.REQUIRED, True
+            ) is False and input_definition.get(syntax.REQUIRED, True):
+                self.warning(
+                    cem
+                    + ": "
+                    + str(mapping)
+                    + " - input "
+                    + input_name
+                    + " is required, but property "
+                    + str(property_name)
+                    + " is not required"
+                )
                 return
 
         def check_value(value, cem):
-            self.warning(cem + ': ' + str(value) + ' - deprecated since TOSCA 1.3')
+            self.warning(cem + ": " + str(value) + " - deprecated since TOSCA 1.3")
             self.check_value_assignment(property_name, value, property_definition, cem)
 
         if isinstance(property_mapping, dict):
@@ -5324,12 +6017,12 @@ class TypeChecker(Checker):
             if mapping != None:
                 # <property_name>:
                 #   mapping: [ <input_name> ]
-                check_mapping(mapping, context_error_message + ':mapping')
+                check_mapping(mapping, context_error_message + ":mapping")
             value = property_mapping.get("value")
             if value != None:
                 # <property_name>:
                 #   value: <property_value> # This use is deprecated
-                check_value(value, context_error_message + ':value')
+                check_value(value, context_error_message + ":value")
         elif isinstance(property_mapping, list):
             # single-line grammar
             # <property_name>: [ <input_name> ]
@@ -5339,7 +6032,13 @@ class TypeChecker(Checker):
             # <property_name>: <property_value> # This use is deprecated
             check_value(property_mapping, context_error_message)
 
-    def check_capability_mapping(self, capability_name, capability_mapping, capability_definition, context_error_message):
+    def check_capability_mapping(
+        self,
+        capability_name,
+        capability_mapping,
+        capability_definition,
+        context_error_message,
+    ):
         topology_template = self.get_topology_template()
 
         def check_mapping_as_list(mapping, context_error_message):
@@ -5382,10 +6081,21 @@ class TypeChecker(Checker):
                     node_template_capability_name,
                 )
                 return
-            node_template_capability_type = syntax.get_capability_type(node_template_capability_definition)
+            node_template_capability_type = syntax.get_capability_type(
+                node_template_capability_definition
+            )
             capability_type = syntax.get_capability_type(capability_definition)
-            if not self.type_system.is_derived_from(node_template_capability_type, capability_type):
-                self.error(context_error_message + ': ' + str(mapping) + ' - ' + capability_type + ' capability expected')
+            if not self.type_system.is_derived_from(
+                node_template_capability_type, capability_type
+            ):
+                self.error(
+                    context_error_message
+                    + ": "
+                    + str(mapping)
+                    + " - "
+                    + capability_type
+                    + " capability expected"
+                )
 
         # check the short notation
         if isinstance(capability_mapping, list):

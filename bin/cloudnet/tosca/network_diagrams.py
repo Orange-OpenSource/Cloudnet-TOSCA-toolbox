@@ -113,20 +113,12 @@ class NwdiagGenerator(Generator):
 
         # iterates over all the requirements of the substitution mapping
         # in order to create external networks
-        substitution_mapping = topology_template.get(
-                                    syntax.SUBSTITUTION_MAPPINGS
-                               )
+        substitution_mapping = topology_template.get(syntax.SUBSTITUTION_MAPPINGS)
         if substitution_mapping is not None:
-            substitution_mapping_node_type = syntax.get_node_type(
-                                                substitution_mapping
-                                             )
+            substitution_mapping_node_type = syntax.get_node_type(substitution_mapping)
             if substitution_mapping_node_type is not None:
-                node_type = self.type_system.merge_type(
-                                substitution_mapping_node_type
-                            )
-                node_type_requirements = syntax.get_requirements_dict(
-                                            node_type
-                                         )
+                node_type = self.type_system.merge_type(substitution_mapping_node_type)
+                node_type_requirements = syntax.get_requirements_dict(node_type)
                 for (
                     requirement_name,
                     requirement_value,
@@ -180,9 +172,7 @@ class NwdiagGenerator(Generator):
                     get_network(node_name).network_node = node_yaml
 
             # iterate over all the requirements of the current node
-            node_type_requirements = syntax.get_requirements_dict(
-                                        node_type_type
-                                     )
+            node_type_requirements = syntax.get_requirements_dict(node_type_type)
             for requirement in syntax.get_requirements_list(node_yaml):
                 for requirement_name, requirement_yaml in requirement.items():
                     requirement_definition = node_type_requirements.get(
@@ -275,9 +265,7 @@ class NwdiagGenerator(Generator):
                             bindings = ports.get(binding, [binding])
                             for binding in bindings:
                                 binding_node = node_templates.get(binding)
-                                binding_repr = self.get_representation(
-                                                    binding_node
-                                               )
+                                binding_repr = self.get_representation(binding_node)
                                 binding_label = self.resolve_attribute(
                                     binding_node, binding_repr, "label", "\n"
                                 )
@@ -329,13 +317,7 @@ class NwdiagGenerator(Generator):
         # so use default graphical representation
         return {}
 
-    def resolve_attribute(
-            self,
-            node,
-            representation,
-            attribute_name,
-            separator
-            ):
+    def resolve_attribute(self, node, representation, attribute_name, separator):
         address = ""
         sep1 = ""
         for item in representation.get(attribute_name, []):

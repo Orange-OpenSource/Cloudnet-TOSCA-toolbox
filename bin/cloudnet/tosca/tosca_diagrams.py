@@ -62,9 +62,9 @@ class ToscaDiagramGenerator(Generator):
         self.generate("graph ToscaDiagram {")
         self.generate('  rankdir="LR"')
 
-        target_capability_ids = {} # map<requirement_assignment_id,capability_id>
-        show_feature_capabilities = set() # set<node_name>
-        show_dependency_requirements = set() # set<node_name>
+        target_capability_ids = {}  # map<requirement_assignment_id,capability_id>
+        show_feature_capabilities = set()  # set<node_name>
+        show_dependency_requirements = set()  # set<node_name>
 
         substitution_mappings = syntax.get_substitution_mappings(topology_template)
         if substitution_mappings is not None:
@@ -75,14 +75,32 @@ class ToscaDiagramGenerator(Generator):
                     if not isinstance(capability_yaml, list):
                         continue  # TODO something when capability_yaml is not a list
                     capability_name_id = normalize_name(capability_name)
-                    self.generate('  ', capability_name_id, '[label="', capability_name, '" shape=cds style=filled fillcolor=orange]', sep='')
-                    self.generate('  ', capability_name_id, ' -- ', normalize_name(capability_yaml[0]), '_capability_', normalize_name(capability_yaml[1]), '[style=dotted]', sep='')
-                    if capability_yaml[1] == 'feature':
+                    self.generate(
+                        "  ",
+                        capability_name_id,
+                        '[label="',
+                        capability_name,
+                        '" shape=cds style=filled fillcolor=orange]',
+                        sep="",
+                    )
+                    self.generate(
+                        "  ",
+                        capability_name_id,
+                        " -- ",
+                        normalize_name(capability_yaml[0]),
+                        "_capability_",
+                        normalize_name(capability_yaml[1]),
+                        "[style=dotted]",
+                        sep="",
+                    )
+                    if capability_yaml[1] == "feature":
                         show_feature_capabilities.add(capability_yaml[0])
 
-            substitution_mappings_node_type = syntax.get_node_type(substitution_mappings)
-            self.generate('  subgraph clusterSubstitutionMappings {')
-            self.generate('    label="', substitution_mappings_node_type, '"', sep='')
+            substitution_mappings_node_type = syntax.get_node_type(
+                substitution_mappings
+            )
+            self.generate("  subgraph clusterSubstitutionMappings {")
+            self.generate('    label="', substitution_mappings_node_type, '"', sep="")
 
         node_templates = syntax.get_node_templates(topology_template)
 

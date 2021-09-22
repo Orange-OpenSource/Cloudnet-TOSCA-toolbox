@@ -94,8 +94,12 @@ class HOTGenerator(Generator):
         # Iterate over imported files.
         for import_yaml in get_list(template_yaml, IMPORTS):
             imported_file = syntax.get_import_file(import_yaml)
-            imported_file_yaml = self.tosca_service_template.imports(imported_file).get_yaml()
-            substitution_mappings = get_dict(get_dict(imported_file_yaml, TOPOLOGY_TEMPLATE), SUBSTITUTION_MAPPINGS)
+            imported_file_yaml = self.tosca_service_template.imports(
+                imported_file
+            ).get_yaml()
+            substitution_mappings = get_dict(
+                get_dict(imported_file_yaml, TOPOLOGY_TEMPLATE), SUBSTITUTION_MAPPINGS
+            )
             node_type = substitution_mappings.get(NODE_TYPE)
             if node_type:
                 flavour_id = self.get_flavour_id(substitution_mappings, node_type)
@@ -956,7 +960,7 @@ class HOTGenerator(Generator):
             layer_protocols = [network_connectivity_type_layer_protocols]
         for layer_protocol in layer_protocols:
             # Generate only ip subnets
-            if layer_protocol not in ['ipv4', 'ipv6']:
+            if layer_protocol not in ["ipv4", "ipv6"]:
                 continue
             # Get the protocol data associated to the current layer_protocol.
             l3_protocol_data = network_vl_profile_virtual_link_protocol_data.get(
@@ -991,10 +995,15 @@ class HOTGenerator(Generator):
             cidr = l3_protocol_data.get("cidr")
             if cidr is None:
                 # self.generate('      subnetpool: { get_resource: subnetpool_', layer_protocol, ' }', sep='')
-                cidr = self.configuration.get(HOT, 'OS::Neutron::Subnet.cidr.' + layer_protocol) % self.subnet_cidr_idx
-                self.subnet_cidr_idx = self.subnet_cidr_idx +1
+                cidr = (
+                    self.configuration.get(
+                        HOT, "OS::Neutron::Subnet.cidr." + layer_protocol
+                    )
+                    % self.subnet_cidr_idx
+                )
+                self.subnet_cidr_idx = self.subnet_cidr_idx + 1
                 self.info(' HOT - CIDR "' + cidr + '" generated')
-                self.generate('      cidr:', cidr, ' # generated')
+                self.generate("      cidr:", cidr, " # generated")
             else:
                 self.generate("      cidr:", cidr)
             # Set property 'enable_dhcp' if needed.
@@ -1144,8 +1153,16 @@ class HOTGenerator(Generator):
             ram = 0
         maximum_ram = self.configuration.get(HOT, "OS::Nova::Flavor.ram.maximum")
         if ram > maximum_ram:
-            self.generate('      ram:', maximum_ram, '# WARNING: Initial value was', ram, '!')
-            self.info(' HOT - ram of ' + str(ram) + 'MB narrowed to '+ str(maximum_ram) + 'MB')
+            self.generate(
+                "      ram:", maximum_ram, "# WARNING: Initial value was", ram, "!"
+            )
+            self.info(
+                " HOT - ram of "
+                + str(ram)
+                + "MB narrowed to "
+                + str(maximum_ram)
+                + "MB"
+            )
         else:
             self.generate("      ram:", ram)
         self.generate_todo_translate(

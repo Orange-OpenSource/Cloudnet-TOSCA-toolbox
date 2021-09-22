@@ -32,18 +32,21 @@ profiles_directory = "file:" + os.path.dirname(__file__) + "/profiles"
 
 mappings = configuration.DEFAULT_CONFIGURATION[SYNTAX][TOSCA_DEFINITIONS_VERSION]
 for tosca_definitions_version in [
-        'tosca_simple_yaml_1_0',
-        'tosca_simple_yaml_1_1',
-        'tosca_simple_yaml_1_2',
-        'tosca_simple_yaml_1_3',
-        'tosca_2_0',
-        'alien_dsl_1_2_0',
-        'alien_dsl_1_4_0',
-        'alien_dsl_2_0_0']:
-    mappings[tosca_definitions_version] = profiles_directory + '/' + tosca_definitions_version + '/schema.yaml'
+    "tosca_simple_yaml_1_0",
+    "tosca_simple_yaml_1_1",
+    "tosca_simple_yaml_1_2",
+    "tosca_simple_yaml_1_3",
+    "tosca_2_0",
+    "alien_dsl_1_2_0",
+    "alien_dsl_1_4_0",
+    "alien_dsl_2_0_0",
+]:
+    mappings[tosca_definitions_version] = (
+        profiles_directory + "/" + tosca_definitions_version + "/schema.yaml"
+    )
 
-configuration.DEFAULT_CONFIGURATION['logging']['loggers'][__name__] = {
-    'level': 'INFO',
+configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
+    "level": "INFO",
 }
 
 LOGGER = logging.getLogger(__name__)
