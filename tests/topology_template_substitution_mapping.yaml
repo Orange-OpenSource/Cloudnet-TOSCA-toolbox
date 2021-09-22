@@ -1,0 +1,66 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Tests for Cloudnet TOSCA toolbox
+######################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: Tests related to topology template substitution mapping.
+
+node_types:
+  AbstractNodeType:
+    properties:
+      p1:
+        type: boolean
+      p2:
+        type: integer
+      p3:
+        type: integer
+      p4:
+        type: string
+      p5:
+        type: string
+      p6:
+        type: string
+        required: false
+      p7:
+        type: string
+        required: true
+
+topology_template:
+  substitution_mappings:
+    node_type: AbstractNodeType
+    properties:
+      p1: 1 # ERROR: boolean expected and WARNING: deprecated since TOSCA 1.3
+      p2:
+        value: 1 # CORRECT but WARNING: deprecated since TOSCA 1.3
+      p3: [ foo ] # ERROR: input undefined
+      p4:
+        mapping: [ i1 ] # CORRECT
+      p5: [ i2 ] # ERROR: incompatible type
+      p6: [ i3 ] # WARNING: i3 required but p6 not required
+      p7: [ i4 ] # CORRECT i4 required and p7 required
+
+  inputs:
+    i1:
+      type: string
+    i2:
+      type: float
+    i3:
+      type: string
+      required: true
+    i4:
+      type: string
+      required: true
+
+  node_templates: {}

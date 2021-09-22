@@ -139,9 +139,8 @@ def main(argv):
 
         # Type checking.
         type_checker = TypeChecker(tosca_service_template, config, type_system)
-        if type_checker.check() is False or type_checker.nb_errors > 0:
-            return 2
-
+        if type_checker.check() == False: # or type_checker.nb_errors > 0:
+            exit(1)
         nb_errors += type_checker.nb_errors
         nb_warnings += type_checker.nb_warnings
 

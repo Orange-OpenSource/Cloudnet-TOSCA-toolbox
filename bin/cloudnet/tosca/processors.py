@@ -22,8 +22,11 @@ from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.importers import ArchiveImporter
 from cloudnet.tosca.utils import normalize_name
 
-configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
-    "level": "WARNING",
+configuration.DEFAULT_CONFIGURATION['Generator'] = {
+    'filename-format' : 'shortname'
+}
+configuration.DEFAULT_CONFIGURATION['logging']['loggers'][__name__] = {
+    'level': 'WARNING',
 }
 
 LOGGER = logging.getLogger(__name__)
@@ -57,6 +60,10 @@ class Processor(object):
         self.nb_errors = 0
         self.nb_warnings = 0
         self.logger = logging.getLogger(self.__class__.__module__)
+        self._processor_initialize_()
+
+    def _processor_initialize_(self):
+        pass
 
     def get_mapping(self, key, mappings):
         previous = None
@@ -97,19 +104,10 @@ class Processor(object):
         import_file = syntax.get_import_file(import_yaml)
         import_repository = syntax.get_import_repository(import_yaml)
         result = import_file
-        if import_repository is not None:
-            repository = syntax.get_repositories(
-                self.tosca_service_template.get_yaml()
-            ).get(import_repository)
-            if repository is None:
-                self.error(
-                    ":imports["
-                    + str(index)
-                    + "]:repository: "
-                    + import_repository
-                    + " undefined",
-                    import_repository,
-                )
+        if import_repository != None:
+            repository = syntax.get_repositories(self.tosca_service_template.get_yaml()).get(import_repository)
+            if repository == None:
+                raise ValueError('repository: %s - repository undefined' % import_repository)
             else:
                 repository_url = syntax.get_repository_url(repository)
                 if repository_url is None:
@@ -172,6 +170,10 @@ class Processor(object):
             value=value,
         )
 
+    def debug(self, message):
+        if self.logger.isEnabledFor(logging.DEBUG):
+            print('[DEBUG] ', self.tosca_service_template.get_fullname(), ': ', message, sep='', file=stderr)
+
     def process(self):
         pass
 
@@ -224,8 +226,15 @@ class Generator(Processor):
             )
         if not os.path.exists(target_directory):
             os.makedirs(target_directory)
-            self.logger.info(target_directory + "/ created.")
+            self.info(target_directory + '/ created.')
         return target_directory
+
+    def get_filename(self, tosca_service_template):
+        format = self.configuration.get("Generator", "filename-format")
+        if format == "fullname":
+            return tosca_service_template.get_fullname().replace('./', '').replace('/', '_')
+        else:
+            return tosca_service_template.get_filename()
 
     def compute_filename(self, tosca_service_template, normalize=True):
         # Compute the file path.
@@ -240,8 +249,8 @@ class Generator(Processor):
             if template_version is not None:
                 filename = filename + "-" + str(template_version)
         else:
-            tmp = tosca_service_template.get_filename()
-            filename = tmp[: tmp.rfind(".")]
+            tmp = self.get_filename(tosca_service_template)
+            filename = tmp[:tmp.rfind('.')]
         if normalize:
             filename = normalize_name(filename)
         return filename
@@ -250,7 +259,7 @@ class Generator(Processor):
         # Create the target directory if not already exists.
         target_directory = self.create_target_directory()
         # Compute the file path.
-        # TODO: call sefl.compute_filename()
+        # TODO: call self.compute_filename()
         template_yaml = self.tosca_service_template.get_yaml()
         metadata = template_yaml.get("metadata")
         if metadata is None:
@@ -266,17 +275,17 @@ class Generator(Processor):
             if extension is not None:
                 filename = filename + ".ext"
         else:
-            filename = self.tosca_service_template.get_filename()
-        if extension is not None:
-            filename = filename[: filename.rfind(".")]
+            filename = self.get_filename(self.tosca_service_template)
+        if extension != None:
+            filename = filename[:filename.rfind('.')]
             if normalize:
                 filename = normalize_name(filename)
             filepath = target_directory + "/" + filename + extension
         else:
             filepath = target_directory + "/" + filename
         # Open the file.
-        self.file = open(filepath, "w")
-        self.logger.info(filepath + " opened.")
+        self.file = open(filepath, 'w')
+        self.info(filepath + ' opened.')
 
     def generate(self, *args, sep=" "):
         print(*args, sep=sep, file=self.file)

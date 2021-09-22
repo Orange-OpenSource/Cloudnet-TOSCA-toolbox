@@ -343,7 +343,7 @@ read_options(){
            pause
            ;;
         x) # Exit with status code 0
-           if [ "$DIRVARS_GENERATED" = true ]; then 
+           if [ "$DIRVARS_GENERATED" = true ]; then
              # Remove generated configuration file
              rm -f "$TOSCA2CLOUDNET_CONF_FILE"
            fi

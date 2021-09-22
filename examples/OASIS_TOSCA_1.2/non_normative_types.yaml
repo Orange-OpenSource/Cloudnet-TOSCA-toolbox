@@ -137,8 +137,7 @@ node_types:
     requirements:
       - database_link: # ISSUE: added as useful in Container-1.yaml!
           capability: tosca.capabilities.Docker.Link
-# TODO: bug in Alloy generator
-#          node: tosca.nodes.Container.Application.Docker
+          node: tosca.nodes.Container.Application.Docker
           relationship: tosca.relationships.network.LinksTo
           occurrences: [ 0, UNBOUNDED ]
       - host:

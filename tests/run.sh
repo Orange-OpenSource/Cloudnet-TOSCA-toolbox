@@ -22,21 +22,24 @@ CLOUDNET_BINDIR="$PWD/../bin"
 exit_code=0
 
 # Define colors
-normal="\033[0;"
-red="31m"
-green="32m"
-reset="\033[m"
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+RESET="\033[0m"
 
 check_regression()
 {
-  translate "$1" 2> /tmp/cloudnet_translate.log
-  expected_errors="$(grep -c ERROR "$1")"
-  generated_errors="$(grep -c ERROR /tmp/cloudnet_translate.log )"
-  if [ "${expected_errors}" -eq "${generated_errors}" ]
+  translate $1 2> /tmp/cloudnet_translate.log
+  expected_errors="`grep ERROR $1 | wc -l`"
+  generated_errors="`grep ERROR /tmp/cloudnet_translate.log | wc -l`"
+  expected_warnings="`grep WARNING $1 | wc -l`"
+  generated_warnings="`grep Warning /tmp/cloudnet_translate.log | wc -l`"
+  echo ${expected_errors} expected errors and ${generated_errors} generated errors
+  echo ${expected_warnings} expected warnings and ${generated_warnings} generated warnings
+  if [ ${expected_errors} == ${generated_errors} ] && [ ${expected_warnings} == ${generated_warnings} ]
   then
-    echo -e "${normal}${green}    No regression on ${1}${reset}"
+    echo -e ${GREEN}No regression in $1${RESET}
   else
-    echo -e "${normal}${red}    Regression on ${1} !${reset}"
+    echo -e ${RED}Regression in $1! ${RESET}
     exit_code=1
   fi
 }
@@ -47,6 +50,7 @@ check_regression yaml_parsing/incorrect_indentation_in_mapping.yaml
 check_regression yaml_parsing/incorrect_indentation_in_sequence.yaml
 check_regression yaml_parsing/missed_quote_error.yaml
 check_regression yaml_parsing/string_must_be_quoted.yaml
+check_regression yaml_parsing/unexpected_carriage_return.yaml
 
 # TOSCA syntax checking
 check_regression syntax_checking-1.2.yaml # tosca_definitions_version: tosca_simple_yaml_1_2
@@ -59,5 +63,6 @@ translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_2/types.yaml
 translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_3/types.yaml
 check_regression type_checking.yaml
 check_regression type_checking-1.3.yaml
+check_regression topology_template_substitution_mapping.yaml
 
 exit ${exit_code}

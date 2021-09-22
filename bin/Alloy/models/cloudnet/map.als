@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Software Name : Cloudnet TOSCA toolbox 
+ * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
  * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
  * SPDX-License-Identifier: Apache-2.0
@@ -51,6 +51,11 @@ pred Map.min_length[length : one Int]
 {
   // ISSUE: Currently commented as SAT solving takes too time :-(
 //  #this.entries >= length
+}
+
+pred Map.max_length[length : one Int]
+{
+// ISSUE: Currently not implemented :-(
 }
 
 pred Map.entry_schema_type[type: set VALUE]
