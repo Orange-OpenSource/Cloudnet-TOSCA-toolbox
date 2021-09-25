@@ -1539,7 +1539,7 @@ class TypeChecker(Checker):
                 return {}
             checked, unused, interface_type = self.check_type_in_definition('interface', syntax.TYPE, interface_definition, interface_definition, context_error_message)
             # check operation_name
-            operation_definition = interface_type.get(syntax.OPERATIONS, {}).get(operation_name)
+            operation_definition = syntax.get_operations(interface_type).get(syntax.OPERATIONS, {}).get(operation_name)
             if operation_definition is None:
                 self.error(context_error_message + ': ' + operation + ' - ' + operation_name + ' operation undefined in ' +  self.current_targets[0] + '.interfaces.' + interface_name + ' interface')
                 return {}
