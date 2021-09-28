@@ -24,6 +24,7 @@ import cloudnet.tosca.syntax as syntax
 from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.processors import CEND, CRED, Checker
 from cloudnet.tosca.utils import merge_dict, normalize_dict
+from cloudnet.tosca.yaml_line_numbering import StrCoord
 
 profiles_directory = "file:" + os.path.dirname(__file__) + "/profiles"
 
@@ -2826,7 +2827,8 @@ class TypeChecker(Checker):
             return operation_definition
 
         # check the short notation
-        if type(call_operation) is str:
+# JLC TBR try to process StrCoord type of operation
+        if type(call_operation) is str or type(call_operation) is StrCoord:
             operation_definition = check_operation(
                 call_operation, context_error_message
             )
@@ -2836,6 +2838,7 @@ class TypeChecker(Checker):
             return
         # check the extended notation
         # check operation
+
         operation_name = call_operation.get("operation")
         if operation_name is None:
             self.error(context_error_message + ":operation - expected", call_operation)
