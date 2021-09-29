@@ -403,6 +403,9 @@ diagnosticFormat () {
    # Reinit output in case of multiple run
    echo "" > logs/"${_FORMATTED_TRANSLATE_LOG}"
 
+   echo "Diagnostic yaml file formatting ..."
+
+
    # Verify if there are errors in the diagnostic file
    if [ "$(wc -l <${_FILENAME})" == "0" ]; then
       echo -e "\n\n${bold}${magenta}**** No errors found in diagnostic file ${_FILENAME} ****${reset}\n\n\n" > "logs/${_FORMATTED_TRANSLATE_LOG}"
@@ -501,7 +504,7 @@ done
 # shellcheck source=bin/cloudnet_rc.sh
 source "${CLOUDNET_BINDIR}/cloudnet_rc.sh"
 
-# Variable used to know if the Syntax checking has bee done
+# Variable used to know if the Syntax checking has been done
 SYNTAX_CHECK=False
 
 # Variable used to know if the results has been placed in generated directories
