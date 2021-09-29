@@ -1469,6 +1469,7 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
                         capability_type = get_capability_type(capability_yaml)
                         capability_cardinality = self.get_capability_cardinality(capability_yaml)
                     else:
+                        # JLC conversion from StrCoord to str added (20210929)
                         self.error('Invalid capability declaration ' + str(capability_name) + ': ' + str(capability_yaml))
                         capability_type = TOSCA.Capability
                         capability_cardinality = Alloy.ONE
