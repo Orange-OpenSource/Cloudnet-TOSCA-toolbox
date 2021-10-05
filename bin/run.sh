@@ -308,6 +308,7 @@ read_options(){
                else
                   # Test if file already generated
                   if ! [ -f "logs/${_FORMATTED_TRANSLATE_LOG}" ]; then
+                     echo -e "\nFormatting diagnostic log file ... please wait ... "
                      diagnosticFormat "${_TRANSLATE_LOG}"
                   fi
                   less -r "logs/${_FORMATTED_TRANSLATE_LOG}"
@@ -343,7 +344,7 @@ read_options(){
            pause
            ;;
         x) # Exit with status code 0
-           if [ "$DIRVARS_GENERATED" = true ]; then
+           if [ "$DIRVARS_GENERATED" = true ]; then 
              # Remove generated configuration file
              rm -f "$TOSCA2CLOUDNET_CONF_FILE"
            fi
@@ -403,9 +404,6 @@ diagnosticFormat () {
    # Reinit output in case of multiple run
    echo "" > logs/"${_FORMATTED_TRANSLATE_LOG}"
 
-   echo "Diagnostic yaml file formatting ..."
-
-
    # Verify if there are errors in the diagnostic file
    if [ "$(wc -l <${_FILENAME})" == "0" ]; then
       echo -e "\n\n${bold}${magenta}**** No errors found in diagnostic file ${_FILENAME} ****${reset}\n\n\n" > "logs/${_FORMATTED_TRANSLATE_LOG}"
@@ -419,19 +417,39 @@ diagnosticFormat () {
    _SEVERITY=""
    _MESSAGE=""
    _LINE=""
+   _NB_ERROR=0
+   _NB_WARNING=0
+   _NB_INFO=0
+   _NB_OTHER=0
 
    # Loop on the error log file
    while read -r LREAD
    do
+       printf "."
        # remove double quotes in string
        LREAD=$(echo $LREAD | tr -d \" )
        case $_INDEX in
            1) # Filename
-              if [ "$_OLDFILENAME" != "${LREAD}" ]; then
+                  if [ "$_OLDFILENAME" != "${LREAD}" ]; then
+                  # If we are not at the begining of the treatement
+                  # ie the variable _OLDFILENAME is empty, 
+                  # We print the numbers of errors found
+                  if  [ ! -z "$_OLDFILENAME" ]; then
+                        echo -e "\n\011 ----------- Results -----------" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+                        echo -e "\011 ${_NB_ERROR}${bold}${red} ERROR${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+                                "  ${_NB_WARNING}${bold}${yellow} WARNING${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+                                "  ${_NB_INFO}${bold}${white} INFO${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+                                "  ${_NB_OTHER}${bold}${white} UNKNOW${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+                  fi
+
                   # print the new filename 
                   echo -e "\n== ${bold}${magenta}${LREAD^^}${reset} =============" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
                   # and store it
                   _OLDFILENAME="${LREAD}"
+                  _NB_ERROR=0
+                  _NB_WARNING=0
+                  _NB_INFO=0
+                  _NB_OTHER=0
               fi
               ;;
            2) # Gravity
@@ -440,15 +458,19 @@ diagnosticFormat () {
               case ${LREAD} in
                  "error") 
                      _COLOR="${bold}${red}"
+                     ((_NB_ERROR+=1))
                      ;;
                  "warning") 
                      _COLOR="${bold}${yellow}"
+                     ((_NB_WARNING+=1))
                      ;;
                  "info") 
                      _COLOR="${bold}$"
+                     ((_NB_INFO+=1))
                      ;;
                   * ) 
                      echo -e "${bold}${red}Unexpected error ${_LOGSTRING[gravity]}${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+                     ((_NB_OTHER+=1))
                      ;;
               esac
               ;;
@@ -504,7 +526,7 @@ done
 # shellcheck source=bin/cloudnet_rc.sh
 source "${CLOUDNET_BINDIR}/cloudnet_rc.sh"
 
-# Variable used to know if the Syntax checking has been done
+# Variable used to know if the Syntax checking has bee done
 SYNTAX_CHECK=False
 
 # Variable used to know if the results has been placed in generated directories

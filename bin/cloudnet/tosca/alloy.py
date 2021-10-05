@@ -606,7 +606,8 @@ class AbstractAlloySigGenerator(Generator):
             self.error(context_error_message + ': type undefined')
             return
 
-        if type(property_type) != str:
+# JLC TBR try to process StrCoord type of property_type
+        if type(property_type) != str and type(property_type) != StrCoord:
             self.error(context_error_message + ': ' + str(property_type) + ' invalid!')
             return
 
