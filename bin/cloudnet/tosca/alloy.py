@@ -532,24 +532,24 @@ class AbstractAlloySigGenerator(Generator):
 
         if value_type == 'boolean':
             if type(value) != bool:
-                self.error(context_error_message + ': ' + str(value) + ' - boolean expected')
+                self.error(context_error_message + ': ' + str(value) + ' - boolean expected', value)
                 return False
             return str(value).lower()
 
         elif value_type == 'integer':
             if type(value) != int:
-                self.error(context_error_message + ': ' + str(value) + ' - integer expected')
+                self.error(context_error_message + ': ' + str(value) + ' - integer expected', value)
                 return value
             MAX_INT = self.get_max_int()
             if value < MAX_INT:
                 return str(value)
             else:
-                self.info(context_error_message + ': ' + str(value) + ' - integer narrowed to ' + str(MAX_INT))
+                self.info(context_error_message + ': ' + str(value) + ' - integer narrowed to ' + str(MAX_INT), value)
                 return str(MAX_INT)
 
         elif value_type == 'float':
             # TODO: value must be a float else this is an error.
-            self.info(context_error_message + ': ' + str(value) + ' - float mapped to an Alloy string')
+            self.info(context_error_message + ': ' + str(value) + ' - float mapped to an Alloy string', value)
             return '"' + str(value) + '"'
 
         elif value_type == 'string':
@@ -569,7 +569,7 @@ class AbstractAlloySigGenerator(Generator):
         elif value_type.startswith('scalar-unit.'):
             # TODO: value must be a string else this is an error.
             if type(value) != str:
-                self.error(context_error_message + ': ' + str(value) + ' - ' + value_type + ' expected')
+                self.error(context_error_message + ': ' + str(value) + ' - ' + value_type + ' expected', value)
                 return value
             scalar_value, scalar_unit = self.split_scalar_unit(value, context_error_message)
             return str(scalar_value) + ', ' + scalar_unit
@@ -579,7 +579,7 @@ class AbstractAlloySigGenerator(Generator):
             return '"' + str(value) + '"'
 
         # else
-        self.error(context_error_message + ': ' + value_type + ' type unsupported by Alloy generator')
+        self.error(context_error_message + ': ' + value_type + ' type unsupported by Alloy generator', value)
         return None
 
     def split_scalar_unit(self, scalar, context_error_message):
@@ -608,7 +608,7 @@ class AbstractAlloySigGenerator(Generator):
 
 # JLC TBR try to process StrCoord type of property_type
         if type(property_type) != str and type(property_type) != StrCoord:
-            self.error(context_error_message + ': ' + str(property_type) + ' invalid!')
+            self.error(context_error_message + ': ' + str(property_type) + ' invalid!', property_type)
             return
 
         if property_type == 'integer': # special case to generate a comment
@@ -644,7 +644,7 @@ class AbstractAlloySigGenerator(Generator):
 
         elif property_type == 'map':
                 if type(property_value) != dict:
-                    self.error(context_error_message + ': ' + str(property_value) + ' - map required')
+                    self.error(context_error_message + ': ' + str(property_value) + ' - map required', property_value)
                     return
 
                 if len(property_value):
@@ -686,14 +686,14 @@ class AbstractAlloySigGenerator(Generator):
                     self.generate('  ', prefix, ' = ', self.stringify_value(property_value, property_declaration, context_error_message), sep='')
                     return
                 if type(property_value) != dict:
-                    self.error(context_error_message + ': map expected instead of ' + str(property_value))
+                    self.error(context_error_message + ': map expected instead of ' + str(property_value), property_value)
                     return
 
                 # self.generate_all_properties(...) produces a typing error.
                 AbstractAlloySigGenerator.generate_all_properties(self, get_dict(type_type, PROPERTIES), property_value, prefix, context_error_message, property_name_format = '%s')
             else:
                 self.generate('  // TODO', prefix, '=', property_value)
-                self.error(context_error_message + ': ' + str(property_value) + ' - ' + property_type + ' type unsupported by Alloy generator')
+                self.error(context_error_message + ': ' + str(property_value) + ' - ' + property_type + ' type unsupported by Alloy generator', )
 
     def generate_all_properties(self, all_declared_properties, template_properties, prefixed_template_name, context_error_message, property_name_format = 'property_%s', generate_no_value=True, required_properties_must_be_set=True):
         if template_properties == None:
