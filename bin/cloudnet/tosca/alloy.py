@@ -452,6 +452,19 @@ class AbstractAlloySigGenerator(Generator):
 
     def stringify_value(self, value, value_type_definition, context_error_message, list_sep = ' + '):
         if type(value) == list:
+            entry_schema = value_type_definition.get("entry_schema")
+            if entry_schema != None:
+                result = None
+                for i, v in enumerate(value):
+                    s = self.stringify_value(v, entry_schema, context_error_message + '[' + str(i) + ']')
+                    s = str(i) + " -> " + s
+                    if result:
+                        result = result + ' + ' + s
+                    else:
+                        result = s
+                if result is None:
+                    result = "none -> none"
+                return result
             result = None
             index = 0
             for v in value:
@@ -736,7 +749,12 @@ class AbstractAlloySigGenerator(Generator):
                         value = self.stringify_value(constraint_yaml, { TYPE: 'integer' }, ctx_error_msg,', ')
                     else:
                         value = self.stringify_value(constraint_yaml, yaml, ctx_error_msg)
-                    self.generate_call_predicate(name + '.' + constraint_name, value)
+                    predicate_prefix = ""
+                    if constraint_name != 'valid_values' \
+                        and not yaml.get('required', True) \
+                        and yaml.get('default') is None:
+                            predicate_prefix = "some " + name + " implies "
+                    self.generate_call_predicate(predicate_prefix + name + '.' + constraint_name, value)
         entry_schema_yaml = syntax.get_entry_schema(yaml)
         if entry_schema_yaml:
 # TBR           if yaml.get(TYPE) == 'map':
