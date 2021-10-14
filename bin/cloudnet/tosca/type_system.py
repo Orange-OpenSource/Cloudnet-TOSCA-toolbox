@@ -1014,7 +1014,8 @@ class TypeChecker(Checker):
                 return None # stop infinite loop when derived_from is a cycle relation
 
     def get_type_checker(self, definition, previous_definition, context_error_message):
-        data_type_name = definition.get(syntax.TYPE) or previous_definition.get(syntax.TYPE)
+        definition = merge_dict(definition, previous_definition)
+        data_type_name = definition.get(syntax.TYPE)
         if data_type_name is None:
 #TBR            self.error(context_error_message + ' - type expected')
             return None
@@ -2170,6 +2171,10 @@ class TypeChecker(Checker):
                 return
 
         self.check_value(value, definition, {}, context_error_message)
+        default = definition.get(syntax.DEFAULT)
+        if default != None:
+            if value == default:
+                self.warning(context_error_message + ': ' + str(value) + ' - useless assignment as the value equals to the defined default value')
 
     def check_property_assignment(self, property_name, property_assignment, property_definition, context_error_message):
         self.check_value_assignment(property_name, property_assignment, property_definition, context_error_message)
@@ -3008,6 +3013,15 @@ class TypeChecker(Checker):
         def check_mapping_as_list(mapping, context_error_message):
             node_template_name = mapping[0]
             node_template_requirement_name = mapping[1]
+
+            # check occurrences
+            occurrences = requirement_definition.get(syntax.OCCURRENCES, [1, 1])
+            if occurrences == [0, 0]:
+                self.error(context_error_message + ': ' + str(mapping) + ' - requirement mapping unexpected as defined occurrences are [0, 0]')
+                # mark that the requirement <node_template_name>.<node_template_reference_name> is connected
+                self.all_the_node_template_requirements.get(node_template_name + '.' + node_template_requirement_name).connectIt()
+                return
+
             node_template = topology_template.get(syntax.NODE_TEMPLATES, {}).get(node_template_name)
             if node_template is None:
                 self.error(context_error_message + ': ' + str(mapping) + ' - ' + node_template_name + ' node template undefined')
