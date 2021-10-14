@@ -24,7 +24,7 @@ import cloudnet.tosca.syntax as syntax
 from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.processors import CEND, CRED, Checker
 from cloudnet.tosca.utils import merge_dict, normalize_dict
-from cloudnet.tosca.yaml_line_numbering import StrCoord
+from cloudnet.tosca.yaml_line_numbering import StrCoord, DictCoord
 
 profiles_directory = "file:" + os.path.dirname(__file__) + "/profiles"
 
@@ -5205,6 +5205,21 @@ class TypeChecker(Checker):
         ).items():
             if isinstance(capability_definition, str):
                 capability_type = self.type_system.merge_type(capability_definition)
+            elif type(capability_definition) is DictCoord:
+                # JLC seems to appears when we have {'feature': {'type': 'tosca.capabilities.Node'}}
+                # in a DictCoord structure
+                # I get the value of the feature to check the type ??? TBR ???
+                (
+                    checked,
+                    capability_type_name,
+                    capability_type,
+                ) = self.check_type_in_definition(
+                    "capability",
+                    syntax.TYPE,
+                    capability_definition.get('feature', {}),
+                    {},
+                    context_error_message,
+                )
             else:
                 (
                     checked,
