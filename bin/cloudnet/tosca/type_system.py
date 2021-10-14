@@ -5206,7 +5206,7 @@ class TypeChecker(Checker):
             if isinstance(capability_definition, str):
                 capability_type = self.type_system.merge_type(capability_definition)
             elif type(capability_definition) is DictCoord:
-                # JLC seems to appears when we have {'feature': {'type': 'tosca.capabilities.Node'}}
+                # JLC it seems to appear when we have {'feature': {'type': 'tosca.capabilities.Node'}}
                 # in a DictCoord structure
                 # I get the value of the feature to check the type ??? TBR ???
                 (
