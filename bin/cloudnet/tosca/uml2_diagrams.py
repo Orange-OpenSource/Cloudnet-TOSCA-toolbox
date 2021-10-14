@@ -600,7 +600,7 @@ class PlantUMLGenerator(Generator):
             if len(containeds) == 0 and len(node_template_artifacts) == 0:
                 self.generate(uml2_kind, ' "', container_name, ': ', short_type_name(node_template_type), '" as node_', normalize_name(container_name), self.get_color(node_template_type), sep='')
             else:
-                self.generate(uml2_kind, ' "', container_name, ': ', short_type_name(node_template_type), '" as node_', normalize_name(container_name), ' ', self.get_color(node_template_type), '{', sep='')
+                self.generate(uml2_kind, ' "', container_name, ': ', short_type_name(node_template_type), '" as node_', normalize_name(container_name), self.get_color(node_template_type), ' {', sep='')
                 for contained_name, contained_dict in containeds.items():
                     generate_container(self, contained_name, contained_dict)
                 for artifact_name, artifact_yaml in node_template_artifacts.items():
