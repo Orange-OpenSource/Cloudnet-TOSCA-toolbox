@@ -2647,19 +2647,23 @@ class TypeChecker(Checker):
                 return
             # targets contains only one node
             target_template_type = self.current_targets_condition_type[0]
+            print("type(target_template_type) %s %s:" %(type(target_template_type),target_template_type))
             attribute_definition = target_template_type.get(syntax.ATTRIBUTES, {}).get(
                 attribute_name
             )
+            print(" JLC   target_template_type.get(syntax.ATTRIBUTES, {}).get(attribute_name) |%s|" % target_template_type.get(syntax.ATTRIBUTES, {}).get(attribute_name))
             if attribute_definition is None:
                 attribute_definition = target_template_type.get(
                     syntax.PROPERTIES, {}
                 ).get(attribute_name)
+            print(" JLC   target_template_type.get(syntax.PROPERTIES, {}).get(attribute_name) |%s|" % target_template_type.get(syntax.PROPERTIES, {}).get(attribute_name))
             if attribute_definition is None:
                 self.error(
                     cem
                     + " - "
                     + attribute_name
                     + " attribute undefined in "
+                    + "JLC 1"
                     + self.current_targets[0],
                     attribute_name,
                 )
@@ -2669,7 +2673,8 @@ class TypeChecker(Checker):
                 + " - "
                 + attribute_name
                 + " attribute defined in "
-                + self.current_targets[0],
+                + self.current_targets[0]
+                + "JLC 1",
                 attribute_name,
             )
             type_checker = self.get_type_checker(attribute_definition, {}, cem)
@@ -2679,9 +2684,14 @@ class TypeChecker(Checker):
 
         for key, value in condition_clause_definition.items():
             cem = context_error_message + ":" + key
+#            print("\n\n>>>JLC<<< condition_clause_definition : %s %s \n%s" %(key, value, cem))
             if key in ["and", "or", "not"]:
                 idx = 0
                 for cc in value:
+#                    print("    ----- 1 / %s -----" % idx)
+#                    print("key : %s" % key)
+#                    print("value : %s" % value)
+#                    print("cc : %s" % cc)
                     self.check_condition_clause_definition(
                         cc, cem + "[" + str(idx) + "]"
                     )
@@ -2690,11 +2700,20 @@ class TypeChecker(Checker):
                 idx = 0
                 for cc in value:
                     for k, v in cc.items():
+#                        print("    ----- 2 / %s -----" % idx)
+#                        print("key : %s" % key)
+#                        print("value : %s" % value)
+#                        print("cc : %s" % cc)
                         check_attribute_constraints(
                             k, v, cem + "[" + str(idx) + "]" + ":" + k
                         )
                 idx += 1
             else:
+                # JLC : on arrive ici avec un type ListCoord
+                print("    ----- 3 -----")
+                print("key : %s" % key)
+                print("value : %s" % value)
+                print("type(value) : %s" % type(value))
                 check_attribute_constraints(key, value, cem)
 
     def check_activity_definition(self, activity_definition, context_error_message):
