@@ -49,12 +49,19 @@ class DictCoord(dict, Coord):
     def __init__(self, line=0, column=0):
         dict.__init__(self)
         Coord.init(self, line, column)
+    def get(label, value = self):
+        print("C'est bon on y est 1 ! %s" % dict.get(label, value))
+        return dict.get(label, value)
 
 
 class ListCoord(list, Coord):
     def __init__(self, line=0, column=0):
         list.__init__(self)
         Coord.init(self, line, column)
+    # JLC définir un méthode get pour récupérer
+    # la valeur d'un élément à partir de son nom
+    def get(label, value):
+        print("C'est bon on y est 2 !")
 
 
 class DatetimeCoord(datetime.datetime, Coord):
