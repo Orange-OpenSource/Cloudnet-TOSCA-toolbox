@@ -43,7 +43,7 @@ configuration.DEFAULT_CONFIGURATION[ALLOY] = {
         "4096 MB": "4 GB",  # for OASIS TOSCA/1.2/example-1.yaml
         "2048 MB": "2 GB",  # for OASIS TOSCA/1.2/example-2.yaml}
     },
-    "open_tosca_definitions_version" : True,
+    "open_tosca_definitions_version": True,
     "invariants": {},
 }
 
@@ -295,6 +295,7 @@ class TOSCA(object):
     Alloy.declare_signature(Property, AbstractProperty)
     Alloy.declare_signature(Parameter, AbstractProperty)
 
+
 # TODO: Would be removed.
 def test(stream):
     acs = AlloyCommandScope()
@@ -315,8 +316,8 @@ def test(stream):
 # Alloy signature generator.
 #
 
-class AbstractAlloySigGenerator(Generator):
 
+class AbstractAlloySigGenerator(Generator):
     def generator_configuration_id(self):
         return ALLOY
 
@@ -349,7 +350,7 @@ class AbstractAlloySigGenerator(Generator):
         index = implementation.rfind(".")
         if index != -1:
             result = self.type_system.get_artifact_type_by_file_ext(
-                implementation[index + 1:]
+                implementation[index + 1 :]
             )
         if result is None:
             self.warning(
@@ -534,7 +535,10 @@ class AbstractAlloySigGenerator(Generator):
                     elif isinstance(v, list):
                         input_name = v[0]
                     else:
-                        self.error(context_error_message + ': get_input - string or list expected')
+                        self.error(
+                            context_error_message
+                            + ': get_input - string or list expected'
+                        )
                         break
                     result = result + key + '["' + input_name + '"]'
                 elif key == GET_PROPERTY:
@@ -583,20 +587,33 @@ class AbstractAlloySigGenerator(Generator):
                     result = result + key + "[" + function_arguments + "]"
                 elif key in ["get_operation_output", "token", "get_secret"]:
                     self.warning(
-                        context_error_message + ": " + key + " function unsupported by Alloy generator'",
+                        context_error_message
+                        + ": "
+                        + key
+                        + " function unsupported by Alloy generator'",
                         key,
                     )
                     result = '"' + key + '[...]"'
                 elif key in ["concat"]:
                     self.warning(
-                        context_error_message + ": " + key + " function unsupported by Alloy generator'",
+                        context_error_message
+                        + ": "
+                        + key
+                        + " function unsupported by Alloy generator'",
                         key,
                     )
                     result = '"' + key + '[...]"'
                 elif key == "value" and syntax.get_property_type(value_type_definition) == "integer" and type(v) == yaml_ln.IntCoord:
                     # JLC : deal with value : 1 IntCoord type
                     # TBR *****
-                    self.warning(context_error_message + ": " + str(value) + "/" + str(v) + " translated in DictCoord. @PM : could you verify the correctness of this statement")
+                    self.warning(
+                        context_error_message
+                        + ": "
+                        + str(value)
+                        + "/"
+                        + str(v)
+                        + " translated in DictCoord. @PM : could you verify the correctness of this statement"
+                    )
                     return str(v)
                 else:
                     self.error(
@@ -1907,23 +1924,27 @@ class ToscaComponentTypeGenerator(AbstractTypeGenerator):
                                         self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "', implementation, '"]', sep='')
                                 if isinstance(implementation, str):
                                     # Short notation
-                                    generate_implementation_fact(primary)
+                                    generate_implementation_fact(implementation)
                                 else:
                                     # Extended notation
-                                    artifact_type_sig = self.alloy_sig(
-                                        primary.get("type")
-                                    )
-                                    artifact_file = primary.get("file")
-                                    self.generate(
-                                        "  ",
-                                        prefixed_operation,
-                                        ".implementation[",
-                                        artifact_type_sig,
-                                        ', "',
-                                        artifact_file,
-                                        '"]',
-                                        sep="",
-                                    )
+                                    # some keynames are not supported currently!
+                                    for unsupported_key in ['dependencies', 'timeout', 'operation_host']:
+                                        if implementation.get(unsupported_key) != None:
+                                            self.warning(' implementation ' + str(implementation) + ' - ' + unsupported_key + ' unsupported by Alloy generator')
+                                    # only primary is supported currently!
+                                    primary = implementation.get('primary')
+                                    if primary is None:
+                                        self.error(' implementation ' + str(implementation) + ' - primary artifact missed')
+                                        continue
+                                    # generate the Alloy fact
+                                    if isinstance(primary, str):
+                                        # Short notation
+                                        generate_implementation_fact(primary)
+                                    else:
+                                        # Extended notation
+                                        artifact_type_sig = self.alloy_sig(primary.get('type'))
+                                        artifact_file = primary.get('file')
+                                        self.generate('  ', prefixed_operation, '.implementation[', artifact_type_sig, ', "',artifact_file, '"]', sep='')
 
                 self.generate()
 
