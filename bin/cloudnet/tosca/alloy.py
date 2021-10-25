@@ -508,7 +508,7 @@ class AbstractAlloySigGenerator(Generator):
     def stringify_value(
         self, value, value_type_definition, context_error_message, list_sep=" + "
     ):
-        if type(value) == list or type(value) == yaml_ln.ListCoord:
+        if isinstance(value, list):
             result = None
             index = 0
             for v in value:
@@ -524,14 +524,14 @@ class AbstractAlloySigGenerator(Generator):
                 index = index + 1
             return result
 
-        if type(value) == dict or type(value) == yaml_ln.DictCoord:
+        if isinstance(value, dict):
             result = ""
             for key, v in value.items():
                 PARAMETER_STRING_TYPE = {TYPE: "string"}
                 if key == GET_INPUT:
-                    if type(v) is str:
+                    if isinstance(v, str):
                         input_name = v
-                    elif type(v) is list:
+                    elif isinstance(v, list):
                         input_name = v[0]
                     else:
                         self.error(context_error_message + ': get_input - string or list expected')
@@ -595,6 +595,7 @@ class AbstractAlloySigGenerator(Generator):
                     result = '"' + key + '[...]"'
                 elif key == "value" and syntax.get_property_type(value_type_definition) == "integer" and type(v) == yaml_ln.IntCoord:
                     # JLC : deal with value : 1 IntCoord type
+                    # TBR *****
                     self.warning(context_error_message + ": " + str(value) + "/" + str(v) + " translated in DictCoord. @PM : could you verify the correctness of this statement")
                     return str(v)
                 else:
@@ -728,7 +729,7 @@ class AbstractAlloySigGenerator(Generator):
             self.error(context_error_message + ": type undefined", property_declaration)
             return
 
-        if not isinstance(property_type, str) and type(property_type) != yaml_ln.StrCoord:
+        if not isinstance(property_type, str):
             self.error(
                 context_error_message + ": " + str(property_type) + " invalid!",
                 property_type,
@@ -2630,7 +2631,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     mnt = self.type_system.merge_node_type(template_yaml.get(TYPE))
                     inputs = utils.get_path(mnt, INTERFACES, interface_name, operation_name, INPUTS, default={})
                     template_operation =  utils.get_path(template_yaml, INTERFACES, interface_name, operation_name, default={})
-                    if type(template_operation) == dict:
+                    if isinstance(template_operation, dict):
                         inputs_values = get_dict(template_operation, INPUTS)
                     else:
                         inputs_values = {}
@@ -2652,7 +2653,7 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 #                                                     context_error_message + ':' + INTERFACES + ':' + interface_name + ':' + operation_name + ':' + INPUTS,
 #                                                     property_name_format = 'input["%s"].value')
 
-                    if type(operation_yaml) == dict:
+                    if isinstance(operation_yaml, dict):
                         nb_inputs = len(get_dict(operation_yaml, INPUTS))
                     else:
                         nb_inputs = 0
@@ -3308,8 +3309,8 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     mapping = None
                     value = None
                     # JLC changed is_mapping to deal with Coord new types
-                    is_mapping = lambda v : (type(v) is list or type(v) is yaml_ln.ListCoord) and len(v) == 1 and (type(v[0]) is str or type(v[0]) is yaml_ln.StrCoord)
-                    if (type(property_yaml) is dict or type(property_yaml) is yaml_ln.DictCoord) and len(property_yaml) == 1:
+                    is_mapping = lambda v : isinstance(v, list) and len(v) == 1 and isinstance(v[0], str)
+                    if isinstance(property_yaml, dict) and len(property_yaml) == 1:
                         tmp = property_yaml.get("mapping")
                         if is_mapping(tmp):
                             mapping = tmp[0]
@@ -3722,12 +3723,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                             if node_template_requirement_name == requirement_name:
                                 if node_template_requirement_yaml:
                                     requirement_relationship_properties = {}
-                                    if type(node_template_requirement_yaml) == dict:
+                                    if isinstance(node_template_requirement_yaml, dict):
                                         requirement_relationship = syntax.get_requirement_relationship(node_template_requirement_yaml)
-                                        if type(requirement_relationship) == dict:
+                                        if isinstance(requirement_relationship, dict):
                                             relationship_type = requirement_relationship.get(TYPE)
                                             requirement_relationship_properties = get_dict(requirement_relationship, PROPERTIES)
-                                        elif type(requirement_relationship) == str:
+                                        elif isinstance(requirement_relationship, str):
                                             if all_relationship_templates.get(requirement_relationship):
                                                 acs.update_sig_scope(TOSCA.Requirement)
                                                 acs.update_sig_scope(requirement_capability_sig)

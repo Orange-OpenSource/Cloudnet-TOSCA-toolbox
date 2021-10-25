@@ -66,7 +66,7 @@ def merge_dict(d, u):
             dv = d.get(k)
             if dv is None:
                 dv = {}
-            if type(dv) != dict:
+            if not isinstance(dv, dict):
                 dv = {"_old_value_": dv}
             d[k] = merge_dict(dv, v)
         else:

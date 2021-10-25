@@ -41,14 +41,15 @@ topology_template:
   substitution_mappings:
     node_type: AbstractNodeType
     properties:
-      p1: 1 # ERROR: boolean expected and WARNING: deprecated since TOSCA 1.3
+      p1: 1 # In type-checking ERROR: boolean expected and WARNING: deprecated since TOSCA 1.3
+            # In Alloy.py : ERROR: boolean expected
       p2:
-        value: 1 # CORRECT but WARNING: deprecated since TOSCA 1.3
-      p3: [ foo ] # ERROR: input undefined
+        value: 1 # In type-checking CORRECT but WARNING: deprecated since TOSCA 1.3
+      p3: [ foo ] # In type-checking ERROR: input undefined ( JLC : why not integer expected because of the interger type in node_types definition)
       p4:
         mapping: [ i1 ] # CORRECT
-      p5: [ i2 ] # ERROR: incompatible type
-      p6: [ i3 ] # WARNING: i3 required but p6 not required
+      p5: [ i2 ] # In type-checking ERROR: incompatible type
+      p6: [ i3 ] # In type-checking WARNING: i3 required but p6 not required
       p7: [ i4 ] # CORRECT i4 required and p7 required
 
   inputs:

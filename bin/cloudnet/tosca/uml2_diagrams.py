@@ -851,7 +851,7 @@ class PlantUMLGenerator(Generator):
             ).items():
                 capability = capabilities.get(capability_name)
                 if capability != None:
-                    if type(capability) != list:
+                    if not isinstance(capability, list):
                         continue  # TODO when capability is not a list
                     target_node_uml_id = "node_" + normalize_name(capability[0])
                     target_uml_id = (
@@ -881,7 +881,7 @@ class PlantUMLGenerator(Generator):
                 # Connect the capability UML interface to the node template UML component.
                 capability = capabilities.get(capability_name)
                 if capability != None:
-                    if type(capability) != list:
+                    if not isinstance(capability, list):
                         continue  # TODO when capability is not a list
                     target_node_uml_id = "node_" + normalize_name(capability[0])
                     target_uml_id = (

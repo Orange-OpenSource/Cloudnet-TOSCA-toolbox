@@ -2008,7 +2008,7 @@ class TypeChecker(Checker):
                 )
                 if previous_relationship != None:
                     # Check if capability is compatible with previous defined relationship
-                    if type(previous_relationship) is str:
+                    if isinstance(previous_relationship, str):
                         relationship_type_name = previous_relationship
                     else:
                         relationship_type_name = previous_relationship.get(TYPE)
@@ -2647,23 +2647,19 @@ class TypeChecker(Checker):
                 return
             # targets contains only one node
             target_template_type = self.current_targets_condition_type[0]
-            print("type(target_template_type) %s %s:" %(type(target_template_type),target_template_type))
             attribute_definition = target_template_type.get(syntax.ATTRIBUTES, {}).get(
                 attribute_name
             )
-            print(" JLC   target_template_type.get(syntax.ATTRIBUTES, {}).get(attribute_name) |%s|" % target_template_type.get(syntax.ATTRIBUTES, {}).get(attribute_name))
             if attribute_definition is None:
                 attribute_definition = target_template_type.get(
                     syntax.PROPERTIES, {}
                 ).get(attribute_name)
-            print(" JLC   target_template_type.get(syntax.PROPERTIES, {}).get(attribute_name) |%s|" % target_template_type.get(syntax.PROPERTIES, {}).get(attribute_name))
             if attribute_definition is None:
                 self.error(
                     cem
                     + " - "
                     + attribute_name
                     + " attribute undefined in "
-                    + "JLC 1"
                     + self.current_targets[0],
                     attribute_name,
                 )
@@ -2673,8 +2669,7 @@ class TypeChecker(Checker):
                 + " - "
                 + attribute_name
                 + " attribute defined in "
-                + self.current_targets[0]
-                + "JLC 1",
+                + self.current_targets[0],
                 attribute_name,
             )
             type_checker = self.get_type_checker(attribute_definition, {}, cem)
@@ -2684,14 +2679,9 @@ class TypeChecker(Checker):
 
         for key, value in condition_clause_definition.items():
             cem = context_error_message + ":" + key
-#            print("\n\n>>>JLC<<< condition_clause_definition : %s %s \n%s" %(key, value, cem))
             if key in ["and", "or", "not"]:
                 idx = 0
                 for cc in value:
-#                    print("    ----- 1 / %s -----" % idx)
-#                    print("key : %s" % key)
-#                    print("value : %s" % value)
-#                    print("cc : %s" % cc)
                     self.check_condition_clause_definition(
                         cc, cem + "[" + str(idx) + "]"
                     )
@@ -2700,20 +2690,11 @@ class TypeChecker(Checker):
                 idx = 0
                 for cc in value:
                     for k, v in cc.items():
-#                        print("    ----- 2 / %s -----" % idx)
-#                        print("key : %s" % key)
-#                        print("value : %s" % value)
-#                        print("cc : %s" % cc)
                         check_attribute_constraints(
                             k, v, cem + "[" + str(idx) + "]" + ":" + k
                         )
                 idx += 1
             else:
-                # JLC : on arrive ici avec un type ListCoord
-                print("    ----- 3 -----")
-                print("key : %s" % key)
-                print("value : %s" % value)
-                print("type(value) : %s" % type(value))
                 check_attribute_constraints(key, value, cem)
 
     def check_activity_definition(self, activity_definition, context_error_message):
@@ -2846,8 +2827,7 @@ class TypeChecker(Checker):
             return operation_definition
 
         # check the short notation
-# JLC TBR try to process StrCoord type of operation
-        if type(call_operation) is str or type(call_operation) is StrCoord:
+        if isinstance(call_operation, str):
             operation_definition = check_operation(
                 call_operation, context_error_message
             )
@@ -3603,7 +3583,7 @@ class TypeChecker(Checker):
                 method(key, value, definition, context_error_message + key)
 
     def check_value_assignment(self, name, value, definition, context_error_message):
-        if type(value) is dict and len(value) == 1:
+        if isinstance(value, dict) and len(value) == 1:
             if "concat" in value:
                 parameters = value["concat"]
                 # check that parameters are a list of strings
@@ -4212,10 +4192,10 @@ class TypeChecker(Checker):
 
             if syntax.GET_INPUT in value:
                 parameters = value[syntax.GET_INPUT]
-                if type(parameters) is str:
+                if isinstance(parameters, str):
                     input_name = parameters
                     parameters = []
-                elif type(parameters) is list:
+                elif isinstance(parameters, list):
                     input_name = parameters[0]
                     parameters = parameters[1:]
                 else:
@@ -5224,21 +5204,6 @@ class TypeChecker(Checker):
         ).items():
             if isinstance(capability_definition, str):
                 capability_type = self.type_system.merge_type(capability_definition)
-            elif type(capability_definition) is DictCoord:
-                # JLC it seems to appear when we have {'feature': {'type': 'tosca.capabilities.Node'}}
-                # in a DictCoord structure
-                # I get the value of the feature to check the type ??? TBR ???
-                (
-                    checked,
-                    capability_type_name,
-                    capability_type,
-                ) = self.check_type_in_definition(
-                    "capability",
-                    syntax.TYPE,
-                    capability_definition.get('feature', {}),
-                    {},
-                    context_error_message,
-                )
             else:
                 (
                     checked,
