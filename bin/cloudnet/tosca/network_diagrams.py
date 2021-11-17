@@ -174,7 +174,7 @@ class NwdiagGenerator(Generator):
             self.generate('{')
             # iterate over all found networks
             for network_name, network in networks.items():
-                self.generate('  network %s {' % network_name)
+                self.generate('  network "%s" {' % network_name)
                 network_node = network.network_node
                 if network_node is None:
                     # this is an external network associated to a network requirement of the substitution mapping
