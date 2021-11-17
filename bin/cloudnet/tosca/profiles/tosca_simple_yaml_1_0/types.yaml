@@ -200,14 +200,26 @@ capability_types:
   tosca.capabilities.Node:
     derived_from: tosca.capabilities.Root
 
-  # Section 5.5.3 tosca.capabilities.Compute
-  tosca.capabilities.Compute:
-    derived_from: tosca.capabilities.Container
-    # shortname: Compute # ISSUE: error in TOSCA spec. - 'shortname' is not an allowed keyword!
+  # Section 5.5.4 tosca.capabilities.Network
+  tosca.capabilities.Network:
+    derived_from: tosca.capabilities.Root
     properties:
       name:
         type: string
         required: false
+
+  # Section 5.5.5 tosca.capabilities.Storage
+  tosca.capabilities.Storage:
+    derived_from: tosca.capabilities.Root
+    properties:
+      name:
+        type: string
+        required: false
+
+  # Section 5.4.3.2 tosca.capabilities.Container
+  tosca.capabilities.Container:
+    derived_from: tosca.capabilities.Root
+    properties:
       num_cpus:
         type: integer
         required: false
@@ -228,26 +240,6 @@ capability_types:
         required: false
         constraints:
           - greater_or_equal: 0 MB
-
-  # Section 5.5.4 tosca.capabilities.Network
-  tosca.capabilities.Network:
-    derived_from: tosca.capabilities.Root
-    properties:
-      name:
-        type: string
-        required: false
-
-  # Section 5.5.5 tosca.capabilities.Storage
-  tosca.capabilities.Storage:
-    derived_from: tosca.capabilities.Root
-    properties:
-      name:
-        type: string
-        required: false
-
-  # Section 5.5.6 tosca.capabilities.Container
-  tosca.capabilities.Container:
-    derived_from: tosca.capabilities.Root
 
   # Section 5.5.7 tosca.capabilities.Endpoint
   tosca.capabilities.Endpoint:
@@ -506,17 +498,9 @@ node_types:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard
 
-  # Section 5.9.2 tosca.nodes.Abstract.Compute
-  tosca.nodes.Abstract.Compute:
-    derived_from: tosca.nodes.Root
-    capabilities:
-      host:
-        type: tosca.capabilities.Compute
-#        valid_source_types: [] # ISSUE: See page 107 line 1942: "represents the optional list of one or more names of Node Types that the Capability Type supports as valid sources for a successful relationship to be established to itself"!
-
-  # Section 5.9.3 tosca.nodes.Compute
+  # Section 5.8.2 tosca.nodes.Compute
   tosca.nodes.Compute:
-    derived_from: tosca.nodes.Abstract.Compute
+    derived_from: tosca.nodes.Root
     attributes:
       private_address:
         type: string
@@ -533,13 +517,12 @@ node_types:
     requirements:
       - local_storage:
           capability: tosca.capabilities.Attachment
-#          node: tosca.nodes.BlockStorage # ISSUE: undefined type!
-          node: tosca.nodes.Storage.BlockStorage
+          node: tosca.nodes.BlockStorage
           relationship: tosca.relationships.AttachesTo
           occurrences: [0, UNBOUNDED]
     capabilities:
       host:
-        type: tosca.capabilities.Compute
+        type: tosca.capabilities.Container
         valid_source_types: [tosca.nodes.SoftwareComponent]
       endpoint:
         type: tosca.capabilities.Endpoint.Admin
@@ -563,7 +546,7 @@ node_types:
         required: false
     requirements:
       - host:
-          capability: tosca.capabilities.Compute
+          capability: tosca.capabilities.Container
           node: tosca.nodes.Compute
           relationship: tosca.relationships.HostedOn
 
@@ -575,7 +558,7 @@ node_types:
       data_endpoint: tosca.capabilities.Endpoint
       admin_endpoint: tosca.capabilities.Endpoint.Admin
       host:
-        type: tosca.capabilities.Compute
+        type: tosca.capabilities.Container
         valid_source_types: [ tosca.nodes.WebApplication ]
 
   # Section 5.9.6 tosca.nodes.WebApplication
@@ -590,10 +573,9 @@ node_types:
         type: tosca.capabilities.Endpoint
     requirements:
       - host:
-          capability: tosca.capabilities.Compute
+          capability: tosca.capabilities.Container
           node: tosca.nodes.WebServer
           relationship: tosca.relationships.HostedOn
-
   # Section 5.9.7 tosca.nodes.DBMS
   tosca.nodes.DBMS:
     derived_from: tosca.nodes.SoftwareComponent
@@ -608,7 +590,7 @@ node_types:
         description: the port the DBMS service will listen to for data and requests
     capabilities:
       host:
-        type: tosca.capabilities.Compute
+        type: tosca.capabilities.Container
         valid_source_types: [ tosca.nodes.Database ]
 
   # Section 5.9.8 tosca.nodes.Database
@@ -632,44 +614,41 @@ node_types:
         required: false
     requirements:
       - host:
-          capability: tosca.capabilities.Compute
+          capability: tosca.capabilities.Container
           node: tosca.nodes.DBMS
           relationship: tosca.relationships.HostedOn
     capabilities:
       database_endpoint:
         type: tosca.capabilities.Endpoint.Database
 
-  # Section 5.9.9 tosca.nodes.Storage.Abstract.Storage
-  tosca.nodes.Abstract.Storage:
+  # Section 5.8.8 tosca.nodes.ObjectStorage
+  tosca.nodes.ObjectStorage:
     derived_from: tosca.nodes.Root
     properties:
       name:
         type: string
       size:
         type: scalar-unit.size
-        default: 0 MB
         constraints:
-          - greater_or_equal: 0 MB
+          - greater_or_equal: 0 GB
         required: false # ISSUE: Missed in the spec!
-#    capabilities: # ISSUE: can be null!
-      # TBD
-
-  # Section 5.9.10 tosca.nodes.Storage.ObjectStorage
-  tosca.nodes.Storage.ObjectStorage:
-    derived_from: tosca.nodes.Abstract.Storage
-    properties:
       maxsize:
         type: scalar-unit.size
         constraints:
           - greater_or_equal: 0 GB
+        required: false # ISSUE: Missed in the spec!
     capabilities:
       storage_endpoint:
         type: tosca.capabilities.Endpoint
 
-  # Section 5.9.11 tosca.nodes.Storage.BlockStorage
-  tosca.nodes.Storage.BlockStorage:
-    derived_from: tosca.nodes.Abstract.Storage
+  # Section 5.8.9 tosca.nodes.BlockStorage
+  tosca.nodes.BlockStorage:
+    derived_from: tosca.nodes.Root
     properties:
+      size:
+        type: scalar-unit.size
+        constraints:
+          - greater_or_equal: 1 MB
       volume_id:
         type: string
         required: false
@@ -688,7 +667,7 @@ node_types:
     derived_from: tosca.nodes.SoftwareComponent
     capabilities:
       host:
-        type: tosca.capabilities.Compute
+        type: tosca.capabilities.Container
         valid_source_types: [ tosca.nodes.Container.Application ]
       scalable:
         type: tosca.capabilities.Scalable
@@ -698,18 +677,14 @@ node_types:
     derived_from: tosca.nodes.Root
     requirements:
       - host:
-          capability: tosca.capabilities.Compute
+          capability: tosca.capabilities.Container
           node: tosca.nodes.Container.Runtime
           relationship: tosca.relationships.HostedOn
+#TODO: following is not defined in TOSCA 1.0 specification.
 # ISSUE: no relationship type has tosca.capabilities.Storage as valid_target_types!
 # ISSUE: no node type has tosca.capabilities.Storage as capabilities!
 #      - storage:
 #          capability: tosca.capabilities.Storage
-      - network:
-#          capability: tosca.capabilities.EndPoint # ISSUE: EndPoint undefined!
-          # ISSUE: Linkable is more appropriate than Endpoint to link a container with a network!
-          capability: tosca.capabilities.network.Linkable
-          relationship: tosca.relationships.network.LinksTo
 
   # Section 5.9.14 tosca.nodes.LoadBalancer
   tosca.nodes.LoadBalancer:
