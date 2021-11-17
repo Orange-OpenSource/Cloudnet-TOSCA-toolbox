@@ -514,11 +514,11 @@ class AbstractAlloySigGenerator(Generator):
                       node_name = self.SELF
                     function_arguments = node_name + ', ' + self.stringify_value(v[1], PARAMETER_STRING_TYPE, context_error_message, ', ')
                     result = result + key + '[' + function_arguments + ']'
-                elif key in [ 'get_operation_output', 'token', 'get_secret' ]:
+                elif key in [ 'get_operation_output', 'get_secret' ]:
                     self.warning(context_error_message + ': ' + key + ' function unsupported by Alloy generator')
                     result = '"' + key + '[...]"'
-                elif key in [ 'concat' ]:
-                    self.warning(context_error_message + ': ' + key + ' function unsupported by Alloy generator')
+                elif key in [ 'concat', 'join', 'token' ]:
+                    self.warning(context_error_message + ': ' + key + ' intrinsic function unsupported by Alloy generator')
                     result = '"' + key + '[...]"'
                 else:
                     self.error(context_error_message + ': ' + key + ' function undefined')
@@ -769,7 +769,7 @@ class AbstractAlloySigGenerator(Generator):
         self.generate(indentation, '// YAML type: ', parameter_type, sep='')
         self.generate(indentation, prefix, parameter_name, '.type = "', parameter_type, '"', sep='')
         if parameter_type == 'list':
-            parameter_type = parameter_yaml.get('entry_schema',{}).get('type')
+            parameter_type = parameter_yaml.get('entry_schema',{}).get('type', 'string')
         elif parameter_type == 'map':
             parameter_type = self.get_map_signature(parameter_yaml)
         self.generate(indentation, prefix, parameter_name, '.type[', self.alloy_sig(parameter_type), ']', sep='')
