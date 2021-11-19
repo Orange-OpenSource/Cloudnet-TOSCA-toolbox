@@ -40,6 +40,8 @@ DEFAULT_CONFIGURATION[UML2] = {
     'direction': {
         'tosca.relationships.network.BindsTo': 'up', # OASIS TOSCA
     },
+    'artifact_types': {
+    },
     'node_types': {
     }
 }
@@ -289,32 +291,39 @@ class PlantUMLGenerator(Generator):
         self.generate('@enduml')
         self.close_file()
 
-    def get_representation(self, node_type_name):
-        representations = self.configuration.get(UML2, 'node_types')
+    def get_representation(self, type_kind, type_name, property_name):
+        representations = self.configuration.get(UML2, type_kind + '_types')
         while True:
-            node_type_name = self.type_system.get_type_uri(node_type_name)
-            # search the graphical representation for the current node type name
-            representation = representations.get(node_type_name)
+            type_name = self.type_system.get_type_uri(type_name)
+            # search the graphical representation for the current type name
+            representation = representations.get(type_name)
             if representation != None: # representation found
-                return representation # so return it
+                if property_name in representation: # property defined?
+                    return representation.get(property_name) # so return it
             # else try with the derived_from type
-            node_type = self.type_system.get_type(node_type_name)
-            if node_type is None:
+            type_type = self.type_system.get_type(type_name)
+            if type_type is None:
                 # TODO: log error?
                 break # node type not found
-            node_type_name = node_type.get(syntax.DERIVED_FROM)
-            if node_type_name is None:
+            type_name = type_type.get(syntax.DERIVED_FROM)
+            if type_name is None:
                 break # reach a root node type
         # node representation not found!
-        # so use default graphical representation
-        return {}
+        return None
 
-    def get_color(self, node_type_name):
-        color = self.get_representation(node_type_name).get('color')
+    def get_color(self, type_category, type_name):
+        color = self.get_representation(type_category, type_name, 'color')
         if color != None:
             return ' #%s' % color
         else:
             return ''
+
+    def get_label(self, type_category, node_name, type_name):
+        icon = self.get_representation(type_category, type_name, 'icon')
+        if icon != None:
+            return '<img:%s>\\n%s' % (icon, node_name)
+        else:
+            return '%s: %s' % (node_name, short_type_name(type_name))
 
     def generate_UML2_component_diagram(self, topology_template, with_relationships):
         self.generate('@startuml')
@@ -335,7 +344,7 @@ class PlantUMLGenerator(Generator):
                 # Declare an UML interface for the substitution_mappings capability.
                 self.generate('interface "', capability_name, '" as ', capability_uml_id, sep='')
             self.generate('component ": ', substitution_mappings_node_type, '" <<node>> as ', substitution_mappings_uml_id,
-                self.get_color(substitution_mappings_node_type), ' {', sep='')
+                self.get_color('node', substitution_mappings_node_type), ' {', sep='')
 
         relationship_templates = get_dict(topology_template, RELATIONSHIP_TEMPLATES)
 
@@ -348,7 +357,13 @@ class PlantUMLGenerator(Generator):
             merged_node_template_type = self.type_system.merge_node_type(node_template_type)
             node_template_uml_id = 'node_' + normalize_name(node_template_name)
             # Declare an UML component for the node template.
-            self.generate('component "', node_template_name, ': ', short_type_name(node_template_type), '" <<node>> as ', node_template_uml_id, self.get_color(node_template_type), sep='')
+            icon = self.get_representation('node', node_template_type, 'icon')
+            if icon is not None:
+                self.generate('component "<img:', icon, '>" <<node>> as ', node_template_uml_id, self.get_color('node', node_template_type), ' {', sep='')
+                self.generate('label "**', node_template_name, '**" as ', node_template_uml_id, '_label', sep='')
+                self.generate('}')
+            else:
+                self.generate('component "', self.get_label('node', node_template_name, node_template_type), '" <<node>> as ', node_template_uml_id, self.get_color('node', node_template_type), sep='')
             # Iterate over all capabilities of the node template.
             for capability_name, capability_yaml in get_dict(merged_node_template_type, CAPABILITIES).items():
                 if type(capability_yaml) == dict:
@@ -534,6 +549,7 @@ class PlantUMLGenerator(Generator):
     def generate_UML2_deployment_diagram(self, topology_template):
         self.generate('@startuml')
         self.generate('skinparam componentStyle uml2')
+#        self.generate('allowmixing')
         self.generate()
 
         node_templates = get_dict(topology_template, NODE_TEMPLATES)
@@ -598,16 +614,39 @@ class PlantUMLGenerator(Generator):
             uml2_kind = get_uml2_kind(node_template_type)
             node_template_artifacts = get_dict(node_template, ARTIFACTS)
             if len(containeds) == 0 and len(node_template_artifacts) == 0:
-                self.generate(uml2_kind, ' "', container_name, ': ', short_type_name(node_template_type), '" as node_', normalize_name(container_name), self.get_color(node_template_type), sep='')
+                icon = self.get_representation('node', node_template_type, 'icon')
+                if icon is not None:
+                    self.generate(uml2_kind, ' "<img:', icon, '>" as node_', normalize_name(container_name), self.get_color('node', node_template_type), ' {', sep='')
+                    self.generate('label "**', container_name, '**" as ', normalize_name(container_name), '_label', sep='')
+                    self.generate('}')
+                else:
+                    self.generate(uml2_kind, ' "', self.get_label('node', container_name, node_template_type), '" as node_', normalize_name(container_name), self.get_color('node', node_template_type), sep='')
             else:
-                self.generate(uml2_kind, ' "', container_name, ': ', short_type_name(node_template_type), '" as node_', normalize_name(container_name), self.get_color(node_template_type), ' {', sep='')
+                self.generate(uml2_kind, ' "', self.get_label('node', container_name, node_template_type), '" as node_', normalize_name(container_name), self.get_color('node', node_template_type), ' {', sep='')
+                # Generate a properties map if needed
+                properties = self.get_representation('node', node_template_type, 'properties')
+                if properties is not None:
+                    color = self.get_color('node', node_template_type)
+                    color = color[:color.find(';')]
+                    self.generate(' map "Properties" as node_', normalize_name(container_name), '_properties', color, ' {', sep='')
+                    for property_name in properties:
+                        if property_name in node_template.get("properties", {}):
+                            self.generate(property_name, " => ", str(node_template.get("properties", {}).get(property_name)))
+                    self.generate('}')
                 for contained_name, contained_dict in containeds.items():
                     generate_container(self, contained_name, contained_dict)
                 for artifact_name, artifact_yaml in node_template_artifacts.items():
                     artifact_type = syntax.get_artifact_type(artifact_yaml)
                     if artifact_type == None:
                         artifact_type = 'Artifact'
-                    self.generate('artifact "', syntax.get_artifact_file(artifact_yaml), '" <<', artifact_type, '>> as node_', normalize_name(container_name), '_artifact_',  normalize_name(artifact_name) , sep='')
+                    color = self.get_color('artifact', artifact_type)
+                    icon = self.get_representation('artifact', artifact_type, 'icon')
+                    if icon is not None:
+                        self.generate('artifact "<img:', icon, '>" <<artifact>> as node_', normalize_name(container_name), '_artifact_',  normalize_name(artifact_name), self.get_color('artifact', artifact_type), " {", sep='')
+                        self.generate('label "', syntax.get_artifact_file(artifact_yaml), '" as ', normalize_name(container_name), '_label', sep='')
+                        self.generate('}')
+                    else:
+                        self.generate('artifact "', self.get_label('artifact', syntax.get_artifact_file(artifact_yaml), artifact_type), '" <<artifact>> as node_', normalize_name(container_name), '_artifact_',  normalize_name(artifact_name), self.get_color('artifact', artifact_type), sep='')
                 self.generate('}')
 
         substitution_mappings = topology_template.get(SUBSTITUTION_MAPPINGS)
@@ -617,7 +656,7 @@ class PlantUMLGenerator(Generator):
                 self.generate('component "a node" as substitution_mappings_capability_', normalize_name(capability_name), sep='')
 
             substitution_mappings_node_type = substitution_mappings.get(NODE_TYPE)
-            self.generate(get_uml2_kind(substitution_mappings_node_type), ' ": ', substitution_mappings_node_type, '" as substitution_mappings', self.get_color(substitution_mappings_node_type), ' {', sep='')
+            self.generate(get_uml2_kind(substitution_mappings_node_type), ' ": ', substitution_mappings_node_type, '" as substitution_mappings', self.get_color('node', substitution_mappings_node_type), ' {', sep='')
 
         for container_name, containeds in containers.items():
             generate_container(self, container_name, containeds)
@@ -655,7 +694,7 @@ class PlantUMLGenerator(Generator):
                         requirement_node = get_requirement_node_template(requirement_yaml)
                         if requirement_node:
                             direction = self.configuration.get(UML2, 'direction').get(requirement_relationship_type, '')
-                            self.generate('node_', normalize_name(node_template_name), ' "', requirement_name, '" .' + direction + '.> node_', normalize_name(requirement_node), ' : <<', short_type_name(requirement_relationship_type), '>>', sep='')
+                            self.generate('node_', normalize_name(node_template_name), ' .' + direction + '.> node_', normalize_name(requirement_node), ' : <<', short_type_name(requirement_relationship_type), '>>', sep='')
 
         if substitution_mappings:
             self.generate('}')
