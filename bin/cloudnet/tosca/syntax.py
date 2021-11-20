@@ -544,8 +544,8 @@ class SyntaxChecker(Checker):
 #            schema=tosca_schema,
 #            format_checker=jsonschema.draft4_format_checker) # TODO use draft7_format_checker
 
-        validator = jsonschema.Draft4Validator(tosca_schema,
-                                               format_checker=jsonschema.draft4_format_checker) # TODO use draft7_format_checker
+        validator = jsonschema.Draft7Validator(tosca_schema,
+                                               format_checker=jsonschema.draft7_format_checker)
         errors = validator.iter_errors(template_yaml)
 
         # Log all errors.
