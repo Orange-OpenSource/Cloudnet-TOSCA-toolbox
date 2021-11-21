@@ -551,7 +551,13 @@ definitions:
           - type: object
             properties:
               constraint:
-                $ref: "#/definitions/condition_clause_definition"
+                oneOf:
+                  - $ref: "#/definitions/condition_clause_definition"
+                  #PM: Added support for multiple conditions following the TOSCA TC
+                  #PM: positive reply to the ETSI NFV SOL 001 TC question about this
+                  - type: array
+                    items:
+                      $ref: "#/definitions/condition_clause_definition"
               period:
                 $ref: "#/definitions/scalar_unit"
               evaluations:
@@ -559,6 +565,11 @@ definitions:
               method:
                 type: string
             additionalProperties: false
+          #PM: Added support for multiple conditions following the TOSCA TC
+          #PM: positive reply to the ETSI NFV SOL 001 TC question about this
+          - type: array
+            items:
+              $ref: "#/definitions/condition_clause_definition"
       action:
         type: array
         items:
