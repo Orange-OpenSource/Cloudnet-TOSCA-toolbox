@@ -549,7 +549,7 @@ class PlantUMLGenerator(Generator):
     def generate_UML2_deployment_diagram(self, topology_template):
         self.generate('@startuml')
         self.generate('skinparam componentStyle uml2')
-#        self.generate('allowmixing')
+        self.generate('allowmixing')
         self.generate()
 
         node_templates = get_dict(topology_template, NODE_TEMPLATES)
@@ -613,7 +613,8 @@ class PlantUMLGenerator(Generator):
             node_template_type = node_template.get(TYPE)
             uml2_kind = get_uml2_kind(node_template_type)
             node_template_artifacts = get_dict(node_template, ARTIFACTS)
-            if len(containeds) == 0 and len(node_template_artifacts) == 0:
+            properties = self.get_representation('node', node_template_type, 'properties')
+            if len(containeds) == 0 and len(node_template_artifacts) == 0 and properties is None:
                 icon = self.get_representation('node', node_template_type, 'icon')
                 if icon is not None:
                     self.generate(uml2_kind, ' "<img:', icon, '>" as node_', normalize_name(container_name), self.get_color('node', node_template_type), ' {', sep='')
@@ -624,14 +625,13 @@ class PlantUMLGenerator(Generator):
             else:
                 self.generate(uml2_kind, ' "', self.get_label('node', container_name, node_template_type), '" as node_', normalize_name(container_name), self.get_color('node', node_template_type), ' {', sep='')
                 # Generate a properties map if needed
-                properties = self.get_representation('node', node_template_type, 'properties')
                 if properties is not None:
                     color = self.get_color('node', node_template_type)
-                    color = color[:color.find(';')]
-                    self.generate(' map "Properties" as node_', normalize_name(container_name), '_properties', color, ' {', sep='')
+                    if ';' in color:
+                        color = color[:color.find(';')]
+                    self.generate('map "Properties" as node_', normalize_name(container_name), '_properties', color, ' {', sep='')
                     for property_name in properties:
-                        if property_name in node_template.get("properties", {}):
-                            self.generate(property_name, " => ", str(node_template.get("properties", {}).get(property_name)))
+                        self.generate(property_name, " => ", str(node_template.get("properties", {}).get(property_name, 'unset')))
                     self.generate('}')
                 for contained_name, contained_dict in containeds.items():
                     generate_container(self, contained_name, contained_dict)
