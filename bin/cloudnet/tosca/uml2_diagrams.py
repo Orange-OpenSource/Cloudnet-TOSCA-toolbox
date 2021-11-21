@@ -185,15 +185,41 @@ class PlantUMLGenerator(Generator):
                     if requirement_node:
                         self.generate(' node :',  requirement_node)
             interfaces = get_dict(type_yaml, INTERFACES)
+
+            def generate_operation(operation_name, operation_value):
+                self.generate('+', operation_name, '()', sep='')
+                if isinstance(operation_value, str):
+                    implementation = operation_value
+                    primary_artifact_name = implementation
+                elif isinstance(operation_value, dict):
+                    implementation = operation_value.get("implementation")
+                    if isinstance(implementation, str):
+                        primary_artifact_name = implementation
+                    elif isinstance(implementation, dict):
+                        primary_artifact_name = primary_artifact_name.get("primary")
+                        if isinstance(primary_artifact_name, dict):
+                            primary_artifact_name = primary_artifact_name.get("file")
+                else:
+                    implementation = None
+                if implementation is not None:
+                    implementation_as_string = str(implementation)
+#                    artifact_type = self.type_system.get_artifact_type_by_filename(primary_artifact_name)
+                    ext = primary_artifact_name[primary_artifact_name.rfind('.')+1:]
+                    artifact_type = self.type_system.get_artifact_type_by_file_ext(ext)
+                    icon = self.get_representation('artifact', artifact_type, 'icon')
+                    if icon is not None:
+                        implementation_as_string += " <img:%s{scale=0.5}>" % icon
+                    self.generate(" implementation: ", implementation_as_string, sep='')
+
             if len(interfaces):
                 self.generate('--')
                 for interface_name, interface_yaml in interfaces.items():
                     self.generate('.. interface', interface_name, '..')
                     for key, value in syntax.get_operations(interface_yaml).get(OPERATIONS).items():
-                        self.generate('+', key, '()', sep='')
+                        generate_operation(key, value)
             if class_kind == 'I':
                 for key, value in syntax.get_operations(type_yaml).get(OPERATIONS).items():
-                    self.generate('+', key, '()', sep='')
+                    generate_operation(key, value)
             self.generate('}')
             for attribute_name, attribute_yaml in attributes.items():
                 attribute_type = attribute_yaml.get(TYPE)
