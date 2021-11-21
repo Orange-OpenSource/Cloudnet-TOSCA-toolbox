@@ -51,7 +51,7 @@ TOSCA_SyntaxCheck()
    # All description files translation
    echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/${_LOG}
 
-   for filename in $(find . -iname '*.yaml' -o -iname '*.yml' | xargs grep -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
+   for filename in $(find . -not -path "./${DeclarativeWorkflows_target_directory}/*" -iname '*.yaml' -o -iname '*.yml' | xargs grep -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
      do
        echo -e "\n${normal}${magenta}    `echo $filename | tr [a-z] [A-Z]` ${reset}" | tee -a logs/${_LOG}
        translate $filename 2>&1 | tee -a logs/${_LOG}
@@ -321,7 +321,7 @@ fi
 # verify if the target directories are set, if not set default ones
 ##### TODO : HOT_target_directory (and maybe others) can be set in the TOSCA2CLOUDNET_CONF_FILE
 #####        but are not used in this script currently, so we have to manage it
-dirArray=( Alloy_target_directory nwdiag_target_directory tosca_diagrams_target_directory UML2_target_directory)
+dirArray=( DeclarativeWorkflows_target_directory Alloy_target_directory nwdiag_target_directory tosca_diagrams_target_directory UML2_target_directory)
 NBVARSSET=0
 for var in "${dirArray[@]}"
 do
