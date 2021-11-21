@@ -1432,7 +1432,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
+              $ref: "#/definitions/parameter_definition"
           preconditions:
             type: array
             items:
@@ -1454,7 +1454,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
+              $ref: "#/definitions/parameter_definition"
           preconditions:
             type: array
             items:

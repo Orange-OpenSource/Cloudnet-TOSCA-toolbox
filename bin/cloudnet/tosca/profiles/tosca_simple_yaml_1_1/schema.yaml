@@ -307,7 +307,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
+              $ref: "#/definitions/parameter_definition"
         additionalProperties: false
 
   operation_definition_in_templates:
@@ -336,7 +336,7 @@ definitions:
       inputs:
         type: object
         additionalProperties:
-          $ref: "#/definitions/property_definition"
+          $ref: "#/definitions/parameter_definition"
     additionalProperties:
       $ref: "#/definitions/operation_definition_in_types"
 
@@ -506,7 +506,7 @@ definitions:
       inputs:
         type: object
         additionalProperties:
-          $ref: "#/definitions/property_definition"
+          $ref: "#/definitions/parameter_definition"
       additionalProperties:
         $ref: "#/definitions/operation_definition_in_types"
 
