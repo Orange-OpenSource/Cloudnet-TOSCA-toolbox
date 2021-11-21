@@ -1273,8 +1273,6 @@ definitions:
         type: string
       event:
         type: string
-      schedule:
-        type: string
       target_filter:
         $ref: "#/definitions/event_filter_definition"
       condition:
