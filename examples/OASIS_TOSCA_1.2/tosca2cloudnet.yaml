@@ -18,6 +18,11 @@ Alloy:
   # Target directory where Alloy files are generated.
   target-directory: RESULTS/Alloy
 
+# Configuration of the declarative workflow generator.
+DeclarativeWorkflows:
+  # Target directory where declarative workflows are generated.
+  target-directory: RESULTS/DeclarativeWorkflows
+
 # Configuration of the network diagram generator.
 nwdiag:
   # Target directory where network diagrams are generated.
@@ -59,6 +64,8 @@ logging:
     cloudnet.tosca.syntax:
       level: WARNING
     cloudnet.tosca.type_system:
+      level: WARNING
+    cloudnet.tosca.declarative_workflows:
       level: WARNING
     cloudnet.tosca.alloy:
       level: WARNING
