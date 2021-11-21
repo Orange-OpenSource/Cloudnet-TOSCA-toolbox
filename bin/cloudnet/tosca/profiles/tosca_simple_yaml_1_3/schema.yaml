@@ -534,9 +534,11 @@ definitions:
         type: object
         properties:
           start_time:
-            type: string
+            # ISSUE: JSON schema has no timestamp type
+            {}
           end_time:
-            type: string
+            # ISSUE: JSON schema has no timestamp type
+            {}
         additionalProperties: false
         required: [ start_time, end_time]
       target_filter:
