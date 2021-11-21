@@ -428,8 +428,7 @@ definitions:
           occurrences:
             $ref: "#/definitions/range_of_integers"
         additionalProperties: false
-#       required: [ capability ] # type is required but can be set into the parent definition.
-        # So type requirement is checked by TypeChecker.
+        required: [ capability ]
 
 # Section 4.3.5.6 Requirement assignment
 
