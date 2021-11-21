@@ -898,6 +898,8 @@ class PlantUMLGenerator(Generator):
             self.generate('  BackGroundColor<< call_operation >> lightblue')
             self.generate('  BackGroundColor<< inline >> white')
             self.generate('}')
+            self.generate('skinparam ActivityBarColor<<fork>> DarkGreen')
+            self.generate('skinparam ActivityBarColor<<join>> DarkOrange')
             self.generate()
 
             generate_workflow_diagram(workflow_name, workflow_definition)
