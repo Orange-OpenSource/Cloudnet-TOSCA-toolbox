@@ -1,0 +1,125 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: TOSCA to Cloudnet Translator
+######################################################################
+
+declarative_deploy:
+  workflow:
+    description: Deployment declarative workflow
+  node_types:
+    null: # all node types which do not derive from tosca.nodes.Root
+      steps:
+        deploy:
+          activities:
+            - delegate: deploy
+    tosca.nodes.Root: # all node templates
+      steps:
+        - create:
+            activities:
+              - set_state: creating
+              - call_operation: Standard.create
+              - set_state: created
+        - pre_configure:
+            activities:
+              - set_state: configuring
+        - configure:
+            activities:
+              - call_operation: Standard.configure
+        - post_configure:
+            activities:
+              - set_state: configured
+        - start:
+            activities:
+              - set_state: starting
+              - call_operation: Standard.start
+              - set_state: started
+  relationship_types:
+    tosca.relationships.Root: # all relationship instances
+      weave_operations:
+        - Configure.pre_configure_source follow pre_configure_{SOURCE}
+        - Configure.pre_configure_target follow pre_configure_{TARGET}
+        - Configure.post_configure_source follow configure_{SOURCE}
+        - Configure.post_configure_target follow configure_{TARGET}
+        - Configure.add_source after start_{SOURCE}
+        - Configure.add_target after start_{SOURCE}
+      weave_steps:
+        # sequential deploy: create TARGET ; configure TARGET ; start TARGET ; create SOURCE ; configure SOURCE ; start SOURCE
+        - start_{TARGET} before create_{SOURCE}
+#    tosca.relationships.HostedOn:
+#      weave_steps:
+#TODO:        # serialize the deployment of hosted components
+#TODO:        - start_{SOURCE} follow start_{TARGET} # TODO: don't work in complex cases, e.g. Multi-Tier-2
+#        - start_{TARGET} before create_{SOURCE}
+
+declarative_undeploy:
+  workflow:
+    description: Undeployment declarative workflow
+  node_types:
+    null: # all node types which do not derive from tosca.nodes.Root
+      steps:
+        undeploy:
+          activities:
+            - delegate: undeploy
+    tosca.nodes.Root: # all node templates
+      steps:
+        - stop:
+            activities:
+              - set_state: stopping
+              - call_operation: Standard.stop
+              - set_state: stopped
+        - delete:
+            activities:
+              - set_state: deleting
+              - call_operation: Standard.delete
+              - set_state: initial
+  relationship_types:
+    tosca.relationships.Root: # all relationship instances
+      weave_operations:
+        - Configure.remove_target follow stop_{TARGET}
+      weave_steps:
+        # sequential undeploy: stop SOURCE ; delete SOURCE ; stop TARGET ; delete TARGET
+        - delete_{SOURCE} before stop_{TARGET}
+
+parallel_deploy:
+  extend: declarative_deploy
+  workflow:
+    description: Parallel deployment declarative workflow
+  # node_types: # inherited from declarative_deploy
+  relationship_types:
+#    tosca.relationships.HostedOn:
+#      weave_steps:
+#        # sequential deployment: deploy TARGET ; deploy SOURCE
+#        # SOURCE node is created after TARGET node is started
+#        - start_{TARGET} before create_{SOURCE}
+
+    tosca.relationships.ConnectsTo:
+    # and all relationship types deriving from (transitively):
+    # - tosca.relationships.RoutesTo
+      weave_steps:
+        # parallel deployment: ( ( create TARGET ; configure TARGET ) || ( create SOURCE ; configure SOURCE ) ) ; start TARGET ; start SOURCE
+        # SOURCE node is started after TARGET node is started
+        - start_{TARGET} before start_{SOURCE}
+
+parallel_undeploy:
+  extend: declarative_undeploy
+  workflow:
+    description: Parallel undeployment declarative workflow
+  # node_types: # inherited from declarative_undeploy
+  relationship_types:
+    tosca.relationships.ConnectsTo:
+    # and all relationship types deriving from (transitively):
+    # - tosca.relationships.RoutesTo
+      weave_steps:
+    #     # parallel undeploy: stop SOURCE ; ( delete SOURCE || stop TARGET ; delete TARGET )
+        # SOURCE node is stopped after TARGET node is stopped
+        - stop_{SOURCE} before stop_{TARGET}

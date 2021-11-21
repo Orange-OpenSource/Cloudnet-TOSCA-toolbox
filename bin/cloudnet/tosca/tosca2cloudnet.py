@@ -37,6 +37,7 @@ from cloudnet.tosca.uml2_diagrams import PlantUMLGenerator
 from cloudnet.tosca.tosca_diagrams import ToscaDiagramGenerator
 from cloudnet.tosca.network_diagrams import NwdiagGenerator
 from cloudnet.tosca.hot import HOTGenerator
+from cloudnet.tosca.declarative_workflows import DeclarativeWorkflowGenerator
 import sys # argv and stderr.
 import os
 
@@ -91,7 +92,12 @@ def main(argv):
 
         # Generate Alloy specifications, UML2, network, TOSCA diagrams and Heat templates.
         type_checker.file = None
-        for generator_class in [AlloyGenerator, PlantUMLGenerator, NwdiagGenerator, ToscaDiagramGenerator, HOTGenerator]:
+        for generator_class in [ DeclarativeWorkflowGenerator,
+                                 AlloyGenerator,
+                                 PlantUMLGenerator,
+                                 NwdiagGenerator,
+                                 ToscaDiagramGenerator,
+                                 HOTGenerator ]:
             generator = generator_class(generator=type_checker)
             generator.generation()
             nb_errors += generator.nb_errors
