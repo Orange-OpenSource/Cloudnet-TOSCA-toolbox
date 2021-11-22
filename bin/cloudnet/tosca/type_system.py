@@ -5786,6 +5786,7 @@ class TypeChecker(Checker):
         self.current_targets_condition_type = previous_targets_condition_type
 
     def check_substitution_mapping(self, substitution_mapping, context_error_message):
+
         def check_unmapped_definitions(
             node_type, keyword, kind_definition, evaluate_definition
         ):
@@ -5950,6 +5951,8 @@ class TypeChecker(Checker):
         def check_ummapped_interface_definition(interface_name, interface_definition):
             # produce an info message for each unmapped interface
             return self.info, None
+        check_unmapped_definitions(node_type, syntax.INTERFACES, 'interface', check_ummapped_interface_definition)
+
 
     def check_property_mapping(
         self,
