@@ -37,24 +37,24 @@ UML2:
 logging:
   loggers:
     cloudnet.tosca.configuration:
-      level: WARNING
+      level: INFO
     cloudnet.tosca.importers:
-      level: WARNING
+      level: INFO
     cloudnet.tosca.processors:
-      level: WARNING
+      level: INFO
     cloudnet.tosca.syntax:
-      level: WARNING
+      level: INFO
     cloudnet.tosca.type_system:
-      level: WARNING # INFO # DEBUG
+      level: INFO # INFO # DEBUG
     cloudnet.tosca.alloy:
-      level: WARNING
+      level: INFO
     cloudnet.tosca.network_diagrams:
-      level: WARNING
+      level: INFO
     cloudnet.tosca.tosca_diagrams:
-      level: WARNING
+      level: INFO
     cloudnet.tosca.uml2_diagrams:
-      level: WARNING
+      level: INFO
     cloudnet.tosca.hot:
-      level: WARNING
+      level: INFO
   root:
-    level: WARNING
+    level: INFO
