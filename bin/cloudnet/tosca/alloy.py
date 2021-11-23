@@ -634,7 +634,7 @@ class AbstractAlloySigGenerator(Generator):
                 return False
             return str(value).lower()
 
-        elif value_type == "integer" or type(value) == yaml_ln.IntCoord:
+        elif value_type == "integer":
             if not isinstance(value, int):
                 self.error(
                     context_error_message + ": " + str(value) + " - integer expected",
@@ -655,7 +655,7 @@ class AbstractAlloySigGenerator(Generator):
                 )
                 return str(MAX_INT)
 
-        elif value_type == "float" or type(value) == yaml_ln.FloatCoord:
+        elif value_type == "float":
             # TODO: value must be a float else this is an error.
             self.info(
                 context_error_message
@@ -666,7 +666,7 @@ class AbstractAlloySigGenerator(Generator):
             )
             return '"' + str(value) + '"'
 
-        elif value_type == "string" or type(value) == yaml_ln.StrCoord:
+        elif value_type == "string":
             # str() is used as the value can be an integer, float, etc.
             value = str(value)
             if len(value) == 0:
@@ -704,7 +704,7 @@ class AbstractAlloySigGenerator(Generator):
 
         # else
         self.error(
-            context_error_message + ": " + value_type + " type unsupported", value_type
+            context_error_message + ": " + value_type + " type unsupported by Alloy generator", value_type
         )
         return None
 
