@@ -196,7 +196,7 @@ class PlantUMLGenerator(Generator):
                     if isinstance(implementation, str):
                         primary_artifact_name = implementation
                     elif isinstance(implementation, dict):
-                        primary_artifact_name = primary_artifact_name.get("primary")
+                        primary_artifact_name = implementation.get("primary")
                         if isinstance(primary_artifact_name, dict):
                             primary_artifact_name = primary_artifact_name.get("file")
                 else:
