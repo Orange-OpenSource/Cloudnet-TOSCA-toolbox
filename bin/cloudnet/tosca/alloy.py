@@ -1084,7 +1084,8 @@ class AbstractAlloySigGenerator(Generator):
                         value = self.stringify_value(
                             constraint_yaml, yaml, ctx_error_msg
                         )
-                        if constraint_name != "valid_values" \
+                    predicate_prefix = ""
+                    if constraint_name != "valid_values" \
                         and not yaml.get("required", True) \
                         and yaml.get("default") is None:
                             predicate_prefix = "some " + name + " implies "

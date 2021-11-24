@@ -1549,7 +1549,7 @@ class TypeChecker(Checker):
         )
         # check description - nothing to do
         # check default
-        if default is not None:
+        if 'default' in attribute_definition:
             default = attribute_definition.get(syntax.DEFAULT)
             self.check_value(
                 default,
