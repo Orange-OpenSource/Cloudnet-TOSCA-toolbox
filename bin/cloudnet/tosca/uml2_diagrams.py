@@ -203,9 +203,7 @@ class PlantUMLGenerator(Generator):
                     implementation = None
                 if implementation is not None:
                     implementation_as_string = str(implementation)
-#                    artifact_type = self.type_system.get_artifact_type_by_filename(primary_artifact_name)
-                    ext = primary_artifact_name[primary_artifact_name.rfind('.')+1:]
-                    artifact_type = self.type_system.get_artifact_type_by_file_ext(ext)
+                    artifact_type = self.type_system.get_artifact_type_by_filename(primary_artifact_name)
                     icon = self.get_representation('artifact', artifact_type, 'icon')
                     if icon is not None:
                         implementation_as_string += " <img:%s{scale=0.5}>" % icon
