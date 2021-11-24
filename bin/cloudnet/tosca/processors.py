@@ -244,13 +244,18 @@ class Generator(Processor):
             return (
                 tosca_service_template.get_fullname()
                 .replace("./", "")
-                .replace("/", "_")
+                .replace("/", "-")
             )
         else:
             return tosca_service_template.get_filename()
 
     def compute_filename(self, tosca_service_template, normalize=True):
         # Compute the file path.
+        format = self.configuration.get("Generator", "filename-format")
+        if format == "fullname":
+            filename = self.get_filename(tosca_service_template)
+            return filename[:filename.rfind('.')]
+        # else format is shortname
         template_yaml = tosca_service_template.get_yaml()
         metadata = template_yaml.get("metadata")
         if metadata is None:
@@ -273,29 +278,39 @@ class Generator(Processor):
         target_directory = self.create_target_directory()
         # Compute the file path.
         # TODO: call self.compute_filename()
-        template_yaml = self.tosca_service_template.get_yaml()
-        metadata = template_yaml.get("metadata")
-        if metadata is None:
-            metadata = template_yaml
-        template_name = metadata.get("template_name")
-        if template_name is not None:
-            filename = template_name
-            template_version = metadata.get("template_version")
-            if template_version is not None:
-                filename = filename + "-" + str(template_version)
-            if normalize:
-                filename = normalize_name(filename)
-            if extension is not None:
-                filename = filename + ".ext"
-        else:
+        format = self.configuration.get("Generator", "filename-format")
+        if format == "fullname":
             filename = self.get_filename(self.tosca_service_template)
-        if extension != None:
-            filename = filename[: filename.rfind(".")]
+            filename = filename[:filename.rfind(".")]
             if normalize:
                 filename = normalize_name(filename)
-            filepath = target_directory + "/" + filename + extension
-        else:
             filepath = target_directory + "/" + filename
+            if extension != None:
+                filepath += extension
+        else: # else format is shortname
+            template_yaml = self.tosca_service_template.get_yaml()
+            metadata = template_yaml.get("metadata")
+            if metadata == None:
+                metadata = template_yaml
+            template_name = metadata.get("template_name")
+            if template_name != None:
+                filename = template_name
+                template_version = metadata.get("template_version")
+                if template_version != None:
+                    filename = filename + "-" + str(template_version)
+                if normalize:
+                    filename = normalize_name(filename)
+                if extension != None:
+                    filename = filename + ".ext"
+            else:
+                filename = self.get_filename(self.tosca_service_template)
+            if extension != None:
+                filename = filename[:filename.rfind(".")]
+                if normalize:
+                    filename = normalize_name(filename)
+                filepath = target_directory + "/" + filename + extension
+            else:
+                filepath = target_directory + "/" + filename
         # Open the file.
         self.file = open(filepath, "w")
         self.info(filepath + " opened.")

@@ -510,6 +510,19 @@ class AbstractAlloySigGenerator(Generator):
         self, value, value_type_definition, context_error_message, list_sep=" + "
     ):
         if isinstance(value, list):
+            entry_schema = value_type_definition.get("entry_schema")
+            if entry_schema != None:
+                result = None
+                for i, v in enumerate(value):
+                    s = self.stringify_value(v, entry_schema, context_error_message + '[' + str(i) + ']')
+                    s = str(i) + " -> " + s
+                    if result:
+                        result = result + ' + ' + s
+                    else:
+                        result = s
+                if result is None:
+                    result = "none -> none"
+                return result
             result = None
             index = 0
             for v in value:
@@ -585,7 +598,7 @@ class AbstractAlloySigGenerator(Generator):
                         )
                     )
                     result = result + key + "[" + function_arguments + "]"
-                elif key in ["get_operation_output", "token", "get_secret"]:
+                elif key in ["get_operation_output", "get_secret"]:
                     self.warning(
                         context_error_message
                         + ": "
@@ -594,12 +607,12 @@ class AbstractAlloySigGenerator(Generator):
                         key,
                     )
                     result = '"' + key + '[...]"'
-                elif key in ["concat"]:
+                elif key in ["concat", "join", "token"]:
                     self.warning(
                         context_error_message
                         + ": "
                         + key
-                        + " function unsupported by Alloy generator'",
+                        + " intrinsic function unsupported by Alloy generator'",
                         key,
                     )
                     result = '"' + key + '[...]"'
@@ -1071,7 +1084,11 @@ class AbstractAlloySigGenerator(Generator):
                         value = self.stringify_value(
                             constraint_yaml, yaml, ctx_error_msg
                         )
-                    self.generate_call_predicate(name + "." + constraint_name, value)
+                        if constraint_name != "valid_values" \
+                        and not yaml.get("required", True) \
+                        and yaml.get("default") is None:
+                            predicate_prefix = "some " + name + " implies "
+                    self.generate_call_predicate(predicate_prefix + name + "." + constraint_name, value)
         entry_schema_yaml = syntax.get_entry_schema(yaml)
         if entry_schema_yaml:
             # TBR           if yaml.get(TYPE) == 'map':
@@ -1100,7 +1117,7 @@ class AbstractAlloySigGenerator(Generator):
             sep="",
         )
         if parameter_type == "list":
-            parameter_type = parameter_yaml.get("entry_schema", {}).get("type")
+            parameter_type = parameter_yaml.get("entry_schema", {}).get("type", "string")
         elif parameter_type == "map":
             parameter_type = self.get_map_signature(parameter_yaml)
         self.generate(

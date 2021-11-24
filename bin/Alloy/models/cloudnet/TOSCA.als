@@ -180,25 +180,23 @@ pred float.greater_or_equal[value: one float]
 
 pred integer.greater_or_equal[value: one Int]
 {
-  one this implies this >= value
+  this >= value
 }
 
 pred integer.greater_than[value: one Int]
 {
-  one this implies this > value
+  this > value
 }
 
 pred integer.less_or_equal[value: one Int]
 {
-  one this implies this <= value
+  this <= value
 }
 
 pred integer.in_range[lower: one integer, upper: one integer]
 {
-  one this implies {
-    lower <= this
-    this <= upper
-  }
+  lower <= this
+  this <= upper
 }
 
 pred min_length[variable: one String, value: one Int]
@@ -210,13 +208,6 @@ pred max_length[variable: one String, value: one Int]
 {
   // NOTE: Always true because not supported currently.
 }
-
-/*
-pred min_length[variable: set String -> univ, value: one Int]
-{
-  #variable >= value
-}
-*/
 
 //fk added following an error in SOL001 2.8.1 NSD_types: 'constraints: min_length' has been applied to a list in tosca.policies.nfv.NsMonitoring
 pred min_length[variable: seq univ, value: one Int]
@@ -237,6 +228,11 @@ pred boolean.equal[value: one boolean]
 pred string.equal[value: one String]
 {
   this = value
+}
+
+pred equal[variable: seq univ, value: seq univ]
+{
+  variable = value
 }
 
 /*******************************************************************************
@@ -435,12 +431,12 @@ pred TopologyTemplate.with_inputs[args: String -> lone any]
 {
   all input : this.inputs {
     let arg_value=args[input._name_] {
-      one arg_value
+      some arg_value
         implies
           input.set_value[arg_value]
         else
           let default_value=input.default {
-            one default_value
+            some default_value
               implies
                 input.set_value[default_value]
               else
@@ -603,7 +599,7 @@ sig Requirement extends ToscaRole {
   // TOSCA constraints.
   //
   // The source of the relationship is this requirement.
-  one relationship implies relationship.source = this
+  some relationship implies relationship.source = this
 
   // The name of requirement is stored by the node owning this reference.
   no_name[]

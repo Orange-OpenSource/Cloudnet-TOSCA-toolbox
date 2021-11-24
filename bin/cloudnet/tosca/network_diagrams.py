@@ -30,6 +30,9 @@ DEFAULT_CONFIGURATION[NWDIAG] = {
     "linkable_capability_types": ["tosca.capabilities.network.Linkable"],
     # Port capability types.
     "bindable_capability_types": ["tosca.capabilities.network.Bindable"],
+    # Forwarding node types, which are both a port and a network.
+    "forwarding_node_types": [
+    ],
     # Representation of node templates.
     "node_types": {
         "tosca.nodes.network.Network": {
@@ -149,9 +152,8 @@ class NwdiagGenerator(Generator):
             node_type = node_yaml.get(syntax.TYPE)
             node_type_type = self.type_system.merge_type(node_type)
 
-            # TODO: special case for Forwarding node which are both a port and
-            #       a network
-            if node_type == "tosca.nodes.nfv.Forwarding":
+            # Deal with Forwarding nodes which are both a port and a network
+            if node_type in self.configuration.get(NWDIAG, "forwarding_node_types"):
                 # a Forwarding node is a node of its associated Forwarding
                 # network
                 get_network(node_name).nodes[node_name] = node_name
@@ -208,7 +210,7 @@ class NwdiagGenerator(Generator):
             self.generate("{")
             # iterate over all found networks
             for network_name, network in networks.items():
-                self.generate("  network %s {" % network_name)
+                self.generate('  network "%s" {' % network_name)
                 network_node = network.network_node
                 if network_node is None:
                     # this is an external network associated to a network

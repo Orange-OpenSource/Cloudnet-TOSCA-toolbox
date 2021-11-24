@@ -13,17 +13,24 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
-FROM anapsix/alpine-java:latest
+FROM docker.io/alpine:3
+
 MAINTAINER Philippe Merle <Philippe.Merle@inria.fr>
 
-ENV PLANTUML_VERSION 1.2021.0
+ENV PLANTUML_VERSION 1.2021.13
 ENV LANG en_US.UTF-8
+
 RUN apk add --update --no-cache \
-        graphviz \
-        ttf-freefont ttf-droid ttf-droid-nonlatin \
-        curl \
-    && curl -L https://sourceforge.net/projects/plantuml/files/plantuml.${PLANTUML_VERSION}.jar/download -o /plantuml.jar \
+         openjdk8-jre \
+         graphviz \
+         ttf-freefont ttf-droid ttf-droid-nonlatin \
+         curl \
     && apk del curl
+
+#TODO: following doesn't work!
+# curl -L https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar -o /plantuml.jar
+
+COPY plantuml.jar .
 
 # ENTRYPOINT [ "java", "-DPLANTUML_LIMIT_SIZE=50000", "-Xmx1024m", "-jar", "/plantuml.jar" ]
 CMD [ "-h" ]

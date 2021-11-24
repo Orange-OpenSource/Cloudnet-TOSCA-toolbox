@@ -179,7 +179,23 @@ capability_types:
   tosca.capabilities.Node:
     derived_from: tosca.capabilities.Root
 
-  # Section 5.4.3 tosca.capabilities.Container
+  # Section 5.5.4 tosca.capabilities.Network
+  tosca.capabilities.Network:
+    derived_from: tosca.capabilities.Root
+    properties:
+      name:
+        type: string
+        required: false
+
+  # Section 5.5.5 tosca.capabilities.Storage
+  tosca.capabilities.Storage:
+    derived_from: tosca.capabilities.Root
+    properties:
+      name:
+        type: string
+        required: false
+
+  # Section 5.4.3.2 tosca.capabilities.Container
   tosca.capabilities.Container:
     derived_from: tosca.capabilities.Root
     properties:
@@ -204,7 +220,7 @@ capability_types:
         constraints:
           - greater_or_equal: 0 MB
 
-  # Section 5.4.4 tosca.capabilities.Endpoint
+  # Section 5.5.7 tosca.capabilities.Endpoint
   tosca.capabilities.Endpoint:
     derived_from: tosca.capabilities.Root
     properties:
@@ -458,7 +474,6 @@ node_types:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard
 
-
   # Section 5.8.2 tosca.nodes.Compute
   tosca.nodes.Compute:
     derived_from: tosca.nodes.Root
@@ -537,8 +552,7 @@ node_types:
           capability: tosca.capabilities.Container
           node: tosca.nodes.WebServer
           relationship: tosca.relationships.HostedOn
-
-  # Section 5.8.6 tosca.nodes.DBMS
+  # Section 5.9.7 tosca.nodes.DBMS
   tosca.nodes.DBMS:
     derived_from: tosca.nodes.SoftwareComponent
     properties:
@@ -593,12 +607,12 @@ node_types:
         type: scalar-unit.size
         constraints:
           - greater_or_equal: 0 GB
-        required: false
+        required: false # ISSUE: Missed in the spec!
       maxsize:
         type: scalar-unit.size
         constraints:
           - greater_or_equal: 0 GB
-        required: false
+        required: false # ISSUE: Missed in the spec!
     capabilities:
       storage_endpoint:
         type: tosca.capabilities.Endpoint
@@ -607,6 +621,10 @@ node_types:
   tosca.nodes.BlockStorage:
     derived_from: tosca.nodes.Root
     properties:
+      size:
+        type: scalar-unit.size
+        constraints:
+          - greater_or_equal: 1 MB
       volume_id:
         type: string
         required: false
@@ -635,8 +653,13 @@ node_types:
           capability: tosca.capabilities.Container
           node: tosca.nodes.Container.Runtime
           relationship: tosca.relationships.HostedOn
+#TODO: following is not defined in TOSCA 1.0 specification.
+# ISSUE: no relationship type has tosca.capabilities.Storage as valid_target_types!
+# ISSUE: no node type has tosca.capabilities.Storage as capabilities!
+#      - storage:
+#          capability: tosca.capabilities.Storage
 
-  # Section 5.8.12 tosca.nodes.LoadBalancer
+  # Section 5.9.14 tosca.nodes.LoadBalancer
   tosca.nodes.LoadBalancer:
     derived_from: tosca.nodes.Root
     properties:

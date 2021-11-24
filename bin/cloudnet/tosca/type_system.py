@@ -86,6 +86,8 @@ configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
 
 LOGGER = logging.getLogger(__name__)
 
+def is_required(definition):
+    return definition.get(syntax.REQUIRED, True) if isinstance(definition, dict) else True
 
 class TypeSystem(object):
     """
@@ -228,6 +230,9 @@ class TypeSystem(object):
     def get_artifact_type_by_file_ext(self, file_ext):
         return self.artifact_types_by_file_ext.get(file_ext)
 
+    def get_artifact_type_by_filename(self, filename):
+        file_ext = filename[filename.rfind(".")+1:]
+        return self.artifact_types_by_file_ext.get(file_ext)
 
 # TOSCA scalar units.
 
@@ -887,6 +892,36 @@ BASIC_CONSTRAINT_CLAUSES = {
     },
 }
 
+class ToscaFunction(object):
+    def get_return_data_type(self, parameters, type_checker, context_error_message):
+        return None
+
+    def get_template_type(self, attributes_or_properties, parameters, type_checker, context_error_message):
+        topology_template = type_checker.get_topology_template()
+        template_name = parameters[0]
+        template = topology_template.get('node_templates', {}).get(template_name)
+        if template is None:
+            template = topology_template.get('relationship_templates', {}).get(template_name)
+            if template is None:
+                return None
+        merged_template_type = type_checker.type_system.merge_type(type_checker.type_system.get_type_uri(template.get('type')))
+        return merged_template_type.get(attributes_or_properties, {}).get(parameters[1], {}).get('type')
+
+class ToscaGetAttributeFunction(ToscaFunction):
+    def get_return_data_type(self, parameters, type_checker, context_error_message):
+        return self.get_template_type('attributes', parameters, type_checker, context_error_message)
+
+class ToscaGetPropertyFunction(ToscaFunction):
+    def get_return_data_type(self, parameters, type_checker, context_error_message):
+        return self.get_template_type('properties', parameters, type_checker, context_error_message)
+
+#TODO: add all other TOSCA functions such as concat, join, token, etc.
+TOSCA_FUNCTIONS = {
+    "get_attribute": ToscaGetAttributeFunction(),
+    "get_property": ToscaGetPropertyFunction(),
+}
+
+
 REFINE_OR_NEW = None
 PREVIOUSLY_UNDEFINED = {}
 
@@ -1147,7 +1182,7 @@ class TypeChecker(Checker):
         return self.tosca_service_template.get_yaml().get(syntax.TOPOLOGY_TEMPLATE, {})
 
     def unchecked(self, definition, keyword, context_error_message):
-        value = definition.get(keyword)
+        value = definition.get(keyword) if isinstance(definition, dict) else None
         if value is not None:
             self.error(
                 context_error_message
@@ -1232,7 +1267,7 @@ class TypeChecker(Checker):
         previous_definition,
         context_error_message,
     ):
-        definition_type_name = definition.get(keyword)
+        definition_type_name = definition.get(keyword) if isinstance(definition, dict) else definition
         previous_definition_type_name = previous_definition.get(keyword)
         checked = self.check_type(
             type_kinds,
@@ -1514,8 +1549,8 @@ class TypeChecker(Checker):
         )
         # check description - nothing to do
         # check default
-        default = attribute_definition.get(syntax.DEFAULT)
         if default is not None:
+            default = attribute_definition.get(syntax.DEFAULT)
             self.check_value(
                 default,
                 attribute_definition,
@@ -1541,7 +1576,7 @@ class TypeChecker(Checker):
     def check_schema_definition(
         self, keyword, definition, previous_definition, context_error_message
     ):
-        schema_definition = definition.get(keyword)
+        schema_definition = definition.get(keyword) if isinstance(definition, dict) else None
         if schema_definition is None:
             return
 
@@ -1636,9 +1671,8 @@ class TypeChecker(Checker):
                 return None  # stop infinite loop when derived_from is a cycle relation
 
     def get_type_checker(self, definition, previous_definition, context_error_message):
-        data_type_name = definition.get(syntax.TYPE) or previous_definition.get(
-            syntax.TYPE
-        )
+        definition = merge_dict(definition, previous_definition)
+        data_type_name = syntax.get_type(definition)
         if data_type_name is None:
             # TBR            self.error(context_error_message + ' - type expected')
             return None
@@ -1689,8 +1723,8 @@ class TypeChecker(Checker):
             return
 
         if not type_checker.check_type(value, self, context_error_message):
-            # default_value does not match type_checker
-            return  # don't check constraints
+            # value does not match type_checker
+            return # don't check constraints
 
         def evaluate_constraints(constraint_clauses):
             def get_constraint_clause_checker(type_name, constraint_clause_checkers):
@@ -1767,12 +1801,8 @@ class TypeChecker(Checker):
                         )
 
         # check that value respects all constraint clauses of the definition type
-        data_type_name = definition.get(syntax.TYPE) or previous_definition.get(
-            syntax.TYPE
-        )
-        data_type = self.type_system.merge_type(
-            self.type_system.get_type_uri(data_type_name)
-        )
+        data_type_name = syntax.get_type(definition) or syntax.get_type(previous_definition)
+        data_type = self.type_system.merge_type(self.type_system.get_type_uri(data_type_name))
         evaluate_constraints(data_type.get(syntax.CONSTRAINTS, []))
 
         # check that value respects all constraint clauses of both definition and previous_definition
@@ -1836,7 +1866,7 @@ class TypeChecker(Checker):
 
     # TBR?
     def check_constraint_clauses(self, definition, type_checker, context_error_message):
-        constraints = definition.get(syntax.CONSTRAINTS)
+        constraints = definition.get(syntax.CONSTRAINTS) if isinstance(definition, dict) else None
         if constraints is not None:
             self.check_list_of_constraint_clauses(
                 constraints,
@@ -1862,9 +1892,8 @@ class TypeChecker(Checker):
         # check description - nothing to do
         # check required
         if previous_property_definition is not PREVIOUSLY_UNDEFINED:
-            if (
-                previous_property_definition.get(syntax.REQUIRED, True) is True
-                and property_definition.get(syntax.REQUIRED, True) is False
+            if (is_required(previous_property_definition)
+                and is_required(property_definition) is False
             ):
                 self.error(
                     context_error_message
@@ -1876,8 +1905,8 @@ class TypeChecker(Checker):
                     property_definition,
                 )
         # check default
-        default = property_definition.get(syntax.DEFAULT)
-        if default is not None:
+        if 'default' in property_definition:
+            default = property_definition.get(syntax.DEFAULT)
             self.check_value(
                 default,
                 property_definition,
@@ -2508,9 +2537,6 @@ class TypeChecker(Checker):
         previous_artifact_definition,
         context_error_message,
     ):
-        def get_file_ext(a_file):
-            return a_file[a_file.rfind(".") + 1 :]
-
         # if file and no type then try to find an appropriate type
         def check_file(file, context_error_message):
             if (
@@ -2521,9 +2547,8 @@ class TypeChecker(Checker):
             ):
                 self.info(context_error_message + ": " + file + " - artifact found")
             else:
-                file_ext = get_file_ext(file)
-                artifact_type_name = self.type_system.get_artifact_type_by_file_ext(
-                    file_ext
+                artifact_type_name = self.type_system.get_artifact_type_by_filename(
+                    file
                 )
                 if artifact_type_name is None:
                     self.warning(
@@ -2806,9 +2831,9 @@ class TypeChecker(Checker):
                 context_error_message,
             )
             # check operation_name
-            operation_definition = interface_type.get(syntax.OPERATIONS, {}).get(
-                operation_name
-            )
+            operation_definition = syntax.get_operations(interface_type).get(
+                syntax.OPERATIONS, {}
+            ).get(operation_name)
             if operation_definition is None:
                 self.error(
                     context_error_message
@@ -3209,6 +3234,9 @@ class TypeChecker(Checker):
         derived_from_policy_type,
         context_error_message,
     ):
+        self.reserved_function_keywords = {
+            'SELF': { 'type': policy_type_name }
+        }
         # check version - nothing to do
         # check metadata - nothing to do
         # check description - nothing to do
@@ -3229,6 +3257,18 @@ class TypeChecker(Checker):
             derived_from_policy_type,
             context_error_message,
         )
+        self.current_targets = []
+        self.current_targets_activity_type = []
+        self.current_targets_condition_type = []
+        targets = policy_type.get(syntax.TARGETS)
+        if targets != None:
+            self.current_targets = targets
+            for idx, target in enumerate(targets):
+                current_target_type = self.type_system.merge_type(
+                    self.type_system.get_type_uri(target)
+                )
+                self.current_targets_activity_type.append(current_target_type)
+                self.current_targets_condition_type.append(current_target_type)
         # check triggers
         self.iterate_over_map_of_definitions(
             self.check_trigger_definition,
@@ -3275,7 +3315,7 @@ class TypeChecker(Checker):
                 )
             idx += 1
         # check outputs
-        iterate_over_map(self.check_parameter_definition, syntax.OUTPUTS)
+        iterate_over_map(self.check_output_parameter_definition, syntax.OUTPUTS)
         # check substitution_mappings
         substitution_mapping = topology_template.get(syntax.SUBSTITUTION_MAPPINGS)
         if substitution_mapping is not None:
@@ -3386,9 +3426,8 @@ class TypeChecker(Checker):
         return checked, type_name, the_type
 
     def has_no_default_value(self, definition):
-        default = definition.get(syntax.DEFAULT)
-        if default != None:
-            return False  # default is set
+        if "default" in definition:
+            return False # default is set
         # default is not set
         # get the type definition
         type_def = self.type_system.merge_type(definition.get(syntax.TYPE))
@@ -3398,9 +3437,9 @@ class TypeChecker(Checker):
         # the type has some properties
         # iterate over all properties
         for property_name, property_definition in type_properties.items():
-            if property_definition.get(
-                syntax.REQUIRED, True
-            ) and self.has_no_default_value(property_definition):
+            if (is_required(property_definition)
+                and self.has_no_default_value(property_definition)
+            ):
                 return True  # this is a required property without a default value
         # all required properties have a default value
         return False
@@ -3519,8 +3558,8 @@ class TypeChecker(Checker):
         # check description - nothing to do
         # check required - nothing to do
         # check default
-        default = parameter_definition.get(syntax.DEFAULT)
-        if default is not None:
+        if "default" in parameter_definition:
+            default = parameter_definition.get(syntax.DEFAULT)
             self.check_value(
                 default,
                 parameter_definition,
@@ -3546,14 +3585,47 @@ class TypeChecker(Checker):
         )
         # check metadata - nothing to do
         # check value
-        value = parameter_definition.get(syntax.VALUE)
-        if value is not None:
+        if "value" in parameter_definition:
+            value = parameter_definition.get(syntax.VALUE)
             self.check_value_assignment(
                 syntax.VALUE,
                 value,
                 parameter_definition,
                 context_error_message + ":" + syntax.VALUE,
             )
+
+    def check_output_parameter_definition(
+        self,
+        parameter_name,
+        parameter_definition,
+        context_error_message
+    ):
+        if parameter_definition.get(syntax.TYPE) is None:
+            value = parameter_definition.get('value')
+            if value != None:
+                # when type undefined and value defined then the output 
+                # parameter inherits the data type of the assigned value
+                if isinstance(value, dict):
+                    for tosca_function_name, tosca_function_parameters in value.items():
+                        tosca_function = TOSCA_FUNCTIONS.get(tosca_function_name)
+                        if tosca_function != None:
+                            value_type = tosca_function.get_return_data_type(
+                                                tosca_function_parameters,
+                                                self,
+                                                context_error_message + ':value'
+                                            )
+                            self.info(
+                                "INJECT %s.type: %s"
+                                % (context_error_message, value_type)
+                            )
+                            parameter_definition['type'] = value_type
+                        break
+
+        self.check_parameter_definition(
+            parameter_name,
+            parameter_definition,
+            context_error_message
+        )
 
     def iterate_over_map_of_assignments(
         self,
@@ -3616,6 +3688,56 @@ class TypeChecker(Checker):
 
                 return
 
+            if 'join' in value:
+                parameters = value['join']
+                # check number of parameters
+                if len(parameters) not in [1, 2]:
+                    self.error(context_error_message + ': ' + str(value) + ' - one or two parameters expected')
+                else:
+                    # check the first mandatory parameter
+                    expected_type = {
+                        'type': 'list',
+                        'entry_schema': {
+                            'type': 'string'
+                        },
+                    }
+                    self.check_value_assignment('join', parameters[0], expected_type, context_error_message + ':join[0]')
+
+                    # check the second optional parameter
+                    if len(parameters) == 2 and not isinstance(parameters[1], str):
+                        self.error(context_error_message + ':join[1]: ' + str(parameters[1]) + ' - string expected')
+
+                # check that definition type is a string
+                def_type = definition.get(syntax.TYPE)
+                if def_type != None and not self.type_system.is_derived_from('string', def_type):
+                    self.error(context_error_message + ': ' + str(value) + ' - ' + def_type + ' type expected')
+                    return
+
+                return
+
+            if 'token' in value:
+                parameters = value['token']
+                # check number of parameters
+                if len(parameters) != 3:
+                    self.error(context_error_message + ': ' + str(value) + ' - three parameters expected')
+                else:
+                    # check the first mandatory parameter
+                    self.check_value_assignment('token', parameters[0], {'type': 'string'}, context_error_message + ':token[0]')
+                    # check the second mandatory parameter
+                    if not isinstance(parameters[1], str):
+                        self.error(context_error_message + ':token[1]: ' + str(parameters[1]) + ' - string expected')
+                    # check the third mandatory parameter
+                    if not isinstance(parameters[2], int):
+                        self.error(context_error_message + ':token[2]: ' + str(parameters[2]) + ' - integer expected')
+
+                # check that definition type is a string
+                def_type = definition.get(syntax.TYPE)
+                if def_type != None and not self.type_system.is_derived_from('string', def_type):
+                    self.error(context_error_message + ': ' + str(value) + ' - ' + def_type + ' type expected')
+                    return
+
+                return
+
             if syntax.GET_ARTIFACT in value:
                 parameters = value[syntax.GET_ARTIFACT]
                 if not isinstance(parameters, list):
@@ -3658,6 +3780,16 @@ class TypeChecker(Checker):
                             + " reserved keyword undefined",
                             entity_name,
                         )
+                    if entity_template == "UNKNOWN":
+                        self.warning(
+                            context_error_message
+                            + ': '
+                            + str(value)
+                            + ' - '
+                            + entity_name
+                            + ' unknown, then no type checking'
+                        )
+                        return
                 else:
                     entity_template = topology_template.get(
                         syntax.NODE_TEMPLATES, {}
@@ -3748,6 +3880,9 @@ class TypeChecker(Checker):
                             + " reserved keyword undefined",
                             entity_name,
                         )
+                        return
+                    if entity == "UNKNOWN":
+                        self.warning(context_error_message + ': ' + str(value) + ' - ' + entity_name + ' unknown, then no type checking')
                         return
                 else:
                     entity = topology_template.get(syntax.NODE_TEMPLATES, {}).get(
@@ -3918,9 +4053,9 @@ class TypeChecker(Checker):
                 # check if the assigned definition is required then the assigning attribute is required
                 if (
                     attribute_value is None
-                    and value_type != None
-                    and definition.get(syntax.REQUIRED, True)
-                    and attribute_definition.get(syntax.REQUIRED, True) is False
+                    and value_type is not None
+                    and is_required(definition)
+                    and is_required(attribute_definition) is False
                 ):
                     self.warning(
                         context_error_message
@@ -3966,6 +4101,9 @@ class TypeChecker(Checker):
                             + " reserved keyword undefined",
                             entity_name,
                         )
+                        return
+                    if entity == "UNKNOWN":
+                        self.warning(context_error_message + ': ' + str(value) + ' - ' + entity_name + ' unknown, then no type checking')
                         return
                 else:
                     entity = topology_template.get(syntax.NODE_TEMPLATES, {}).get(
@@ -4027,7 +4165,7 @@ class TypeChecker(Checker):
                             return
                         property_name = parameters[2]
                         property_definition = capability_definition_type.get(
-                            syntax.PROPERTY, {}
+                            syntax.PROPERTIES, {}
                         ).get(property_name)
                         if property_definition is None:
                             self.error(
@@ -4042,7 +4180,7 @@ class TypeChecker(Checker):
                             return
                         if capability_value != None:
                             property_value = capability_value.get(
-                                syntax.PROPERTY, {}
+                                syntax.PROPERTIES, {}
                             ).get(property_name)
                     else:
                         requirement_definition = entity_type.get(
@@ -4156,7 +4294,7 @@ class TypeChecker(Checker):
                             property_value = property_value.get(parameter)
 
                 property_type = property_definition.get(syntax.TYPE)
-                value_type = definition.get(syntax.TYPE)
+                value_type = syntax.get_type(definition)
                 if value_type != None and not self.type_system.is_derived_from(
                     property_type, value_type
                 ):
@@ -4175,9 +4313,9 @@ class TypeChecker(Checker):
                 # check if the assigned definition is required then the assigning property is required
                 if (
                     property_value is None
-                    and value_type != None
+                    and value_type is not None
                     and definition.get(syntax.REQUIRED, True)
-                    and property_definition.get(syntax.REQUIRED, True) is False
+                    and is_required(property_definition) is False
                 ):
                     self.warning(
                         context_error_message
@@ -4262,7 +4400,7 @@ class TypeChecker(Checker):
                             return
 
                 input_type = input_definition.get(syntax.TYPE)
-                value_type = definition.get(syntax.TYPE)
+                value_type = syntax.get_type(definition)
                 if value_type is not None and not self.type_system.is_derived_from(
                     input_type, value_type
                 ):
@@ -4296,6 +4434,10 @@ class TypeChecker(Checker):
                 return
 
         self.check_value(value, definition, {}, context_error_message)
+        if 'default' in definition:
+            default = definition.get(syntax.DEFAULT)
+            if value == default:
+                self.warning(context_error_message + ': ' + str(value) + ' - useless assignment as the value equals to the defined default value')
 
     def check_property_assignment(
         self,
@@ -4323,6 +4465,8 @@ class TypeChecker(Checker):
             if value is not None:
                 parameter_assignment = value
             # TODO: check other keynames like type, etc.
+        elif len(parameter_definition) == 0:
+            parameter_definition = { "type": "string"}
         self.check_value_assignment(
             parameter_name,
             parameter_assignment,
@@ -4355,7 +4499,7 @@ class TypeChecker(Checker):
         if isinstance(capability_definition, str):
             capability_definition = {"type": capability_definition}
         checked, capability_type_name, capability_type = self.check_type_in_definition(
-            "capability", syntax.TYPE, capability_definition, {}, context_error_message
+            "capability", syntax.TYPE, capability_definition, capability_definition, context_error_message
         )
         # check properties
         self.iterate_over_map_of_assignments(
@@ -5379,15 +5523,21 @@ class TypeChecker(Checker):
         self, relationship_name, relationship_template, context_error_message
     ):
         # set values of reserved function keywords
-        self.reserved_function_keywords = {"SELF": relationship_template}
+        self.reserved_function_keywords = {
+            "SELF": relationship_template,
+            "TARGET": "UNKNOWN",
+            "SOURCE": "UNKNOWN"
+        }
         # check type
-        (
-            checked,
-            relationship_type_name,
-            relationship_type,
-        ) = self.check_type_in_template(
-            "relationship", relationship_template, syntax.TYPE, context_error_message
+        checked, relationship_type_name, relationship_type = (
+            self.check_type_in_template(
+                'relationship',
+                relationship_template,
+                syntax.TYPE,
+                context_error_message
+            )
         )
+
         # check description - nothing to do
         # check metadata - nothing to do
         # check properties
@@ -5502,6 +5652,7 @@ class TypeChecker(Checker):
         checked, policy_type_name, policy_type = self.check_type_in_template(
             "policy", policy_definition, syntax.TYPE, context_error_message
         )
+        policy_type_targets = policy_type.get(syntax.TARGETS)
         # check description - nothing to do
         # check metadata - nothing to do
         # check properties
@@ -5524,7 +5675,6 @@ class TypeChecker(Checker):
         if targets is not None:
             self.current_targets = targets
             topology_template = self.get_topology_template()
-            policy_type_targets = policy_type.get(syntax.TARGETS)
             idx = 0
             for target in targets:
                 cem = (
@@ -5574,6 +5724,10 @@ class TypeChecker(Checker):
                                 target,
                             )
                 idx += 1
+        else: # no targets
+            if policy_type_targets != None and len(policy_type_targets) > 0:
+                self.error(context_error_message + ' - no targets but ' + array_to_string_with_or_separator(policy_type_targets) + ' expected')
+
         # check triggers
         self.iterate_over_map_of_definitions(
             self.check_trigger_definition,
@@ -5733,8 +5887,15 @@ class TypeChecker(Checker):
                     extended_notation = True
 
             # check constraint
+            def check_constraint(constraint, cem):
+                if isinstance(constraint, list):
+                    for item in constraint:
+                        self.check_condition_clause_definition(item, cem)
+                else:
+                    self.check_condition_clause_definition(constraint, cem)
+                    
             self.check_keyword(
-                condition, "constraint", self.check_condition_clause_definition, cem
+                condition, "constraint", check_constraint, cem
             )
             remove_keyword("constraint")
             # check period
@@ -5772,18 +5933,13 @@ class TypeChecker(Checker):
                 # check the short notation
                 self.check_condition_clause_definition(condition, cem)
 
-        # check action
-        self.iterate_over_list(
-            trigger_definition,
-            "action",
-            self.check_activity_definition,
-            context_error_message,
-        )
-
         # restore current_targets and current_targets_*_type
         self.current_targets = previous_targets
         self.current_targets_activity_type = previous_targets_activity_type
         self.current_targets_condition_type = previous_targets_condition_type
+
+        # check action
+        self.iterate_over_list(trigger_definition, 'action', self.check_activity_definition, context_error_message)
 
     def check_substitution_mapping(self, substitution_mapping, context_error_message):
 
@@ -5850,10 +6006,7 @@ class TypeChecker(Checker):
         # check that all properties are mapped
 
         def check_ummapped_property_definition(property_name, property_definition):
-            if (
-                property_definition.get(syntax.REQUIRED, True)
-                and property_definition.get(syntax.DEFAULT) is None
-            ):
+            if is_required(property_definition) and not "default" in property_definition:
                 # produce a warning for each unmmapped required property without default
                 return self.info, "required: true, no default value"
             return None, None
@@ -5997,8 +6150,8 @@ class TypeChecker(Checker):
                 return
 
             # check if the mapped input is required but the property is not required
-            if property_definition.get(
-                syntax.REQUIRED, True
+            if is_required(
+                property_definition
             ) is False and input_definition.get(syntax.REQUIRED, True):
                 self.warning(
                     cem
@@ -6127,6 +6280,14 @@ class TypeChecker(Checker):
         def check_mapping_as_list(mapping, context_error_message):
             node_template_name = mapping[0]
             node_template_requirement_name = mapping[1]
+            # check occurrences
+            occurrences = requirement_definition.get(syntax.OCCURRENCES, [1, 1])
+            if occurrences == [0, 0]:
+                self.error(context_error_message + ": " + str(mapping) + " - requirement mapping unexpected as defined occurrences are [0, 0]")
+                # mark that the requirement <node_template_name>.<node_template_reference_name> is connected
+                self.all_the_node_template_requirements.get(node_template_name + '.' + node_template_requirement_name).connectIt()
+                return
+                
             node_template = topology_template.get(syntax.NODE_TEMPLATES, {}).get(
                 node_template_name
             )

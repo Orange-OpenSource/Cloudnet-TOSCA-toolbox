@@ -37,6 +37,7 @@ import cloudnet.tosca.importers as importers
 import cloudnet.tosca.processors as processors
 from cloudnet.tosca.alloy import AlloyGenerator
 from cloudnet.tosca.hot import HOTGenerator
+from cloudnet.tosca.declarative_workflows import DeclarativeWorkflowGenerator
 from cloudnet.tosca.network_diagrams import NwdiagGenerator
 from cloudnet.tosca.syntax import SyntaxChecker
 from cloudnet.tosca.tosca_diagrams import ToscaDiagramGenerator
@@ -147,6 +148,7 @@ def main(argv):
         # Generate Alloy specifications, UML2, network, TOSCA diagrams and Heat templates.
         type_checker.file = None
         for generator_class in [
+            DeclarativeWorkflowGenerator,
             AlloyGenerator,
             PlantUMLGenerator,
             NwdiagGenerator,

@@ -1170,7 +1170,7 @@ data_types:
           - valid_values: [ null ]
       p-valid_values-null-1:
         type: 'null'
-        default: null # CORRECT: valid_values succeeded.
+        default: null # ERROR: valid_values failed.
         constraints:
           - valid_values: [ ]
       p-valid_values-version-0:
@@ -2702,12 +2702,6 @@ node_types:
         # ERROR: upper occurrence can not be greater than previous upper occurrence!
         occurrences: [ 1, 20 ]
 
-  NodeTypeRequirementsCapabilityMissed:
-    requirements:
-      - r1: {
-          # ERROR: capability missed!
-        }
-
   NodeTypeRequirementsCapabilityUndefinedType:
     requirements:
       - r1:
@@ -2754,6 +2748,7 @@ node_types:
     derived_from: NodeType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           # ERROR: incompatible type with previous declared type!
           node: tosca.nodes.Root
 
@@ -2783,6 +2778,7 @@ node_types:
     derived_from: NodeType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           # ERROR: incompatible type with previous declared type!
           relationship: tosca.relationships.Root
 
@@ -2821,6 +2817,7 @@ node_types:
     derived_from: NodeType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           relationship:
             # ERROR: incompatible type with previous declared type!
             type: tosca.relationships.Root
@@ -2846,6 +2843,7 @@ node_types:
     derived_from: NodeType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           relationship:
             # type is set to RelationshipType into NodeType.
             interfaces:
@@ -2878,6 +2876,7 @@ node_types:
     derived_from: NodeType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           relationship:
             interfaces:
               i1:
@@ -2914,6 +2913,7 @@ node_types:
     derived_from: NodeType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           relationship:
             type: RelationshipType
             interfaces:
@@ -2968,6 +2968,7 @@ node_types:
     derived_from: NodeType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           relationship:
             interfaces:
               i1:
@@ -3072,6 +3073,7 @@ node_types:
     derived_from: NodeType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           # ERROR: lower occurrence can not be less than previous lower occurrence!
           occurrences: [ 0, 1 ]
 
@@ -3079,6 +3081,7 @@ node_types:
     derived_from: NodeType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           # ERROR: upper occurrence can not be greater than previous upper occurrence!
           occurrences: [ 1, UNBOUNDED ]
 
@@ -4005,12 +4008,6 @@ group_types:
         # ERROR: upper occurrence can not be greater than previous upper occurrence!
         occurrences: [ 1, 20 ]
 
-  GroupTypeRequirementsCapabilityMissed:
-    requirements:
-      - r1: {
-          # ERROR: capability missed!
-        }
-
   GroupTypeRequirementsCapabilityUndefinedType:
     requirements:
       - r1:
@@ -4088,6 +4085,7 @@ group_types:
     derived_from: GroupType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           # ERROR: incompatible type with previous declared type!
           relationship: tosca.relationships.Root
 
@@ -4126,6 +4124,7 @@ group_types:
     derived_from: GroupType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           relationship:
             # ERROR: incompatible type with previous declared type!
             type: tosca.relationships.Root
@@ -4151,6 +4150,7 @@ group_types:
     derived_from: GroupType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           relationship:
             # type is set to RelationshipType into GroupType.
             interfaces:
@@ -4183,6 +4183,7 @@ group_types:
     derived_from: GroupType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           relationship:
             interfaces:
               i1:
@@ -4219,6 +4220,7 @@ group_types:
     derived_from: GroupType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           relationship:
             type: RelationshipType
             interfaces:
@@ -4273,6 +4275,7 @@ group_types:
     derived_from: GroupType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           relationship:
             interfaces:
               i1:
@@ -4377,6 +4380,7 @@ group_types:
     derived_from: GroupType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           # ERROR: lower occurrence can not be less than previous lower occurrence!
           occurrences: [ 0, 1 ]
 
@@ -4384,6 +4388,7 @@ group_types:
     derived_from: GroupType
     requirements:
       - r1:
+          capability: CapabilityType # required by TOSCA grammar
           # ERROR: upper occurrence can not be greater than previous upper occurrence!
           occurrences: [ 1, UNBOUNDED ]
 
@@ -4722,6 +4727,7 @@ topology_template:
         properties:
           undefined-property: # ERROR: undefined in NodeType!
           p1: # ERROR: string expected!
+        # ERROR: no targets but NodeType or GroupType expected!
 
   outputs:
     o1:

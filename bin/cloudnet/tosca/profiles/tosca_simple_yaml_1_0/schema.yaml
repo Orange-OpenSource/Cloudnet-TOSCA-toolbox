@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -327,7 +327,7 @@ definitions:
               - type: 'null'
               - type: object
                 additionalProperties:
-                  $ref: "#/definitions/property_definition"
+                  $ref: "#/definitions/parameter_definition"
         additionalProperties: false
 
   operation_definition_in_templates:
@@ -360,7 +360,7 @@ definitions:
           - type: 'null'
           - type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
+              $ref: "#/definitions/parameter_definition"
     additionalProperties:
       $ref: "#/definitions/operation_definition_in_types"
 
@@ -463,8 +463,7 @@ definitions:
           occurrences:
             $ref: "#/definitions/occurrences"
         additionalProperties: false
-#       required: [ capability ] # type is required but can be set into the parent definition.
-        # So type requirement is checked by TypeChecker.
+        required: [ capability ]
 
   # Section 3.7.4
   artifact_type:
@@ -507,7 +506,7 @@ definitions:
           - type: 'null'
           - type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
+              $ref: "#/definitions/parameter_definition"
       additionalProperties:
         $ref: "#/definitions/operation_definition_in_types"
 

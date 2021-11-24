@@ -428,8 +428,7 @@ definitions:
           occurrences:
             $ref: "#/definitions/range_of_integers"
         additionalProperties: false
-#       required: [ capability ] # type is required but can be set into the parent definition.
-        # So type requirement is checked by TypeChecker.
+        required: [ capability ]
 
 # Section 4.3.5.6 Requirement assignment
 
@@ -1274,19 +1273,25 @@ definitions:
         type: string
       event:
         type: string
-      schedule:
-        type: string
       target_filter:
         $ref: "#/definitions/event_filter_definition"
       condition:
         oneOf:
           # condition short notation
-          - $ref: "#/definitions/condition_clause_definition"
+          - type: array
+            items:
+              $ref: "#/definitions/condition_clause_definition"
           # condition extended notation
           - type: object
             properties:
               constraint:
-                $ref: "#/definitions/condition_clause_definition"
+                oneOf:
+                  - $ref: "#/definitions/condition_clause_definition"
+                  #PM: Added support for multiple conditions following the TOSCA TC
+                  #PM: positive reply to the ETSI NFV SOL 001 TC question about this
+                  - type: array
+                    items:
+                      $ref: "#/definitions/condition_clause_definition"
               period:
                 $ref: "#/definitions/scalar_unit"
               evaluations:
@@ -1427,7 +1432,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
+              $ref: "#/definitions/parameter_definition"
           preconditions:
             type: array
             items:
@@ -1449,7 +1454,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
+              $ref: "#/definitions/parameter_definition"
           preconditions:
             type: array
             items:
