@@ -252,7 +252,7 @@ class PlantUMLGenerator(Generator):
                     if isinstance(implementation, str):
                         primary_artifact_name = implementation
                     elif isinstance(implementation, dict):
-                        primary_artifact_name = primary_artifact_name.get("primary")
+                        primary_artifact_name = implementation.get("primary")
                         if isinstance(primary_artifact_name, dict):
                             primary_artifact_name = primary_artifact_name.get("file")
                 else:
@@ -1265,12 +1265,8 @@ class PlantUMLGenerator(Generator):
                             self.generate(
                                 "node_",
                                 normalize_name(node_template_name),
-                                ' .',
-                                direction,
-                                + '.> node_',
+                                ' .' + direction + '.> node_',
                                 normalize_name(requirement_name),
-                                '" .' + direction + ".> node_",
-                                normalize_name(requirement_node),
                                 " : <<",
                                 short_type_name(requirement_relationship_type),
                                 ">>",
