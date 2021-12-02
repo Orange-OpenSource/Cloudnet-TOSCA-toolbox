@@ -9,10 +9,7 @@
 # the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
 # or see the "LICENSE-2.0.txt" file for more details.
 #
-# Author:
-#    - Frédéric Klamm <frederic.klamm@orange.com>
-#    - Philippe Merle <philippe.merle@inria.fr>
-
+# Author: Philippe Merle <philippe.merle@inria.fr>
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
@@ -32,11 +29,21 @@ description: OASIS TOSCA 1.0 os01 normative types
 
 data_types:
 
-  # Section 5.2.1 tosca.datatypes.Root
+  # Section 5.3.1 tosca.datatypes.Root
   tosca.datatypes.Root:
     description: The TOSCA root Data Type all other TOSCA base Data Types derive from
 
-  # Section 5.2.2 tosca.datatypes.Credential
+  # Section 5.3.2 tosca.datatypes.json
+  tosca.datatypes.json:
+    derived_from: string
+    description: The TOSCA data Type used to define a string that contains data in the JavaScript Object Notation (JSON) format
+
+  # Section 5.3.3 tosca.datatypes.xml
+  tosca.datatypes.xml:
+    derived_from: string
+    description: The TOSCA data Type used to define a string that contains data in the Extensible Markup Language (XML) format
+
+  # Section 5.3.4 tosca.datatypes.Credential
   tosca.datatypes.Credential:
     derived_from: tosca.datatypes.Root
     description: The TOSCA data Type used when describing authorization credentials used to access network accessible resources
@@ -63,7 +70,21 @@ data_types:
         type: string
         required: false
 
-  # Section 5.2.3 tosca.datatypes.network.NetworkInfo
+  # Section 5.3.5 tosca.datatypes.TimeInterval
+  tosca.datatypes.TimeInterval:
+    derived_from: tosca.datatypes.Root
+    description: The TOSCA data Type used when describing a period of time using the YAML ISO 8601 format to declare the start and end times
+    properties:
+      start_time:
+        description: The inclusive start time for the time interval
+        type: timestamp
+        required: true
+      end_time:
+        description: The inclusive end time for the time interval
+        type: timestamp
+        required: true
+
+  # Section 5.3.6 tosca.datatypes.network.NetworkInfo
   tosca.datatypes.network.NetworkInfo:
     derived_from: tosca.datatypes.Root
     properties:
@@ -76,7 +97,7 @@ data_types:
         entry_schema:
           type: string
 
-  # Section 5.2.4 tosca.datatypes.network.PortInfo
+  # Section 5.3.7 tosca.datatypes.network.PortInfo
   tosca.datatypes.network.PortInfo:
     derived_from: tosca.datatypes.Root
     properties:
@@ -93,13 +114,13 @@ data_types:
         entry_schema:
           type: string
 
-  # Section 5.2.5 tosca.datatypes.network.PortDef
+  # Section 5.3.8 tosca.datatypes.network.PortDef
   tosca.datatypes.network.PortDef:
     derived_from: integer
     constraints:
       - in_range: [ 1, 65535 ]
 
-  # Section 5.2.6 tosca.datatypes.network.PortSpec
+  # Section 5.3.9 tosca.datatypes.network.PortSpec
   tosca.datatypes.network.PortSpec:
     derived_from: tosca.datatypes.Root
     properties:
@@ -128,41 +149,41 @@ data_types:
 
 artifact_types:
 
-  # Section 5.3.1 tosca.artifacts.Root
+  # Section 5.4.1 tosca.artifacts.Root
   tosca.artifacts.Root:
     description: The TOSCA Artifact Type all other TOSCA Artifact Types derive from
 
-  # Section 5.3.2 tosca.artifacts.File
+  # Section 5.4.2 tosca.artifacts.File
   tosca.artifacts.File:
     derived_from: tosca.artifacts.Root
 
-  # Section 5.3.3.1 tosca.artifacts.Deployment
+  # Section 5.4.3.1 tosca.artifacts.Deployment
   tosca.artifacts.Deployment:
     derived_from: tosca.artifacts.Root
     description: TOSCA base type for deployment artifacts
 
-  # Section 5.3.3.3 tosca.artifacts.Deployment.Image
+  # Section 5.4.3.2 tosca.artifacts.Deployment.Image
   tosca.artifacts.Deployment.Image:
     derived_from: tosca.artifacts.Deployment
 
-  # Section 5.3.3.4 tosca.artifacts.Deployment.Image.VM
+  # Section 5.4.3.3 tosca.artifacts.Deployment.Image.VM
   tosca.artifacts.Deployment.Image.VM:
     derived_from: tosca.artifacts.Deployment.Image
     description: Virtual Machine (VM) Image
 
-  # Section 5.3.4.1 tosca.artifacts.Implementation
+  # Section 5.4.4.1 tosca.artifacts.Implementation
   tosca.artifacts.Implementation:
     derived_from: tosca.artifacts.Root
     description: TOSCA base type for implementation artifacts
 
-  # Section 5.3.4.3 tosca.artifacts.Implementation.Bash
+  # Section 5.4.4.2 tosca.artifacts.Implementation.Bash
   tosca.artifacts.Implementation.Bash:
     derived_from: tosca.artifacts.Implementation
     description: Script artifact for the Unix Bash shell
     mime_type: application/x-sh
     file_ext: [ sh ]
 
-  # Section 5.3.4.4 tosca.artifacts.Implementation.Python
+  # Section 5.4.4.3 tosca.artifacts.Implementation.Python
   tosca.artifacts.Implementation.Python:
     derived_from: tosca.artifacts.Implementation
     description: Artifact for the interpreted Python language
@@ -171,11 +192,11 @@ artifact_types:
 
 capability_types:
 
-  # Section 5.4.1 tosca.capabilities.Root
+  # Section 5.5.1 tosca.capabilities.Root
   tosca.capabilities.Root:
     description: The TOSCA root Capability Type all other TOSCA base Capability Types derive from
 
-  # Section 5.4.2 tosca.capabilities.Node
+  # Section 5.5.2 tosca.capabilities.Node
   tosca.capabilities.Node:
     derived_from: tosca.capabilities.Root
 
@@ -262,7 +283,7 @@ capability_types:
       ip_address:
         type: string
 
-  # Section 5.4.5 tosca.capabilities.Endpoint.Public
+  # Section 5.5.8 tosca.capabilities.Endpoint.Public
   tosca.capabilities.Endpoint.Public:
     derived_from: tosca.capabilities.Endpoint
     properties:
@@ -283,7 +304,7 @@ capability_types:
         required: false
         status: experimental
 
-  # Section 5.4.6 tosca.capabilities.Endpoint.Admin
+  # Section 5.5.9 tosca.capabilities.Endpoint.Admin
   tosca.capabilities.Endpoint.Admin:
     derived_from: tosca.capabilities.Endpoint
     # Change Endpoint secure indicator to true from its default of false
@@ -294,15 +315,15 @@ capability_types:
         constraints:
           - equal: true
 
-  # Section 5.4.7 tosca.capabilities.Endpoint.Database
+  # Section 5.5.10 tosca.capabilities.Endpoint.Database
   tosca.capabilities.Endpoint.Database:
     derived_from: tosca.capabilities.Endpoint
 
-  # Section 5.4.8 tosca.capabilities.Attachment
+  # Section 5.5.11 tosca.capabilities.Attachment
   tosca.capabilities.Attachment:
     derived_from: tosca.capabilities.Root
 
-  # Section 5.4.9 tosca.capabilities.OperatingSystem
+  # Section 5.5.12 tosca.capabilities.OperatingSystem
   tosca.capabilities.OperatingSystem:
     derived_from: tosca.capabilities.Root
     properties:
@@ -319,7 +340,7 @@ capability_types:
         type: version
         required: false
 
-  # Section 5.4.10 tosca.capabilities.Scalable
+  # Section 5.5.13 tosca.capabilities.Scalable
   tosca.capabilities.Scalable:
     derived_from: tosca.capabilities.Root
     properties:
@@ -339,17 +360,17 @@ capability_types:
         constraints:
           - greater_or_equal: 1 # ISSUE: Added.
 
-  # Section 5.4.11 tosca.capabilities.network.Bindable
+  # Section 5.5.14 tosca.capabilities.network.Bindable
   tosca.capabilities.network.Bindable:
     derived_from: tosca.capabilities.Node
 
-  # Section 7.5.3 tosca.capabilities.network.Linkable
+  # Section 8.5.3 tosca.capabilities.network.Linkable
   tosca.capabilities.network.Linkable:
     derived_from: tosca.capabilities.Node
 
 relationship_types:
 
-  # Section 5.6.1 tosca.relationships.Root
+  # Section 5.7.1 tosca.relationships.Root
   tosca.relationships.Root:
     description: The TOSCA root Relationship Type all other TOSCA base Relationship Types derive from
     attributes:
@@ -361,17 +382,17 @@ relationship_types:
       Configure:
         type: tosca.interfaces.relationship.Configure
 
-  # Section 5.6.2 tosca.relationships.DependsOn
+  # Section 5.7.2 tosca.relationships.DependsOn
   tosca.relationships.DependsOn:
     derived_from: tosca.relationships.Root
     valid_target_types: [ tosca.capabilities.Node ]
 
-  # Section 5.6.3 tosca.relationships.HostedOn
+  # Section 5.7.3 tosca.relationships.HostedOn
   tosca.relationships.HostedOn:
     derived_from: tosca.relationships.Root
     valid_target_types: [ tosca.capabilities.Container ]
 
-  # Section 5.6.4 tosca.relationships.ConnectsTo
+  # Section 5.7.4 tosca.relationships.ConnectsTo
   tosca.relationships.ConnectsTo:
     derived_from: tosca.relationships.Root
     valid_target_types: [ tosca.capabilities.Endpoint ]
@@ -380,7 +401,7 @@ relationship_types:
         type: tosca.datatypes.Credential
         required: false
 
-  # Section 5.6.5 tosca.relationships.AttachesTo
+  # Section 5.7.5 tosca.relationships.AttachesTo
   tosca.relationships.AttachesTo:
     derived_from: tosca.relationships.Root
     valid_target_types: [ tosca.capabilities.Attachment ]
@@ -393,28 +414,30 @@ relationship_types:
         type: string
         required: false
 
-  # Section 5.6.6 tosca.relationships.RoutesTo
+  # Section 5.7.6 tosca.relationships.RoutesTo
   tosca.relationships.RoutesTo:
     derived_from: tosca.relationships.ConnectsTo
     valid_target_types: [ tosca.capabilities.Endpoint ]
 
-  # Section 7.5.4 tosca.relationships.network.LinksTo
+  # Section 8.5.4 tosca.relationships.network.LinksTo
   tosca.relationships.network.LinksTo:
     derived_from: tosca.relationships.DependsOn
     valid_target_types: [ tosca.capabilities.network.Linkable ]
 
-  # Section 7.5.5 tosca.relationships.network.BindsTo
+  # Section 8.5.5 tosca.relationships.network.BindsTo
   tosca.relationships.network.BindsTo:
     derived_from: tosca.relationships.DependsOn
     valid_target_types: [ tosca.capabilities.network.Bindable ]
 
 interface_types:
 
-  # Section 5.7.3 tosca.interfaces.Root
+  # Section 5.8.3 tosca.interfaces.Root
   tosca.interfaces.Root:
+# ISSUE: tosca.entity.Root undefined!
+#    derived_from: tosca.entity.Root
     description: The TOSCA root Interface Type all other TOSCA base Interface Types derive from
 
-  # Section 5.7.4 tosca.interfaces.node.lifecycle.Standard
+  # Section 5.8.4 tosca.interfaces.node.lifecycle.Standard
   tosca.interfaces.node.lifecycle.Standard:
     derived_from: tosca.interfaces.Root
     create:
@@ -428,7 +451,7 @@ interface_types:
     delete:
       description: Standard lifecycle delete operation.
 
-  # Section 5.7.5 tosca.interfaces.relationship.Configure
+  # Section 5.8.5 tosca.interfaces.relationship.Configure
   tosca.interfaces.relationship.Configure:
     derived_from: tosca.interfaces.Root
     pre_configure_source:
@@ -448,11 +471,12 @@ interface_types:
     remove_target:
       description: Operation to remove a target node.
 
-
 node_types:
 
-  # Section 5.8.1 tosca.nodes.Root
+  # Section 5.9.1 tosca.nodes.Root
   tosca.nodes.Root:
+# ISSUE: tosca.entity.Root undefined!
+#    derived_from: tosca.entity.Root
     description: The TOSCA Node Type all other TOSCA base Node Types derive from
     attributes:
       tosca_id:
@@ -509,7 +533,7 @@ node_types:
       binding:
         type: tosca.capabilities.network.Bindable
 
-  # Section 5.8.3 tosca.nodes.SoftwareComponent
+  # Section 5.9.4 tosca.nodes.SoftwareComponent
   tosca.nodes.SoftwareComponent:
     derived_from: tosca.nodes.Root
     properties:
@@ -526,7 +550,7 @@ node_types:
           node: tosca.nodes.Compute
           relationship: tosca.relationships.HostedOn
 
-  # Section 5.8.4 tosca.nodes.WebServer
+  # Section 5.9.5 tosca.nodes.WebServer
   tosca.nodes.WebServer:
     derived_from: tosca.nodes.SoftwareComponent
     capabilities:
@@ -537,7 +561,7 @@ node_types:
         type: tosca.capabilities.Container
         valid_source_types: [ tosca.nodes.WebApplication ]
 
-  # Section 5.8.5 tosca.nodes.WebApplication
+  # Section 5.9.6 tosca.nodes.WebApplication
   tosca.nodes.WebApplication:
     derived_from: tosca.nodes.Root
     properties:
@@ -569,7 +593,7 @@ node_types:
         type: tosca.capabilities.Container
         valid_source_types: [ tosca.nodes.Database ]
 
-  # Section 5.8.7 tosca.nodes.Database
+  # Section 5.9.8 tosca.nodes.Database
   tosca.nodes.Database:
     derived_from: tosca.nodes.Root
     properties:
@@ -631,11 +655,14 @@ node_types:
       snapshot_id:
         type: string
         required: false
+    attributes: # ISSUE: Added to avoid warnings on outputs of all BlockStorage examples!
+      volume_id:
+        type: string
     capabilities:
       attachment:
         type: tosca.capabilities.Attachment
 
-  # Section 5.8.10 tosca.nodes.Container.Runtime
+  # Section 5.9.12 tosca.nodes.Container.Runtime
   tosca.nodes.Container.Runtime:
     derived_from: tosca.nodes.SoftwareComponent
     capabilities:
@@ -645,7 +672,7 @@ node_types:
       scalable:
         type: tosca.capabilities.Scalable
 
-  # Section 5.8.11 tosca.nodes.Container.Application
+  # Section 5.9.13 tosca.nodes.Container.Application
   tosca.nodes.Container.Application:
     derived_from: tosca.nodes.Root
     requirements:
@@ -679,7 +706,7 @@ node_types:
           occurrences: [0, UNBOUNDED]
           description: Connection to one or more load balanced applications
 
-  # Section 7.5.1 tosca.nodes.network.Network
+  # Section 8.5.1 tosca.nodes.network.Network
   tosca.nodes.network.Network:
     derived_from: tosca.nodes.Root
     properties:
@@ -716,11 +743,15 @@ node_types:
       physical_network:
         type: string
         required: false
+      dhcp_enabled:
+        type: boolean
+        required: false
+        default: true
     capabilities:
       link:
         type: tosca.capabilities.network.Linkable
 
-  # Section 7.5.2 tosca.nodes.network.Port
+  # Section 8.5.2 tosca.nodes.network.Port
   tosca.nodes.network.Port:
     derived_from: tosca.nodes.Root
     properties:
@@ -743,6 +774,10 @@ node_types:
       ip_range_end:
         type: string
         required: false
+# specified, and in case no value is provided for the property
+    attributes:
+      ip_address:
+        type: string
     requirements:
      - link:
         capability: tosca.capabilities.network.Linkable
@@ -753,7 +788,7 @@ node_types:
 
 group_types:
 
-  # Section 5.9.1 tosca.groups.Root
+  # Section 5.10.1 tosca.groups.Root
   tosca.groups.Root:
     description: The TOSCA Group Type all other TOSCA Group Types derive from
     interfaces:
@@ -762,26 +797,26 @@ group_types:
 
 policy_types:
 
-  # Section 5.10.1 tosca.policies.Root
+  # Section 5.11.1 tosca.policies.Root
   tosca.policies.Root:
     description: The TOSCA Policy Type all other TOSCA Policy Types derive from
 
-  # Section 5.10.2 tosca.policies.Placement
+  # Section 5.11.2 tosca.policies.Placement
   tosca.policies.Placement:
     derived_from: tosca.policies.Root
     description: The TOSCA Policy Type definition that is used to govern placement of TOSCA nodes or groups of nodes.
 
-  # Section 5.10.3 tosca.policies.Scaling
+  # Section 5.11.3 tosca.policies.Scaling
   tosca.policies.Scaling:
     derived_from: tosca.policies.Root
     description: The TOSCA Policy Type definition that is used to govern scaling of TOSCA nodes or groups of nodes.
 
-  # Section 5.10.4 tosca.policies.Update
+  # Section 5.11.4 tosca.policies.Update
   tosca.policies.Update:
     derived_from: tosca.policies.Root
     description: The TOSCA Policy Type definition that is used to govern update of TOSCA nodes or groups of nodes.
 
-  # Section 5.10.5 tosca.policies.Performance
+  # Section 5.11.5 tosca.policies.Performance
   tosca.policies.Performance:
     derived_from: tosca.policies.Root
     description: The TOSCA Policy Type definition that is used to declare performance requirements for TOSCA nodes or groups of nodes.
