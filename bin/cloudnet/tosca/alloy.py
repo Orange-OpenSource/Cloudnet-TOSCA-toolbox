@@ -3550,44 +3550,40 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
             for (operation_name, operation_yaml) in (
                 syntax.get_operations(interface_yaml).get(OPERATIONS).items()
             ):
-                # Compute the scope required by each operation.
-                is_new_operation = is_new_interface
+                    # Compute the scope required by each operation.
+                    is_new_operation = is_new_interface
 
-                implementation = self.get_operation_implementation(operation_yaml)
-                if implementation:
-                    acs.update_sig_scope(interface_sig)
-                    acs.update_sig_scope(TOSCA.Operation)
-                    is_new_operation = True
+                    implementation = self.get_operation_implementation(operation_yaml)
+                    if implementation:
+                        acs.update_sig_scope(interface_sig)
+                        acs.update_sig_scope(TOSCA.Operation)
+                        is_new_operation = True
 
-                    def update_sig_scope_implementation_short_notation(implementation):
-                        if (
-                            get_dict(node_template, ARTIFACTS).get(implementation)
-                            is None
-                            and get_dict(node_template_type, ARTIFACTS).get(
-                                implementation
-                            )
-                            is None
-                        ):
-                            artifact_type_sig = self.alloy_sig(
+                        def update_sig_scope_implementation_short_notation(implementation):
+                            if (
+                                get_dict(node_template, ARTIFACTS).get(implementation) is None
+                                and get_dict(node_template_type, ARTIFACTS).get(implementation) is None
+                            ):
+                                artifact_type_sig = self.alloy_sig(
                                 self.get_implementation_artifact_type(implementation)
-                            )
-                            acs.update_sig_scope(artifact_type_sig)
+                                )
+                                acs.update_sig_scope(artifact_type_sig)
 
-                    if isinstance(implementation, str):
-                        # Short notation
-                        update_sig_scope_implementation_short_notation(implementation)
-                    else:
-                        # Extended notation
-                        primary = implementation.get("primary")
-                        if primary is None:
-                            continue
-                        if isinstance(primary, str):
+                        if isinstance(implementation, str):
                             # Short notation
-                            update_sig_scope_implementation_short_notation(primary)
+                            update_sig_scope_implementation_short_notation(implementation)
                         else:
                             # Extended notation
-                            artifact_type_sig = self.alloy_sig(primary.get('type'))
-                            acs.update_sig_scope(artifact_type_sig)
+                            primary = implementation.get("primary")
+                            if primary is None:
+                                continue
+                            if isinstance(primary, str):
+                                # Short notation
+                                update_sig_scope_implementation_short_notation(primary)
+                            else:
+                                # Extended notation
+                                artifact_type_sig = self.alloy_sig(primary.get('type'))
+                                acs.update_sig_scope(artifact_type_sig)
                     # Iterate over all inputs.
 # TODO: inputs must be generated!
 #                    for input_name, input_yaml in get_dict(operation_yaml, INPUTS).items():
