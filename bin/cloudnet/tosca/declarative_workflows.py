@@ -138,7 +138,7 @@ class DeclarativeWorkflowGenerator(TopologyTemplateGenerator):
 
         # save the generated workflows
         self.open_file('.yaml')
-        yaml.dump(self.tosca_service_template.get_yaml(), self.file)
+#### JLC 20211125        yaml.safe_dump(self.tosca_service_template.get_yaml(), self.file)
         self.close_file()
 
 # TODO merge into DeclarativeWorkflowGenerator class
