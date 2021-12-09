@@ -356,7 +356,7 @@ class Relationship(object):
         # get target node template name
         self.target_node_template_name = \
             syntax.get_requirement_node_template(requirement)
-        assert self.target_node_template_name != None
+        assert self.target_node_template_name is not None
 
         # compute the relationship type name and interfaces
         node_type_requirements = syntax.get_requirements_dict(node_template_type)

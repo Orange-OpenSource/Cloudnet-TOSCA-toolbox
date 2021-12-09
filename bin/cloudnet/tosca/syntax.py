@@ -19,6 +19,7 @@ import os
 import cloudnet.tosca.configuration as configuration
 from cloudnet.tosca.processors import Checker
 from cloudnet.tosca.utils import normalize_dict
+from cloudnet.tosca.yaml_line_numbering import DictCoord
 
 SYNTAX = "Syntax"
 TOSCA_DEFINITIONS_VERSION = "tosca_definitions_version"
@@ -428,9 +429,10 @@ def get_requirement_node_template(requirement_yaml):
 
 
 def get_requirement_node_filter(requirement_yaml):
-    if isinstance(requirement_yaml, str):
+    type_requirement_yaml = type(requirement_yaml)
+    if isinstance(type_requirement_yaml, str):
         return None
-    elif isinstance(requirement_yaml, dict):
+    elif isinstance(type_requirement_yaml, dict):
         return requirement_yaml.get(NODE_FILTER)
     return None
 
@@ -442,17 +444,19 @@ def get_requirement_relationship(requirement_yaml):
 
 
 def get_relationship_type(relationship_yaml):
-    if isinstance(relationship_yaml, str):
+    type_relationship_yaml = type(relationship_yaml)
+    if isinstance(type_relationship_yaml, str):
         return relationship_yaml
-    elif isinstance(relationship_yaml, dict):
+    elif isinstance(type_relationship_yaml, dict):
         return relationship_yaml.get(TYPE)
     return None
 
 
 def get_relationship_interfaces(relationship_yaml):
-    if isinstance(relationship_yaml, str):
+    type_relationship_yaml = type(relationship_yaml)
+    if isinstance(type_relationship_yaml, str):
         return None
-    elif isinstance(relationship_yaml, dict):
+    elif isinstance(type_relationship_yaml, dict):
         return relationship_yaml.get(INTERFACES)
     return None
 
@@ -608,6 +612,7 @@ class SyntaxChecker(Checker):
                 "tosca_definitions_version: "
                 + default_tosca_definitions_version
                 + " used instead of"                    # JLC nemanque-t-il pas qq chose après cette ligne ?
+#                tosca_definitions_version,
             )
             schema_file = self.get_mapping(
                 default_tosca_definitions_version, tosca_definitions_version_map

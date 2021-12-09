@@ -243,7 +243,7 @@ class PlantUMLGenerator(Generator):
             interfaces = get_dict(type_yaml, INTERFACES)
 
             def generate_operation(operation_name, operation_value):
-                self.generate('+', operation_name, '()', sep='')
+                self.generate("+", operation_name, "()", sep="")
                 if isinstance(operation_value, str):
                     implementation = operation_value
                     primary_artifact_name = implementation
@@ -260,10 +260,10 @@ class PlantUMLGenerator(Generator):
                 if implementation is not None:
                     implementation_as_string = str(implementation)
                     artifact_type = self.type_system.get_artifact_type_by_filename(primary_artifact_name)
-                    icon = self.get_representation('artifact', artifact_type, "icon")
+                    icon = self.get_representation("artifact", artifact_type, "icon")
                     if icon is not None:
                         implementation_as_string += " <img:%s{scale=0.5}>" % icon
-                    self.generate(" implementation: ", implementation_as_string, sep='')
+                    self.generate(" implementation: ", implementation_as_string, sep="")
 
             if len(interfaces):
                 self.generate("--")
@@ -520,7 +520,7 @@ class PlantUMLGenerator(Generator):
             for type_name, type_yaml in types.items():
                 generate_class(type_name, class_kind, type_yaml, types)
 
-        #            self.generate('}')
+        #            self.generate("}")
 
         # Generate the UML class associated to each type.
         generate_classes("data_types", "D", data_types)
@@ -1134,7 +1134,7 @@ class PlantUMLGenerator(Generator):
                             " => ",
                             str(node_template.get("properties", {}).get(property_name, 'unset')),
                         )
-                    self.generate('}')
+                    self.generate("}")
                 for contained_name, contained_dict in containeds.items():
                     generate_container(self, contained_name, contained_dict)
                 for artifact_name, artifact_yaml in node_template_artifacts.items():
@@ -1167,7 +1167,7 @@ class PlantUMLGenerator(Generator):
                     else:
                         self.generate(
                             'artifact "',
-                            self.get_label('artifact', syntax.get_artifact_file(artifact_yaml), artifact_type),
+                            self.get_label("artifact", syntax.get_artifact_file(artifact_yaml), artifact_type),
                             '" <<artifact>> as node_',
                             normalize_name(container_name),
                             "_artifact_",
@@ -1217,6 +1217,7 @@ class PlantUMLGenerator(Generator):
             for requirement in get_list(node_template_yaml, REQUIREMENTS):
                 for requirement_name, requirement_yaml in requirement.items():
                     requirement_relationship_type = None
+
                     if isinstance(requirement_yaml, dict):
                         requirement_relationship = syntax.get_requirement_relationship(
                             requirement_yaml
@@ -1338,7 +1339,7 @@ class PlantUMLGenerator(Generator):
         def generate_workflow_diagram(workflow_name, workflow_definition):
 
             def step_id(step_name):
-                return 'step_%s_%s' \
+                return "step_%s_%s" \
                     % (normalize_name(workflow_name), \
                        normalize_name(step_name))
 
@@ -1379,7 +1380,7 @@ class PlantUMLGenerator(Generator):
                         self.generate('  %s --> %s' % (previous_activity_id, next_activity_id))
                         previous_activity_id = next_activity_id
                 # close the step
-                self.generate('}')
+                self.generate("}")
 
             # compute the number of predecessors of each step
             nb_predecessors = { step_name: 0 for step_name in steps.keys() }
@@ -1478,7 +1479,7 @@ class PlantUMLGenerator(Generator):
             self.generate('  BackGroundColor<< set_state >> white')
             self.generate('  BackGroundColor<< call_operation >> lightblue')
             self.generate('  BackGroundColor<< inline >> white')
-            self.generate('}')
+            self.generate("}")
             self.generate('skinparam ActivityBarColor<<fork>> DarkGreen')
             self.generate('skinparam ActivityBarColor<<join>> DarkOrange')
             self.generate()
