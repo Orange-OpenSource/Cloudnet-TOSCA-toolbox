@@ -300,8 +300,8 @@ sig tosca_datatypes_network_PortSpec extends tosca_datatypes_Root
   // --------------------------------------------------
 
   protocol.valid_values["udp" + "tcp" + "igmp"]
-  target_range.in_range[1, 65535]
-  source_range.in_range[1, 65535]
+  some target_range implies target_range.in_range[1, 65535]
+  some source_range implies source_range.in_range[1, 65535]
 
 }
 
@@ -660,10 +660,10 @@ sig tosca_capabilities_Compute extends tosca_capabilities_Container
   // Properties
   // --------------------------------------------------
 
-  property_num_cpus.greater_or_equal[1]
-  property_cpu_frequency.greater_or_equal[1, Hz]
-  property_disk_size.greater_or_equal[0, MB]
-  property_mem_size.greater_or_equal[0, MB]
+  some property_num_cpus implies property_num_cpus.greater_or_equal[1]
+  some property_cpu_frequency implies property_cpu_frequency.greater_or_equal[1, Hz]
+  some property_disk_size implies property_disk_size.greater_or_equal[0, MB]
+  some property_mem_size implies property_mem_size.greater_or_equal[0, MB]
 
 }
 
@@ -833,7 +833,7 @@ sig tosca_capabilities_Endpoint extends tosca_capabilities_Root
   // --------------------------------------------------
 
   property_initiator.valid_values["source" + "target" + "peer"]
-  property_ports.min_length[1]
+  some property_ports implies property_ports.min_length[1]
 
   // --------------------------------------------------
   // Attributes
@@ -1074,7 +1074,7 @@ sig tosca_capabilities_Scalable extends tosca_capabilities_Root
 
   property_min_instances.greater_or_equal[1]
   property_max_instances.greater_or_equal[1]
-  property_default_instances.greater_or_equal[1]
+  some property_default_instances implies property_default_instances.greater_or_equal[1]
 
 }
 

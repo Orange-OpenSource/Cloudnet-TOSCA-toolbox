@@ -13,12 +13,16 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
+import re
+
+SCALAR_UNIT_RE = re.compile("^([0-9]+(\.[0-9]+)?)( )*([A-Za-z]+)$")
+
 
 def split_scalar_unit(scalar):
-    tmp = scalar.split(" ")
-    scalar_unit = tmp[-1]
-    scalar_value = int(tmp[0])
-    return scalar_value, scalar_unit
+    match = SCALAR_UNIT_RE.fullmatch(scalar)
+    if match == None:
+        raise ValueError("<scalar> <unit> expected instead of %s" % scalar)
+    return int(match.group(1)), match.group(4)
 
 
 """
@@ -34,13 +38,17 @@ def short_type_name(type_name):
 
 
 """
-    Normalize a name, i.e., '.' and '-' characters are replaced by '_'.
+    Normalize a name, i.e.
+      - '.', '-', ' ' and ':' characters are replaced by '_'
+      - If first character is a digit then prefix '_' is added
 """
 
 
 def normalize_name(label):
     for character in [".", "-", " ", ":"]:
         label = label.replace(character, "_")
+    if label[0].isdigit():
+        label = "_" + label
     return label
 
 
@@ -59,8 +67,7 @@ def merge_dict(d, u):
             if dv is None:
                 dv = {}
             if not isinstance(dv, dict):
-                dv = {}
-                dv["_old_value_"] = dv
+                dv = {"_old_value_": dv}
             d[k] = merge_dict(dv, v)
         else:
             if v is not None:

@@ -242,8 +242,8 @@ sig tosca_datatypes_network_PortSpec extends tosca_datatypes_Root
   // --------------------------------------------------
 
   protocol.valid_values["udp" + "tcp" + "igmp"]
-  target_range.in_range[1, 65535]
-  source_range.in_range[1, 65535]
+  some target_range implies target_range.in_range[1, 65535]
+  some source_range implies source_range.in_range[1, 65535]
 
 }
 
@@ -549,6 +549,82 @@ run Show_tosca_capabilities_Node {
   exactly 1 tosca_capabilities_Node
   expect 1
 
+sig tosca_capabilities_Network extends tosca_capabilities_Root
+{
+  // --------------------------------------------------
+  // Properties
+  // --------------------------------------------------
+
+  // YAML name: {'type': 'string', 'required': False}
+  property_name: lone string,
+
+} {
+  // --------------------------------------------------
+  // Properties
+  // --------------------------------------------------
+
+
+}
+
+/** There exists some tosca.capabilities.Network */
+run Show_tosca_capabilities_Network {
+  tosca_capabilities_Network.no_name[]
+} for 5 but
+  8 Int,
+  5 seq,
+  // NOTE: Setting following scopes strongly reduces the research space.
+  exactly 0 LocationGraphs/LocationGraph,
+  exactly 0 LocationGraphs/Location,
+  exactly 0 LocationGraphs/Name,
+  exactly 1 LocationGraphs/Role,
+  exactly 0 LocationGraphs/Process,
+  exactly 0 LocationGraphs/Sort,
+  exactly 0 TOSCA/Artifact,
+  exactly 0 TOSCA/Attribute,
+  exactly 0 TOSCA/Interface,
+  exactly 0 TOSCA/Requirement,
+  exactly 0 TOSCA/Operation,
+  exactly 1 tosca_capabilities_Network
+  expect 1
+
+sig tosca_capabilities_Storage extends tosca_capabilities_Root
+{
+  // --------------------------------------------------
+  // Properties
+  // --------------------------------------------------
+
+  // YAML name: {'type': 'string', 'required': False}
+  property_name: lone string,
+
+} {
+  // --------------------------------------------------
+  // Properties
+  // --------------------------------------------------
+
+
+}
+
+/** There exists some tosca.capabilities.Storage */
+run Show_tosca_capabilities_Storage {
+  tosca_capabilities_Storage.no_name[]
+} for 5 but
+  8 Int,
+  5 seq,
+  // NOTE: Setting following scopes strongly reduces the research space.
+  exactly 0 LocationGraphs/LocationGraph,
+  exactly 0 LocationGraphs/Location,
+  exactly 0 LocationGraphs/Name,
+  exactly 1 LocationGraphs/Role,
+  exactly 0 LocationGraphs/Process,
+  exactly 0 LocationGraphs/Sort,
+  exactly 0 TOSCA/Artifact,
+  exactly 0 TOSCA/Attribute,
+  exactly 0 TOSCA/Interface,
+  exactly 0 TOSCA/Requirement,
+  exactly 0 TOSCA/Operation,
+  exactly 1 tosca_capabilities_Storage
+  expect 1
+
 sig tosca_capabilities_Container extends tosca_capabilities_Root
 {
   // --------------------------------------------------
@@ -572,10 +648,10 @@ sig tosca_capabilities_Container extends tosca_capabilities_Root
   // Properties
   // --------------------------------------------------
 
-  property_num_cpus.greater_or_equal[1]
-  property_cpu_frequency.greater_or_equal[1, Hz]
-  property_disk_size.greater_or_equal[0, MB]
-  property_mem_size.greater_or_equal[0, MB]
+  some property_num_cpus implies property_num_cpus.greater_or_equal[1]
+  some property_cpu_frequency implies property_cpu_frequency.greater_or_equal[1, Hz]
+  some property_disk_size implies property_disk_size.greater_or_equal[0, MB]
+  some property_mem_size implies property_mem_size.greater_or_equal[0, MB]
 
 }
 
@@ -643,7 +719,7 @@ sig tosca_capabilities_Endpoint extends tosca_capabilities_Root
   // --------------------------------------------------
 
   property_initiator.valid_values["source" + "target" + "peer"]
-  property_ports.min_length[1]
+  some property_ports implies property_ports.min_length[1]
 
   // --------------------------------------------------
   // Attributes
@@ -884,7 +960,7 @@ sig tosca_capabilities_Scalable extends tosca_capabilities_Root
 
   property_min_instances.greater_or_equal[1]
   property_max_instances.greater_or_equal[1]
-  property_default_instances.greater_or_equal[1]
+  some property_default_instances implies property_default_instances.greater_or_equal[1]
 
 }
 
@@ -2020,8 +2096,8 @@ sig tosca_nodes_ObjectStorage extends tosca_nodes_Root
   // Properties
   // --------------------------------------------------
 
-  property_size.greater_or_equal[0, GB]
-  property_maxsize.greater_or_equal[0, GB]
+  some property_size implies property_size.greater_or_equal[0, GB]
+  some property_maxsize implies property_maxsize.greater_or_equal[0, GB]
 
   // --------------------------------------------------
   // Capabilities
@@ -2057,6 +2133,9 @@ sig tosca_nodes_BlockStorage extends tosca_nodes_Root
   // Properties
   // --------------------------------------------------
 
+  // YAML size: {'type': 'scalar-unit.size', 'constraints': [{'greater_or_equal': '1 MB'}]}
+  property_size: one scalar_unit_size,
+
   // YAML volume_id: {'type': 'string', 'required': False}
   property_volume_id: lone string,
 
@@ -2075,6 +2154,7 @@ sig tosca_nodes_BlockStorage extends tosca_nodes_Root
   // Properties
   // --------------------------------------------------
 
+  property_size.greater_or_equal[1, MB]
 
   // --------------------------------------------------
   // Capabilities

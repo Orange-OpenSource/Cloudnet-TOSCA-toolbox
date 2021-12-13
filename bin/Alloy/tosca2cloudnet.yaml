@@ -46,6 +46,8 @@ logging:
       level: WARNING
     cloudnet.tosca.type_system:
       level: WARNING
+    cloudnet.tosca.declarative_workflows:
+      level: WARNING
     cloudnet.tosca.alloy:
       level: WARNING
     cloudnet.tosca.network_diagrams:

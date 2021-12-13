@@ -417,6 +417,10 @@ definitions:
             type: object
             additionalProperties:
               $ref: "#/definitions/property_assignment"
+          outputs:
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/attribute_mapping"
         additionalProperties: false
 
   # Section 3.6.18
@@ -473,7 +477,7 @@ definitions:
       inputs:
         type: object
         additionalProperties:
-          $ref: "#/definitions/property_definition"
+          $ref: "#/definitions/parameter_definition"
       operations:
         type: object
         additionalProperties:
@@ -530,9 +534,11 @@ definitions:
         type: object
         properties:
           start_time:
-            type: string
+            # ISSUE: JSON schema has no timestamp type
+            {}
           end_time:
-            type: string
+            # ISSUE: JSON schema has no timestamp type
+            {}
         additionalProperties: false
         required: [ start_time, end_time]
       target_filter:
@@ -545,7 +551,13 @@ definitions:
           - type: object
             properties:
               constraint:
-                $ref: "#/definitions/condition_clause_definition"
+                oneOf:
+                  - $ref: "#/definitions/condition_clause_definition"
+                  #PM: Added support for multiple conditions following the TOSCA TC
+                  #PM: positive reply to the ETSI NFV SOL 001 TC question about this
+                  - type: array
+                    items:
+                      $ref: "#/definitions/condition_clause_definition"
               period:
                 $ref: "#/definitions/scalar_unit"
               evaluations:
@@ -553,6 +565,11 @@ definitions:
               method:
                 type: string
             additionalProperties: false
+          #PM: Added support for multiple conditions following the TOSCA TC
+          #PM: positive reply to the ETSI NFV SOL 001 TC question about this
+          - type: array
+            items:
+              $ref: "#/definitions/condition_clause_definition"
       action:
         type: array
         items:
@@ -776,8 +793,7 @@ definitions:
           occurrences:
             $ref: "#/definitions/occurrences"
         additionalProperties: false
-#       required: [ capability ] # type is required but can be set into the parent definition.
-        # So type requirement is checked by TypeChecker.
+        required: [ capability ]
 
   # Section 3.7.4
   artifact_type:
@@ -819,7 +835,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
+              $ref: "#/definitions/parameter_definition"
           operations:
             type: object
             additionalProperties:
@@ -1215,7 +1231,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
+              $ref: "#/definitions/parameter_definition"
           preconditions:
             type: array
             items:
@@ -1237,7 +1253,7 @@ definitions:
           inputs:
             type: object
             additionalProperties:
-              $ref: "#/definitions/property_definition"
+              $ref: "#/definitions/parameter_definition"
           preconditions:
             type: array
             items:

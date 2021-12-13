@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -67,7 +67,6 @@ topology_template:
               wp_db_password: { get_property: [ mysql_database, password ] }
               # In my own template, find requirement/capability, find port property
               wp_db_port: { get_property: [ SELF, database_endpoint, port ] }
-              wp_db_port: { get_property: [ mysql_database, port ] }
 
     mysql_database:
       type: Database

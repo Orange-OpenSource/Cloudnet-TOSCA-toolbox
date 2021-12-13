@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -92,7 +92,8 @@ class HOTGenerator(Generator):
         self.substitution_mappings = {}
 
         # Iterate over imported files.
-        for imported_file in get_list(template_yaml, IMPORTS):
+        for import_yaml in get_list(template_yaml, IMPORTS):
+            imported_file = syntax.get_import_file(import_yaml)
             imported_file_yaml = self.tosca_service_template.imports(
                 imported_file
             ).get_yaml()
@@ -958,6 +959,9 @@ class HOTGenerator(Generator):
         elif isinstance(network_connectivity_type_layer_protocols, str):
             layer_protocols = [network_connectivity_type_layer_protocols]
         for layer_protocol in layer_protocols:
+            # Generate only ip subnets
+            if layer_protocol not in ["ipv4", "ipv6"]:
+                continue
             # Get the protocol data associated to the current layer_protocol.
             l3_protocol_data = network_vl_profile_virtual_link_protocol_data.get(
                 layer_protocol, {}
@@ -998,7 +1002,7 @@ class HOTGenerator(Generator):
                     % self.subnet_cidr_idx
                 )
                 self.subnet_cidr_idx = self.subnet_cidr_idx + 1
-                self.warning(' HOT - CIDR "' + cidr + '" generated')
+                self.info(' HOT - CIDR "' + cidr + '" generated')
                 self.generate("      cidr:", cidr, " # generated")
             else:
                 self.generate("      cidr:", cidr)
@@ -1152,13 +1156,12 @@ class HOTGenerator(Generator):
             self.generate(
                 "      ram:", maximum_ram, "# WARNING: Initial value was", ram, "!"
             )
-            self.warning(
+            self.info(
                 " HOT - ram of "
                 + str(ram)
                 + "MB narrowed to "
                 + str(maximum_ram)
-                + "MB",
-                ram,
+                + "MB"
             )
         else:
             self.generate("      ram:", ram)

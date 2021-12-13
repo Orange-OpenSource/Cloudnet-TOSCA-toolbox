@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -19,6 +19,7 @@ import os
 import cloudnet.tosca.configuration as configuration
 from cloudnet.tosca.processors import Checker
 from cloudnet.tosca.utils import normalize_dict
+from cloudnet.tosca.yaml_line_numbering import DictCoord
 
 SYNTAX = "Syntax"
 TOSCA_DEFINITIONS_VERSION = "tosca_definitions_version"
@@ -36,6 +37,7 @@ for tosca_definitions_version in [
     "tosca_simple_yaml_1_1",
     "tosca_simple_yaml_1_2",
     "tosca_simple_yaml_1_3",
+    "tosca_2_0",
     "alien_dsl_1_2_0",
     "alien_dsl_1_4_0",
     "alien_dsl_2_0_0",
@@ -427,9 +429,10 @@ def get_requirement_node_template(requirement_yaml):
 
 
 def get_requirement_node_filter(requirement_yaml):
-    if isinstance(requirement_yaml, str):
+    type_requirement_yaml = type(requirement_yaml)
+    if isinstance(type_requirement_yaml, str):
         return None
-    elif isinstance(requirement_yaml, dict):
+    elif isinstance(type_requirement_yaml, dict):
         return requirement_yaml.get(NODE_FILTER)
     return None
 
@@ -441,17 +444,19 @@ def get_requirement_relationship(requirement_yaml):
 
 
 def get_relationship_type(relationship_yaml):
-    if isinstance(relationship_yaml, str):
+    type_relationship_yaml = type(relationship_yaml)
+    if isinstance(type_relationship_yaml, str):
         return relationship_yaml
-    elif isinstance(relationship_yaml, dict):
+    elif isinstance(type_relationship_yaml, dict):
         return relationship_yaml.get(TYPE)
     return None
 
 
 def get_relationship_interfaces(relationship_yaml):
-    if isinstance(relationship_yaml, str):
+    type_relationship_yaml = type(relationship_yaml)
+    if isinstance(type_relationship_yaml, str):
         return None
-    elif isinstance(relationship_yaml, dict):
+    elif isinstance(type_relationship_yaml, dict):
         return relationship_yaml.get(INTERFACES)
     return None
 
@@ -581,7 +586,8 @@ class SyntaxChecker(Checker):
             self.warning(
                 "tosca_definitions_version: "
                 + default_tosca_definitions_version
-                + " used instead of"
+                + " used instead of",                    # JLC nemanque-t-il pas qq chose après cette ligne ?
+#                tosca_definitions_version,
             )
             tosca_definitions_version = default_tosca_definitions_version
             template_yaml[TOSCA_DEFINITIONS_VERSION] = tosca_definitions_version
@@ -605,7 +611,8 @@ class SyntaxChecker(Checker):
             self.warning(
                 "tosca_definitions_version: "
                 + default_tosca_definitions_version
-                + " used instead of"
+                + " used instead of"                    # JLC nemanque-t-il pas qq chose après cette ligne ?
+#                tosca_definitions_version,
             )
             schema_file = self.get_mapping(
                 default_tosca_definitions_version, tosca_definitions_version_map
@@ -624,8 +631,8 @@ class SyntaxChecker(Checker):
         #            format_checker=jsonschema.draft4_format_checker) # TODO use draft7_format_checker
 
         validator = jsonschema.Draft4Validator(
-            tosca_schema, format_checker=jsonschema.draft4_format_checker
-        )  # TODO use draft7_format_checker
+            tosca_schema, format_checker=jsonschema.draft7_format_checker
+        )
         errors = validator.iter_errors(template_yaml)
 
         # Log all errors.

@@ -17,6 +17,10 @@ tosca_definitions_version: tosca_simple_yaml_1_3
 
 description: Tests related to TOSCA type checking done by TypeChecker component.
 
+imports:
+  - file: file.yaml
+    repository: repo # ERROR: repository undefined!
+
 interface_types:
   MyStandardInterface:
     derived_from: tosca.interfaces.node.lifecycle.Standard
@@ -201,7 +205,7 @@ topology_template:
             event: EventName
             action: []
             condition:
-              method: average # Warning: unchecked!
+              method: average # WARNING: unchecked!
           with_actions:
             event: EventName
             action:
@@ -392,7 +396,7 @@ topology_template:
       steps:
         target_undefined:
           target: node1 # ERROR: node1 template or group undefined!
-          activities: [] # Warning: unchecked because target undefined!
+          activities: [] # WARNING: unchecked because target undefined!
         target_relationship_undefined:
           target: compute
           target_relationship: requirement # ERROR: requirement undefined in compute!
@@ -519,8 +523,8 @@ topology_template:
         primary: workflow.py # Info: tosca.artifacts.Implementation.Python found!
 
     wf4:
-      implementation: xxx # Warning: no artifact type found!
+      implementation: xxx # WARNING: no artifact type found!
 
     wf5:
       implementation:
-        primary: xxx # Warning: no artifact type found!
+        primary: xxx # WARNING: no artifact type found!

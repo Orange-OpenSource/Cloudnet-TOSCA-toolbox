@@ -2,7 +2,7 @@
  *
  * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
- * SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+ * SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
  * SPDX-License-Identifier: Apache-2.0
  *
  * This software is distributed under the Apache License 2.0
@@ -143,6 +143,11 @@ pred scalar_unit_time.greater_than[sut: one scalar_unit_time]
  * TOSCA scalar predicates.
  *******************************************************************************/
 
+pred boolean.valid_values[values: set boolean]
+{
+  this in values
+}
+
 pred valid_values[variable: one String, values: set String]
 {
   variable in values
@@ -157,13 +162,6 @@ pred integer.valid_values[values: set integer]
 {
   this in values
 }
-
-/*
-pred valid_values[variable: one String, value1: one Int, value2: one Int]
-{
-// TODO:  variable in values
-}
-*/
 
 pred in_range[variable: one range, value1: one Int, value2: one Int]
 {
@@ -182,25 +180,23 @@ pred float.greater_or_equal[value: one float]
 
 pred integer.greater_or_equal[value: one Int]
 {
-  one this implies this >= value
+  this >= value
 }
 
 pred integer.greater_than[value: one Int]
 {
-  one this implies this > value
+  this > value
 }
 
 pred integer.less_or_equal[value: one Int]
 {
-  one this implies this <= value
+  this <= value
 }
 
 pred integer.in_range[lower: one integer, upper: one integer]
 {
-  one this implies {
-    lower <= this
-    this <= upper
-  }
+  lower <= this
+  this <= upper
 }
 
 pred min_length[variable: one String, value: one Int]
@@ -208,17 +204,20 @@ pred min_length[variable: one String, value: one Int]
   // NOTE: Always true because not supported currently.
 }
 
-/*
-pred min_length[variable: set String -> univ, value: one Int]
+pred max_length[variable: one String, value: one Int]
 {
-  #variable >= value
+  // NOTE: Always true because not supported currently.
 }
-*/
 
 //fk added following an error in SOL001 2.8.1 NSD_types: 'constraints: min_length' has been applied to a list in tosca.policies.nfv.NsMonitoring
 pred min_length[variable: seq univ, value: one Int]
 {
   #variable >= value
+}
+
+pred max_length[variable: seq univ, value: one Int]
+{
+  #variable <= value
 }
 
 pred boolean.equal[value: one boolean]
@@ -229,6 +228,11 @@ pred boolean.equal[value: one boolean]
 pred string.equal[value: one String]
 {
   this = value
+}
+
+pred equal[variable: seq univ, value: seq univ]
+{
+  variable = value
 }
 
 /*******************************************************************************
@@ -308,27 +312,19 @@ fun ToscaComponent.interface[name: one String] : one Interface
  * TOSCA requirements and capabilities are named LG roles.
  *******************************************************************************/
 
+//TODO: remove following useless signature
 abstract sig ToscaRole extends LG/Role {
-  _name_: one String,
 } {
 }
 
+//TODO: remove following useless predicate
 pred ToscaRole.no_name[]
 {
-  this._name_= "(anonymous)"
 }
 
+//TODO: remove following useless predicate
 pred ToscaRole.name[n: one String]
 {
-  this._name_ in n
-// NOTE: Could be also
-// some this implies this.name = n
-// but this produces more SAT vars and clauses.
-}
-
-fun role[roles: set ToscaRole, role_name: one String] : set ToscaRole
-{
-  { r : roles { r._name_ = role_name } }
 }
 
 /*******************************************************************************
@@ -395,14 +391,13 @@ sig TopologyTemplate extends LG/LocationGraph
   distinct_names[outputs]
 
   // if one substitution_mapping then it is distinct of nodes.
-  one substitution_mapping implies substitution_mapping not in nodes
+  some substitution_mapping implies substitution_mapping not in nodes
 
   //
   // Mapping TOSCA to Location Graphs.
   //
   // nodes, relationships, groups and policies are locations of this location graph.
-// TBR  locations = nodes + relationships + groups + policies + nodes.requirements.relationship
-  locations = nodes + relationships + groups + policies + (String.(nodes.requirements)).relationship
+  locations = nodes + relationships + groups + policies + nodes.requirements.relationship
   // NOTE: substitution_mapping is not a location of this location graph but
   // will be part of the location graphs where it will be substituted.
 }
@@ -436,12 +431,12 @@ pred TopologyTemplate.with_inputs[args: String -> lone any]
 {
   all input : this.inputs {
     let arg_value=args[input._name_] {
-      one arg_value
+      some arg_value
         implies
           input.set_value[arg_value]
         else
           let default_value=input.default {
-            one default_value
+            some default_value
               implies
                 input.set_value[default_value]
               else
@@ -545,8 +540,7 @@ pred TopologyTemplate.apply_substitution[]
 
 abstract sig Node extends ToscaComponent {
   node_type_name: lone String, // NOTE: Used by the substitution algorithm.
-// TBR:  requirements : set Requirement,
-  requirements :  String -> Requirement,
+  requirements : set Requirement,
   capabilities : set Capability,
   artifacts : set Artifact,
 } {
@@ -557,8 +551,7 @@ abstract sig Node extends ToscaComponent {
   // Mapping TOSCA to Location Graphs.
   //
   // Requirements are required roles of this location.
-// TBR:  required = requirements
-  required = String.requirements
+  required = requirements
   //
   // Capabilities are provided roles of this location.
   provided = capabilities
@@ -570,27 +563,15 @@ pred Node.capability[capability: one Capability]
   capability in this.capabilities
 }
 
-fun Node.capability[name: one String] : set Capability
-{
-  role[this.capabilities, name]
-}
-
 /** A requirement is owned by this node. */
-// TBR: pred Node.requirement[requirement:  one Requirement]
+//TODO: remove the name parameter as useless
 pred Node.requirement[name: String, requirement:  one Requirement]
 {
-// TBR:  requirement in this.requirements
-  (name -> requirement) in this.requirements
-}
-
-fun Node.requirement[name: one String] : set Requirement
-{
-// TBR:  role[this.requirements, name]
-  this.requirements[name]
+  requirement in this.requirements
 }
 
 /** An artefact is owned by this node. */
-pred Node.artifact[artifact:  one Artifact]
+pred Node.artifact[artifact: one Artifact]
 {
   artifact in this.artifacts
 }
@@ -600,12 +581,17 @@ fun Node.artifact[name: one String] : one Artifact
   get_value[this.artifacts, name]
 }
 
+/** Get the topology template owning this node */
+fun Node.topology_template[] : one TopologyTemplate
+{
+  ~nodes[this]
+}
+
 /*******************************************************************************
  * TOSCA Requirement.
  *******************************************************************************/
 
 // TODO: to remove as perhaps not required
-// abstract // TBR: abstract is not necessary
 sig Requirement extends ToscaRole {
   relationship: lone Relationship
 } {
@@ -613,7 +599,7 @@ sig Requirement extends ToscaRole {
   // TOSCA constraints.
   //
   // The source of the relationship is this requirement.
-  one relationship implies relationship.source = this
+  some relationship implies relationship.source = this
 
   // The name of requirement is stored by the node owning this reference.
   no_name[]
@@ -621,14 +607,7 @@ sig Requirement extends ToscaRole {
 
 /* Return the node owning a given requirement. */
 fun Requirement.node[] : set Node {
-// TBR:  ~(Node<:requirements)[this]
-  ~(Node<:select13[requirements])[this]
-}
-
-// Copied from ternary.als
-/** returns the first and last columns of a ternary relation */
-fun select13 [r: univ->univ->univ] : ((r.univ).univ) -> (univ.(univ.r)) {
-  {x: (r.univ).univ, z: univ.(univ.r) | some (x.r).z}
+  ~(Node<:requirements)[this]
 }
 
 /** The capability targetted by this requirement is of given capability types. */
@@ -760,6 +739,12 @@ pred Policy.targets_type[nodesAndGroups: set Node + Group]
 pred Policy.targets[nodesAndGroups: set Node + Group]
 {
     this.targets = nodesAndGroups
+}
+
+/** Get the topology template owning this policy */
+fun Policy.topology_template[] : one TopologyTemplate
+{
+  ~policies[this]
 }
 
 /*******************************************************************************

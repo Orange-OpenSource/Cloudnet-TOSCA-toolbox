@@ -308,6 +308,7 @@ read_options(){
                else
                   # Test if file already generated
                   if ! [ -f "logs/${_FORMATTED_TRANSLATE_LOG}" ]; then
+                     echo -e "\nFormatting diagnostic log file ... please wait ... "
                      diagnosticFormat "${_TRANSLATE_LOG}"
                   fi
                   less -r "logs/${_FORMATTED_TRANSLATE_LOG}"
@@ -416,19 +417,39 @@ diagnosticFormat () {
    _SEVERITY=""
    _MESSAGE=""
    _LINE=""
+   _NB_ERROR=0
+   _NB_WARNING=0
+   _NB_INFO=0
+   _NB_OTHER=0
 
    # Loop on the error log file
    while read -r LREAD
    do
+       printf "."
        # remove double quotes in string
        LREAD=$(echo $LREAD | tr -d \" )
        case $_INDEX in
            1) # Filename
-              if [ "$_OLDFILENAME" != "${LREAD}" ]; then
+                  if [ "$_OLDFILENAME" != "${LREAD}" ]; then
+                  # If we are not at the begining of the treatement
+                  # ie the variable _OLDFILENAME is empty, 
+                  # We print the numbers of errors found
+                  if  [ ! -z "$_OLDFILENAME" ]; then
+                        echo -e "\n\011 ----------- Results -----------" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+                        echo -e "\011 ${_NB_ERROR}${bold}${red} ERROR${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+                                "  ${_NB_WARNING}${bold}${yellow} WARNING${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+                                "  ${_NB_INFO}${bold}${white} INFO${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+                                "  ${_NB_OTHER}${bold}${white} UNKNOW${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+                  fi
+
                   # print the new filename 
                   echo -e "\n== ${bold}${magenta}${LREAD^^}${reset} =============" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
                   # and store it
                   _OLDFILENAME="${LREAD}"
+                  _NB_ERROR=0
+                  _NB_WARNING=0
+                  _NB_INFO=0
+                  _NB_OTHER=0
               fi
               ;;
            2) # Gravity
@@ -437,15 +458,19 @@ diagnosticFormat () {
               case ${LREAD} in
                  "error") 
                      _COLOR="${bold}${red}"
+                     ((_NB_ERROR+=1))
                      ;;
                  "warning") 
                      _COLOR="${bold}${yellow}"
+                     ((_NB_WARNING+=1))
                      ;;
                  "info") 
                      _COLOR="${bold}$"
+                     ((_NB_INFO+=1))
                      ;;
                   * ) 
                      echo -e "${bold}${red}Unexpected error ${_LOGSTRING[gravity]}${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+                     ((_NB_OTHER+=1))
                      ;;
               esac
               ;;
@@ -563,7 +588,9 @@ fi
 create_variables $TOSCA2CLOUDNET_CONF_FILE
 
 # verify if the target directories are set, if not set default ones
-dirArray=(Alloy_target_directory nwdiag_target_directory tosca_diagrams_target_directory UML2_target_directory HOT_target_directory)
+##### TODO : HOT_target_directory (and maybe others) can be set in the TOSCA2CLOUDNET_CONF_FILE
+#####        but are not used in this script currently, so we have to manage it
+dirArray=( DeclarativeWorkflows_target_directory Alloy_target_directory nwdiag_target_directory tosca_diagrams_target_directory UML2_target_directory)
 NBVARSSET=0
 for var in "${dirArray[@]}"
 do

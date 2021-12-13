@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -77,6 +77,7 @@ node_types:
     derived_from: tosca.nodes.Database
     requirements:
       - host:
+          capability: tosca.capabilities.Compute #ISSUE: Required by TOSCA grammar
           node: tosca.nodes.DBMS.MySQL
 
   # Section 9.3.2 tosca.nodes.DBMS.MySQL
@@ -121,7 +122,7 @@ node_types:
     properties:
       # Property to supply the desired implementation in the Github repository
       github_url:
-        required: no
+        required: true #ISSUE: the spec affects the "no" string value
         type: string
         description: location of the application on the github.
         default: https://github.com/mmm/testnode.git
@@ -137,8 +138,7 @@ node_types:
     requirements:
       - database_link: # ISSUE: added as useful in Container-1.yaml!
           capability: tosca.capabilities.Docker.Link
-# TODO: bug in Alloy generator
-#          node: tosca.nodes.Container.Application.Docker
+          node: tosca.nodes.Container.Application.Docker
           relationship: tosca.relationships.network.LinksTo
           occurrences: [ 0, UNBOUNDED ]
       - host:
@@ -160,6 +160,7 @@ node_types:
         type: string
     requirements:
       - host:
+          capability: tosca.capabilities.Compute #ISSUE: Required by TOSCA grammar
           node: tosca.nodes.WebServer.Nodejs
       - database_connection:
           capability: tosca.capabilities.Endpoint.Database
