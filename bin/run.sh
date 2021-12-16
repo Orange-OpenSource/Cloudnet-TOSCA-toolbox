@@ -50,12 +50,15 @@ TOSCA_SyntaxCheck()
    touch logs/"$_LOG"
 
    # All description files translation
+   OLDIFS=$IFS
+   IFS=$'\n'
    echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/"${_LOG}"
    for filename in $(grep -r --include=*.{yaml,yml} -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
      do 
        echo -e "\n${normal}${magenta}    ${filename^^} ${reset}" | tee -a logs/"${_LOG}"
        translate "$filename" 2>&1 | tee -a logs/"${_LOG}"
      done
+   IFS=$OLDIFS
    SYNTAX_CHECK=true
 }
 
@@ -256,14 +259,15 @@ read_options(){
     case $choice in
         1) # Launch TOSCA syntax checking
            echo -e "\n"
-           TOSCA_SyntaxCheck
+           time TOSCA_SyntaxCheck
            pause
            ;;
         2) # Launch ALL diagrams generation
            echo -e "\n"
-           DiagramsGen network "$nwdiag_target_directory"
-           DiagramsGen TOSCA "$tosca_diagrams_target_directory"
-           DiagramsGen UML2 "$UML2_target_directory"
+           time ( time DiagramsGen network "$nwdiag_target_directory";
+           time DiagramsGen TOSCA "$tosca_diagrams_target_directory";
+           time DiagramsGen UML2 "$UML2_target_directory";
+           )
            pause
            ;;
         3) # Launch TOSCA syntax checking + ALL diagrams generation
@@ -507,7 +511,7 @@ white="37m"
 reset="\033[m"
 blink="5m"
 
-# Guess where are located the software
+# Guess where is located the software
 CLOUDNET_BINDIR="$PWD/.."
 Continue=1
 while [ $Continue -eq 1 ]

@@ -38,6 +38,10 @@ nwdiag:
       textcolor: black
       icon: icons/tosca.nodes.Compute.png
 
+DeclarativeWorkflows:
+  # Target directory where declarative workflows are generated.
+  target-directory: RESULTS/DeclarativeWorkflowu
+
 # Configuration of the TOSCA diagram generator.
 tosca_diagrams:
   # Target directory where network diagrams are generated.
