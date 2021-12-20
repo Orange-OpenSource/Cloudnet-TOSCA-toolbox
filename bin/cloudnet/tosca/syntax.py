@@ -429,10 +429,9 @@ def get_requirement_node_template(requirement_yaml):
 
 
 def get_requirement_node_filter(requirement_yaml):
-    type_requirement_yaml = type(requirement_yaml)
-    if isinstance(type_requirement_yaml, str):
+    if isinstance(requirement_yaml, str):
         return None
-    elif isinstance(type_requirement_yaml, dict):
+    elif isinstance(requirement_yaml, dict):
         return requirement_yaml.get(NODE_FILTER)
     return None
 
@@ -444,19 +443,17 @@ def get_requirement_relationship(requirement_yaml):
 
 
 def get_relationship_type(relationship_yaml):
-    type_relationship_yaml = type(relationship_yaml)
-    if isinstance(type_relationship_yaml, str):
+    if isinstance(relationship_yaml, str):
         return relationship_yaml
-    elif isinstance(type_relationship_yaml, dict):
+    elif isinstance(relationship_yaml, dict):
         return relationship_yaml.get(TYPE)
     return None
 
 
 def get_relationship_interfaces(relationship_yaml):
-    type_relationship_yaml = type(relationship_yaml)
-    if isinstance(type_relationship_yaml, str):
+    if isinstance(relationship_yaml, str):
         return None
-    elif isinstance(type_relationship_yaml, dict):
+    elif isinstance(relationship_yaml, dict):
         return relationship_yaml.get(INTERFACES)
     return None
 
