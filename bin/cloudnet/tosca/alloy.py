@@ -1278,7 +1278,7 @@ class AbstractAlloySigGenerator(Generator):
                 self.generate("  // YAML   ", input_name, ":", sep="")
                 self.generate(
                     "  one",
-                    "input_" + input_name,
+                    "input_" + utils.normalize_name(input_name),
                     ":",
                     prefix + 'input["' + input_name + '"]',
                     "{",
@@ -1286,7 +1286,7 @@ class AbstractAlloySigGenerator(Generator):
                 self.generate_parameter_facts(
                     "    ",
                     "input_",
-                    input_name,
+                    utils.normalize_name(input_name),
                     input_yaml,
                     context_error_message + ":" + INPUTS + ":" + input_name,
                 )
