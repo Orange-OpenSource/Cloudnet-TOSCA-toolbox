@@ -519,6 +519,12 @@ BASIC_TYPE_CHECKERS = {
     ),
 }
 
+def normalize_constraint_clause(constraint_clause):
+    if not isinstance(constraint_clause, dict):
+        constraint_clause = {
+            "equal": constraint_clause
+        }
+    return constraint_clause
 
 class ConstraintClauseChecker(object):
     def __init__(
@@ -938,7 +944,6 @@ class NodeTemplateRequirement(object):
 
     def connectIt(self):
         self.connections += 1
-
 
 class TypeChecker(Checker):
     """
@@ -1748,6 +1753,7 @@ class TypeChecker(Checker):
                 return constraint_clause_checker
 
             for constraint_clause in constraint_clauses:
+                constraint_clause = normalize_constraint_clause(constraint_clause)
                 for constraint_name, constraint_value in constraint_clause.items():
                     constraint_clause_checkers = BASIC_CONSTRAINT_CLAUSES.get(
                         constraint_name
@@ -1814,8 +1820,7 @@ class TypeChecker(Checker):
     def check_constraint_clause(
         self, constraint_clause, type_checker, context_error_message
     ):
-        if not isinstance(constraint_clause, dict):
-            constraint_clause = {"equal": constraint_clause}
+        constraint_clause = normalize_constraint_clause(constraint_clause)
         for constraint_operator, constraint_value in constraint_clause.items():
             cem = context_error_message + ":" + constraint_operator
             constraint_clause_checkers = BASIC_CONSTRAINT_CLAUSES.get(
@@ -3603,7 +3608,7 @@ class TypeChecker(Checker):
         if parameter_definition.get(syntax.TYPE) is None:
             value = parameter_definition.get('value')
             if value != None:
-                # when type undefined and value defined then the output 
+                # when type undefined and value defined then the output
                 # parameter inherits the data type of the assigned value
                 if isinstance(value, dict):
                     for tosca_function_name, tosca_function_parameters in value.items():
@@ -4998,10 +5003,8 @@ class TypeChecker(Checker):
                     if not isinstance(property_constraint_clauses, list):
                         property_constraint_clauses = [property_constraint_clauses]
                     for property_constraint_clause in property_constraint_clauses:
-                        if not isinstance(property_constraint_clause, dict):
-                            property_constraint_clause = {
-                                "equal": property_constraint_clause
-                            }
+                        property_constraint_clause = \
+                            normalize_constraint_clause(property_constraint_clause)
                         for (
                             constraint_name,
                             constraint_value,
@@ -5893,7 +5896,7 @@ class TypeChecker(Checker):
                         self.check_condition_clause_definition(item, cem)
                 else:
                     self.check_condition_clause_definition(constraint, cem)
-                    
+
             self.check_keyword(
                 condition, "constraint", check_constraint, cem
             )
@@ -6287,7 +6290,7 @@ class TypeChecker(Checker):
                 # mark that the requirement <node_template_name>.<node_template_reference_name> is connected
                 self.all_the_node_template_requirements.get(node_template_name + '.' + node_template_requirement_name).connectIt()
                 return
-                
+
             node_template = topology_template.get(syntax.NODE_TEMPLATES, {}).get(
                 node_template_name
             )
