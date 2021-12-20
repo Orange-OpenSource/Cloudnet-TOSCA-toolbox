@@ -272,12 +272,12 @@ class PlantUMLGenerator(Generator):
                     for key, value in (
                         syntax.get_operations(interface_yaml).get(OPERATIONS).items()
                     ):
-                        self.generate(key,  value)
+                        generate_operation(key, value)
             if class_kind == "I":
                 for key, value in (
                     syntax.get_operations(type_yaml).get(OPERATIONS).items()
                 ):
-                    self.generate(key, value)
+                    generate_operation(key, value)
             self.generate("}")
             for attribute_name, attribute_yaml in attributes.items():
                 attribute_type = attribute_yaml.get(TYPE)
@@ -842,10 +842,8 @@ class PlantUMLGenerator(Generator):
                                 ] = target_capability_uml_id
                             self.generate(
                                 source_uml_id,
-                                " --( ",
+                                ' "' + requirement_name + '" --( ',
                                 target_capability_uml_id,
-                                " : ",
-                                requirement_name,
                                 sep="",
                             )
 
