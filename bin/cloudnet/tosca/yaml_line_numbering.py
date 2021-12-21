@@ -150,3 +150,27 @@ SafeLineLoader.add_constructor(
 SafeLineLoader.add_constructor(
     "tag:yaml.org,2002:map", SafeLineLoader.construct_yaml_map
 )
+
+yaml.SafeDumper.add_representer(
+    StrCoord, yaml.SafeDumper.represent_str
+)
+
+yaml.SafeDumper.add_representer(
+    IntCoord, yaml.SafeDumper.represent_int
+)
+
+yaml.SafeDumper.add_representer(
+    FloatCoord, yaml.SafeDumper.represent_float
+)
+
+yaml.SafeDumper.add_representer(
+    ListCoord, yaml.SafeDumper.represent_list
+)
+
+yaml.SafeDumper.add_representer(
+    DictCoord, yaml.SafeDumper.represent_dict
+)
+
+yaml.SafeDumper.add_representer(
+    DatetimeCoord, yaml.SafeDumper.represent_datetime
+)
