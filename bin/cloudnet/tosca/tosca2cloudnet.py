@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -163,7 +163,6 @@ def main(argv):
             HOTGenerator,
         ]:
             generator = generator_class(generator=type_checker)
-            print("TOSCA2CLOUDNET : " + generator_class.__name__ + " ...")
             generator.generation()
             nb_errors += generator.nb_errors
             nb_warnings += generator.nb_warnings
