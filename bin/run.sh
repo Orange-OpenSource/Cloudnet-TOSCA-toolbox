@@ -51,7 +51,11 @@ TOSCA_SyntaxCheck()
 
    # All description files translation
    echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/"${_LOG}"
-   for filename in $(grep -r --include=*.{yaml,yml} -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
+# TODO: Jean-Luc following commits need to be merged.
+# Next line committed by Jean-Luc in https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/commit/0844e5de97c8834cd3d6b21ecb521a9cdcf8dcdc#diff-00a80c5821edea2ebf676056aa4c9a24e57379ef52cefecb2ccffaaf4cc362c9
+#   for filename in $(grep -r --include=*.{yaml,yml} -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
+# Next line committed by Philippe in https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/commit/ff3ee75f572e6d665d05ad89496fcbff07503f53#diff-00a80c5821edea2ebf676056aa4c9a24e57379ef52cefecb2ccffaaf4cc362c9
+   for filename in $(find . -not -path "./${DeclarativeWorkflows_target_directory}/*" -iname '*.yaml' -o -iname '*.yml' | xargs grep -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
      do 
        echo -e "\n${normal}${magenta}    ${filename^^} ${reset}" | tee -a logs/"${_LOG}"
        translate "$filename" 2>&1 | tee -a logs/"${_LOG}"
@@ -70,13 +74,13 @@ DiagramsGen()
 
    # set the files types to search for according to diagram type
    case $DIAGRAM_TYPE in
-      network) 
+      network)
            FILE_TYPE="*.nwdiag"
            ;;
-      TOSCA) 
+      TOSCA)
            FILE_TYPE="*.dot"
            ;;
-      UML2) 
+      UML2)
            FILE_TYPE="*.plantuml"
            ;;
        * ) echo -e "ERROR argument $DIAGRAM_TYPE not expected";;
@@ -87,7 +91,7 @@ DiagramsGen()
 
    local GENERATE=false
    # Verify that we have diagrams to generate
-   if [ -d "$TARGET_DIRECTORY" ]; 
+   if [ -d "$TARGET_DIRECTORY" ];
    then
       # Is there some files ?
       if test -n "$(find "${TARGET_DIRECTORY}" -maxdepth 1 -name $FILE_TYPE -print -quit)"
@@ -103,10 +107,10 @@ DiagramsGen()
             while true; do
                read -rs -n 1 gn
                case $gn in
-                  [Gg]* ) 
+                  [Gg]* )
                         GENERATE=true
                         break;;
-                  [Nn]* ) 
+                  [Nn]* )
                         echo -e "\n         So run \"TOSCA syntax checking\" option before generating diagrams.\n"
                         break;;
                   * ) echo "Please answer [Gg]enerate or [Nn]o.";;
@@ -117,14 +121,14 @@ DiagramsGen()
          if [ $GENERATE ];
          then
             case $DIAGRAM_TYPE in
-               network) 
+               network)
                      # generate_network_diagrams "$TARGET_DIRECTORY/$FILE_TYPE" 2>&1 |tee -a logs/"${_LOG}"
                      generate_network_diagrams "$TARGET_DIRECTORY"/*.nwdiag 2>&1 |tee -a logs/"${_LOG}"
                      ;;
-               TOSCA) 
+               TOSCA)
                      generate_tosca_diagrams "$TARGET_DIRECTORY"/*.dot 2>&1 |tee -a "logs/${_LOG}"
                      ;;
-               UML2) 
+               UML2)
                      generate_uml2_diagrams "$TARGET_DIRECTORY"/*.plantuml 2>&1 |tee -a "logs/${_LOG}"
                      ;;
                 * )  echo -e "ERROR argument $DIAGRAM_TYPE not expected";;
@@ -145,11 +149,11 @@ AlloySyntax()
    # Verify if Syntax checking has been done
    if [ -d "${Alloy_target_directory}" ];
    then
-      if [ "$SYNTAX_CHECK" = true ]; then 
+      if [ "$SYNTAX_CHECK" = true ]; then
           echo -e "\n${normal}${magenta}*** Checking ALLOY syntax ***${reset}" | tee -a "logs/${_LOG}"
           alloy_parse "${Alloy_target_directory}/*.als" 2>&1 |tee -a "logs/${_LOG}"
       else
-         # If not, ask if we create diagrams with older generated files if they exist 
+         # If not, ask if we create diagrams with older generated files if they exist
          if test -n "$(find "${Alloy_target_directory}" -maxdepth 1 -name '*.als' -print -quit)"
          then
             # 'old' files found
@@ -184,7 +188,7 @@ AlloySyntax()
 AlloySolve()
 {
    # Verify if Syntax checking has been done
-   if [ "$SYNTAX_CHECK" = true ]; then 
+   if [ "$SYNTAX_CHECK" = true ]; then
       echo -e "\n${normal}${magenta}*** Run the solver to verify the ability to deploy the description ***${reset}" | tee -a logs/"${_LOG}"
       /usr/bin/time -o logs/"${_LOG}" --append /bin/sh -c ". '${CLOUDNET_BINDIR}/cloudnet_rc.sh'; alloy_execute '${Alloy_target_directory}'/*.als 2>&1 |tee -a 'logs/${_LOG}'"
    else
@@ -221,7 +225,7 @@ AlloySolve()
 # Wait until enter key is pressed
 ################################################################################
 pause(){
-  echo 
+  echo
   read -rp "         Press [Enter] key to continue..."
 }
 
@@ -301,7 +305,7 @@ read_options(){
            ;;
         D) # Show the diagnostic file formated
            # If logfilname is not set warn the user
-           if [ "$SYNTAX_CHECK" = true ]; then 
+           if [ "$SYNTAX_CHECK" = true ]; then
                if [ -z ${_TRANSLATE_LOG+x} ]; then
                   echo -e "\n\n"
                   read -rp "          No diagnostic file created for this session. type any key to continue." choice
@@ -344,7 +348,7 @@ read_options(){
            pause
            ;;
         x) # Exit with status code 0
-           if [ "$DIRVARS_GENERATED" = true ]; then 
+           if [ "$DIRVARS_GENERATED" = true ]; then
              # Remove generated configuration file
              rm -f "$TOSCA2CLOUDNET_CONF_FILE"
            fi
@@ -356,19 +360,19 @@ read_options(){
 }
 
 ################################################################################
-# Print a string ($3 parameter) on a column of $1 width, after printing the 
+# Print a string ($3 parameter) on a column of $1 width, after printing the
 # first text ($2 parameter named keyname)
 # Is it clear ? I doubt ;-)
 ################################################################################
 columnize2 () {
-    indent=$1; 
-    collen=$(($(tput cols)-indent)); 
-    keyname="$2"; 
-    value=$3; 
-    while [ -n "$value" ] ; do 
-        printf "%-26s  %-${indent}s\n" "$keyname" "${value:0:$collen}";  
+    indent=$1;
+    collen=$(($(tput cols)-indent));
+    keyname="$2";
+    value=$3;
+    while [ -n "$value" ] ; do
+        printf "%-26s  %-${indent}s\n" "$keyname" "${value:0:$collen}";
         keyname="";
-        value=${value:$collen}; 
+        value=${value:$collen};
     done
 }
 
@@ -378,7 +382,7 @@ columnize2 () {
 myJQ () {
    # Test the linux version
    case $(arch) in
-      x86_64) 
+      x86_64)
          # Linux 64 bits architecture
          "${CLOUDNET_BINDIR}"/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
          ;;
@@ -386,7 +390,7 @@ myJQ () {
          # Linux 32 bits architecture
          "${CLOUDNET_BINDIR}"/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
          ;;
-      *) 
+      *)
          # Unknown linux architecture
          echo -e "${bold}${red}Error${reset} Unknown architecture to run diagnostic menu..."
          pause
@@ -397,7 +401,7 @@ myJQ () {
 #     errors level, line and column numbers, and associated message
 ################################################################################
 diagnosticFormat () {
-   # The translate file 
+   # The translate file
    _FILENAME=$1
    _SORTED_FILENAME="${_FILENAME}_SORTED"
 
@@ -411,7 +415,7 @@ diagnosticFormat () {
 
    # Sort file on files names in case
    sort -k 4 -o "${_SORTED_FILENAME}" "${_FILENAME}"
-   
+
    _OLDFILENAME=""
    _INDEX=1
    _SEVERITY=""
@@ -432,7 +436,7 @@ diagnosticFormat () {
            1) # Filename
                   if [ "$_OLDFILENAME" != "${LREAD}" ]; then
                   # If we are not at the begining of the treatement
-                  # ie the variable _OLDFILENAME is empty, 
+                  # ie the variable _OLDFILENAME is empty,
                   # We print the numbers of errors found
                   if  [ ! -z "$_OLDFILENAME" ]; then
                         echo -e "\n\011 ----------- Results -----------" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
@@ -442,7 +446,7 @@ diagnosticFormat () {
                                 "  ${_NB_OTHER}${bold}${white} UNKNOW${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
                   fi
 
-                  # print the new filename 
+                  # print the new filename
                   echo -e "\n== ${bold}${magenta}${LREAD^^}${reset} =============" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
                   # and store it
                   _OLDFILENAME="${LREAD}"
@@ -456,19 +460,19 @@ diagnosticFormat () {
               # Set the color
               _SEVERITY=${LREAD}
               case ${LREAD} in
-                 "error") 
+                 "error")
                      _COLOR="${bold}${red}"
                      ((_NB_ERROR+=1))
                      ;;
-                 "warning") 
+                 "warning")
                      _COLOR="${bold}${yellow}"
                      ((_NB_WARNING+=1))
                      ;;
-                 "info") 
+                 "info")
                      _COLOR="${bold}$"
                      ((_NB_INFO+=1))
                      ;;
-                  * ) 
+                  * )
                      echo -e "${bold}${red}Unexpected error ${_LOGSTRING[gravity]}${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
                      ((_NB_OTHER+=1))
                      ;;
@@ -483,11 +487,11 @@ diagnosticFormat () {
            5) #  Get the Column
               echo -e "\011 [${_COLOR}${_SEVERITY^^}${reset}] line ${_LINE} column ${LREAD}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
               columnize2 45 "                 $(tput setaf 4)MESSAGE$(tput sgr0) :" "${_MESSAGE}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
-              _INDEX=0 
+              _INDEX=0
               ;;
        esac
        _INDEX=$((_INDEX+1))
-   
+
    done < <(myJQ)
 }
 
@@ -551,7 +555,7 @@ fi
 
 # if tosca2cloudnet.yaml does'nt exist, create a default one
 if [ ! -f "${TOSCA2CLOUDNET_CONF_FILE}" ]; then
-   #debug 
+   #debug
    echo "###### Default tosca2cloudnet.yaml creation." >> $TOSCA2CLOUDNET_CONF_FILE
 
    DIRVARS_GENERATED=true
@@ -644,7 +648,7 @@ while getopts ${optstring} option; do
       s) # run syntax checking on a single file
          echo -e "${normal}${magenta}  xxx  ${OPTARG^^} xxx ${reset}"
          translate "${OPTARG}"
-         if [ "$DIRVARS_GENERATED" = true ]; then 
+         if [ "$DIRVARS_GENERATED" = true ]; then
            rm -f $TOSCA2CLOUDNET_CONF_FILE
          fi
          exit;;
