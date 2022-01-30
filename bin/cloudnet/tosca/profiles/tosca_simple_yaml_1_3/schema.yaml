@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -245,33 +245,38 @@ definitions:
 
   # Section 3.6.10
   property_definition:
-    type: object
-    properties:
-      type:
-        type: string
-      description:
-        $ref: "#/definitions/description"
-      required:
-        type: boolean
-      default:
-        $ref: "#/definitions/value"
-      status:
-        $ref: "#/definitions/status"
-      constraints:
-        type: array
-        items:
-          $ref: "#/definitions/constraint_clause"
-      key_schema:
-        $ref: "#/definitions/schema_definition"
-      entry_schema:
-        $ref: "#/definitions/schema_definition"
-      external_schema:
-        type: string
-      metadata:
-        $ref: "#/definitions/metadata"
-    additionalProperties: false
-#    required: [ type ] # type is required but can be set into the parent definition.
-     # So type requirement is checked by TypeChecker.
+    anyOf:
+      # Section 3.6.10.4
+      - type: object
+        properties:
+          type:
+            type: string
+          description:
+            $ref: "#/definitions/description"
+          required:
+            type: boolean
+          default:
+            $ref: "#/definitions/value"
+          status:
+            $ref: "#/definitions/status"
+          constraints:
+            type: array
+            items:
+              $ref: "#/definitions/constraint_clause"
+          key_schema:
+            $ref: "#/definitions/schema_definition"
+          entry_schema:
+            $ref: "#/definitions/schema_definition"
+          external_schema:
+            type: string
+          metadata:
+            $ref: "#/definitions/metadata"
+        additionalProperties: false
+        required: [ type ]
+      # Section 3.6.10.6 Refining Property Definitions
+      - $ref: "#/definitions/parameter_definition"
+      # Example at end of Section 3.6.10.8
+      - $ref: "#/definitions/value"
 
   status:
     type: string

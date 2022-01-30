@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -1886,6 +1886,9 @@ class TypeChecker(Checker):
         previous_property_definition,
         context_error_message,
     ):
+        # normalize
+        if not isinstance(property_definition, dict):
+            property_definition = { "value": property_definition }
         # check type
         self.check_type_in_definition(
             "data",
@@ -1945,6 +1948,15 @@ class TypeChecker(Checker):
             property_definition, syntax.EXTERNAL_SCHEMA, context_error_message
         )
         # check metadata - nothing to do
+        # check value
+        if syntax.VALUE in property_definition:
+            default = property_definition.get(syntax.VALUE)
+            self.check_value(
+                default,
+                property_definition,
+                previous_property_definition,
+                context_error_message + ":" + syntax.VALUE,
+            )
 
     def check_requirement_definition(
         self,
