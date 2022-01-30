@@ -18,7 +18,7 @@ container_dest_volume="/work"
 exec docker ${DOCKER_OPTS} run \
       --user "$(id -u)":"$(id -g)" \
       --volume="${PWD}:${container_dest_volume}" \
-      --volume="${CLOUDNET_BINDIR}/cloudnet:/cloudnet" \
+      --volume="$(cd "${CLOUDNET_BINDIR}"; pwd)/cloudnet:/cloudnet" \
       --workdir="${container_dest_volume}" \
       --rm \
       --attach=stdin --attach=stdout --attach=stderr \
