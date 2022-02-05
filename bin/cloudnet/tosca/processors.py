@@ -21,6 +21,7 @@ import cloudnet.tosca.configuration as configuration
 from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.importers import ArchiveImporter
 from cloudnet.tosca.utils import normalize_name
+from .yaml_line_numbering import Coord as YamlCoord
 
 configuration.DEFAULT_CONFIGURATION["Generator"] = {"filename-format": "shortname"}
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
@@ -121,11 +122,19 @@ class Processor(object):
                     result = repository_url + "/" + import_file
         return result
 
+    def get_tosca_service_template_fullname_with_line_and_column(self, value):
+        result = self.tosca_service_template.get_fullname()
+        if isinstance(value, YamlCoord):
+            result += "@%d,%d" % (value.line, value.column)
+        else:
+            result += "@UNKNOWN"
+        return result
+
     def error(self, message, value=None):
         print(
             CRED,
             "[ERROR] ",
-            self.tosca_service_template.get_fullname(),
+            self.get_tosca_service_template_fullname_with_line_and_column(value),
             ":",
             message,
             "!",
@@ -140,7 +149,7 @@ class Processor(object):
         print(
             CYELLOW,
             "[Warning] ",
-            self.tosca_service_template.get_fullname(),
+            self.get_tosca_service_template_fullname_with_line_and_column(value),
             ":",
             message,
             "!",
@@ -155,7 +164,7 @@ class Processor(object):
         if self.logger.isEnabledFor(logging.INFO):
             print(
                 "[Info] ",
-                self.tosca_service_template.get_fullname(),
+                self.get_tosca_service_template_fullname_with_line_and_column(value),
                 ": ",
                 message,
                 sep="",
@@ -176,7 +185,7 @@ class Processor(object):
         if self.logger.isEnabledFor(logging.DEBUG):
             print(
                 "[DEBUG] ",
-                self.tosca_service_template.get_fullname(),
+                self.get_tosca_service_template_fullname_with_line_and_column(value),
                 ": ",
                 message,
                 sep="",
