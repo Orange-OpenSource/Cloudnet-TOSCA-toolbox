@@ -1062,7 +1062,7 @@ class TypeChecker(Checker):
             try:
                 import_filepath = self.get_import_full_filepath(import_yaml)
             except ValueError as exc:
-                self.error("imports[%d]:%s" % (index, exc))
+                self.error("imports[%d]:%s" % (index, exc), import_yaml)
                 continue
             try:
                 import_namespace_prefix = syntax.get_import_namespace_prefix(
@@ -1129,7 +1129,8 @@ class TypeChecker(Checker):
                         + type_kind
                         + ":"
                         + type_name
-                        + " - type already defined"
+                        + " - type already defined",
+                        type_yaml
                     )
                 else:
                     self.type_system.types[full_type_name] = type_yaml
@@ -4454,7 +4455,10 @@ class TypeChecker(Checker):
         if 'default' in definition:
             default = definition.get(syntax.DEFAULT)
             if value == default:
-                self.warning(context_error_message + ': ' + str(value) + ' - useless assignment as the value equals to the defined default value')
+                self.warning(
+                    context_error_message + ': ' + str(value) + ' - useless assignment as the value equals to the defined default value',
+                    name,
+                )
 
     def check_property_assignment(
         self,
@@ -5230,7 +5234,7 @@ class TypeChecker(Checker):
         # check description - nothing to do
         # check metadata - nothing to do
         # check directives
-        def check_directive_substitute(cem):
+        def check_directive_substitute(cem, directive):
             substituting_topology_templates = (
                 self.search_substituting_topology_templates(node_template, cem)
             )
@@ -5239,13 +5243,15 @@ class TypeChecker(Checker):
                 self.error(
                     cem
                     + " - no substituting topology template found for %s node type"
-                    % node_type_name
+                    % node_type_name,
+                    directive,
                 )
             elif nb_substituting_topology_templates == 1:
                 self.info(
                     cem
                     + " - one substituting topology template found: "
-                    + substituting_topology_templates[0].get_fullname()
+                    + substituting_topology_templates[0].get_fullname(),
+                    directive,
                 )
             else:
                 self.warning(
@@ -5253,7 +5259,8 @@ class TypeChecker(Checker):
                     + " - several substituting topology templates found: "
                     + array_to_string_with_or_separator(
                         [item.get_fullname for item in substituting_topology_templates]
-                    )
+                    ),
+                    directive,
                 )
 
         idx = 0
@@ -5268,21 +5275,32 @@ class TypeChecker(Checker):
                 + directive
             )
             if directive == "substitute":
-                check_directive_substitute(cem)
+                check_directive_substitute(cem, directive)
             elif directive == "substitutable":
                 self.warning(
-                    cem + " - deprecated directive, instead use substitute directive"
+                    cem + " - deprecated directive, instead use substitute directive",
+                    directive,
                 )
                 check_directive_substitute(cem)
             elif directive == "select":
-                self.error(cem + " - unchecked currently")
+                self.error(
+                    cem + " - unchecked currently",
+                    directive,
+                )
             elif directive == "selectable":
                 self.warning(
-                    cem + " - deprecated directive, instead use select directive"
+                    cem + " - deprecated directive, instead use select directive",
+                    directive,
                 )
-                self.error(cem + " - unchecked currently")
+                self.error(
+                    cem + " - unchecked currently",
+                    directive,
+                )
             else:
-                self.error(cem + " - unsupported directive")
+                self.error(
+                    cem + " - unsupported directive",
+                    directive,
+                )
             idx += 1
         # check properties
         self.iterate_over_map_of_assignments(
@@ -5967,17 +5985,22 @@ class TypeChecker(Checker):
                     logger, reason = evaluate_definition(def_name, definition)
                     reason = " (" + reason + ")" if reason is not None else ""
                     if logger is not None:
+                        # compute the location
+                        keys = list(substitution_mapping.keys())
+                        try:
+                            location = keys[keys.index(keyword)]
+                        except ValueError:
+                            location = substitution_mapping
+                        # log
                         logger(
                             context_error_message
-                            + ":"
-                            + keyword
-                            + ":"
-                            + def_name
                             + " - "
                             + kind_definition
+                            + " "
+                            + def_name
                             + " unmapped"
                             + reason,
-                            def_name,
+                            location,
                         )
 
         # check node_type
