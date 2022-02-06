@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -1076,7 +1076,7 @@ class AbstractAlloySigGenerator(Generator):
                         value = self.stringify_value(
                             constraint_yaml, yaml, ctx_error_msg, ", "
                         )
-                    elif constraint_name in ["min_length", "max_length"]:
+                    elif constraint_name in ["length", "min_length", "max_length"]:
                         value = self.stringify_value(
                             constraint_yaml, {TYPE: "integer"}, ctx_error_msg, ", "
                         )
