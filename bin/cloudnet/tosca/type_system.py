@@ -596,8 +596,9 @@ BASIC_CONSTRAINT_CLAUSES = {
             "equal", CONSTRAINT_EQUAL, type_check_operand
         ),
         "range": ConstraintClauseChecker("equal", CONSTRAINT_EQUAL, type_check_operand),
-        "list": ConstraintClauseChecker("equal", CONSTRAINT_EQUAL, type_check_operand),
-        "map": ConstraintClauseChecker("equal", CONSTRAINT_EQUAL, type_check_operand),
+# Following are not defined into the table of Section 3.6.3.1 of TOSCA v1.3
+#        "list": ConstraintClauseChecker("equal", CONSTRAINT_EQUAL, type_check_operand),
+#        "map": ConstraintClauseChecker("equal", CONSTRAINT_EQUAL, type_check_operand),
         "scalar-unit.size": ConstraintClauseChecker(
             "equal",
             lambda v1, v2: normalize_scalar_unit(v1, SCALAR_SIZE_UNITS)
@@ -1782,7 +1783,7 @@ class TypeChecker(Checker):
                             + " unallowed operator on "
                             + definition_type
                             + " value",
-                            definition_type,
+                            value,
                         )
                         continue
                     LOGGER.debug(
@@ -1790,7 +1791,8 @@ class TypeChecker(Checker):
                         + " - evaluate "
                         + constraint_name
                         + ": "
-                        + str(constraint_value)
+                        + str(constraint_value),
+                        constraint_name
                     )
                     if not constraint_clause_checker.check_constraint(
                         value, constraint_value, self, context_error_message
@@ -1841,7 +1843,7 @@ class TypeChecker(Checker):
             if constraint_clause_checker is None:
                 self.error(
                     cem + " - unallowed operator on " + type_checker.type_name,
-                    type_checker.type_name,
+                    constraint_operator,
                 )
                 continue
 
@@ -5033,7 +5035,8 @@ class TypeChecker(Checker):
                                     context_error_message
                                     + " - "
                                     + constraint_name
-                                    + " unsupported operator"
+                                    + " unsupported operator",
+                                    constraint_name
                                 )
                                 return False
                             constraint_clause_checker = constraint_clause_checkers.get(
@@ -5046,7 +5049,8 @@ class TypeChecker(Checker):
                                     + constraint_name
                                     + " unallowed operator on "
                                     + property_type
-                                    + " value"
+                                    + " value",
+                                    constraint_name
                                 )
                                 return False
                             LOGGER.debug(
@@ -5054,7 +5058,8 @@ class TypeChecker(Checker):
                                 + " - evaluate "
                                 + constraint_name
                                 + ": "
-                                + str(constraint_value)
+                                + str(constraint_value),
+                                constraint_name
                             )
                             if not constraint_clause_checker.check_constraint(
                                 property_value,
