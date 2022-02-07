@@ -2402,6 +2402,16 @@ class TypeChecker(Checker):
             context_error_message,
         )
 
+        # check outputs
+        self.iterate_over_map_of_definitions(
+            self.check_output_notification_definition,
+            syntax.OUTPUTS,
+            operation_definition,
+            previous_operation_definition,
+            REFINE_OR_NEW,
+            context_error_message,
+        )
+
     def check_operation_implementation_definition(
         self, operation_implementation_definition, context_error_message
     ):
