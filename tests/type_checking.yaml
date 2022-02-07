@@ -552,27 +552,27 @@ data_types:
       p-equal-list-0:
         type: list
         entry_schema: string
-        default: [string1, string2] # CORRECT: equal succeeded.
+        default: [string1, string2] # ERROR: unallowed operator!
         constraints:
-          - equal: [string1, string2]
+          - equal: [string1, string2] # ERROR: unallowed operator!
       p-equal-list-1:
         type: list
         entry_schema: string
         default: [string1, string2] # ERROR: equal failed!
         constraints:
-          - equal: [string1, string2, string3]
+          - equal: [string1, string2, string3] # ERROR: unallowed operator!
       p-equal-map-0:
         type: map
         entry_schema: string
-        default: { string1: string2, string3: string4 } # CORRECT: equal succeeded.
+        default: { string1: string2, string3: string4 } # ERROR: unallowed operator!
         constraints:
-          - equal: { string1: string2, string3: string4 }
+          - equal: { string1: string2, string3: string4 } # ERROR: unallowed operator!
       p-equal-map-1:
         type: map
         entry_schema: string
         default: { string1: string2, string3: string4 } # ERROR: equal failed!
         constraints:
-          - equal: { string1: string, string2: string }
+          - equal: { string1: string, string2: string } # ERROR: unallowed operator!
       p-equal-scalar-unit.size-0:
         type: scalar-unit.size
         default: 128 GB # CORRECT: equal succeeded.
