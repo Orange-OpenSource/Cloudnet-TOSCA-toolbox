@@ -4612,6 +4612,53 @@ class TypeChecker(Checker):
         requirement_definition,
         context_error_message,
     ):
+        def check_compatible_capabilities(
+            node_type_name,
+            capability_name,
+            capability_type_name,
+            cem
+        ):
+            node_type_def = self.type_system.merge_type(
+                                self.type_system.get_type_uri(
+                                    node_type_name
+                                )
+                            )
+            compatible_capabilities = []
+            for cap_name, cap_def in node_type_def.get(
+                syntax.CAPABILITIES, {}
+            ).items():
+                if(
+                    cap_name == capability_name
+                    or self.type_system.is_derived_from(
+                        syntax.get_capability_type(cap_def),
+                        capability_type_name)
+                ):
+                    compatible_capabilities.append(cap_name)
+            if len(compatible_capabilities) == 0:
+                self.error(
+                    cem
+                    + " - "
+                    + requirement_capability
+                    + " capability expected"
+                )
+            elif len(compatible_capabilities) == 1:
+                self.info(
+                    cem
+                    + " - "
+                    + compatible_capabilities[0]
+                    + " capability found"
+                )
+            else:
+                self.error(
+                    cem
+                    + " - "
+                    + array_to_string_with_or_separator(compatible_capabilities)
+                    + " capabilities found, then "
+                    + compatible_capabilities[0]
+                    + " selected",
+                    requirement_assignment
+                )
+
         # check the short notation
         if isinstance(requirement_assignment, str):
             node_template = (
@@ -4627,64 +4674,46 @@ class TypeChecker(Checker):
                     + " - node template undefined",
                     requirement_assignment,
                 )
-            else:
-                requirement_node_type_name = requirement_definition.get(syntax.NODE)
-                if requirement_node_type_name is None:
-                    requirement_capability = requirement_definition.get(
-                        syntax.CAPABILITY
+                return
+
+            requirement_capability = requirement_definition.get(
+                                        syntax.CAPABILITY
+                                     )
+            if requirement_capability is None:
+                self.error(
+                    context_error_message
+                    + ": "
+                    + requirement_assignment
+                    + " - no capability type in "
+                    + str(requirement_definition)
+                )
+                return
+
+            requirement_node_type_name = requirement_definition.get(syntax.NODE)
+            if requirement_node_type_name is not None:
+                # check node_template type is compatible with requirement_definition node
+                if not self.type_system.is_derived_from(
+                    node_template.get(syntax.TYPE), requirement_node_type_name
+                ):
+                    self.error(
+                        context_error_message
+                        + ": "
+                        + requirement_assignment
+                        + " - "
+                        + node_template.get(syntax.TYPE)
+                        + " but "
+                        + requirement_node_type_name
+                        + " expected"
                     )
-                    if requirement_capability is None:
-                        self.error(
-                            context_error_message
-                            + ":"
-                            + syntax.NODE
-                            + ": "
-                            + requirement_assignment
-                            + " - no capability type in "
-                            + str(requirement_definition)
-                        )
-                    else:
-                        node_template_type = self.type_system.merge_type(
-                            self.type_system.get_type_uri(
-                                node_template.get(syntax.TYPE)
-                            )
-                        )
-                        compatible_with_capability = False
-                        for cap_name, cap_def in node_template_type.get(
-                            syntax.CAPABILITIES, {}
-                        ).items():
-                            if self.type_system.is_derived_from(
-                                syntax.get_capability_type(cap_def),
-                                requirement_capability,
-                            ):
-                                compatible_with_capability = True
-                                break
-                        if compatible_with_capability is False:
-                            self.error(
-                                context_error_message
-                                + ":"
-                                + syntax.NODE
-                                + ": "
-                                + requirement_assignment
-                                + " - "
-                                + requirement_capability
-                                + " capability expected"
-                            )
-                else:
-                    # check node_template type is compatible with requirement_definition node
-                    if not self.type_system.is_derived_from(
-                        node_template.get(syntax.TYPE), requirement_node_type_name
-                    ):
-                        self.error(
-                            context_error_message
-                            + ": "
-                            + requirement_assignment
-                            + " - "
-                            + node_template.get(syntax.TYPE)
-                            + " but "
-                            + requirement_node_type_name
-                            + " expected"
-                        )
+                    return
+
+            check_compatible_capabilities(
+                node_template.get(syntax.TYPE),
+                None,
+                requirement_capability,
+                context_error_message + ": " + requirement_assignment
+            )
+
             return
 
         # check the extended notation
@@ -4701,56 +4730,7 @@ class TypeChecker(Checker):
             )
             if node_template is not None:
                 requirement_node_type_name = requirement_definition.get(syntax.NODE)
-                if requirement_node_type_name is None:
-                    if capability is not None:
-                        requirement_capability = capability
-                    else:
-                        requirement_capability = requirement_definition.get(
-                            syntax.CAPABILITY
-                        )
-                    if requirement_capability is None:
-                        self.error(
-                            context_error_message
-                            + ":"
-                            + syntax.NODE
-                            + ": "
-                            + node
-                            + " - no capability type in "
-                            + str(requirement_definition),
-                            requirement_definition,
-                        )
-                    else:
-                        node_template_type = self.type_system.merge_type(
-                            self.type_system.get_type_uri(
-                                node_template.get(syntax.TYPE)
-                            )
-                        )
-                        compatible_with_capability = False
-                        for cap_name, cap_def in node_template_type.get(
-                            syntax.CAPABILITIES, {}
-                        ).items():
-                            if (
-                                cap_name == requirement_capability
-                                or self.type_system.is_derived_from(
-                                    syntax.get_capability_type(cap_def),
-                                    requirement_capability,
-                                )
-                            ):
-                                compatible_with_capability = True
-                                break
-                        if compatible_with_capability is False:
-                            self.error(
-                                context_error_message
-                                + ":"
-                                + syntax.NODE
-                                + ": "
-                                + node
-                                + " - "
-                                + requirement_capability
-                                + " capability expected",
-                                node_template,
-                            )
-                else:
+                if requirement_node_type_name is not None:
                     # check node_template type is compatible with requirement_definition node
                     if not self.type_system.is_derived_from(
                         node_template.get(syntax.TYPE), requirement_node_type_name
@@ -4766,6 +4746,31 @@ class TypeChecker(Checker):
                             + " expected",
                             node_template,
                         )
+
+                if capability is not None:
+                    requirement_capability = capability
+                else:
+                    requirement_capability = requirement_definition.get(
+                            syntax.CAPABILITY
+                    )
+                if requirement_capability is None:
+                    self.error(
+                        context_error_message
+                        + ":"
+                        + syntax.NODE
+                        + ": "
+                        + node
+                        + " - no capability type in "
+                        + str(requirement_definition),
+                        requirement_definition,
+                    )
+                else:
+                    check_compatible_capabilities(
+                        node_template.get(syntax.TYPE),
+                        requirement_capability,
+                        requirement_capability,
+                        context_error_message + ":" + syntax.NODE + ": " + node
+                    )
             else:
                 node_type = self.type_system.merge_type(node)
                 if node_type is None:
@@ -4815,31 +4820,12 @@ class TypeChecker(Checker):
                             requirement_definition,
                         )
                     else:
-                        compatible_with_capability = False
-                        for cap_name, cap_def in node_type.get(
-                            syntax.CAPABILITIES, {}
-                        ).items():
-                            if (
-                                cap_name == requirement_capability
-                                or self.type_system.is_derived_from(
-                                    syntax.get_capability_type(cap_def),
-                                    requirement_capability,
-                                )
-                            ):
-                                compatible_with_capability = True
-                                break
-                        if compatible_with_capability is False:
-                            self.error(
-                                context_error_message
-                                + ":"
-                                + syntax.NODE
-                                + ": "
-                                + node
-                                + " - "
-                                + requirement_capability
-                                + " capability expected",
-                                node,
-                            )
+                        check_compatible_capabilities(
+                            node,
+                            requirement_capability,
+                            requirement_capability,
+                            context_error_message + ":" + syntax.NODE + ": " + node
+                        )
 
                     if requirement_assignment.get(syntax.NODE_FILTER) is None:
                         # search node templates conform to node_type

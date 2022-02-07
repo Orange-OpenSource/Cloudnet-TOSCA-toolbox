@@ -66,6 +66,8 @@ check_regression type_checking-1.3.yaml
 check_regression topology_template_substitution_mapping.yaml
 
 # Cloudnet TOSCA Toolbox issues
-translate issues/issue_39.yaml
+check_regression issues/issue_39.yaml
+check_regression issues/issue_41.yaml
+check_regression issues/issue_42.yaml
 
 exit ${exit_code}
