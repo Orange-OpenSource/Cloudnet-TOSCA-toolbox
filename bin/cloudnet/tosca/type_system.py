@@ -2436,7 +2436,7 @@ class TypeChecker(Checker):
             )
             idx += 1
         # check timeout - nothing to do
-        # check operation_host - TODO
+        # check operation_host
         operation_host = operation_implementation_definition.get("operation_host")
         if operation_host is not None:
             if operation_host not in self.current_allowed_operation_host_keynames:
@@ -2485,6 +2485,44 @@ class TypeChecker(Checker):
     check_notification_implementation_definition = (
         check_operation_implementation_definition
     )
+
+    def check_notification_assignment(
+        self,
+        notification_name,
+        notification_assignment,
+        notification_definition,
+        context_error_message,
+    ):
+        # check the short notation
+        if isinstance(notification_assignment, str):
+            self.check_artifact_definition(
+                "", notification_assignment, {}, context_error_message
+            )
+            return
+
+        # check the extended notation
+        # check primary
+        primary = notification_assignment.get(syntax.PRIMARY)
+        if primary is not None:
+            self.check_artifact_definition(
+                syntax.PRIMARY,
+                primary,
+                {},
+                context_error_message + ":" + syntax.PRIMARY,
+            )
+        # check dependencies
+        idx = 0
+        for dependency in notification_assignment.get(
+            syntax.DEPENDENCIES, []
+        ):
+            dependency_name = syntax.DEPENDENCIES + "[" + str(idx) + "]"
+            self.check_artifact_definition(
+                dependency_name,
+                dependency,
+                {},
+                context_error_message + ":" + dependency_name,
+            )
+            idx += 1
 
     def check_output_notification_definition(
         self,
@@ -5201,10 +5239,17 @@ class TypeChecker(Checker):
             interface_type_name,
             context_error_message,
         )
-        # check notifications - TODO
-        self.unchecked(
-            interface_assignment, syntax.NOTIFICATIONS, context_error_message
-        )
+        # check notifications
+        notifications = interface_assignment.get(syntax.NOTIFICATIONS)
+        if notifications is not None:
+            self.iterate_over_map_of_assignments(
+                self.check_notification_assignment,
+                syntax.NOTIFICATIONS,
+                interface_assignment,
+                interface_type,
+                interface_type_name,
+                context_error_message,
+            )
 
     def check_operation_assignment(
         self,
