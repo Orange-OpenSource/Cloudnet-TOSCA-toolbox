@@ -977,6 +977,7 @@ class TypeChecker(Checker):
         self.current_default_inputs_location = None
         self.current_imperative_workflow = None
         self.reserved_function_keywords = {}
+        self.current_allowed_operation_host_keynames = []
         self.all_the_node_template_requirements = {}
 
         self.info("TOSCA type checking...")
@@ -2436,9 +2437,19 @@ class TypeChecker(Checker):
             idx += 1
         # check timeout - nothing to do
         # check operation_host - TODO
-        self.unchecked(
-            operation_implementation_definition, "operation_host", context_error_message
-        )
+        operation_host = operation_implementation_definition.get("operation_host")
+        if operation_host is not None:
+            if operation_host not in self.current_allowed_operation_host_keynames:
+                self.error(
+                    context_error_message
+                    + ":operation_host: "
+                    + operation_host
+                    + " - "
+                    + array_to_string_with_or_separator(
+                        self.current_allowed_operation_host_keynames)
+                    + " expected",
+                    operation_host,
+                )
 
     def check_notification_definition(
         self,
@@ -5232,6 +5243,9 @@ class TypeChecker(Checker):
     def check_node_template(self, node_name, node_template, context_error_message):
         # set values of reserved function keywords
         self.reserved_function_keywords = {"SELF": node_template}
+        # set allowed operation_host keynames
+        self.current_allowed_operation_host_keynames = [ "SELF", "HOST", "ORCHESTRATOR"]
+
         # check type
         checked, node_type_name, node_type = self.check_type_in_template(
             "node", node_template, syntax.TYPE, context_error_message
@@ -5435,8 +5449,11 @@ class TypeChecker(Checker):
             )
         # check copy - TODO
         self.unchecked(node_template, syntax.COPY, context_error_message)
+
         # reset values of reserved function keywords
         self.reserved_function_keywords = {}
+        # reset allowed operation_host keynames
+        self.current_allowed_operation_host_keynames = []
 
     def check_node_filter_definition(
         self, node_filter, node_type_name, node_type, context_error_message
@@ -5566,6 +5583,9 @@ class TypeChecker(Checker):
             "TARGET": "UNKNOWN",
             "SOURCE": "UNKNOWN"
         }
+        # set allowed operation_host keynames
+        self.current_allowed_operation_host_keynames = [ "SOURCE", "TARGET", "ORCHESTRATOR"]
+
         # check type
         checked, relationship_type_name, relationship_type = (
             self.check_type_in_template(
@@ -5610,8 +5630,11 @@ class TypeChecker(Checker):
         )
         # check copy - TODO
         self.unchecked(relationship_template, syntax.COPY, context_error_message)
+
         # reset values of reserved function keywords
         self.reserved_function_keywords = {}
+        # reset allowed operation_host keynames
+        self.current_allowed_operation_host_keynames = []
 
     def check_group_definition(
         self, group_name, group_definition, context_error_message
