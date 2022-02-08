@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -23,7 +23,7 @@ from cloudnet.tosca.utils import normalize_name, short_type_name
 TOSCA_DIAGRAMS = "tosca_diagrams"
 configuration.DEFAULT_CONFIGURATION[TOSCA_DIAGRAMS] = {
     # Target directory where network diagrams are generated.
-    Generator.TARGET_DIRECTORY: "Results/ToscaDiagrams"
+    Generator.TARGET_DIRECTORY: TOSCA_DIAGRAMS
 }
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
