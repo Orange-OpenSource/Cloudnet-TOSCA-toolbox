@@ -69,5 +69,6 @@ check_regression topology_template_substitution_mapping.yaml
 check_regression issues/issue_39.yaml
 check_regression issues/issue_41.yaml
 check_regression issues/issue_42.yaml
+check_regression issues/issue_43.yaml
 
 exit ${exit_code}
