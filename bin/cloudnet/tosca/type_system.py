@@ -1600,7 +1600,7 @@ class TypeChecker(Checker):
                 + " - unexpected because type is "
                 + str(definition_type)
                 + " instead of map",
-                keyword,
+                root_type,
             )
         if keyword is syntax.ENTRY_SCHEMA and root_type not in ["map", "list"]:
             self.error(
@@ -1610,7 +1610,7 @@ class TypeChecker(Checker):
                 + " - unexpected because type is "
                 + str(definition_type)
                 + " instead of list or map",
-                keyword,
+                root_type,
             )
 
         previous_schema_definition = previous_definition.get(keyword, {})
@@ -3551,7 +3551,7 @@ class TypeChecker(Checker):
                         + " required "
                         + kind
                         + " unassigned",
-                        field_name,
+                        definition,
                     )
                 else:
                     self.info(
