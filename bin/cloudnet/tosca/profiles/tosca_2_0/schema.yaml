@@ -428,7 +428,11 @@ definitions:
           occurrences:
             $ref: "#/definitions/range_of_integers"
         additionalProperties: false
-        required: [ capability ]
+        # In Section 4.3.5.5.1 of TOSCA Simple Profile in YAML Version 2.0 (https://docs.oasis-open.org/tosca/TOSCA/v2.0/)
+        # the capability keyname is required, so following line should be added to the schema
+        # required: [ capability ]
+        # But we decided to not force the presence of the capability keyname to be aligned with TOSCA 1.0/1.1/1.2/1.3 schemas.
+        # See discussion in https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/commit/b03ed5d21f0f125585d93acfd815a2529679d5b0#diff-7ca05615622006ebd1a45fbe021367285247ee8f9f821a3629b3b3697331a47d.
 
 # Section 4.3.5.6 Requirement assignment
 

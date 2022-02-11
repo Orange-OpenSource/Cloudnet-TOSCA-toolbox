@@ -463,7 +463,12 @@ definitions:
           occurrences:
             $ref: "#/definitions/occurrences"
         additionalProperties: false
-        required: [ capability ]
+        # In Section 3.6.2.1 of TOSCA Simple Profile in YAML Version 1.0 (http://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.0/)
+        # the capability keyname is required, so following line should be added to the schema
+        # required: [ capability ]
+        # but the capability keyname is missed in Section 8.3.1.2.
+        # So we decided to not force the presence of the capability keyname.
+        # See discussion in https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/commit/b03ed5d21f0f125585d93acfd815a2529679d5b0#diff-7ca05615622006ebd1a45fbe021367285247ee8f9f821a3629b3b3697331a47d.
 
   # Section 3.7.4
   artifact_type:

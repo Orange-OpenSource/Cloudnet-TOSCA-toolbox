@@ -39,12 +39,6 @@ node_types:
     description: An abstract class definition for all ODA components on emulated platform
     requirements:
       - dependency:
-          #PM: keyname capability is required as indicated
-          #    into table of Section 3.7.3.1 of TOSCA 1.3
-          #    but some examples in the spec do not set capability
-          #    when refining an inherited requirement definition.
-          #    So TOSCA 1.3 contains some contradictions ;-(
-#         capability: tosca.capabilities.Node # ERROR: keyname missed
           node: oda_platform_emulator
           occurrences: [1,1]
           relationship: running_on_emulator
