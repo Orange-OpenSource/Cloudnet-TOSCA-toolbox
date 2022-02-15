@@ -583,8 +583,8 @@ class SyntaxChecker(Checker):
             self.warning(
                 "tosca_definitions_version: "
                 + default_tosca_definitions_version
-                + " used instead of",                    # JLC nemanque-t-il pas qq chose après cette ligne ?
-#                tosca_definitions_version,
+                + " used instead of",
+                template_yaml,
             )
             tosca_definitions_version = default_tosca_definitions_version
             template_yaml[TOSCA_DEFINITIONS_VERSION] = tosca_definitions_version
@@ -608,8 +608,8 @@ class SyntaxChecker(Checker):
             self.warning(
                 "tosca_definitions_version: "
                 + default_tosca_definitions_version
-                + " used instead of"                    # JLC nemanque-t-il pas qq chose après cette ligne ?
-#                tosca_definitions_version,
+                + " used instead of",
+                tosca_definitions_version,
             )
             schema_file = self.get_mapping(
                 default_tosca_definitions_version, tosca_definitions_version_map
