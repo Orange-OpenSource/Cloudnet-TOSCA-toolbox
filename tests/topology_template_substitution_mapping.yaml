@@ -45,7 +45,7 @@ topology_template:
             # In Alloy.py : ERROR: boolean expected
       p2:
         value: 1 # In type-checking CORRECT but WARNING: deprecated since TOSCA 1.3
-      p3: [ foo ] # In type-checking ERROR: input undefined ( JLC : why not integer expected because of the interger type in node_types definition)
+      p3: [ foo ] # In type-checking ERROR: foo input undefined
       p4:
         mapping: [ i1 ] # CORRECT
       p5: [ i2 ] # In type-checking ERROR: incompatible type
