@@ -124,7 +124,11 @@ class Processor(object):
 
     def get_tosca_service_template_fullname_with_line_and_column(self, value):
         result = self.tosca_service_template.get_fullname()
-        if isinstance(value, YamlCoord):
+        if value is None:
+            pass # Nothing to do
+        elif isinstance(value, bool):
+            pass # Nothing to do
+        elif isinstance(value, YamlCoord):
             result += "@%d,%d" % (value.line, value.column)
         else:
             result += "@UNKNOWN"
