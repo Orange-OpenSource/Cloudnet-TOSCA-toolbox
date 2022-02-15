@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -459,7 +459,7 @@ class HOTGenerator(Generator):
             return size * 1000
         else:
             self.error(
-                "Do not know how to convert " + scalar_size + " to MB", scalar_size
+                " - Do not know how to convert " + scalar_size + " to MB", scalar_size
             )
             return "1 # TODO: " + scalar_size
 
@@ -469,7 +469,7 @@ class HOTGenerator(Generator):
             return size
         else:
             self.error(
-                "Do not know how to convert " + scalar_size + " to GB", scalar_size
+                " - Do not know how to convert " + scalar_size + " to GB", scalar_size
             )
             return "1 # TODO: " + scalar_size
 
