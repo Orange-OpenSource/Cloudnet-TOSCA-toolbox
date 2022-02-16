@@ -74,7 +74,7 @@ class ToscaDiagramGenerator(Generator):
                 if capability_yaml:
                     if not isinstance(capability_yaml, list):
                         continue  # TODO something when capability_yaml is not a list
-                    capability_name_id = normalize_name(capability_name)
+                    capability_name_id = "topology_template_substitution_mappings_capability_" + normalize_name(capability_name)
                     self.generate(
                         "  ",
                         capability_name_id,
@@ -267,7 +267,7 @@ class ToscaDiagramGenerator(Generator):
                 substitution_mappings
             ).items():
                 if requirement_yaml:
-                    requirement_name_id = normalize_name(requirement_name)
+                    requirement_name_id = "topology_template_substitution_mappings_requirement_" + normalize_name(requirement_name)
                     self.generate(
                         "  ",
                         requirement_name_id,
