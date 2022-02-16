@@ -234,6 +234,28 @@ class TypeSystem(object):
         file_ext = filename[filename.rfind(".")+1:]
         return self.artifact_types_by_file_ext.get(file_ext)
 
+    def get_relationship_types_compatible_with_capability_type(
+        self, capability_type_name
+    ):
+        found_relationship_types = []
+        for relationship_type_name in list(self.relationship_types):
+            if self.is_relationship_type_compatible_with_capability_type(
+                relationship_type_name, capability_type_name
+            ):
+                found_relationship_types.append(relationship_type_name)
+        return found_relationship_types
+
+    def is_relationship_type_compatible_with_capability_type(
+        self, relationship_type_name, capability_type_name
+    ):
+        relationship_type = self.merge_type(relationship_type_name)
+        for valid_target_type in relationship_type.get(syntax.VALID_TARGET_TYPES, []):
+            if self.is_derived_from(
+                capability_type_name, valid_target_type
+            ):
+                return True
+        return False
+
 # TOSCA scalar units.
 
 SCALAR_SIZE_UNITS = {
@@ -1389,27 +1411,14 @@ class TypeChecker(Checker):
                 previous_value = PREVIOUSLY_UNDEFINED
             method(key, value, previous_value, context_error_message + key)
 
-    def is_relationship_type_compatible_with_capability_type(
-        self, relationship_type_name, capability_type_name
-    ):
-        relationship_type = self.type_system.merge_type(relationship_type_name)
-        for valid_target_type in relationship_type.get(syntax.VALID_TARGET_TYPES, []):
-            if self.type_system.is_derived_from(
-                capability_type_name, valid_target_type
-            ):
-                return True
-        return False
-
     def search_relationship_types_compatible_with_capability_type(
         self, capability_type_name, context_error_message
     ):
         # Check that there is one relationship where capability_type_name is compatible with at least one valid target type
-        found_relationship_types = []
-        for relationship_type_name in list(self.type_system.relationship_types):
-            if self.is_relationship_type_compatible_with_capability_type(
-                relationship_type_name, capability_type_name
-            ):
-                found_relationship_types.append(relationship_type_name)
+        found_relationship_types = \
+            self.type_system.get_relationship_types_compatible_with_capability_type(
+                capability_type_name
+            )
         nb_found_relationship_types = len(found_relationship_types)
         if nb_found_relationship_types == 0:
             self.error(
@@ -2066,7 +2075,7 @@ class TypeChecker(Checker):
                         relationship_type_name = previous_relationship
                     else:
                         relationship_type_name = previous_relationship.get(TYPE)
-                    if not self.is_relationship_type_compatible_with_capability_type(
+                    if not self.type_system.is_relationship_type_compatible_with_capability_type(
                         relationship_type_name, requirement_capability
                     ):
                         self.error(
@@ -5009,7 +5018,7 @@ class TypeChecker(Checker):
                             relationship
                         )
                 else:
-                    if not self.is_relationship_type_compatible_with_capability_type(
+                    if not self.type_system.is_relationship_type_compatible_with_capability_type(
                         relationship_type, requirement_capability
                     ):
                         self.error(
