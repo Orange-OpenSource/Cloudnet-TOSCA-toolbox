@@ -58,6 +58,17 @@ class PlantUMLGenerator(Generator):
     def generator_configuration_id(self):
         return UML2
 
+    def get_relationship_type(self, capability_type_name):
+        relationship_types = \
+            self.type_system. \
+            get_relationship_types_compatible_with_capability_type(
+                capability_type_name
+            )
+        if len(relationship_types) > 0:
+            return relationship_types[0]
+        else:
+            return "UNDEFINED"
+
     def generation(self):
         self.info("UML2 diagram generation")
 
@@ -728,7 +739,11 @@ class PlantUMLGenerator(Generator):
                                 tmp
                             )
                         if relationship_component_type is None:
-                            continue
+                            relationship_component_type = \
+                                self.get_relationship_type(
+                                    requirement.get("capability")
+                                )
+
                         # Declare an UML component for the node template requirement relationship.
                         self.generate(
                             'component "',
@@ -1024,6 +1039,12 @@ class PlantUMLGenerator(Generator):
                     requirement_relationship_type = syntax.get_relationship_type(
                         requirement_relationship
                     )
+                    if requirement_relationship_type is None:
+                        requirement_relationship_type = \
+                            self.get_relationship_type(
+                                requirement_definition.get("capability")
+                            )
+
                     if self.type_system.is_derived_from(
                         requirement_relationship_type, "tosca.relationships.HostedOn"
                     ):
@@ -1243,7 +1264,10 @@ class PlantUMLGenerator(Generator):
                             tmp
                         )
                     if requirement_relationship_type is None:
-                        continue
+                        requirement_relationship_type = \
+                            self.get_relationship_type(
+                                requirement.get("capability")
+                            )
 
                     if not self.type_system.is_derived_from(
                         requirement_relationship_type, "tosca.relationships.HostedOn"
