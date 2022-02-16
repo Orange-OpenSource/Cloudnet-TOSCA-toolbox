@@ -5190,6 +5190,9 @@ class TypeChecker(Checker):
                     if property_value is None:
                         # TODO: dealt with default or value defined in the property definition
                         return False  # no value for the property
+                    if isinstance(property_value, dict) and ("get_input" in property_value):
+                        # Skip properties set by an input
+                        continue
                     if not isinstance(property_constraint_clauses, list):
                         property_constraint_clauses = [property_constraint_clauses]
                     for property_constraint_clause in property_constraint_clauses:
@@ -5445,7 +5448,7 @@ class TypeChecker(Checker):
                     cem
                     + " - several substituting topology templates found: "
                     + array_to_string_with_or_separator(
-                        [item.get_fullname for item in substituting_topology_templates]
+                        [item.get_fullname() for item in substituting_topology_templates]
                     ),
                     directive,
                 )
