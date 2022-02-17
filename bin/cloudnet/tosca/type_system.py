@@ -67,6 +67,7 @@ configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
         "Root": "tosca.nodes.Root",
         "WebApplication": "tosca.nodes.WebApplication",
         "WebServer": "tosca.nodes.WebServer",
+        "tosca:Container": "tosca.capabilities.Container",
         "tosca:Compute": "tosca.nodes.Compute",
         "tosca:WebApplication": "tosca.nodes.WebApplication",
         # TODO: must be completed with all short names
