@@ -1,6 +1,6 @@
 Jinja2==2.9
 MarkupSafe==1.0
-bottle==0.12.7
+bottle==0.12.19
 certifi==2017.11.05
 chardet==3.0.4
 cloudify-plugins-common==4.2
