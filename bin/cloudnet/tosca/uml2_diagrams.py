@@ -67,7 +67,7 @@ class PlantUMLGenerator(Generator):
         if len(relationship_types) > 0:
             return relationship_types[0]
         else:
-            return "UNDEFINED"
+            return "**<color:orange>UNDEFINED</color>**"
 
     def generation(self):
         self.info("UML2 diagram generation")
