@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="179px" preserveAspectRatio="none" style="width:279px;height:179px;background:#FFFFFF;" version="1.1" viewBox="0 0 279 179" width="279px" zoomAndPan="magnify"><defs><filter height="300%" id="fxvghcdxhi8a1" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[ff98c9f3b0b233c9c4380e8023e8046b]
+entity node_obj_store_server--><rect fill="#FEFECE" filter="url(#fxvghcdxhi8a1)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="258" x="7" y="103"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="245" y="108"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="243" y="110"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="243" y="114"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="106.5" y="136.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="218" x="22" y="153.0234">obj_store_server: ObjectStorage</text><!--MD5=[f9a68ad10d58114fc24fd0dea36604b5]
+entity node_obj_store_server_feature--><ellipse cx="69" cy="14" fill="#FEFECE" filter="url(#fxvghcdxhi8a1)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="49" x="44.5" y="44.5352">feature</text><!--MD5=[0f12d482b3bd22e155c0745bce3b40e4]
+entity node_obj_store_server_storage_endpoint--><ellipse cx="204" cy="14" fill="#FEFECE" filter="url(#fxvghcdxhi8a1)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121" x="143.5" y="44.5352">storage_endpoint</text><!--MD5=[36ade45a9e7b86d7c161405cc6ddae4d]
+link node_obj_store_server_feature to node_obj_store_server--><path d="M74.0359,23.0571 C83.3179,39.7509 103.53,76.1025 118.3562,102.7674 " fill="none" id="node_obj_store_server_feature-node_obj_store_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[241daa34d9c3864ce68d927af50c472c]
+link node_obj_store_server_storage_endpoint to node_obj_store_server--><path d="M198.8889,23.0571 C189.4684,39.7509 168.9546,76.1025 153.9072,102.7674 " fill="none" id="node_obj_store_server_storage_endpoint-node_obj_store_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[7021335f4d64a90090e6c0302aa898f3]
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  backgroundColor<<relationship>> White
+}
+
+component "obj_store_server: ObjectStorage" <<node>> as node_obj_store_server
+interface "feature" as node_obj_store_server_feature
+node_obj_store_server_feature - - node_obj_store_server
+interface "storage_endpoint" as node_obj_store_server_storage_endpoint
+node_obj_store_server_storage_endpoint - - node_obj_store_server
+
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

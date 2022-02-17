@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="293px" preserveAspectRatio="none" style="width:353px;height:293px;background:#FFFFFF;" version="1.1" viewBox="0 0 353 293" width="353px" zoomAndPan="magnify"><defs><filter height="300%" id="f1xw6zjc472rev" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[f861c49d143d98d9cfab58c4a95b4d0f]
+cluster node_mongo_server--><polygon fill="#FFFFFF" filter="url(#f1xw6zjc472rev)" points="51,176,61,166,301,166,301,276,291,286,51,286,51,176" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="291" x2="301" y1="176" y2="166"/><line style="stroke:#000000;stroke-width:1.5;" x1="51" x2="291" y1="176" y2="176"/><line style="stroke:#000000;stroke-width:1.5;" x1="291" x2="291" y1="176" y2="286"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="174" x="85" y="192.5352">mongo_server: Compute</text><!--MD5=[bc019c133b565f4b0d758b989701ca2a]
+cluster node_mongo_dbms--><rect fill="#FFFFFF" filter="url(#f1xw6zjc472rev)" height="80" style="stroke:#000000;stroke-width:1.5;" width="182" x="85" y="198"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="247" y="203"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="245" y="205"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="245" y="209"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="146" x="103" y="224.5352">mongo_dbms: DBMS</text><!--MD5=[aef7b1ac43848ba07abf53178214acf0]
+cluster node_app_server--><polygon fill="#FFFFFF" filter="url(#f1xw6zjc472rev)" points="16,16,26,6,336,6,336,117,326,127,16,127,16,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="326" x2="336" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="326" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="326" x2="326" y1="16" y2="127"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="150" x="97" y="32.5352">app_server: Compute</text><!--MD5=[3c008ac75c561fdf0b5bb730c5548239]
+cluster node_nodejs--><rect fill="#FFFFFF" filter="url(#f1xw6zjc472rev)" height="81" style="stroke:#000000;stroke-width:1.5;" width="304" x="24" y="38"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="308" y="43"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="306" y="45"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="306" y="49"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="106" x="123" y="64.5352">nodejs: Nodejs</text><!--MD5=[f061c2c6e255e94ec5d9f11b5494521f]
+entity node_mongo_db--><path d="M93.5,235 C93.5,225 176,225 176,225 C176,225 258.5,225 258.5,235 L258.5,260.4883 C258.5,270.4883 176,270.4883 176,270.4883 C176,270.4883 93.5,270.4883 93.5,260.4883 L93.5,235 " fill="#FEFECE" filter="url(#f1xw6zjc472rev)" style="stroke:#000000;stroke-width:1.5;"/><path d="M93.5,235 C93.5,245 176,245 176,245 C176,245 258.5,245 258.5,235 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="145" x="103.5" y="262.5352">mongo_db: Database</text><!--MD5=[2c6c29e92a09fe16b7b193636501bf93]
+entity node_paypal_pizzastore--><rect fill="#FEFECE" filter="url(#f1xw6zjc472rev)" height="46.4883" style="stroke:#A80036;stroke-width:1.5;" width="287" x="32.5" y="65"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="299.5" y="70"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="297.5" y="72"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="297.5" y="76"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="247" x="47.5" y="98.5352">paypal_pizzastore: PayPalPizzaStore</text><!--MD5=[d1eff2dca38477514a15322daa1e984f]
+link node_paypal_pizzastore to node_mongo_db--><path codeLine="14" d="M176,111.1927 C176,139.9424 176,188.8956 176,219.6486 " fill="none" id="node_paypal_pizzastore-to-node_mongo_db" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="176,224.7958,180,215.7958,176,219.7958,172,215.7958,176,224.7958" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="87" x="177" y="154.5684">«DependsOn»</text><!--MD5=[b9b8e73bb8895c2e04c06f244351e81b]
+@startuml
+skinparam componentStyle uml2
+allowmixing
+
+node "mongo_server: Compute" as node_mongo_server {
+component "mongo_dbms: DBMS" as node_mongo_dbms {
+database "mongo_db: Database" as node_mongo_db
+}
+}
+node "app_server: Compute" as node_app_server {
+component "nodejs: Nodejs" as node_nodejs {
+component "paypal_pizzastore: PayPalPizzaStore" as node_paypal_pizzastore
+}
+}
+node_paypal_pizzastore ..> node_mongo_db : <<DependsOn>>
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

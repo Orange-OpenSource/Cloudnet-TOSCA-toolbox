@@ -26,17 +26,17 @@ DeclarativeWorkflows:
 # Configuration of the network diagram generator.
 nwdiag:
   # Target directory where network diagrams are generated.
-  target-directory: RESULTS/NetworkDiagrams
+  target-directory: diagrams/network
 
 # Configuration of the TOSCA diagram generator.
 tosca_diagrams:
   # Target directory where network diagrams are generated.
-  target-directory: RESULTS/ToscaDiagrams
+  target-directory: diagrams/tosca
 
 # Configuration of the UML2 diagram generator.
 UML2:
   # Target directory where UML2 diagrams are generated.
-  target-directory: RESULTS/Uml2Diagrams
+  target-directory: diagrams/uml2
 
   # Mapping between node types and shapes
   kinds:

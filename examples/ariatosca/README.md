@@ -9,7 +9,7 @@ To run Cloudnet TOSCA toolbox on AriaTosca examples, just type
 $ ./run.sh
 ```
 
-This command parses AriaTosca examples and generate  [TOSCA](RESULTS/ToscaDiagrams/), [network](RESULTS/NetworkDiagrams/), and [UML 2.0](RESULTS/Uml2Diagrams/) diagrams.
+This command parses AriaTosca examples and generate  [TOSCA](diagrams/tosca/), [network](diagrams/network/), and [UML 2.0](diagrams/uml2/) diagrams.
 
 ## Generated diagrams
 
@@ -18,9 +18,9 @@ Following are some generated diagrams
 ![TODO](TODO)
 
 All generated diagrams are available in
-* [RESULTS/ToscaDiagrams/](RESULTS/ToscaDiagrams/)
-* [RESULTS/NetworkDiagrams/](RESULTS/NetworkDiagrams/)
-* [RESULTS/Uml2Diagrams/](RESULTS/Uml2Diagrams/)
+* [diagrams/tosca/](diagrams/tosca/)
+* [diagrams/network/](diagrams/network/)
+* [diagrams/uml2/](diagrams/uml2/)
 
 ## Modifications
 

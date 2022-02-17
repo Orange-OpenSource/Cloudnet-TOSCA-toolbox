@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="265px" preserveAspectRatio="none" style="width:217px;height:265px;background:#FFFFFF;" version="1.1" viewBox="0 0 217 265" width="217px" zoomAndPan="magnify"><defs><filter height="300%" id="f50hu45p459u" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[fe3463be6c4239935f06e0ae4bdadaa4]
+entity node_my_server--><polygon fill="#FEFECE" filter="url(#f50hu45p459u)" points="18,16,28,6,198,6,198,42.4883,188,52.4883,18,52.4883,18,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="188" x2="198" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="18" x2="188" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="188" x2="188" y1="16" y2="52.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="140" x="33" y="39.5352">my_server: Compute</text><!--MD5=[b2f9a86e64ab3d0701cf9e854d27d8b4]
+entity node_my_network--><path d="M29,232 L187,232 C192,232 192,245.2441 192,245.2441 C192,245.2441 192,258.4883 187,258.4883 L29,258.4883 C24,258.4883 24,245.2441 24,245.2441 C24,245.2441 24,232 29,232 " fill="#FEFECE" filter="url(#f50hu45p459u)" style="stroke:#A80036;stroke-width:1.5;"/><path d="M187,232 C182,232 182,245.2441 182,245.2441 C182,258.4883 187,258.4883 187,258.4883 " fill="none" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="148" x="29" y="250.5352">my_network: Network</text><!--MD5=[25b625329a573b90fb5f3840b78aa77f]
+entity node_my_port--><polygon fill="#FEFECE" filter="url(#f50hu45p459u)" points="200,142,154,129,62,129,16,142,62,155,154,155,200,142" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="92" x="62" y="147.5352">my_port: Port</text><!--MD5=[bd71edd96b4260a361481f64377d3de3]
+reverse link node_my_server to node_my_port--><path codeLine="7" d="M108,57.1785 C108,80.06 108,111.3004 108,128.7755 " fill="none" id="node_my_server-backto-node_my_port" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="108,52.1399,104,61.1399,108,57.1399,112,61.1399,108,52.1399" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="64" x="109" y="95.5684">«BindsTo»</text><!--MD5=[97d0c464a85641d78c889dd5082487e7]
+link node_my_port to node_my_network--><path codeLine="8" d="M108,155.045 C108,173.1329 108,205.9246 108,226.5243 " fill="none" id="node_my_port-to-node_my_network" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="108,231.7356,112,222.7356,108,226.7356,104,222.7356,108,231.7356" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="64" x="109" y="198.5684">«LinksTo»</text><!--MD5=[392674ee04cc32a76b1d6b5b69de5b09]
+@startuml
+skinparam componentStyle uml2
+allowmixing
+
+node "my_server: Compute" as node_my_server
+queue "my_network: Network" as node_my_network
+hexagon "my_port: Port" as node_my_port
+node_my_port .up.> node_my_server : <<BindsTo>>
+node_my_port ..> node_my_network : <<LinksTo>>
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

@@ -53,20 +53,18 @@ translate tosca-simple-1.0/use-cases/webserver-dbms-2/custom_types/paypalpizzast
 translate tosca-simple-1.0/use-cases/webserver-dbms-2/webserver-dbms-2.yaml
 
 # Remove generated workflow diagrams.
-rm RESULTS/Uml2Diagrams/*-workflow-diagram.plantuml
+rm diagrams/uml2/*-workflow-diagram.plantuml
 
 # Generate TOSCA diagrams.
-generate_tosca_diagrams RESULTS/ToscaDiagrams/*.dot
+generate_tosca_diagrams diagrams/tosca/*.dot
 
 # Generate network diagrams.
-generate_network_diagrams RESULTS/NetworkDiagrams/*.nwdiag
+generate_network_diagrams diagrams/network/*.nwdiag
 
 # Generate UML2 diagrams.
-generate_uml2_diagrams RESULTS/Uml2Diagrams/*.plantuml
+generate_uml2_diagrams diagrams/uml2/*.plantuml
 
 # Remove useless generated files.
-rm -rf RESULTS/Alloy \
-       RESULTS/DeclarativeWorkflows \
-       RESULTS/ToscaDiagrams/*.dot \
-       RESULTS/NetworkDiagrams/*.nwdiag \
-       RESULTS/Uml2Diagrams/*.plantuml
+rm -rf diagrams/tosca/*.dot \
+       diagrams/network/*.nwdiag \
+       diagrams/uml2/*.plantuml
