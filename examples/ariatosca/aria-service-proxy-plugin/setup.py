@@ -26,6 +26,6 @@ setuptools.setup(
     install_requires=[
         'cloudify-plugins-common>=4.0',
         'networkx==2.0',
-        'Jinja2==2.9'
+        'Jinja2==2.11.3'
         ]
 )
