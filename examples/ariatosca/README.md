@@ -17,11 +17,17 @@ Following are some generated diagrams
 
 ![clearwater TOSCA diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/ariatosca/diagrams/tosca/clearwater-single-existing-1.0.png)
 
+![clearwater UML component diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/ariatosca/diagrams/uml2/clearwater-single-existing-1.0-uml2-component-diagram1.png)
+
 ![clearwater UML deployment diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/ariatosca/diagrams/uml2/clearwater-single-existing-1.0-uml2-deployment-diagram.png)
 
 ![Multi-Tier-1 TOSCA diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/ariatosca/diagrams/tosca/multi-tier-1-1.0.png)
 
 ![Multi-Tier-1 UML deployment diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/ariatosca/diagrams/uml2/multi-tier-1-1.0-uml2-deployment-diagram.png)
+
+![Network-4 network diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/ariatosca/diagrams/network/network-4-1.0.png)
+
+
 
 All generated diagrams are available in
 * [diagrams/tosca/](diagrams/tosca/)
