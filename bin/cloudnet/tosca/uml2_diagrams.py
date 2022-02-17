@@ -969,7 +969,7 @@ class PlantUMLGenerator(Generator):
                 )
                 index = index + 1
                 self.generate(
-                    'interface "',requirement_name, '" as ', interface_uml_id
+                    'label "',requirement_name, '" as ', interface_uml_id
                 )
                 requirement_yaml = requirements.get(requirement_name)
                 if requirement_yaml:
