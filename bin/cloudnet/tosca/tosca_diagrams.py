@@ -63,8 +63,8 @@ class ToscaDiagramGenerator(Generator):
         self.generate('  rankdir="LR"')
 
         target_capability_ids = {}  # map<requirement_assignment_id,capability_id>
-        show_feature_capabilities = set()  # set<node_name>
-        show_dependency_requirements = set()  # set<node_name>
+        connected_capabilities = set() # set<node_name.capability_name>
+        connected_requirements = set() # set<node_name.requirement_name>
 
         substitution_mappings = syntax.get_substitution_mappings(topology_template)
         if substitution_mappings is not None:
@@ -93,8 +93,16 @@ class ToscaDiagramGenerator(Generator):
                         "[style=dotted]",
                         sep="",
                     )
-                    if capability_yaml[1] == "feature":
-                        show_feature_capabilities.add(capability_yaml[0])
+                    connected_capabilities.add(capability_yaml[0] + "." + capability_yaml[1])
+
+            for (
+                requirement_name,
+                requirement_yaml,
+            ) in syntax.get_substitution_mappings_requirements(
+                substitution_mappings
+            ).items():
+                if requirement_yaml:
+                    connected_requirements.add(requirement_yaml[0] + "." + requirement_yaml[1])
 
             substitution_mappings_node_type = syntax.get_node_type(
                 substitution_mappings
@@ -154,10 +162,8 @@ class ToscaDiagramGenerator(Generator):
                                 + "_capability_"
                                 + normalize_name(capability_name)
                             )
-                            if capability_name == "feature":
-                                show_feature_capabilities.add(requirement_node)
-                            if requirement_name == "dependency":
-                                show_dependency_requirements.add(node_name)
+                            connected_capabilities.add(requirement_node + "." + capability_name)
+                            connected_requirements.add(node_name + "." + requirement_name)
                         else:
                             self.error(
                                 ' capability of type "'
@@ -187,8 +193,8 @@ class ToscaDiagramGenerator(Generator):
                 merged_node_type
             ).items():
                 if (
-                    capability_name != "feature"
-                    or node_name in show_feature_capabilities
+                    node_name + "." + capability_name in connected_capabilities
+                    or node_yaml.get("capabilities", {}).get(capability_name) is not None
                 ):
                     self.generate(
                         "      ",
@@ -213,8 +219,8 @@ class ToscaDiagramGenerator(Generator):
                 merged_node_type
             ).items():
                 if (
-                    requirement_name != "dependency"
-                    or node_name in show_dependency_requirements
+                    node_name + "." + requirement_name in connected_requirements
+                    or requirement_yaml.get("occurrences", [1, 1])[0] > 0
                 ):
                     self.generate(
                         "      ",
