@@ -4,7 +4,7 @@ description: >-
   TOSCA simple profile with wordpress, web server and mysql on the same server.
 
 metadata:
-  template_name: compute-1
+  template_name: container-1 #ISSUE: instead of compute-1
   template_author: TOSCA Simple Profile in YAML
   template_version: '1.0'
 
