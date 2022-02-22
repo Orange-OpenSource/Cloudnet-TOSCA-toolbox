@@ -257,6 +257,30 @@ class TypeSystem(object):
                 return True
         return False
 
+    def get_compatible_capabilities(
+        self,
+        node_type_name,
+        capability_name,
+        capability_type_name
+    ):
+        node_type_def = self.merge_type(
+                            self.get_type_uri(
+                                node_type_name
+                            )
+                        )
+        compatible_capabilities = []
+        for cap_name, cap_def in node_type_def.get(
+            syntax.CAPABILITIES, {}
+        ).items():
+            if(cap_name == capability_name
+                or self.is_derived_from(
+                        syntax.get_capability_type(cap_def),
+                        capability_type_name
+                   )
+            ):
+                compatible_capabilities.append(cap_name)
+        return compatible_capabilities
+
 # TOSCA scalar units.
 
 SCALAR_SIZE_UNITS = {
@@ -4731,22 +4755,12 @@ class TypeChecker(Checker):
             capability_type_name,
             cem
         ):
-            node_type_def = self.type_system.merge_type(
-                                self.type_system.get_type_uri(
-                                    node_type_name
-                                )
-                            )
-            compatible_capabilities = []
-            for cap_name, cap_def in node_type_def.get(
-                syntax.CAPABILITIES, {}
-            ).items():
-                if(
-                    cap_name == capability_name
-                    or self.type_system.is_derived_from(
-                        syntax.get_capability_type(cap_def),
-                        capability_type_name)
-                ):
-                    compatible_capabilities.append(cap_name)
+            compatible_capabilities = \
+                self.type_system.get_compatible_capabilities(
+                                    node_type_name,
+                                    capability_name,
+                                    capability_type_name
+                )
             if len(compatible_capabilities) == 0:
                 self.error(
                     cem
