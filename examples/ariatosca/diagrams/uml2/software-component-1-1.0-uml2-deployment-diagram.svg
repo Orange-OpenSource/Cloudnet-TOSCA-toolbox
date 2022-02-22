@@ -1,23 +1,26 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="144px" preserveAspectRatio="none" style="width:393px;height:144px;background:#FFFFFF;" version="1.1" viewBox="0 0 393 144" width="393px" zoomAndPan="magnify"><defs><filter height="300%" id="fcgaqezrc0zk8" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[1cc38bbb089e8f4268218790717c16f2]
-cluster node_my_server--><polygon fill="#FFFFFF" filter="url(#fcgaqezrc0zk8)" points="16,16,26,6,376,6,376,127,366,137,16,137,16,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="366" x2="376" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="366" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="366" x2="366" y1="16" y2="137"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="146" x="119" y="32.5352">my_server: Compute</text><!--MD5=[0d79082e544760bb6add40c67f97fec7]
-cluster node_my_virtual_machine--><rect fill="#FFFFFF" filter="url(#fcgaqezrc0zk8)" height="91" style="stroke:#000000;stroke-width:1.5;" width="344" x="24" y="38"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="348" y="43"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="346" y="45"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="346" y="49"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="297" x="47.5" y="64.5352">my_virtual_machine: SoftwareComponent</text><!--MD5=[709cf3d9f8d65fb4097d30c08a3a9d24]
-entity node_my_virtual_machine_artifact_my_vm_image--><rect fill="#FEFECE" filter="url(#fcgaqezrc0zk8)" height="55.9766" style="stroke:#000000;stroke-width:1.5;" width="327" x="32.5" y="65"/><polygon fill="#FEFECE" points="342.5,70,342.5,84,354.5,84,354.5,76,348.5,70,342.5,70" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="348.5" x2="348.5" y1="70" y2="76"/><line style="stroke:#000000;stroke-width:1.5;" x1="354.5" x2="348.5" y1="76" y2="76"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="160" y="91.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="297" x="42.5" y="108.0234">images/fedora-18-x86_64.qcow2: QCOW2</text><!--MD5=[d803218ac5e2bf3a4e50ccd56fb3f525]
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="255px" preserveAspectRatio="none" style="width:437px;height:255px;background:#FFFFFF;" version="1.1" viewBox="0 0 437 255" width="437px" zoomAndPan="magnify"><defs><filter height="300%" id="fvqvgn34wmbdb" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[1cc38bbb089e8f4268218790717c16f2]
+cluster node_my_server--><polygon fill="#FFFFFF" filter="url(#fvqvgn34wmbdb)" points="16,16,26,6,420,6,420,238,410,248,16,248,16,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="410" x2="420" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="410" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="410" x2="410" y1="16" y2="248"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="164" x="132" y="31.9951">my_server: Compute</text><!--MD5=[0d79082e544760bb6add40c67f97fec7]
+cluster node_my_virtual_machine--><rect fill="#FFFFFF" filter="url(#fvqvgn34wmbdb)" height="170" style="stroke:#000000;stroke-width:1.5;" width="356" x="40" y="54"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="376" y="59"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="374" y="61"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="374" y="65"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="326" x="55" y="79.9951">my_virtual_machine: SoftwareComponent</text><!--MD5=[743562e165a00fb6858162dd74953f47]
+cluster node_my_virtual_machine_artifact_my_vm_image--><rect fill="#FFFFFF" filter="url(#fvqvgn34wmbdb)" height="103" style="stroke:#000000;stroke-width:1.5;" width="308" x="64" y="97"/><polygon fill="#FFFFFF" points="355,102,355,116,367,116,367,108,361,102,355,102" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="361" x2="361" y1="102" y2="108"/><line style="stroke:#000000;stroke-width:1.5;" x1="367" x2="361" y1="108" y2="108"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="64" x="186" y="111.9951">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="178" x="129" y="128.292">my_vm_image: QCOW2</text><!--MD5=[f7e2d81f7240e3b40879772df908f051]
+entity my_virtual_machine_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="255" x="90.5" y="170.9951">file: images/fedora-18-x86_64.qcow2</text><!--MD5=[87c7138f5945a4ba54e0c437a26b4ded]
 @startuml
 skinparam componentStyle uml2
 allowmixing
 
 node "my_server: Compute" as node_my_server {
 component "my_virtual_machine: SoftwareComponent" as node_my_virtual_machine {
-artifact "images/fedora-18-x86_64.qcow2: QCOW2" <<artifact>> as node_my_virtual_machine_artifact_my_vm_image
+artifact "my_vm_image: QCOW2" <<artifact>> as node_my_virtual_machine_artifact_my_vm_image {
+label "file: images/fedora-18-x86_64.qcow2" as my_virtual_machine_label
+}
 }
 }
 @enduml
 
-PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+PlantUML version 1.2021.13(Mon Nov 01 11:38:45 GMT 2021)
 (GPL source distribution)
-Java Runtime: Java(TM) SE Runtime Environment
-JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
 Default Encoding: UTF-8
-Language: fr
-Country: FR
+Language: en
+Country: US
 --></g></svg>

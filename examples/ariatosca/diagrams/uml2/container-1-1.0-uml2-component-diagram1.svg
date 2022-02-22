@@ -1,30 +1,26 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="324px" preserveAspectRatio="none" style="width:261px;height:324px;background:#FFFFFF;" version="1.1" viewBox="0 0 261 324" width="261px" zoomAndPan="magnify"><defs><filter height="300%" id="fo311j006yfxf" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[af739ca8495e458ad1b7bb18ef0c36bf]
-entity node_mysql_container--><rect fill="#FEFECE" filter="url(#fo311j006yfxf)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="208" x="23" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="211" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="209" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="209" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="97.5" y="281.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="168" x="38" y="298.0234">mysql_container: Docker</text><!--MD5=[55b1ca9411ab82d61bac649abd4d9c61]
-entity node_wordpress_container--><rect fill="#FEFECE" filter="url(#fo311j006yfxf)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="240" x="7" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="227" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="225" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="225" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="97.5" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="200" x="22" y="57.0234">wordpress_container: Docker</text><!--MD5=[54a30482db8ac54a0ed9874c56c32b57]
-entity node_mysql_container_link--><ellipse cx="127" cy="159" fill="#FEFECE" filter="url(#fo311j006yfxf)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="25" x="114.5" y="189.5352">link</text><!--MD5=[b66fd111a68fd39be2541040275d277f]
-link node_mysql_container_link to node_mysql_container--><path d="M127,168.0571 C127,184.7509 127,221.1025 127,247.7674 " fill="none" id="node_mysql_container_link-node_mysql_container" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[40edbe69d98a239a5960629671ffd3e6]
-link node_wordpress_container to node_mysql_container_link--><path d="M127,70.16 C127,92.2188 127,120.9338 127,139.6589 " fill="none" id="node_wordpress_container-to-node_mysql_container_link" style="stroke:#A80036;stroke-width:1.0;"/><path d="M135.4573,146.8 A9,9 0 0 0 118.5428 146.7998" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="87" x="31.4359" y="90.4709">database_link</text><!--MD5=[65130ca3473286f52a61bc48c0588fcb]
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="324px" preserveAspectRatio="none" style="width:265px;height:324px;background:#FFFFFF;" version="1.1" viewBox="0 0 265 324" width="265px" zoomAndPan="magnify"><defs><filter height="300%" id="f1xeis3bt6uzt9" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[af739ca8495e458ad1b7bb18ef0c36bf]
+entity node_mysql_container--><rect fill="#FEFECE" filter="url(#f1xeis3bt6uzt9)" height="62.5938" style="stroke:#A80036;stroke-width:1.5;" width="211" x="23.5" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="214.5" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="212.5" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="212.5" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="54" x="97" y="280.9951">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="171" x="38.5" y="297.292">mysql_container: Docker</text><!--MD5=[54a30482db8ac54a0ed9874c56c32b57]
+entity node_mysql_container_link--><ellipse cx="129" cy="159" fill="#FEFECE" filter="url(#f1xeis3bt6uzt9)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="23" x="117.5" y="188.9951">link</text><!--MD5=[55b1ca9411ab82d61bac649abd4d9c61]
+entity node_wordpress_container--><rect fill="#FEFECE" filter="url(#f1xeis3bt6uzt9)" height="62.5938" style="stroke:#A80036;stroke-width:1.5;" width="244" x="7" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="231" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="229" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="229" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="54" x="97" y="39.9951">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="204" x="22" y="56.292">wordpress_container: Docker</text><!--MD5=[b66fd111a68fd39be2541040275d277f]
+link node_mysql_container_link to node_mysql_container--><path d="M129,168.14 C129,184.3 129,221.15 129,247.83 " fill="none" id="node_mysql_container_link-node_mysql_container" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[40edbe69d98a239a5960629671ffd3e6]
+link node_wordpress_container to node_mysql_container_link--><path d="M129,70.02 C129,92.05 129,121.08 129,139.65 " fill="none" id="node_wordpress_container-to-node_mysql_container_link" style="stroke:#A80036;stroke-width:1.0;"/><path d="M137.4572,146.6218 A9,9 0 0 0 120.5428 146.6218" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="88" x="32.6125" y="89.5765">database_link</text><!--MD5=[aaa591a3e7ddd5acd9d34a75c98e6010]
 @startuml
 skinparam componentStyle uml2
 
-together {
 component "mysql_container: Docker" <<node>> as node_mysql_container
-}
-
-together {
-component "wordpress_container: Docker" <<node>> as node_wordpress_container
-}
-
 interface "link" as node_mysql_container_link
 node_mysql_container_link - - node_mysql_container
+
+component "wordpress_container: Docker" <<node>> as node_wordpress_container
+
 node_wordpress_container "database_link" - -( node_mysql_container_link
 @enduml
 
-PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+PlantUML version 1.2021.13(Mon Nov 01 11:38:45 GMT 2021)
 (GPL source distribution)
-Java Runtime: Java(TM) SE Runtime Environment
-JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
 Default Encoding: UTF-8
-Language: fr
-Country: FR
+Language: en
+Country: US
 --></g></svg>

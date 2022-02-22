@@ -1,46 +1,28 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="179px" preserveAspectRatio="none" style="width:561px;height:179px;background:#FFFFFF;" version="1.1" viewBox="0 0 561 179" width="561px" zoomAndPan="magnify"><defs><filter height="300%" id="fn9sxupr9pcu4" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[fe3463be6c4239935f06e0ae4bdadaa4]
-entity node_my_server--><rect fill="#FEFECE" filter="url(#fn9sxupr9pcu4)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="180" x="193.5" y="103"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="353.5" y="108"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="351.5" y="110"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="351.5" y="114"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="254" y="136.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="140" x="208.5" y="153.0234">my_server: Compute</text><!--MD5=[b0730bc08a73bfddf1a638872dac1571]
-entity node_my_server_feature--><ellipse cx="529.5" cy="14" fill="#FEFECE" filter="url(#fn9sxupr9pcu4)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="49" x="505" y="44.5352">feature</text><!--MD5=[9a592cdf536e5997e158729fb2a670ce]
-entity node_my_server_host--><ellipse cx="435.5" cy="14" fill="#FEFECE" filter="url(#fn9sxupr9pcu4)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="420.5" y="44.5352">host</text><!--MD5=[527227c70116c83d47e3eae95fe431da]
-entity node_my_server_endpoint--><ellipse cx="334.5" cy="14" fill="#FEFECE" filter="url(#fn9sxupr9pcu4)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62" x="303.5" y="44.5352">endpoint</text><!--MD5=[d881c44ba020ff3b61a6f1b991631ed5]
-entity node_my_server_os--><ellipse cx="233.5" cy="14" fill="#FEFECE" filter="url(#fn9sxupr9pcu4)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="16" x="225.5" y="44.5352">os</text><!--MD5=[25dc60417b69401e36b28965bc47a658]
-entity node_my_server_scalable--><ellipse cx="136.5" cy="14" fill="#FEFECE" filter="url(#fn9sxupr9pcu4)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="55" x="109" y="44.5352">scalable</text><!--MD5=[85f2d477fe64cd91b942e8d12b1b6d33]
-entity node_my_server_binding--><ellipse cx="32.5" cy="14" fill="#FEFECE" filter="url(#fn9sxupr9pcu4)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="53" x="6" y="44.5352">binding</text><!--MD5=[fb37dfbc22bb9e4511b25dd178ba1ee6]
-link node_my_server_feature to node_my_server--><path d="M520.2637,19.841 C510.5283,25.9083 494.6701,35.5397 480.5,43 C439.9574,64.3449 393.5235,86.0396 355.9229,102.944 " fill="none" id="node_my_server_feature-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[14207c1d032c6f453c50473e34a1bb75]
-link node_my_server_host to node_my_server--><path d="M426.4469,21.177 C406.6343,36.8837 358.4103,75.1139 323.4424,102.8351 " fill="none" id="node_my_server_host-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[a53f170dc21d43b8d791a20594631836]
-link node_my_server_endpoint to node_my_server--><path d="M330.6667,23.0571 C323.6013,39.7509 308.216,76.1025 296.9304,102.7674 " fill="none" id="node_my_server_endpoint-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[4783d47b3c4197870ef96b417ea6115d]
-link node_my_server_os to node_my_server--><path d="M237.2581,23.0571 C244.185,39.7509 259.2687,76.1025 270.333,102.7674 " fill="none" id="node_my_server_os-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[35142f301740ddca70a217fbeecc9804]
-link node_my_server_scalable to node_my_server--><path d="M145.6955,21.5378 C165.1178,37.4588 211.2894,75.307 244.849,102.8167 " fill="none" id="node_my_server_scalable-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[6ef835732897916b211053cee01285d8]
-link node_my_server_binding to node_my_server--><path d="M41.5891,19.3521 C51.8779,25.3439 69.2004,35.2312 84.5,43 C125.8642,64.0039 172.9984,85.7691 211.0087,102.7999 " fill="none" id="node_my_server_binding-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[1ef50ef8554822809bdab73cb55496d1]
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="179px" preserveAspectRatio="none" style="width:204px;height:179px;background:#FFFFFF;" version="1.1" viewBox="0 0 204 179" width="204px" zoomAndPan="magnify"><defs><filter height="300%" id="fv3dto79e8ft" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[fe3463be6c4239935f06e0ae4bdadaa4]
+entity node_my_server--><rect fill="#FEFECE" filter="url(#fv3dto79e8ft)" height="62.5938" style="stroke:#A80036;stroke-width:1.5;" width="183" x="7" y="103"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="170" y="108"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="168" y="110"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="168" y="114"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="54" x="66.5" y="135.9951">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="143" x="22" y="152.292">my_server: Compute</text><!--MD5=[9a592cdf536e5997e158729fb2a670ce]
+entity node_my_server_host--><ellipse cx="54.5" cy="14" fill="#FEFECE" filter="url(#fv3dto79e8ft)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31" x="39" y="43.9951">host</text><!--MD5=[d881c44ba020ff3b61a6f1b991631ed5]
+entity node_my_server_os--><ellipse cx="143.5" cy="14" fill="#FEFECE" filter="url(#fv3dto79e8ft)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="17" x="135" y="43.9951">os</text><!--MD5=[14207c1d032c6f453c50473e34a1bb75]
+link node_my_server_host to node_my_server--><path d="M57.52,23.14 C63.52,39.3 77.21,76.15 87.11,102.83 " fill="none" id="node_my_server_host-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[4783d47b3c4197870ef96b417ea6115d]
+link node_my_server_os to node_my_server--><path d="M140.41,23.14 C134.27,39.3 120.28,76.15 110.15,102.83 " fill="none" id="node_my_server_os-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[4d32733f208f9dca206b57f5179664d9]
 @startuml
 skinparam componentStyle uml2
 skinparam component {
   backgroundColor<<relationship>> White
 }
 
-together {
 component "my_server: Compute" <<node>> as node_my_server
-interface "feature" as node_my_server_feature
-node_my_server_feature - - node_my_server
 interface "host" as node_my_server_host
 node_my_server_host - - node_my_server
-interface "endpoint" as node_my_server_endpoint
-node_my_server_endpoint - - node_my_server
 interface "os" as node_my_server_os
 node_my_server_os - - node_my_server
-interface "scalable" as node_my_server_scalable
-node_my_server_scalable - - node_my_server
-interface "binding" as node_my_server_binding
-node_my_server_binding - - node_my_server
-}
 
 @enduml
 
-PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+PlantUML version 1.2021.13(Mon Nov 01 11:38:45 GMT 2021)
 (GPL source distribution)
-Java Runtime: Java(TM) SE Runtime Environment
-JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
 Default Encoding: UTF-8
-Language: fr
-Country: FR
+Language: en
+Country: US
 --></g></svg>
