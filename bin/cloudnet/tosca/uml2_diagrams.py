@@ -688,7 +688,7 @@ class PlantUMLGenerator(Generator):
                     sep="",
                 )
             # Iterate over all capabilities of the node template.
-            for capability_name in used_capabilities[node_template_name]:
+            for capability_name in sorted(used_capabilities[node_template_name]):
                 capability_uml_id = (
                     node_template_uml_id + "_" + normalize_name(capability_name)
                 )
@@ -1170,6 +1170,7 @@ class PlantUMLGenerator(Generator):
                 self.generate(
                     'component "' + capability_name + '" as substitution_mappings_capability_',
                     normalize_name(capability_name),
+#                    " #line.dotted", #TODO: wait for https://github.com/plantuml/plantuml/issues/931
                     sep="",
                 )
 
@@ -1272,9 +1273,6 @@ class PlantUMLGenerator(Generator):
                 self.generate(
                     "substitution_mappings_capability_",
                     normalize_name(capability_name),
-#TBR                    ' "',
-#TBR                    capability_name,
-#TBR                    '" ..> node_',
                     ' ..> node_',
                     normalize_name(target_node_name),
                     sep="",
@@ -1304,6 +1302,7 @@ class PlantUMLGenerator(Generator):
                     ' "' + requirement_name,
                     '" as substitution_mappings_requirement_',
                     requirement_name,
+#                    " #line.dotted", #TODO: wait for https://github.com/plantuml/plantuml/issues/931
                     sep="",
                 )
                 requirement_node = requirement_yaml[0]
