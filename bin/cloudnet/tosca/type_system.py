@@ -1992,11 +1992,11 @@ class TypeChecker(Checker):
         # check metadata - nothing to do
         # check value
         if syntax.VALUE in property_definition:
-            default = property_definition.get(syntax.VALUE)
-            self.check_value(
-                default,
-                property_definition,
-                previous_property_definition,
+            value = property_definition.get(syntax.VALUE)
+            self.check_value_assignment(
+                property_name,
+                value,
+                merge_dict(property_definition, previous_property_definition),
                 context_error_message + ":" + syntax.VALUE,
             )
 
@@ -3222,7 +3222,9 @@ class TypeChecker(Checker):
         self, node_type_name, node_type, derived_from_node_type, context_error_message
     ):
         # set values of reserved function keywords
-        self.reserved_function_keywords = {"SELF": node_type}
+        self.reserved_function_keywords = {
+            "SELF": merge_dict({ "type": node_type_name }, node_type)
+        }
         # check version - nothing to do
         # check metadata - nothing to do
         # check description - nothing to do
@@ -4256,7 +4258,6 @@ class TypeChecker(Checker):
                         + " is not required, but the actual value is expected from the system",
                         value
                     )
-
                 return
 
             if syntax.GET_PROPERTY in value:
