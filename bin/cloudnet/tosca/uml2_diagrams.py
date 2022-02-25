@@ -925,7 +925,7 @@ class PlantUMLGenerator(Generator):
             for (
                 requirement_name,
                 requirement_yaml,
-             ) in substitution_mappings.get(REQUIREMENTS, {}).items():
+             ) in get_substitution_mappings_requirements(substitution_mappings).items():
                 interface_uml_id = (
                     substitution_mappings_uml_id + "_"
                     + normalize_name(requirement_name)
