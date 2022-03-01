@@ -79,6 +79,7 @@ configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
         "deploy": {},
         "undeploy": {},
     },
+    "warning-on-definitions-allowing-negative-values": True,
 }
 
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
@@ -1592,6 +1593,7 @@ class TypeChecker(Checker):
             previous_attribute_definition,
             context_error_message,
         )
+        self.check_yaml_type(attribute_definition, context_error_message)
         # check description - nothing to do
         # check default
         if 'default' in attribute_definition:
@@ -1676,6 +1678,7 @@ class TypeChecker(Checker):
         type_checker = self.get_type_checker(
             schema_definition, previous_schema_definition, context_error_message
         )
+        self.check_yaml_type(schema_definition, context_error_message)
         # check description - nothing to do
         # check constraints
         constraints = schema_definition.get(syntax.CONSTRAINTS)
@@ -1921,6 +1924,26 @@ class TypeChecker(Checker):
                 context_error_message + ":" + syntax.CONSTRAINTS,
             )
 
+    def check_yaml_type(
+        self,
+        definition,
+        context_error_message
+    ):
+        if self.configuration.get(
+            TYPE_SYSTEM,
+            "warning-on-definitions-allowing-negative-values"
+        ):
+            definition_type = definition.get(syntax.TYPE)
+            if definition_type in [ "integer", "float" ]:
+                if definition.get(syntax.CONSTRAINTS) is None:
+                    self.warning(
+                        context_error_message
+                        + ":type: "
+                        + definition_type
+                        + " - no constraints then negative values allowed",
+                        definition_type
+                    )
+
     def check_property_definition(
         self,
         property_name,
@@ -1939,6 +1962,8 @@ class TypeChecker(Checker):
             previous_property_definition,
             context_error_message,
         )
+        self.check_yaml_type(property_definition, context_error_message)
+
         # check description - nothing to do
         # check required
         if previous_property_definition is not PREVIOUSLY_UNDEFINED:
@@ -3685,6 +3710,8 @@ class TypeChecker(Checker):
         type_checker = self.get_type_checker(
             parameter_definition, {}, context_error_message
         )
+        self.check_yaml_type(parameter_definition, context_error_message)
+
         # check description - nothing to do
         # check required - nothing to do
         # check default
