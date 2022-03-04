@@ -3,7 +3,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -67,6 +67,7 @@ check_regression topology_template_substitution_mapping.yaml
 
 # Cloudnet TOSCA Toolbox issues
 check_regression issues/issue_39.yaml
+check_regression issues/issue_40.yaml
 check_regression issues/issue_41.yaml
 check_regression issues/issue_42.yaml
 check_regression issues/issue_43.yaml
