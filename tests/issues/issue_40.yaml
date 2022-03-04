@@ -18,3 +18,4 @@ topology_template:
     n1:
       type: NT
       # ERROR: p1 required property unassigned
+      # ERROR: same produced by Alloy generator
