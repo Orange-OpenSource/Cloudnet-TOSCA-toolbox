@@ -79,6 +79,9 @@ configuration.DEFAULT_CONFIGURATION[TYPE_SYSTEM] = {
         "deploy": {},
         "undeploy": {},
     },
+
+    "check-useless-value-assigments": True,
+    "check-unmapped-substitution-mappings-requirements": True,
     "warning-on-definitions-allowing-negative-values": True,
 }
 
@@ -4675,16 +4678,22 @@ class TypeChecker(Checker):
                 return
 
         self.check_value(value, definition, {}, context_error_message)
-        if 'default' in definition:
-            default = definition.get(syntax.DEFAULT)
-            if value == default:
-                self.warning(
-                    context_error_message
-                    + ': '
-                    + str(value)
-                    + ' - useless assignment as the value equals to the defined default value',
-                    name,
-                )
+
+        # Check useless assignents
+        if self.configuration.get(
+            TYPE_SYSTEM,
+            "check-useless-value-assigments"
+        ):
+            if 'default' in definition:
+                default = definition.get(syntax.DEFAULT)
+                if value == default:
+                    self.warning(
+                        context_error_message
+                        + ': '
+                        + str(value)
+                        + ' - useless assignment as the value equals to the defined default value',
+                        name,
+                    )
 
     def check_property_assignment(
         self,
@@ -6412,12 +6421,17 @@ class TypeChecker(Checker):
                 # produce an error for each other unmapped requirement
                 return self.error, "occurrences: " + str(occurrences)
 
-        check_unmapped_definitions(
-            node_type,
-            syntax.REQUIREMENTS,
-            "requirement",
-            check_ummapped_requirement_definition,
-        )
+        if self.configuration.get(
+            TYPE_SYSTEM,
+            "check-unmapped-substitution-mappings-requirements"
+        ):
+            check_unmapped_definitions(
+                node_type,
+                syntax.REQUIREMENTS,
+                "requirement",
+                check_ummapped_requirement_definition,
+            )
+
         # check interfaces - TODO
         self.iterate_over_map_of_assignments(
             None,
