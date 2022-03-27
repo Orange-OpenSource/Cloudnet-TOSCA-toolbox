@@ -4883,6 +4883,21 @@ class TypeChecker(Checker):
                 context_error_message + ": " + requirement_assignment
             )
 
+            if requirement_definition.get(syntax.RELATIONSHIP) != None:
+                (
+                    checked,
+                    relationship_type_name,
+                    relationship_type,
+                ) = self.check_type_in_definition(
+                    "relationship",
+                    syntax.RELATIONSHIP,
+                    requirement_definition,
+                    {},
+                    context_error_message,
+                )
+                # but the required properties without default of the relationship type must be assigned
+                self.check_required_properties({}, relationship_type, context_error_message + ":relationship")
+
             return
 
         # check the extended notation
