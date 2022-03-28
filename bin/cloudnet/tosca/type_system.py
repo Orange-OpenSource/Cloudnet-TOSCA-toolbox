@@ -3620,6 +3620,7 @@ class TypeChecker(Checker):
                 and field_definition.get(syntax.REQUIRED, True)
                 and self.has_no_default_value(field_definition)
                 and fields.get(field_name) is None
+                and field_definition.get('value') is None
             ):
                 default_field_definition = default_fields_definition.get(field_name)
                 if default_field_definition is None:

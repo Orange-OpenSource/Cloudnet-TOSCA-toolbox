@@ -996,6 +996,9 @@ class AbstractAlloySigGenerator(Generator):
                 property_name_format % utils.normalize_name(property_name)
             )
             property_value = template_properties.get(property_name)
+            if property_value is None:
+                # if the property is unassigned then get the value for the property definition
+                property_value = property_declaration.get("value")
             if property_value is not None:
                 value = property_value
                 if isinstance(value, str):  # escape multi-line properties
