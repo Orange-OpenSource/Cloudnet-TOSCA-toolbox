@@ -5173,8 +5173,8 @@ class TypeChecker(Checker):
                     relationship_type,
                 ) = self.check_type_in_definition(
                     "relationship",
-                    syntax.RELATIONSHIP,
-                    requirement_definition,
+                    syntax.TYPE,
+                    requirement_definition.get(syntax.RELATIONSHIP),
                     {},
                     context_error_message,
                 )
