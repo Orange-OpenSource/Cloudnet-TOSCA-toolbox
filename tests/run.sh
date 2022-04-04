@@ -74,5 +74,6 @@ check_regression issues/issue_43.yaml
 check_regression issues/issue_52.yaml
 check_regression issues/issue_54.yaml
 check_regression issues/issue_55.yaml
+check_regression issues/issue_56.yaml
 
 exit ${exit_code}

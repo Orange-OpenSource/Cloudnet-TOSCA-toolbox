@@ -4132,39 +4132,27 @@ class TypeChecker(Checker):
                 parameters_idx = 2
 
                 attribute_name = parameters[1]
-                attribute_definition = entity_type.get(syntax.ATTRIBUTES, {}).get(
-                    attribute_name
-                )
+
+                def get_attribute_or_property(entity, name):
+                    value = entity.get(syntax.ATTRIBUTES, {}).get(name)
+                    if value is None:
+                        value = entity.get(syntax.PROPERTIES, {}).get(name)
+                    return value
+
+                attribute_definition = get_attribute_or_property(
+                                            entity_type,
+                                            attribute_name
+                                       )
                 if attribute_definition != None:
-                    attribute_value = entity.get(syntax.ATTRIBUTES, {}).get(
-                        attribute_name
-                    )
+                    attribute_value = get_attribute_or_property(entity, attribute_name)
                 else:
-                    attribute_definition = entity_type.get(syntax.PROPERTIES, {}).get(
+                    capability_definition = entity_type.get(
+                        syntax.CAPABILITIES, {}
+                    ).get(attribute_name)
+                    capability_value = entity.get(syntax.CAPABILITIES, {}).get(
                         attribute_name
                     )
-                    if attribute_definition != None:
-                        attribute_value = entity.get(syntax.PROPERTIES, {}).get(
-                            attribute_name
-                        )
-                    else:
-                        capability_definition = entity_type.get(
-                            syntax.CAPABILITIES, {}
-                        ).get(attribute_name)
-                        capability_value = entity.get(syntax.CAPABILITIES, {}).get(
-                            attribute_name
-                        )
-                        if capability_definition is None:
-                            self.error(
-                                context_error_message
-                                + ": "
-                                + str(value)
-                                + " - "
-                                + attribute_name
-                                + " attribute undefined",
-                                value
-                            )
-                            return
+                    if capability_definition != None:
                         capability_type = syntax.get_capability_type(
                             capability_definition
                         )
@@ -4183,9 +4171,10 @@ class TypeChecker(Checker):
                             )
                             return
                         attribute_name = parameters[2]
-                        attribute_definition = capability_definition_type.get(
-                            syntax.ATTRIBUTES, {}
-                        ).get(attribute_name)
+                        attribute_definition = get_attribute_or_property(
+                                                    capability_definition_type,
+                                                    attribute_name
+                                                )
                         if attribute_definition is None:
                             self.error(
                                 context_error_message
@@ -4199,10 +4188,72 @@ class TypeChecker(Checker):
                             )
                             return
                         if capability_value != None:
-                            attribute_value = capability_value.get(
-                                syntax.ATTRIBUTES, {}
-                            ).get(attribute_name)
-                        parameters_idx = 3
+                            attribute_value = get_attribute_or_property(
+                                                capability_value,
+                                                attribute_name
+                                              )
+                    else:
+                        requirement_definition = entity_type.get(
+                            syntax.REQUIREMENTS, {}
+                        ).get(attribute_name)
+                        if requirement_definition is None:
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + attribute_name
+                                + " capability or requirement undefined",
+                                value
+                            )
+                            return
+                        requirement = syntax.get_requirements_dict(entity).get(
+                            attribute_name
+                        )
+                        requirement_capability = requirement_definition.get(
+                            syntax.CAPABILITY
+                        )
+                        capability_definition_type = self.type_system.merge_type(
+                            self.type_system.get_type_uri(requirement_capability)
+                        )
+                        capability_name = attribute_name  # TODO: could be different
+                        attribute_name = parameters[2]
+                        attribute_definition = get_attribute_or_property(
+                                                capability_definition_type,
+                                                attribute_name
+                                               )
+                        if attribute_definition is None:
+                            self.error(
+                                context_error_message
+                                + ": "
+                                + str(value)
+                                + " - "
+                                + attribute_name
+                                + " attribute undefined in "
+                                + requirement_capability,
+                                value
+                            )
+                            return
+                        requirement_node = syntax.get_requirement_node_template(
+                            requirement
+                        )
+                        if requirement_node is None:
+                            attribute_value = None
+                        else:
+                            entity = topology_template.get(
+                                syntax.NODE_TEMPLATES, {}
+                            ).get(requirement_node)
+                            if entity is None:
+                                attribute_value = None
+                            else:
+                                attribute_value = get_attribute_or_property(
+                                                    entity
+                                                    .get(syntax.CAPABILITIES, {})
+                                                    .get(capability_name, {}),
+                                                    attribute_name
+                                )
+
+                    parameters_idx = 3
 
                 for parameter in parameters[parameters_idx:]:
                     t = attribute_definition.get(syntax.TYPE)
