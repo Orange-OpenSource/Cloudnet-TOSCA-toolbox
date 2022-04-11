@@ -1,0 +1,605 @@
+###############################################################################
+# Software Name : Cloudnet TOSCA toolbox
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Authors:
+#   Frédéric Klamm <frederic.klamm@orange.com>
+#
+# Software description: TOSCA profile of K8S 
+###############################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: Kubernetes 1.22 cluster types definitions
+
+metadata:
+  template_name: k8s_cluster_types
+  template_author: fk
+  template_version: 0.9
+
+# No type in this profile is derived from an OASIS TOSCA profile type (§5) or from an ETSI NFV profile type.
+# A lot of property constraints have been formalized in TOSCA based on their description in English in K8S JSON schema description fields.
+
+imports:
+  - k8s_common_types.yaml
+
+artifact_types:
+
+  tosca.artifacts.iolab.k8s.ConfigMap:
+    derived_from: tosca.artifacts.Root
+    description: >-
+      ConfigMap holds configuration data for pods to consume.
+    # is this suitable?
+    mime_type: application/x-yaml
+    properties:
+      metaProperties:
+        # Following description doesn't come from K8s
+        description: >-
+          The Kubernetes states that can be specified by users in the corresponding object metadata.
+        type: tosca.datatypes.iolab.k8s.ObjectMetaProperties
+        required: false
+      binaryData:
+        description: >-
+          BinaryData contains the binary data. Each key must consist of alphanumeric characters, '-', '_' or '.'. BinaryData can contain byte sequences that are not in the UTF-8 range. 
+          The keys stored in BinaryData must not overlap with the ones in the Data field, this is enforced during validation process. Using this field will require 1.10+ apiserver and kubelet.
+        type: map
+        entry_schema:
+          type: string   #> format is specified as 'byte', so can be defined using 'pattern' 
+      data:
+        description: >-
+          Data contains the configuration data. Each key must consist of alphanumeric characters, '-', '_' or '.'. Values with non-UTF-8 byte sequences must use the BinaryData field. 
+          The keys stored in Data must not overlap with the keys in the BinaryData field, this is enforced during validation process.
+        type: map
+        entry_schema:
+          type: string
+      immutable:
+        description: >-
+          Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). 
+          If not set to true, the field can be modified at any time. Defaulted to nil. This is an alpha field enabled by ImmutableEphemeralVolumes feature gate.
+        type: boolean
+
+data_types:
+
+  # only used in a Node attribute
+  tosca.datatypes.iolab.k8s.AttachedVolume:
+    derived_from: tosca.datatypes.Root
+
+  # only used in a Node attribute
+  tosca.datatypes.iolab.k8s.ContainerImage:
+    derived_from: tosca.datatypes.Root
+
+  # only used in a Namespace attribute (state)
+  tosca.datatypes.iolab.k8s.NamespaceCondition:
+    derived_from: tosca.datatypes.Root
+    description: >-
+      NamespaceCondition contains details about state of namespace.
+    properties:
+      lastTransitionTime:
+        #>  "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+        type: string
+        required: false
+      message:
+        type: string
+        required: false
+      reason:
+        type: string
+        required: false
+      status:
+        description: >-
+          Status of the condition, one of True, False, Unknown.
+        type: string
+        constraints:
+          - valid_values: [ "True", "False", "Unknown" ]
+        required: true
+      type:
+        description: >-
+          Type of namespace controller condition.
+        type: string
+        required: true
+ 
+  # only used in a Node attribute 
+  tosca.datatypes.iolab.k8s.NodeAddress:
+    derived_from: tosca.datatypes.Root
+    description: >-
+      NodeAddress contains information for the node's address.
+    properties:
+      address:
+        description: >-
+          The node address.
+        type: string
+        required: true
+      type:
+        description: >-
+          Node address type, one of Hostname, ExternalIP or InternalIP.
+        type: string
+        constraints:
+          - valid_values: [ Hostname, ExternalIP, InternalIP ]
+        required: true
+
+  # only used in a Node attribute
+  tosca.datatypes.iolab.k8s.NodeCondition:
+    derived_from: tosca.datatypes.Root
+
+  # Bound to the K8S instance config: DynamicKubeletConfig feature gate must be enabled
+  tosca.datatypes.iolab.k8s.NodeConfigSource:
+    derived_from: tosca.datatypes.Root
+    description: >-
+      NodeConfigSource specifies a source of node configuration. Exactly one subfield (excluding metadata) must be non-nil.
+    properties:
+      configMap:
+        description: >-
+          ConfigMap is a reference to a Node's ConfigMap
+        type: tosca.datatypes.iolab.k8s.ConfigMapNodeConfigSource
+
+  # only used in a Node attribute
+  tosca.datatypes.iolab.k8s.NodeConfigStatus:
+    derived_from: tosca.datatypes.Root
+
+  # only used in a Node attribute
+  tosca.datatypes.iolab.k8s.NodeDaemonEndpoints:
+    derived_from: tosca.datatypes.Root
+
+  # only used in a Node attribute
+  tosca.datatypes.iolab.k8s.NodeSystemInfo:
+    derived_from: tosca.datatypes.Root
+
+  tosca.datatypes.iolab.k8s.ScopeSelector:
+    derived_from: tosca.datatypes.Root
+    description: >-
+      A scope selector represents the AND of the selectors represented by the scoped-resource selector requirements.
+    properties:
+      matchExpressions:
+        description: >-
+          A list of scope selector requirements by scope of the resources.
+        type: list
+        entry_schema:
+          type:  tosca.datatypes.iolab.k8s.ScopedResourceSelectorRequirement
+        required: false
+
+  tosca.datatypes.iolab.k8s.ScopedResourceSelectorRequirement:
+    derived_from: tosca.datatypes.Root 
+    description: >-
+      A scoped-resource selector requirement is a selector that contains values, a scope name, and an operator that relates the scope name and values.
+    properties:
+      operator:
+        description: >-
+          Represents a scope's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist.
+        type: string
+        constraints:
+          - valid_values: [ In, NotIn, Exists, DoesNotExist ]
+        required: true
+      scopeName:
+        description: >-
+          The name of the scope that the selector applies to.
+        type: string
+        required: true
+      #! The existence of a value for this property is bound to the value of 'operator'  (see description)
+      values:
+        description: >-
+          An array of string values. If the operator is In or NotIn, the values array must be non-empty. 
+          If the operator is Exists or DoesNotExist, the values array must be empty. 
+          This array is replaced during a strategic merge patch.
+        type: list
+        entry_schema:
+          type: string
+        required: false
+
+  tosca.datatypes.iolab.k8s.Taint:
+    derived_from: tosca.datatypes.Root
+    description: The node this Taint is attached to has the "effect" on any pod that does not tolerate the Taint.
+    properties:
+      effect:
+        description: >-
+          Required. The effect of the taint on pods that do not tolerate the taint. Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
+        type: string
+        constraints:
+          - valid_values: [ NoSchedule, PreferNoSchedule, NoExecute ]
+        required: true
+      key:
+        description: >-
+          Required. The taint key to be applied to a node.
+        type: string
+        required: true
+      #! timeAdded is bound to the value of property 'effect'
+      timeAdded:
+        description: >-
+          TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints.
+        type: string     #  Kubernetes Time type, which is of type string, format "date-time"
+        required: false
+      value:
+        description: >-
+          Required. The taint value corresponding to the taint key.
+        type: string
+        required: true
+
+
+capability_types:
+
+  #> Relationship targets used to express requirements/dependency, as opposed to tosca.groups.iolab.k8s.PodLabel, that is used as policy target
+  tosca.capabilities.iolab.k8s.PersistentVolumeLabel:
+    derived_from: tosca.capabilities.Root
+    description: >-
+      Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services.
+    properties:
+      labelKey:
+        type: string
+        required: true
+      labelValue:
+        type: string
+        required: true
+#    valid_source_types: [ tosca.nodes.iolab.k8s.PersistentVolumeClaim ]
+
+relationship_types:
+
+  tosca.relationships.iolab.k8s.PersistentVolumeConnection:
+    derived_from: tosca.relationships.Root
+#    valid_target_types: [ tosca.capabilities.iolab.k8s.PersistentVolumeLabel ]
+
+node_types:
+
+#>> The TOSCA type properties capture in metaProperties the Kubernetes states that can be specified by users in the corresponding object metadata.
+#>> They also capture directly the properties defined in Kubernetes objec Spec, except when their semantics matches with another TOSCA entity than 'datatype', or one of its specific keyname.
+#>> The TOSCA type attributes capture in metaAttributes the Kubernetes states populated by the system that one can find in the corresponding object metadata.
+#>> They also capture directly the attributes defined in Kubernetes objec Status, except when their semantics matches with another TOSCA entity than 'datatype', or one of its specific keyname.
+
+# A namespace is a virtual cluster
+  tosca.nodes.iolab.k8s.Namespace:
+    derived_from: tosca.nodes.Root  
+    description: >-
+      Namespace provides a scope for Names. Use of multiple namespaces is optional.
+    properties:
+      metaProperties:
+        #> Following description doesn't come from K8s
+        description: >-
+          The Kubernetes states that can be specified by users in the corresponding object metadata.
+        type: tosca.datatypes.iolab.k8s.ObjectMetaProperties
+        required: false
+      #> finalizers must be used during namespace termination (?)
+      finalizers:
+        description: >-
+          Finalizers is an opaque list of values that must be empty to permanently remove object from storage.
+        type: list
+        entry_schema: 
+          type: string
+        required: false
+    attributes:
+      metaAttributes:
+        # Following description doesn't come from K8s
+        description: >-
+          The Kubernetes states that is populated by the system in the corresponding object metadata.
+        type: tosca.datatypes.iolab.k8s.ObjectMetaAttributes
+      # Most recently observed status of the node. Populated by the system. Read-only.
+      conditions:
+        description: >-
+          Represents the latest available observations of a namespace's current state.
+        type: list
+        entry_schema:
+          type: tosca.datatypes.iolab.k8s.NamespaceCondition
+#> TODO  "x-kubernetes-patch-merge-key": "type",
+#> TODO  "x-kubernetes-patch-strategy": "merge"
+      phase:
+        description: Phase is the current lifecycle phase of the namespace.
+        type: string
+
+#    artifacts:
+      #> Linking ConfigMap to Namespace  ?
+#      config_map:
+#        description: >
+#          xx
+          
+  #NFV Kubernetes implementation of a CIS instance 
+  tosca.nodes.iolab.k8s.Node:
+    derived_from: tosca.nodes.Root
+    description: >-
+      Node is a worker node in Kubernetes. Each node will have a unique identifier in the cache (i.e. in etcd).
+    version: v1
+    properties:
+      metaProperties:
+        # The following description doesn't come from K8s
+        description: >-
+          The Kubernetes states that can be specified by users in the corresponding object metadata.
+        type: tosca.datatypes.iolab.k8s.ObjectMetaProperties
+        required: false
+      configSource:
+        description: >-
+          If specified, the source to get node configuration from The DynamicKubeletConfig feature gate must be enabled for the Kubelet to use this field
+        type: tosca.datatypes.iolab.k8s.NodeConfigSource
+        required: false
+#  externalID: deprecated from v1.13
+      podCIDR:
+        description: >-
+          PodCIDR represents the pod IP range assigned to the node.
+        type: string
+        required: false
+      #! podCIDRs first entry is bound to the value of property 'podCIDR'. 
+      #! There's another constraint in description.
+      podCIDRs:
+        description: >-
+          podCIDRs represents the IP ranges assigned to the node for usage by Pods on that node. If this field is specified, the 0th entry must match the podCIDR field.
+          It may contain at most 1 value for each of IPv4 and IPv6.
+        type: list
+        entry_schema:
+          type: string
+        # "x-kubernetes-patch-strategy": "merge"
+        required: false
+      providerID:
+        description: >-
+          ID of the node assigned by the cloud provider in the format: <ProviderName>://<ProviderSpecificNodeID>
+        type: string
+        required: false
+      taints:
+        description: >-
+          If specified, the node's taints.
+        type: list
+        entry_schema:
+          type: tosca.datatypes.iolab.k8s.Taint
+        required: false
+      unschedulable:
+        description: >-
+          Unschedulable controls node schedulability of new pods. By default, node is schedulable.
+        type: boolean
+        default: false
+
+    attributes:
+      metaAttributes:
+        # The following description doesn't come from K8s
+        description: >-
+          The Kubernetes states that is populated by the system in the corresponding object metadata.
+        type: tosca.datatypes.iolab.k8s.ObjectMetaAttributes
+      # Most recently observed status of the node. Populated by the system. Read-only.
+      addresses:
+        description: >-
+          List of addresses reachable to the node. Queried from cloud provider, if available.
+        type: list
+        entry_schema:
+          type: tosca.datatypes.iolab.k8s.NodeAddress
+#>          "x-kubernetes-patch-merge-key": "type",
+#>          "x-kubernetes-patch-strategy": "merge"
+      allocatable:
+        description: >-
+          Allocatable represents the resources of a node that are available for scheduling. Defaults to Capacity.
+        type: map
+        entry_schema:
+          # >> k8s json schema says oneOf[string, number]
+          type: tosca.datatypes.iolab.k8s.Quantity
+      capacity:
+        description: >-
+          Capacity represents the total resources of a node.
+        type: map
+        entry_schema:
+          # >> k8s json schema says oneOf[string, number]
+          type: tosca.datatypes.iolab.k8s.Quantity
+      conditions:
+        description: >-
+          Conditions is an array of current observed node conditions.
+        type: list
+        entry_schema:
+          type: tosca.datatypes.iolab.k8s.NodeCondition
+#>       "x-kubernetes-patch-merge-key": "type",
+#>       "x-kubernetes-patch-strategy": "merge"
+      config:
+        description: >-
+          Status of the config assigned to the node via the dynamic Kubelet config feature.
+        type: tosca.datatypes.iolab.k8s.NodeConfigStatus
+# Added from node status:
+      daemonEndpoints:
+        description: >-
+          Endpoints of daemons running on the Node.
+        type: tosca.datatypes.iolab.k8s.NodeDaemonEndpoints
+      images:
+        description: >-
+          List of container images on this node
+        type: list
+        entry_schema:
+          type: tosca.datatypes.iolab.k8s.ContainerImage
+      nodeInfo:
+        description: >-
+          Set of ids/uuids to uniquely identify the node.
+        type: tosca.datatypes.iolab.k8s.NodeSystemInfo
+# phase is unused and deprecated
+      #phase:
+      #  description: NodePhase is the recently observed lifecycle phase of the node.
+      #  type: string
+      volumesAttached:
+        description: >-
+          List of volumes that are attached to the node.
+        type: list
+        entry_schema:
+          type: tosca.datatypes.iolab.k8s.AttachedVolume
+      volumesInUse:
+        description: >-
+          List of attachable volumes in use (mounted) by the node.
+        type: list
+        entry_schema:
+          type: string
+
+  tosca.nodes.iolab.k8s.PersistentVolume:
+    derived_from: tosca.nodes.Root
+    description: PersistentVolume (PV) is a storage resource provisioned by an administrator. It is analogous to a node.
+    properties:
+      metaProperties:
+        #>> Following description doesn't come from K8s
+        description: >-
+          The Kubernetes states that can be specified by users in the corresponding object metadata.
+        type: tosca.datatypes.iolab.k8s.ObjectMetaProperties
+        required: false
+      accessModes:
+        description: >-
+          AccessModes contains all ways the volume can be mounted.
+        type: list
+        entry_schema:
+          type: string
+        required: false
+#     "awsElasticBlockStore"
+#     "azureDisk"
+#        "azureFile"
+      capacity:
+        description: >-
+          A description of the persistent volume's resources and capacity.
+        type: map
+        entry_schema:
+         # >> k8s json schema says oneOf[string, number]
+          type: tosca.datatypes.iolab.k8s.Quantity
+        required: false
+#        "cephfs": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.CephFSPersistentVolumeSource",
+#          "description": "CephFS represents a Ceph FS mount on the host that shares a pod's lifetime"
+#      cinder:
+#        $ref: #/definitions/io.k8s.api.core.v1.CinderPersistentVolumeSource",
+#          "description": "Cinder represents a cinder volume attached and mounted on kubelets host machine. 
+      claimRef:
+        description: >-
+          ClaimRef is part of a bi-directional binding between PersistentVolume and PersistentVolumeClaim.
+          Expected to be non-nil when bound. claim.VolumeName is the authoritative bind between PV and PVC.
+        type: tosca.datatypes.iolab.k8s.ObjectReference
+        required: false
+#      "csi": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.CSIPersistentVolumeSource",
+#          "description": "CSI represents storage that is handled by an external CSI driver (Beta feature)."
+#        "fc": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.FCVolumeSource",
+#          "description": "FC represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod."
+#        "flexVolume": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.FlexPersistentVolumeSource",
+#          "description": "FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin."
+#        "flocker": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.FlockerVolumeSource",
+#          "description": "Flocker represents a Flocker volume attached to a kubelet's host machine and exposed to the pod for its usage. This depends on the Flocker control service being running"
+#        "gcePersistentDisk": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.GCEPersistentDiskVolumeSource",
+#          "description": "GCEPersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. Provisioned by an admin.
+#        "glusterfs": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.GlusterfsPersistentVolumeSource",
+#          "description": "Glusterfs represents a Glusterfs volume that is attached to a host and exposed to the pod. Provisioned by an admin.
+      hostPath:
+        description: >-
+          HostPath represents a directory on the host. Provisioned by a developer or tester. This is useful for single-node development and testing only! 
+          On-host storage is not supported in any way and WILL NOT WORK in a multi-node cluster.
+        type: tosca.datatypes.iolab.k8s.HostPathVolumeSource
+        required: false
+#        "iscsi": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.ISCSIPersistentVolumeSource",
+#          "description": "ISCSI represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. Provisioned by an admin."
+#        "local": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.LocalVolumeSource",
+#          "description": "Local represents directly-attached storage with node affinity"
+      mountOptions:
+        description: A list of mount options, e.g. ["ro", "soft"]. Not validated - mount will simply fail if one is invalid.
+        type: list
+        entry_schema:
+          type: string
+        required: false
+#        "nfs": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.NFSVolumeSource",
+#          "description": "NFS represents an NFS mount on the host. Provisioned by an admin.
+
+#> TODO:  Valid source capa?
+#>      nodeAffinity:
+#>          "$ref": "#/definitions/io.k8s.api.core.v1.VolumeNodeAffinity",
+#>          "description": "NodeAffinity defines constraints that limit what nodes this volume can be accessed from. This field influences the scheduling of pods that use this volume."
+#>        },
+#> where:
+#> .VolumeNodeAffinity": {
+#>      "description": "VolumeNodeAffinity defines constraints that limit what nodes this volume can be accessed from.",
+#>     "properties": {
+#>        "required": {
+#>          "$ref": "#/definitions/io.k8s.api.core.v1.NodeSelector",
+#>          "description": "Required specifies hard node constraints that must be met."
+
+      persistentVolumeReclaimPolicy:
+        description: >-
+          What happens to a persistent volume when released from its claim.
+          Valid options are Retain (default for manually created PersistentVolumes), Delete (default for dynamically provisioned PersistentVolumes), and Recycle (deprecated).
+          Recycle must be supported by the volume plugin underlying this PersistentVolume.
+        type: string
+        constraints:
+          - valid_values: [ Retain, Delete ]
+        required: false
+#        "photonPersistentDisk": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.PhotonPersistentDiskVolumeSource",
+#          "description": "PhotonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine"
+#        "portworxVolume": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.PortworxVolumeSource",
+#          "description": "PortworxVolume represents a portworx volume attached and mounted on kubelets host machine"
+#        "quobyte": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.QuobyteVolumeSource",
+#          "description": "Quobyte represents a Quobyte mount on the host that shares a pod's lifetime"
+#        "rbd": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.RBDPersistentVolumeSource",
+#          "description": "RBD represents a Rados Block Device mount on the host that shares a pod's lifetime. 
+#        "scaleIO": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.ScaleIOPersistentVolumeSource",
+#          "description": "ScaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes."
+#
+#> TODO        "storageClassName": {
+#>          "description": "Name of StorageClass to which this persistent volume belongs. Empty value means that this volume does not belong to any StorageClass.",
+#>          "type": "string"
+
+#        "storageos": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.StorageOSPersistentVolumeSource",
+#          "description": "StorageOS represents a StorageOS volume that is attached to the kubelet's host machine and mounted into the pod.
+#        "volumeMode": {
+#          "description": "volumeMode defines if a volume is intended to be used with a formatted filesystem or to remain in raw block state. Value of Filesystem is implied when not included in spec.",
+#          "type": "string"
+#        "vsphereVolume": {
+#          "$ref": "#/definitions/io.k8s.api.core.v1.VsphereVirtualDiskVolumeSource",
+#          "description": "VsphereVolume represents a vSphere volume attached and mounted on kubelets host machine"
+
+    capabilities:
+      pv_storage:  #> Kubernetes PersistentVolumeClaim.metadata.labels
+        type: tosca.capabilities.iolab.k8s.PersistentVolumeLabel
+        
+policy_types:
+
+# This policy should be used by telcos
+  tosca.policies.iolab.k8S.ResourceQuota:
+    description: >-
+      ResourceQuota sets aggregate quota restrictions enforced per namespace.
+    properties:
+      metaProperties:
+        # The following description doesn't come from K8s
+        description: >-
+          The Kubernetes states that can be specified by users in the corresponding object metadata.
+        type: tosca.datatypes.iolab.k8s.ObjectMetaProperties
+        required: false
+      hard:
+        description: >-
+          hard is the set of desired hard limits for each named resource.
+        type: map
+        entry_schema:
+          type: tosca.datatypes.iolab.k8s.Quantity
+        required: false
+      scopeSelector:
+        description: >-
+          scopeSelector is also a collection of filters like scopes that must match each object tracked by a quota but expressed using ScopeSelectorOperator in combination with possible values.
+          For a resource to match, both scopes AND scopeSelector (if specified in spec), must be matched.
+        type: tosca.datatypes.iolab.k8s.ScopeSelector
+        required: false
+      scopes:
+        description: >-
+          A collection of filters that must match each object tracked by a quota. If not specified, the quota matches all objects.
+        type: list
+        entry_schema:
+          type: string
+        required: false         
+#> TODO: To be moved to Namespace in some way, without collision with namespace attributes ?
+#    attributes:
+#      metaAttributes:
+#        # Following description doesn't come from K8s
+#        description: The Kubernetes states that is populated by the system in the corresponding object metadata.
+#        type: tosca.datatypes.iolab.k8s.ObjectMetaAttributes
+#      # Most recently observed status of the node. Populated by the system. Read-only.
+#      used:
+#        description: Used is the current observed total usage of the resource in the namespace.
+#        type: map
+#        entry_schema:
+#          type: tosca.datatypes.iolab.k8s.Quantity
+    targets: [ tosca.nodes.iolab.k8s.Namespace ]
+
+
