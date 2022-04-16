@@ -2315,6 +2315,7 @@ class TypeChecker(Checker):
             previous_capability_definition,
             context_error_message,
         )
+
         # check properties
         self.iterate_over_map_of_definitions(
             self.check_property_definition,
@@ -5716,6 +5717,10 @@ class TypeChecker(Checker):
                     {},
                     context_error_message,
                 )
+
+                # Merge capability type and refined properties and attributes
+                capability_type = merge_dict(capability_type, capability_definition)
+
             self.check_required_properties(
                 capabilities.get(capability_name, {}),
                 capability_type,
