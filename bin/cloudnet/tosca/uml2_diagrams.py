@@ -45,7 +45,8 @@ DEFAULT_CONFIGURATION[UML2] = {
     "artifact_types": {
     },
     "node_types": {
-    }
+    },
+    "max-value-length": 40,
 }
 DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
@@ -123,22 +124,39 @@ class PlantUMLGenerator(Generator):
         self.generate("set namespaceSeparator none")
 
         def generate_class(class_name, class_kind, type_yaml, types):
-            def generate_field(field_name, field_yaml):
-                declaration = "+"
-                if is_property_required(field_yaml):
+            type_definition = self.type_system.merge_type(class_name)
+            type_properties_definition = type_definition.get("properties", {})
+
+            def generate_field(field_name, field_yaml, field_required, indentation = "+"):
+                declaration = indentation
+                if field_required:
                     declaration = declaration + "<b>"
                 declaration = declaration + field_name
-                field_type = syntax.get_type(field_yaml)
-                if field_type:
-                    declaration = declaration + " : " + field_type
-                    if field_type in ["list", "map"]:
-                        entry_schema_type = get_entry_schema_type(field_yaml)
-                        if entry_schema_type is None:
-                            entry_schema_type = "?"
-                        declaration = declaration + "<" + entry_schema_type + ">"
-                field_default = syntax.get_default(field_yaml)
-                if field_default:
-                    declaration = declaration + " = " + str(field_default)
+                if isinstance(field_yaml, dict):
+                    field_type = syntax.get_type(field_yaml)
+                    if field_type:
+                        declaration = declaration + " : " + field_type
+                        if field_type == "list":
+                            entry_schema_type = get_entry_schema_type(field_yaml)
+                            if entry_schema_type is None:
+                                entry_schema_type = "?"
+                            declaration = declaration + "<" + entry_schema_type + ">"
+                        elif field_type == "map":
+                            key_schema_type = field_yaml.get("key_schema", {}).get('type')
+                            entry_schema_type = get_entry_schema_type(field_yaml)
+                            if entry_schema_type is None:
+                                entry_schema_type = "?"
+                            if key_schema_type is None:
+                                declaration += "<%s>" % entry_schema_type
+                            else:
+                                declaration += "<%s, %s>" % (key_schema_type, entry_schema_type)
+
+                value = \
+                    ( isinstance(field_yaml, (str, bool, int, float, list)) and field_yaml ) \
+                    or ( isinstance(field_yaml, dict) and field_yaml.get("value") ) \
+                    or syntax.get_default(field_yaml)
+                if value is not None:
+                    declaration = declaration + " = " + self.stringify_value(value)
                 self.generate(declaration)
 
             def translateToscaOccurrences2UmlMultiplicity(occurrences):
@@ -175,12 +193,18 @@ class PlantUMLGenerator(Generator):
             if len(attributes):
                 self.generate(".. attributes ..")
                 for attribute_name, attribute_yaml in attributes.items():
-                    generate_field(attribute_name, attribute_yaml)
+                    generate_field(attribute_name, attribute_yaml, True)
             properties = get_dict(type_yaml, PROPERTIES)
             if len(properties):
                 self.generate(".. properties ..")
                 for property_name, property_yaml in properties.items():
-                    generate_field(property_name, property_yaml)
+                    generate_field(
+                        property_name,
+                        property_yaml,
+                        is_property_required(
+                            type_properties_definition.get(property_name)
+                        )
+                    )
             capabilities = syntax.get_capabilities(type_yaml)
             if len(capabilities):
                 self.generate(".. capabilities ..")
@@ -202,6 +226,31 @@ class PlantUMLGenerator(Generator):
                             sep="",
                         )
                     if isinstance(capability_yaml, dict):
+                        attributes = get_dict(capability_yaml, ATTRIBUTES)
+                        if len(attributes):
+                            self.generate(" attributes :")
+                            for attribute_name, attribute_yaml in attributes.items():
+                                generate_field(
+                                    attribute_name,
+                                    attribute_yaml,
+                                    True,
+                                    "<color:business>  </color>"
+                                )
+                        properties = get_dict(capability_yaml, PROPERTIES)
+                        if len(properties):
+                            self.generate(" properties :")
+                            capability_properties_definition = \
+                                self.type_system.merge_type( \
+                                    type_definition.get("capabilities", {}).get(capability_name).get('type')
+                                ) \
+                                .get("properties", {})
+                            for property_name, property_yaml in properties.items():
+                                generate_field(
+                                    property_name,
+                                    property_yaml,
+                                    is_property_required(capability_properties_definition.get(property_name)),
+                                    "<color:business>  </color>"
+                                )
                         capability_valid_source_types = capability_yaml.get(
                             VALID_SOURCE_TYPES
                         )
@@ -211,6 +260,7 @@ class PlantUMLGenerator(Generator):
                                 capability_valid_source_types,
                                 sep="",
                             )
+
             requirements = get_dict(type_yaml, REQUIREMENTS)
             if len(requirements):
                 self.generate(".. requirements ..")
@@ -289,6 +339,21 @@ class PlantUMLGenerator(Generator):
                     syntax.get_operations(type_yaml).get(OPERATIONS).items()
                 ):
                     generate_operation(key, value)
+
+            artifacts = get_dict(type_yaml, ARTIFACTS)
+            if len(artifacts):
+                self.generate(".. artifacts ..")
+                for artifact_name, artifact_yaml in artifacts.items():
+                    self.generate("+", artifact_name, sep="")
+                    if isinstance(artifact_yaml, str):
+                        self.generate(" file : ", artifact_yaml, sep="")
+                    else:
+                        artifact_type = artifact_yaml.get("type")
+                        if artifact_type != None:
+                            self.generate(" type : ", artifact_type, sep="")
+                        artifact_file = artifact_yaml.get("file")
+                        if artifact_file != None:
+                            self.generate(" file : ", artifact_file, sep="")
             self.generate("}")
             for attribute_name, attribute_yaml in attributes.items():
                 attribute_type = attribute_yaml.get(TYPE)
@@ -627,7 +692,8 @@ class PlantUMLGenerator(Generator):
                                 None,
                                 requirement_capability_type
                         )
-                    used_capabilities[requirement_node].add(compatible_capabilities[0])
+                    if len(compatible_capabilities) > 0:
+                        used_capabilities[requirement_node].add(compatible_capabilities[0])
 
         if substitution_mappings:
             substitution_mappings_uml_id = SUBSTITUTION_MAPPINGS
@@ -986,7 +1052,7 @@ class PlantUMLGenerator(Generator):
                 for requirement_name, requirement_yaml in requirement.items():
                     requirement_definition = get_dict(
                         merged_node_template_type, REQUIREMENTS
-                    ).get(requirement_name)
+                    ).get(requirement_name, {})
                     requirement_relationship = syntax.get_requirement_relationship(
                         requirement_definition
                     )
@@ -1131,8 +1197,10 @@ class PlantUMLGenerator(Generator):
                         self.generate(
                             'label "file: ',
                             syntax.get_artifact_file(artifact_yaml),
-                            '" as ',
+                            '" as node_',
                             normalize_name(container_name),
+                            "_artifact_",
+                            normalize_name(artifact_name),
                             "_label",
                             sep="",
                         )
@@ -1152,8 +1220,10 @@ class PlantUMLGenerator(Generator):
                         self.generate(
                             'label "file: ',
                             syntax.get_artifact_file(artifact_yaml),
-                            '" as ',
+                            '" as node_',
                             normalize_name(container_name),
+                            "_artifact_",
+                            normalize_name(artifact_name),
                             "_label",
                             sep="",
                         )
@@ -1555,10 +1625,15 @@ class PlantUMLGenerator(Generator):
                         generate_sequence_diagram(policy_name, policy, trigger_name, trigger)
 
     def stringify_value(self, value):
-        if not isinstance(value, (str, int, float)):
-            return '[[{' + self.yamlify_value(value) + '} ...]]'
-        else:
-            return repr(value)
+        tmp = repr(value)
+        max_value_length = self.configuration.get(UML2, "max-value-length")
+        if len(tmp) > max_value_length:
+            tmp = tmp[0:max_value_length]
+            if not isinstance(value, (str, int, float)):
+                tmp += '[[{%s} ...]]' % self.yamlify_value(value)
+            else:
+                tmp += '[[{%s} ...]]' % repr(value)
+        return tmp
 
     def yamlify_value(self, value, header='', ident=''):
         result = ''
