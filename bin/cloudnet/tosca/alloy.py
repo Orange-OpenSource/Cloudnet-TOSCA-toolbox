@@ -2917,7 +2917,10 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                         get_capability_type(capability_yaml)
                     )
                     self.generate_all_properties(
-                        get_dict(merged_capability_type, PROPERTIES),
+                        utils.merge_dict(
+                            get_dict(merged_capability_type, PROPERTIES),
+                            all_capabilities.get(capability_name).get("properties", {})
+                        ),
                         get_dict(capability_value, PROPERTIES),
                         prefixed_capability_name,
                         context_error_message
