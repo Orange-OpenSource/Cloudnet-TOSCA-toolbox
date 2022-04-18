@@ -2916,10 +2916,12 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     merged_capability_type = self.type_system.merge_type(
                         get_capability_type(capability_yaml)
                     )
+                    capability_def = all_capabilities.get(capability_name)
+                    capability_properties = capability_def.get("properties", {}) if isinstance(capability_def, dict) else {}
                     self.generate_all_properties(
                         utils.merge_dict(
                             get_dict(merged_capability_type, PROPERTIES),
-                            all_capabilities.get(capability_name).get("properties", {})
+                            capability_properties
                         ),
                         get_dict(capability_value, PROPERTIES),
                         prefixed_capability_name,
