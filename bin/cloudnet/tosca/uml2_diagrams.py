@@ -355,7 +355,7 @@ class PlantUMLGenerator(Generator):
                         if artifact_file != None:
                             self.generate(" file : ", artifact_file, sep="")
             self.generate("}")
-            for attribute_name, attribute_yaml in attributes.items():
+            for attribute_name, attribute_yaml in get_dict(type_yaml, ATTRIBUTES).items():
                 attribute_type = attribute_yaml.get(TYPE)
                 if data_types.get(attribute_type):
                     self.generate(
@@ -379,7 +379,7 @@ class PlantUMLGenerator(Generator):
                             attribute_name,
                             sep="",
                         )
-            for property_name, property_yaml in properties.items():
+            for property_name, property_yaml in get_dict(type_yaml, PROPERTIES).items():
                 property_type = syntax.get_property_type(property_yaml)
                 if data_types.get(property_type):
                     self.generate(
