@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -202,7 +202,7 @@ def get_import_file(yaml):
     if isinstance(yaml, str):
         return yaml
     if isinstance(yaml, dict):
-        file = yaml.get(FILE)
+        file = yaml.get(FILE) or yaml.get("url") # added for tosca_2_0
         if file is not None:
             return file
         if len(yaml) == 1:
