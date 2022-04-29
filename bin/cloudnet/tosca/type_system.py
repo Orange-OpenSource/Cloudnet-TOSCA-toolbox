@@ -163,10 +163,14 @@ class TypeSystem(object):
             return False
         # normalize short names
         type_name = self.get_type_uri(type_name)
-        derived_from_type_name = self.get_type_uri(derived_from_type_name)
-        #
-        if type_name == derived_from_type_name:
-            return True
+        if isinstance(derived_from_type_name, str):
+            derived_from_type_name = self.get_type_uri(derived_from_type_name)
+            #
+            if type_name == derived_from_type_name:
+                return True
+        elif isinstance(derived_from_type_name, list):
+            if type_name in derived_from_type_name:
+                return True
         type_type = self.get_type(type_name)
         if type_type is None:
             return False
@@ -1757,8 +1761,20 @@ class TypeChecker(Checker):
     def check_value(
         self, value, definition, previous_definition, context_error_message
     ):
-
         LOGGER.debug(context_error_message + " - checking...")
+
+        data_types = syntax.get_type(definition)
+        if isinstance(data_types, list):
+            pythontypes2toscatypes = {
+                str: "string",
+                int: "integer"
+            }
+            for k, v in pythontypes2toscatypes.items():
+                if isinstance(value, k):
+                    if v in data_types:
+                        return
+            self.error(context_error_message + ": " + str(value) + " - " + array_to_string_with_or_separator(data_types) + " type expected")
+            return
 
         type_checker = self.get_type_checker(
             definition, previous_definition, context_error_message
@@ -3824,7 +3840,13 @@ class TypeChecker(Checker):
                 # check that parameters are a list of strings
                 expected_type_of_parameters = {
                     "type": "list",
-                    "entry_schema": {"type": "string"},
+                    "entry_schema": {
+                        "type": [
+                            "string",
+                            "integer",
+                            # TODO: add other allowed yaml types
+                        ],
+                    },
                     "constraints": [{"min_length": 1}],
                 }
                 self.check_value_assignment(
