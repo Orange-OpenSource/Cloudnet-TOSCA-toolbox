@@ -153,6 +153,11 @@ pred valid_values[variable: one String, values: set String]
   variable in values
 }
 
+pred valid_values[variable: seq string, values: integer -> string]
+{
+//TODO
+}
+
 pred string.pattern[value: one string]
 {
   // Do nothing as can not be expressed with Alloy.
