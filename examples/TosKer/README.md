@@ -19,7 +19,25 @@ This script
 
 Following are some generated diagrams
 
-TODO
+![TosKer types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/tosker-types-uml2-class-diagram.png)
+
+![Node Mongo - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/node-mongo.csar/node-mongo-uml2-deployment-diagram.png)
+
+![Node Mongo - UML Component Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/node-mongo.csar/node-mongo-uml2-component-diagram1.png)
+
+![Node Mongo - TOSCA Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/tosca/node-mongo.csar/node-mongo.png)
+
+![Sockshop - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/sockshop.csar/sockshop-uml2-deployment-diagram.png)
+
+![Sockshop - UML Component Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/sockshop.csar/sockshop-uml2-component-diagram1.png)
+
+![Sockshop - TOSCA Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/tosca/sockshop.csar/sockshop.png)
+
+![Thinking - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/thinking.csar/thinking-uml2-deployment-diagram.png)
+
+![Thinking - UML Component Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/thinking.csar/thinking-uml2-component-diagram1.png)
+
+![Thinking - TOSCA Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/tosca/thinking.csar/thinking.png)
 
 All generated diagrams are available in
 * [diagrams/tosca/](diagrams/tosca/)
@@ -29,4 +47,4 @@ All generated diagrams are available in
 
 TosKer examples contain some typing errors.
 The main errors are located into the [TosKer profile](https://github.com/di-unipi-socc/TosKer/blob/master/data/tosker-types.yaml), a set of TOSCA types dedicated to TosKer.
-The corrections of these errors are available into the (updated-tosker-types.yaml) file (see tags `#ISSUE`).
+The corrections of these errors are available into the [updated-tosker-types.yaml](updated-tosker-types.yaml) file (see tags `#ISSUE`).
