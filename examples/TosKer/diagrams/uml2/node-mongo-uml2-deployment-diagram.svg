@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="370px" preserveAspectRatio="none" style="width:630px;height:370px;background:#FFFFFF;" version="1.1" viewBox="0 0 630 370" width="630px" zoomAndPan="magnify"><defs><filter height="300%" id="fvaypkmapjd8w" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[4941b4d5110f4d3674434e619077c264]
+cluster node_server1--><polygon fill="#FFFFFF" filter="url(#fvaypkmapjd8w)" points="16,16,26,6,613,6,613,193,603,203,16,203,16,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="603" x2="613" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="603" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="603" x2="603" y1="16" y2="203"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="131" x="245" y="32.5352">server1: Container</text><!--MD5=[3384799e12d9ba1c0c3b9764d4777eb8]
+cluster node_node--><rect fill="#FFFFFF" filter="url(#fvaypkmapjd8w)" height="157" style="stroke:#000000;stroke-width:1.5;" width="414" x="191" y="38"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="585" y="43"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="583" y="45"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="583" y="49"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="106" x="345" y="64.5352">node: Software</text><!--MD5=[898b92138ed579ec6c069c064c6ca924]
+cluster node_app--><rect fill="#FFFFFF" filter="url(#fvaypkmapjd8w)" height="122" style="stroke:#000000;stroke-width:1.5;" width="398" x="199" y="65"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="577" y="70"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="575" y="72"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="575" y="76"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="97" x="349.5" y="91.5352">app: Software</text><!--MD5=[ce393e892350b066c0ad13b0b970ff31]
+cluster node_app_artifact_code--><rect fill="#FFFFFF" filter="url(#fvaypkmapjd8w)" height="87" style="stroke:#000000;stroke-width:1.5;" width="148" x="441" y="92"/><polygon fill="#FFFFFF" points="572,97,572,111,584,111,584,103,578,97,572,97" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="578" x2="578" y1="97" y2="103"/><line style="stroke:#000000;stroke-width:1.5;" x1="584" x2="578" y1="103" y2="103"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="484" y="107.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="95" x="467.5" y="124.0234">code: Artifact</text><!--MD5=[9c71a1146385f798ca28dfebf01d2eec]
+cluster node_app_artifact_package--><rect fill="#FFFFFF" filter="url(#fvaypkmapjd8w)" height="87" style="stroke:#000000;stroke-width:1.5;" width="188" x="234" y="92"/><polygon fill="#FFFFFF" points="405,97,405,111,417,111,417,103,411,97,405,97" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="411" x2="411" y1="97" y2="103"/><line style="stroke:#000000;stroke-width:1.5;" x1="417" x2="411" y1="103" y2="103"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="297" y="107.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="120" x="268" y="124.0234">package: Artifact</text><!--MD5=[b1ee0157b4f95d07d6b107fd8bfcc54c]
+cluster node_server1_artifact_my_image--><rect fill="#FFFFFF" filter="url(#fvaypkmapjd8w)" height="87" style="stroke:#000000;stroke-width:1.5;" width="156" x="24" y="92"/><polygon fill="#FFFFFF" points="163,97,163,111,175,111,175,103,169,97,163,97" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="169" x2="169" y1="97" y2="103"/><line style="stroke:#000000;stroke-width:1.5;" x1="175" x2="169" y1="103" y2="103"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="71" y="107.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="125" x="39.5" y="124.0234">my_image: Image</text><!--MD5=[5f67ddc42c3948d3bb3578393b31abe6]
+cluster node_server2--><polygon fill="#FFFFFF" filter="url(#fvaypkmapjd8w)" points="136,246,146,236,427,236,427,353,417,363,136,363,136,246" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="417" x2="427" y1="246" y2="236"/><line style="stroke:#000000;stroke-width:1.5;" x1="136" x2="417" y1="246" y2="246"/><line style="stroke:#000000;stroke-width:1.5;" x1="417" x2="417" y1="246" y2="363"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="131" x="212" y="262.5352">server2: Container</text><!--MD5=[98a916223d3aa22f75805024e88f5d0d]
+cluster node_server2_artifact_my_image--><rect fill="#FFFFFF" filter="url(#fvaypkmapjd8w)" height="87" style="stroke:#000000;stroke-width:1.5;" width="141" x="278" y="268"/><polygon fill="#FFFFFF" points="402,273,402,287,414,287,414,279,408,273,402,273" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="408" x2="408" y1="273" y2="279"/><line style="stroke:#000000;stroke-width:1.5;" x1="414" x2="408" y1="279" y2="279"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="317.5" y="283.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="125" x="286" y="300.0234">my_image: Image</text><!--MD5=[1f5236b925e6c9b864b41ba898e5256f]
+entity node_app_artifact_code_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="111" x="459.5" y="158.5352">file: app/main.js</text><!--MD5=[8c15df178001e7b652e8c01ea4dc346d]
+entity node_app_artifact_package_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="152" x="252" y="158.5352">file: app/package.json</text><!--MD5=[6d820c79221b6ff1992bf27d44f52172]
+entity node_server1_artifact_my_image_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="120" x="42" y="158.5352">file: ubuntu:latest</text><!--MD5=[ac0378eaee94a030291fca69d3db3006]
+entity node_db--><rect fill="#FEFECE" filter="url(#fvaypkmapjd8w)" height="46.4883" style="stroke:#A80036;stroke-width:1.5;" width="126" x="144" y="306"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="250" y="311"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="248" y="313"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="248" y="317"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86" x="159" y="339.5352">db: Software</text><!--MD5=[e48a6ea945f0d3087dd55b2f1346e807]
+entity node_server2_artifact_my_image_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="79" x="318.5" y="334.5352">file: ubuntu</text><!--MD5=[703b6de1b253b0534ec36bb051479572]
+link node_app to node_db--><path codeLine="25" d="M207,187.2738 C207,187.673 207,188.0746 207,188.4785 C207,189.2863 207,190.1034 207,190.9293 C207,197.5367 207,204.7086 207,212.1929 C207,242.1303 207,277.0673 207,300.8785 " fill="none" id="node_app-to-node_db" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="207,305.9007,211,296.9007,207,300.9007,203,296.9007,207,305.9007" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="89" x="208" y="224.5684">«ConnectsTo»</text><!--MD5=[060ab4284ea98232d492b6dcce3540c2]
+@startuml
+skinparam componentStyle uml2
+allowmixing
+
+node "server1: Container" as node_server1 {
+component "node: Software" as node_node {
+component "app: Software" as node_app {
+artifact "code: Artifact" <<artifact>> as node_app_artifact_code {
+label "file: app/main.js" as node_app_artifact_code_label
+}
+artifact "package: Artifact" <<artifact>> as node_app_artifact_package {
+label "file: app/package.json" as node_app_artifact_package_label
+}
+}
+}
+artifact "my_image: Image" <<artifact>> as node_server1_artifact_my_image {
+label "file: ubuntu:latest" as node_server1_artifact_my_image_label
+}
+}
+node "server2: Container" as node_server2 {
+component "db: Software" as node_db
+artifact "my_image: Image" <<artifact>> as node_server2_artifact_my_image {
+label "file: ubuntu" as node_server2_artifact_my_image_label
+}
+}
+node_app ..> node_db : <<ConnectsTo>>
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

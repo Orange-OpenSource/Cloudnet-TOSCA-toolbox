@@ -1,0 +1,41 @@
+<map id="thinking-uml2-component-diagram2_map" name="thinking-uml2-component-diagram2_map">
+<area shape="rect" id="id1" href="" title="deleted: None
+created: None
+configured: None
+started: 
+  requires: 
+    - &#39;host&#39;
+    - &#39;connection&#39;
+  offers: 
+    - &#39;feature&#39;" alt="" coords="666,709,678,725"/>
+<area shape="rect" id="id2" href="" title="- source: &#39;deleted&#39;
+  target: &#39;created&#39;
+  interface: &#39;Standard&#39;
+  operation: &#39;create&#39;
+- source: &#39;created&#39;
+  target: &#39;configured&#39;
+  interface: &#39;Standard&#39;
+  operation: &#39;configure&#39;
+- source: &#39;created&#39;
+  target: &#39;deleted&#39;
+  interface: &#39;Standard&#39;
+  operation: &#39;delete&#39;
+- source: &#39;configured&#39;
+  target: &#39;deleted&#39;
+  interface: &#39;Standard&#39;
+  operation: &#39;delete&#39;
+- source: &#39;configured&#39;
+  target: &#39;configured&#39;
+  requires: 
+    - &#39;connection&#39;
+  interface: &#39;api_interface&#39;
+  operation: &#39;push_default&#39;
+- source: &#39;configured&#39;
+  target: &#39;started&#39;
+  interface: &#39;Standard&#39;
+  operation: &#39;start&#39;
+- source: &#39;started&#39;
+  target: &#39;configured&#39;
+  interface: &#39;Standard&#39;
+  operation: &#39;stop&#39;" alt="" coords="678,725,690,742"/>
+</map>

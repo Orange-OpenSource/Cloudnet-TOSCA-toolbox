@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="140px" preserveAspectRatio="none" style="width:231px;height:140px;background:#FFFFFF;" version="1.1" viewBox="0 0 231 140" width="231px" zoomAndPan="magnify"><defs><filter height="300%" id="fvvzkh20o36b7" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[2c8e42a4b202a16893752be544c8ef90]
+cluster node_server--><polygon fill="#FFFFFF" filter="url(#fvvzkh20o36b7)" points="16,16,26,6,214,6,214,123,204,133,16,133,16,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="204" x2="214" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="204" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="204" x2="204" y1="16" y2="133"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="122" x="50" y="32.5352">server: Container</text><!--MD5=[51a5c1c9f4409e39a7f7c3959712777c]
+cluster node_server_artifact_hello_image--><rect fill="#FFFFFF" filter="url(#fvvzkh20o36b7)" height="87" style="stroke:#000000;stroke-width:1.5;" width="161" x="34" y="38"/><polygon fill="#FFFFFF" points="178,43,178,57,190,57,190,49,184,43,178,43" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="184" x2="184" y1="43" y2="49"/><line style="stroke:#000000;stroke-width:1.5;" x1="190" x2="184" y1="49" y2="49"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="83.5" y="53.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="145" x="42" y="70.0234">hello_image: Service</text><!--MD5=[37e19ed4ae8274ccf3574b29241cb8ea]
+entity node_server_artifact_hello_image_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="112" x="58" y="104.5352">file: alpine:latest</text><!--MD5=[c59f52487f22b8e2b9067245adea8255]
+@startuml
+skinparam componentStyle uml2
+allowmixing
+
+node "server: Container" as node_server {
+artifact "hello_image: Service" <<artifact>> as node_server_artifact_hello_image {
+label "file: alpine:latest" as node_server_artifact_hello_image_label
+}
+}
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

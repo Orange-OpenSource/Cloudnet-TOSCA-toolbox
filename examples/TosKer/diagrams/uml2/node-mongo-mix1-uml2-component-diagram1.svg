@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="565px" preserveAspectRatio="none" style="width:345px;height:565px;background:#FFFFFF;" version="1.1" viewBox="0 0 345 565" width="345px" zoomAndPan="magnify"><defs><filter height="300%" id="f1d5e5nqc8tugq" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[528e974334f1ea53c49b315589e37ed7]
+entity node_app--><rect fill="#FEFECE" filter="url(#f1d5e5nqc8tugq)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="134" x="93" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="207" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="205" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="205" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="130.5" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="94" x="108" y="57.0234">app: Software</text><!--MD5=[ac0378eaee94a030291fca69d3db3006]
+entity node_db--><rect fill="#FEFECE" filter="url(#f1d5e5nqc8tugq)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="134" x="7" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="121" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="119" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="119" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="44.5" y="281.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="94" x="22" y="298.0234">db: Container</text><!--MD5=[723fa73b85113c6e85becfa743691553]
+entity node_db_endpoint--><ellipse cx="110" cy="159" fill="#FEFECE" filter="url(#f1d5e5nqc8tugq)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62" x="79" y="189.5352">endpoint</text><!--MD5=[9d38628d0e9cd155ae014866e5f0a84c]
+entity node_node--><rect fill="#FEFECE" filter="url(#f1d5e5nqc8tugq)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="143" x="176.5" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="299.5" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="297.5" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="297.5" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="218.5" y="281.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103" x="191.5" y="298.0234">node: Software</text><!--MD5=[63f0ebdd91e1f433a535abdba423f30c]
+entity node_node_host--><ellipse cx="229" cy="159" fill="#FEFECE" filter="url(#f1d5e5nqc8tugq)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="214" y="189.5352">host</text><!--MD5=[1bd0dd4641043e210f12b2258736c4b5]
+entity node_server1--><rect fill="#FEFECE" filter="url(#f1d5e5nqc8tugq)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="167" x="164.5" y="489"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="311.5" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="309.5" y="496"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="309.5" y="500"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="218.5" y="522.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="127" x="179.5" y="539.0234">server1: Container</text><!--MD5=[cd2b1f2308731fd1f9db6a61cf32c571]
+entity node_server1_host--><ellipse cx="248" cy="400" fill="#FEFECE" filter="url(#f1d5e5nqc8tugq)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="233" y="430.5352">host</text><!--MD5=[33d7fdad444a5b148ed297025241d7ff]
+link node_db_endpoint to node_db--><path d="M107.2941,168.0571 C102.3068,184.7509 91.4466,221.1025 83.4803,247.7674 " fill="none" id="node_db_endpoint-node_db" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[0a61afadc7355645cdd26886882082e1]
+link node_node_host to node_node--><path d="M230.4281,168.0571 C233.0603,184.7509 238.7921,221.1025 242.9965,247.7674 " fill="none" id="node_node_host-node_node" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[7c6623604e4c820f00d3446a735e8333]
+link node_server1_host to node_server1--><path d="M248,409.0571 C248,425.7509 248,462.1025 248,488.7674 " fill="none" id="node_server1_host-node_server1" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[f15f2902e1349399db004e3392df43cf]
+link node_app to node_node_host--><path d="M178.1289,70.16 C191.058,92.7391 207.9805,122.292 218.674,140.9669 " fill="none" id="node_app-to-node_node_host" style="stroke:#A80036;stroke-width:1.0;"/><path d="M229.5861,143.0043 A9,9 0 0 0 214.9078 151.4095" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="150.9418" y="90.4709">host</text><!--MD5=[8141acc8851ad4a125d3cb47518b485c]
+link node_app to node_db_endpoint--><path d="M146.8631,70.16 C137.5805,92.531 125.4573,121.7478 117.698,140.4477 " fill="none" id="node_app-to-node_db_endpoint" style="stroke:#A80036;stroke-width:1.0;"/><path d="M122.7762,150.2763 A9,9 0 0 0 107.1533 143.7937" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="67.3861" y="90.4709">connection</text><!--MD5=[437853755989df3540d27e237cc8c6b1]
+link node_node to node_server1_host--><path d="M248,311.16 C248,333.2188 248,361.9338 248,380.6589 " fill="none" id="node_node-to-node_server1_host" style="stroke:#A80036;stroke-width:1.0;"/><path d="M256.4573,387.8 A9,9 0 0 0 239.5428 387.7998" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="217.2438" y="331.4709">host</text><!--MD5=[f021ad6a2828bb28f83d7e94bc2ef65a]
+@startuml
+skinparam componentStyle uml2
+
+component "app: Software" <<node>> as node_app
+
+component "db: Container" <<node>> as node_db
+interface "endpoint" as node_db_endpoint
+node_db_endpoint - - node_db
+
+component "node: Software" <<node>> as node_node
+interface "host" as node_node_host
+node_node_host - - node_node
+
+component "server1: Container" <<node>> as node_server1
+interface "host" as node_server1_host
+node_server1_host - - node_server1
+
+node_app "host" - -( node_node_host
+node_app "connection" - -( node_db_endpoint
+node_node "host" - -( node_server1_host
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>
