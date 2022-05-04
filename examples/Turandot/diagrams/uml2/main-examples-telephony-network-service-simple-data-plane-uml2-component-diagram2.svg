@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="464px" preserveAspectRatio="none" style="width:526px;height:464px;background:#FFFFFF;" version="1.1" viewBox="0 0 526 464" width="526px" zoomAndPan="magnify"><defs><filter height="300%" id="f1iwqqtgwjhlab" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[8c4f6a033e273add532353a41a1a9b42]
+cluster substitution_mappings--><rect fill="#FFFFFF" filter="url(#f1iwqqtgwjhlab)" height="390" style="stroke:#000000;stroke-width:1.5;" width="505" x="7" y="60"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="492" y="65"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="490" y="67"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="490" y="71"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="235" y="86.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="128" x="195.5" y="103.0234">: ns:NetworkPlane</text><!--MD5=[daa259bb3848dbd9edc8adce40e12a85]
+entity node_router--><rect fill="#FEFECE" filter="url(#f1iwqqtgwjhlab)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="157" x="346.5" y="221"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="483.5" y="226"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="481.5" y="228"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="481.5" y="232"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="395.5" y="254.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="117" x="361.5" y="271.0234">router: ns:Router</text><!--MD5=[d89e840d4c3bbe8d93831e4bf0b4e18b]
+entity node_router_route--><ellipse cx="425" cy="132" fill="#FEFECE" filter="url(#f1iwqqtgwjhlab)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="37" x="406.5" y="162.5352">route</text><!--MD5=[18e4088a016db93dcf22f09bad0966fd]
+entity node_bridge--><rect fill="#FEFECE" filter="url(#f1iwqqtgwjhlab)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="296" x="15" y="221"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="291" y="226"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="289" y="228"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="289" y="232"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="133.5" y="254.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="256" x="30" y="271.0234">bridge: NetworkAttachmentDefinition</text><!--MD5=[85ccda6cadd0f064f7b8d68f89e6f1e5]
+entity node_bridge_metadata--><ellipse cx="322" cy="132" fill="#FEFECE" filter="url(#f1iwqqtgwjhlab)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="64" x="290" y="162.5352">metadata</text><!--MD5=[3999eef27b95c6a1767d8bf5b5f238ed]
+entity node_bridge_network_attachment_definition--><ellipse cx="132" cy="132" fill="#FEFECE" filter="url(#f1iwqqtgwjhlab)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="215" x="24.5" y="162.5352">network-attachment-definition</text><!--MD5=[dd080ecec17500dfeec8cc88001b9ba9]
+entity policy_wan--><rect fill="#F0F8FF" filter="url(#f1iwqqtgwjhlab)" height="97.9531" style="stroke:#A80036;stroke-width:1.5;" width="164" x="340" y="344"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="54" x="395" y="367.5352">«policy»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="125" x="350" y="384.0234">o11n:Provisioning</text><line style="stroke:#A80036;stroke-width:1.0;" x1="341" x2="503" y1="386.9766" y2="386.9766"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="138" x="350" y="425">virtualizable = False</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="341" x2="386.5" y1="403.2207" y2="403.2207"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="71" x="386.5" y="408.0117">properties</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="457.5" x2="503" y1="403.2207" y2="403.2207"/><!--MD5=[0d28f12965d2e3a2cb014f7bbb60057a]
+entity substitution_mappings_connection--><ellipse cx="425" cy="14" fill="#FEFECE" filter="url(#f1iwqqtgwjhlab)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="387" y="44.5352">connection</text><!--MD5=[3f779b1f6c26d9dd29babe6813e954ab]
+link node_router_route to node_router--><path d="M425,141.0571 C425,157.7509 425,194.1025 425,220.7674 " fill="none" id="node_router_route-node_router" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[469eb9d00f0269b68699eac7857ceaac]
+link node_bridge_metadata to node_bridge--><path d="M312.9959,138.8239 C292.565,154.3077 241.6118,192.9232 204.7543,220.856 " fill="none" id="node_bridge_metadata-node_bridge" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[a28489240f8a68955b957c3eb4269b51]
+link node_bridge_network_attachment_definition to node_bridge--><path d="M134.33,141.0571 C138.6247,157.7509 147.9766,194.1025 154.8364,220.7674 " fill="none" id="node_bridge_network_attachment_definition-node_bridge" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[4b9629a65b8123b0a2f1643cfa8d89ab]
+reverse link node_router to policy_wan--><path d="M424.2183,289.1104 C423.861,305.8416 423.4326,325.9052 423.048,343.92 " fill="none" id="node_router-backto-policy_wan" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="424.3267,284.0309,420.1353,292.9434,424.2198,289.0298,428.1334,293.1143,424.3267,284.0309" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[ab6fef9b9e1c1c6d64e686673dc4232f]
+link substitution_mappings_connection to node_router_route--><path d="M425,23.2593 C425,42.4741 425,87.0277 425,112.7465 " fill="none" id="substitution_mappings_connection-to-node_router_route" style="stroke:#A80036;stroke-width:1.0;"/><path d="M433.4573,119.7057 A9,9 0 0 0 416.5428 119.7055" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[d033e1d15a67621fddaa3e962b96537c]
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  backgroundColor<<relationship>> White
+}
+
+interface "connection" as substitution_mappings_connection
+component ": ns:NetworkPlane" <<node>> as substitution_mappings {
+component "router: ns:Router" <<node>> as node_router
+interface "route" as node_router_route
+node_router_route - - node_router
+
+component "bridge: NetworkAttachmentDefinition" <<node>> as node_bridge
+interface "metadata" as node_bridge_metadata
+node_bridge_metadata - - node_bridge
+interface "network-attachment-definition" as node_bridge_network_attachment_definition
+node_bridge_network_attachment_definition - - node_bridge
+
+agent policy_wan <<policy>> #AliceBlue [
+o11n:Provisioning
+- - -
+.. properties ..
+virtualizable = False
+]
+policy_wan -up-> node_router
+}
+substitution_mappings_connection - -( node_router_route
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>
