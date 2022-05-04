@@ -27,6 +27,6 @@ Following are some generated diagrams
 
 ![Telephony Network Service - UML Class Diagram 2](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/Turandot/diagrams/uml2/main-examples-telephony-network-service-profiles-network-service-profile-uml2-class-diagram.png)
 
-All generated diagrams are available in
+All generated diagrams are available at
 * [diagrams/tosca/](diagrams/tosca/)
 * [diagrams/uml2/](diagrams/uml2/)
