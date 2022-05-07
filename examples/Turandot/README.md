@@ -15,17 +15,27 @@ This script
 
 ## Generated diagrams
 
-Following are some generated diagrams
+### Telephony Network Service
 
-![Telephony Network Service - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/Turandot/diagrams/uml2/main-examples-telephony-network-service-telephony-network-service-uml2-deployment-diagram.png)
-
-![Telephony Network Service - UML Component Diagram 1](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/Turandot/diagrams/uml2/main-examples-telephony-network-service-telephony-network-service-uml2-component-diagram1.png)
+#### TOSCA Diagram
 
 ![Telephony Network Service - TOSCA Diagram 1](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/Turandot/diagrams/tosca/main-examples-telephony-network-service-telephony-network-service.png)
 
-![Telephony Network Service - UML Component Diagram 2](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/Turandot/diagrams/uml2/main-examples-telephony-network-service-telephony-network-service-uml2-component-diagram2.png)
+#### UML Class Diagram
 
 ![Telephony Network Service - UML Class Diagram 2](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/Turandot/diagrams/uml2/main-examples-telephony-network-service-profiles-network-service-profile-uml2-class-diagram.png)
+
+#### UML Deployment Diagram
+
+![Telephony Network Service - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/Turandot/diagrams/uml2/main-examples-telephony-network-service-telephony-network-service-uml2-deployment-diagram.png)
+
+#### UML Component Diagrams
+
+![Telephony Network Service - UML Component Diagram 1](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/Turandot/diagrams/uml2/main-examples-telephony-network-service-telephony-network-service-uml2-component-diagram1.png)
+
+![Telephony Network Service - UML Component Diagram 2](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/Turandot/diagrams/uml2/main-examples-telephony-network-service-telephony-network-service-uml2-component-diagram2.png)
+
+### All generated diagrams
 
 All generated diagrams are available at
 * [diagrams/tosca/](diagrams/tosca/)
