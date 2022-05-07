@@ -28,7 +28,7 @@ done
 
 translate $KHUTULUN_URL/main/examples/hello-world/hello-world.yaml
 
-translate refactored_nodes.yaml
+#TBR: translate refactored_nodes.yaml
 
 # Generate TOSCA diagrams.
 generate_tosca_diagrams diagrams/tosca/*.dot
