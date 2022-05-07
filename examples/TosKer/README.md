@@ -17,29 +17,61 @@ This script
 
 ## Generated diagrams
 
-Following are some generated diagrams
+### TosKer Types
 
 ![TosKer types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/tosker-types-uml2-class-diagram.png)
 
-![Node Mongo - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/node-mongo.csar/node-mongo-uml2-deployment-diagram.png)
+### Node Mongo Example
 
-![Node Mongo - UML Component Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/node-mongo.csar/node-mongo-uml2-component-diagram1.png)
+#### TOSCA Diagram
 
 ![Node Mongo - TOSCA Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/tosca/node-mongo.csar/node-mongo.png)
 
-![Sockshop - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/sockshop.csar/sockshop-uml2-deployment-diagram.png)
+#### UML Deployment Diagram
 
-![Sockshop - UML Component Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/sockshop.csar/sockshop-uml2-component-diagram1.png)
+![Node Mongo - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/node-mongo.csar/node-mongo-uml2-deployment-diagram.png)
+
+#### UML Component Diagrams
+
+![Node Mongo - UML Component Diagram 1](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/node-mongo.csar/node-mongo-uml2-component-diagram1.png)
+
+![Node Mongo - UML Component Diagram 2](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/node-mongo.csar/node-mongo-uml2-component-diagram2.png)
+
+### Sockshop Example
+
+#### TOSCA Diagram
 
 ![Sockshop - TOSCA Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/tosca/sockshop.csar/sockshop.png)
 
-![Thinking - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/thinking.csar/thinking-uml2-deployment-diagram.png)
+#### UML Deployment Diagram
 
-![Thinking - UML Component Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/thinking.csar/thinking-uml2-component-diagram1.png)
+![Sockshop - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/sockshop.csar/sockshop-uml2-deployment-diagram.png)
+
+#### UML Component Diagrams
+
+![Sockshop - UML Component Diagram 1](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/sockshop.csar/sockshop-uml2-component-diagram1.png)
+
+![Sockshop - UML Component Diagram 2](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/sockshop.csar/sockshop-uml2-component-diagram2.png)
+
+### Thinking Example
+
+#### TOSCA Diagram
 
 ![Thinking - TOSCA Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/tosca/thinking.csar/thinking.png)
 
-All generated diagrams are available in
+#### UML Deployment Diagram
+
+![Thinking - UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/thinking.csar/thinking-uml2-deployment-diagram.png)
+
+#### UML Component Diagrams
+
+![Thinking - UML Component Diagram 1](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/thinking.csar/thinking-uml2-component-diagram1.png)
+
+![Thinking - UML Component Diagram 2](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/TosKer/diagrams/uml2/thinking.csar/thinking-uml2-component-diagram2.png)
+
+### All generated diagrams
+
+All generated diagrams are available at
 * [diagrams/tosca/](diagrams/tosca/)
 * [diagrams/uml2/](diagrams/uml2/)
 
