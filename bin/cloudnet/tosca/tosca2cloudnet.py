@@ -43,7 +43,7 @@ from cloudnet.tosca.syntax import SyntaxChecker
 from cloudnet.tosca.tosca_diagrams import ToscaDiagramGenerator
 from cloudnet.tosca.type_system import TypeChecker, TypeSystem
 from cloudnet.tosca.uml2_diagrams import PlantUMLGenerator
-from .yaml_line_numbering import Coord
+from cloudnet.tosca.yaml_line_numbering import Coord
 
 ALIASED_TOSCA_SERVICE_TEMPLATES = "aliased_tosca_service_templates"
 
