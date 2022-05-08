@@ -92,13 +92,16 @@ for file in \
       profiles/org.oasis-open/simple-for-nfv/1.0/data.yaml \
       profiles/org.oasis-open/simple-for-nfv/1.0/nodes.yaml \
       profiles/org.oasis-open/simple-for-nfv/1.0/profile.yaml \
-      profiles/org.oasis-open/simple-for-nfv/1.0/relationships.yaml
+      profiles/org.oasis-open/simple-for-nfv/1.0/relationships.yaml \
+      profiles/org.oasis-open/non-normative/artifact.yaml \
+      profiles/org.oasis-open/non-normative/capability.yaml \
+      profiles/org.oasis-open/non-normative/node.yaml \
+      profiles/org.oasis-open/non-normative/profile.yaml
 do
   translate $BASE_URL/$file
 done
 
 #TODO: profiles/cloud.puccini/*
-#TODO: examples/1.3/turandot/hello-world/hello-world.yaml
 #TODO: examples/1.3/turandot/hello-world/hello-world.yaml
 #TODO: examples/1.3/turandot/telephony-network-service/*.yaml
 #TODO: examples/1.3/tutorial/*.yaml
