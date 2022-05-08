@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="172px" preserveAspectRatio="none" style="width:353px;height:172px;background:#FFFFFF;" version="1.1" viewBox="0 0 353 172" width="353px" zoomAndPan="magnify"><defs><filter height="300%" id="f5r7fi4el43ey" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[6e5e9f9d74ad4ccc3175523c7966ff3d]
+class Lifecycle_Standard_IT--><rect codeLine="2" fill="#FEFECE" filter="url(#f5r7fi4el43ey)" height="125.7305" id="Lifecycle_Standard_IT" style="stroke:#A80036;stroke-width:1.5;" width="136" x="7" y="20"/><ellipse cx="22" cy="36" fill="#008000" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M17.9277,31.7651 L17.9277,29.6069 L25.3071,29.6069 L25.3071,31.7651 L22.8418,31.7651 L22.8418,39.8418 L25.3071,39.8418 L25.3071,42 L17.9277,42 L17.9277,39.8418 L20.3931,39.8418 L20.3931,31.7651 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="104" x="36" y="40.5352">Lifecycle.Standard</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="142" y1="52" y2="52"/><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="142" y1="60" y2="60"/><ellipse cx="18" cy="71" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="41" x="27" y="74.6348">create()</text><ellipse cx="18" cy="83.9551" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="60" x="27" y="87.5898">configure()</text><ellipse cx="18" cy="96.9102" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="33" x="27" y="100.5449">start()</text><ellipse cx="18" cy="109.8652" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="45" x="27" y="113.5">modify()</text><ellipse cx="18" cy="122.8203" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="32" x="27" y="126.4551">stop()</text><ellipse cx="18" cy="135.7754" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="40" x="27" y="139.4102">delete()</text><!--MD5=[2b0a74f72df2beba71e91d120ae1b5fd]
+class Relationship_Configure_IT--><rect codeLine="10" fill="#FEFECE" filter="url(#f5r7fi4el43ey)" height="151.6406" id="Relationship_Configure_IT" style="stroke:#A80036;stroke-width:1.5;" width="161" x="178.5" y="7"/><ellipse cx="193.5" cy="23" fill="#008000" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M189.4277,18.7651 L189.4277,16.6069 L196.8071,16.6069 L196.8071,18.7651 L194.3418,18.7651 L194.3418,26.8418 L196.8071,26.8418 L196.8071,29 L189.4277,29 L189.4277,26.8418 L191.8931,26.8418 L191.8931,18.7651 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="129" x="207.5" y="27.5352">Relationship.Configure</text><line style="stroke:#A80036;stroke-width:1.5;" x1="179.5" x2="338.5" y1="39" y2="39"/><line style="stroke:#A80036;stroke-width:1.5;" x1="179.5" x2="338.5" y1="47" y2="47"/><ellipse cx="189.5" cy="58" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="127" x="198.5" y="61.6348">pre_configure_source()</text><ellipse cx="189.5" cy="70.9551" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="122" x="198.5" y="74.5898">pre_configure_target()</text><ellipse cx="189.5" cy="83.9102" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="133" x="198.5" y="87.5449">post_configure_source()</text><ellipse cx="189.5" cy="96.8652" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="128" x="198.5" y="100.5">post_configure_target()</text><ellipse cx="189.5" cy="109.8203" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="66" x="198.5" y="113.4551">add_target()</text><ellipse cx="189.5" cy="122.7754" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="71" x="198.5" y="126.4102">add_source()</text><ellipse cx="189.5" cy="135.7305" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="92" x="198.5" y="139.3652">target_changed()</text><ellipse cx="189.5" cy="148.6855" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="86" x="198.5" y="152.3203">remove_target()</text><!--MD5=[1672a8901d15f515505b79d224e10c4f]
+@startuml
+set namespaceSeparator none
+class "Lifecycle.Standard" as Lifecycle_Standard_IT << (I,green) >> {
++create()
++configure()
++start()
++modify()
++stop()
++delete()
+}
+class "Relationship.Configure" as Relationship_Configure_IT << (I,green) >> {
++pre_configure_source()
++pre_configure_target()
++post_configure_source()
++post_configure_target()
++add_target()
++add_source()
++target_changed()
++remove_target()
+}
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

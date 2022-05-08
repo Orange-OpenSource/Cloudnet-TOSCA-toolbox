@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="712px" preserveAspectRatio="none" style="width:225px;height:712px;background:#FFFFFF;" version="1.1" viewBox="0 0 225 712" width="225px" zoomAndPan="magnify"><defs/><g><ellipse cx="112.5" cy="16" fill="#008000" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><ellipse cx="112.5" cy="696" rx="10" ry="10" style="stroke:#000000;stroke-width:1.0;fill:none;"/><ellipse cx="113" cy="696.5" fill="#000000" rx="6" ry="6" style="stroke:none;stroke-width:1.0;"/><rect fill="#FFFFFF" height="240.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="199" x="13" y="86"/><rect fill="#FFFFFF" height="208" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="193" x="16" y="115.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="13" x2="212" y1="112.4883" y2="112.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="59.5" y="104.5352">stop_my_server</text><rect fill="#FFFFFF" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="144" x="42.5" y="124.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="134" x="47.5" y="149.7793">my_server stopping</text><rect fill="#ADD8E6" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="179" x="25" y="200.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="169" x="30" y="225.7793">my_server Standard.stop</text><rect fill="#FFFFFF" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="139" x="45" y="276.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="129" x="50" y="301.7793">my_server stopped</text><!--MD5=[063cbf5cf68aaf816f8c743006c035c9]
+link step_parallel_undeploy_stop_my_server_my_server_stopping to step_parallel_undeploy_stop_my_server_my_server_Standard.stop--><path d="M114.5,164.8549 C114.5,174.2155 114.5,185.4103 114.5,195.2956 " fill="none" id="step_parallel_undeploy_stop_my_server_my_server_stopping-to-step_parallel_undeploy_stop_my_server_my_server_Standard.stop" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="114.5,200.329,118.5,191.329,114.5,195.329,110.5,191.329,114.5,200.329" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[3024a2e2ee45686bf8c05b8d7ed65c5e]
+link step_parallel_undeploy_stop_my_server_my_server_Standard.stop to step_parallel_undeploy_stop_my_server_my_server_stopped--><path d="M114.5,240.8549 C114.5,250.2155 114.5,261.4103 114.5,271.2956 " fill="none" id="step_parallel_undeploy_stop_my_server_my_server_Standard.stop-to-step_parallel_undeploy_stop_my_server_my_server_stopped" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="114.5,276.329,118.5,267.329,114.5,271.329,110.5,267.329,114.5,276.329" style="stroke:#0000FF;stroke-width:1.0;"/><rect fill="#FFFFFF" height="240.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="211" x="7" y="386"/><rect fill="#FFFFFF" height="208" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="205" x="10" y="415.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="7" x2="218" y1="412.4883" y2="412.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="118" x="53.5" y="404.5352">delete_my_server</text><rect fill="#FFFFFF" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="139" x="45" y="424.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="129" x="50" y="449.7793">my_server deleting</text><rect fill="#ADD8E6" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="191" x="19" y="500.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="181" x="24" y="525.7793">my_server Standard.delete</text><rect fill="#FFFFFF" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="121" x="54" y="576.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="111" x="59" y="601.7793">my_server initial</text><!--MD5=[b0a4a0a97f1d6e043d91f22eb20cc0da]
+link step_parallel_undeploy_delete_my_server_my_server_deleting to step_parallel_undeploy_delete_my_server_my_server_Standard.delete--><path d="M114.5,464.8549 C114.5,474.2155 114.5,485.4103 114.5,495.2956 " fill="none" id="step_parallel_undeploy_delete_my_server_my_server_deleting-to-step_parallel_undeploy_delete_my_server_my_server_Standard.delete" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="114.5,500.329,118.5,491.329,114.5,495.329,110.5,491.329,114.5,500.329" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[d55a98b694896f2931236685cfc447c5]
+link step_parallel_undeploy_delete_my_server_my_server_Standard.delete to step_parallel_undeploy_delete_my_server_my_server_initial--><path d="M114.5,540.8549 C114.5,550.2155 114.5,561.4103 114.5,571.2956 " fill="none" id="step_parallel_undeploy_delete_my_server_my_server_Standard.delete-to-step_parallel_undeploy_delete_my_server_my_server_initial" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="114.5,576.329,118.5,567.329,114.5,571.329,110.5,567.329,114.5,576.329" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[5ad876b39640f4e53d40449d1b8e120a]
+link step_parallel_undeploy_stop_my_server to step_parallel_undeploy_delete_my_server--><path d="M112.5,326.2929 C112.5,344.1733 112.5,362.6404 112.5,380.6221 " fill="none" id="step_parallel_undeploy_stop_my_server-to-step_parallel_undeploy_delete_my_server" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="112.5,385.6801,116.5,376.6801,112.5,380.6801,108.5,376.6801,112.5,385.6801" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[14515812ee979cc23db67121f0efb319]
+link *start to step_parallel_undeploy_stop_my_server--><path d="M112.5,26.2152 C112.5,37.7525 112.5,57.9094 112.5,80.6599 " fill="none" id="*start-to-step_parallel_undeploy_stop_my_server" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="112.5,85.8637,116.5,76.8637,112.5,80.8637,108.5,76.8637,112.5,85.8637" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[e1130cf36ef0d0e1d06cce8653809fc8]
+link step_parallel_undeploy_delete_my_server to *end--><path d="M112.5,626.0605 C112.5,647.7796 112.5,667.6166 112.5,680.5716 " fill="none" id="step_parallel_undeploy_delete_my_server-to-*end" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="112.5,685.6879,116.5,676.6879,112.5,680.6879,108.5,676.6879,112.5,685.6879" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[95939ae946ad46edbe3cbe6f19aadff6]
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam state {
+  ArrowColor blue
+  BorderColor blue
+  EndColor black
+  StartColor green
+  BackGroundColor<< step >> white
+  BorderColor<< step >> black
+  BackGroundColor<< delegate >> lightgrey
+  BackGroundColor<< set_state >> white
+  BackGroundColor<< call_operation >> lightblue
+  BackGroundColor<< inline >> white
+}
+skinparam ActivityBarColor<<fork>> DarkGreen
+skinparam ActivityBarColor<<join>> DarkOrange
+
+state "stop_my_server" as step_parallel_undeploy_stop_my_server << step >> {
+  state "my_server stopping" as step_parallel_undeploy_stop_my_server_my_server_stopping << set_state >>
+  state "my_server Standard.stop" as step_parallel_undeploy_stop_my_server_my_server_Standard.stop << call_operation >>
+  state "my_server stopped" as step_parallel_undeploy_stop_my_server_my_server_stopped << set_state >>
+  step_parallel_undeploy_stop_my_server_my_server_stopping - -> step_parallel_undeploy_stop_my_server_my_server_Standard.stop
+  step_parallel_undeploy_stop_my_server_my_server_Standard.stop - -> step_parallel_undeploy_stop_my_server_my_server_stopped
+}
+state "delete_my_server" as step_parallel_undeploy_delete_my_server << step >> {
+  state "my_server deleting" as step_parallel_undeploy_delete_my_server_my_server_deleting << set_state >>
+  state "my_server Standard.delete" as step_parallel_undeploy_delete_my_server_my_server_Standard.delete << call_operation >>
+  state "my_server initial" as step_parallel_undeploy_delete_my_server_my_server_initial << set_state >>
+  step_parallel_undeploy_delete_my_server_my_server_deleting - -> step_parallel_undeploy_delete_my_server_my_server_Standard.delete
+  step_parallel_undeploy_delete_my_server_my_server_Standard.delete - -> step_parallel_undeploy_delete_my_server_my_server_initial
+}
+step_parallel_undeploy_stop_my_server - -> step_parallel_undeploy_delete_my_server
+[*] - -> step_parallel_undeploy_stop_my_server
+step_parallel_undeploy_delete_my_server - -> [*]
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

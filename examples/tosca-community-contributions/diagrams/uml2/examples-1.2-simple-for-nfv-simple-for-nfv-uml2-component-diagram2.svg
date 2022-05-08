@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="563px" preserveAspectRatio="none" style="width:620px;height:563px;background:#FFFFFF;" version="1.1" viewBox="0 0 620 563" width="620px" zoomAndPan="magnify"><defs><filter height="300%" id="f1j4ty8p626to5" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[d82a7a87b5d3f7077d0d71af37d42e18]
+entity node_cpd--><rect fill="#FEFECE" filter="url(#f1j4ty8p626to5)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="168" x="242" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="390" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="388" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="388" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="296.5" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="128" x="257" y="57.0234">cpd: tosca:VduCpd</text><!--MD5=[4ec9773880d972f997afa4bcca2576c5]
+entity node_cpd_virtual_binding_relationship0--><rect fill="#FFFFFF" filter="url(#f1j4ty8p626to5)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="148" x="144" y="244"/><rect fill="#FFFFFF" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="272" y="249"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="270" y="251"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="270" y="255"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="96" x="165" y="277.5352">«relationship»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="108" x="159" y="294.0234">: VirtualBindsTo</text><!--MD5=[a939c1192d2a340cd84c25c310103ed2]
+entity node_cpd_virtual_binding_relationship0_source--><ellipse cx="252" cy="165" fill="#FEFECE" filter="url(#f1j4ty8p626to5)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><!--MD5=[68dea86ce5ee9c8218f216e6281c002f]
+entity node_cpd_virtual_binding_relationship1--><rect fill="#FFFFFF" filter="url(#f1j4ty8p626to5)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="148" x="327" y="244"/><rect fill="#FFFFFF" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="455" y="249"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="453" y="251"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="453" y="255"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="96" x="348" y="277.5352">«relationship»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="108" x="342" y="294.0234">: VirtualBindsTo</text><!--MD5=[826b1400dd405edb75c563eb042ebf15]
+entity node_cpd_virtual_binding_relationship1_source--><ellipse cx="399" cy="165" fill="#FEFECE" filter="url(#f1j4ty8p626to5)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><!--MD5=[a85c72f56e60bf8bb7bbc7cc0af8d411]
+entity node_firewall--><rect fill="#FEFECE" filter="url(#f1j4ty8p626to5)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="161" x="30.5" y="487"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="171.5" y="492"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="169.5" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="169.5" y="498"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="81.5" y="520.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121" x="45.5" y="537.0234">firewall: Compute</text><!--MD5=[a58e455a9f1cf56851a99cc195bbb20d]
+entity node_firewall_virtual_binding--><ellipse cx="218" cy="397" fill="#FEFECE" filter="url(#f1j4ty8p626to5)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103" x="166.5" y="427.5352">virtual_binding</text><!--MD5=[b2554c0cac8102f02cf87d5b70b18d73]
+entity node_firewall_virtual_compute--><ellipse cx="61" cy="397" fill="#FEFECE" filter="url(#f1j4ty8p626to5)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="110" x="6" y="427.5352">virtual_compute</text><!--MD5=[daa259bb3848dbd9edc8adce40e12a85]
+entity node_router--><rect fill="#FEFECE" filter="url(#f1j4ty8p626to5)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="154" x="432" y="487"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="566" y="492"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="564" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="564" y="498"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="479.5" y="520.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="114" x="447" y="537.0234">router: Compute</text><!--MD5=[769d8c504bd8a60f090c796ce6adb20f]
+entity node_router_virtual_binding--><ellipse cx="401" cy="397" fill="#FEFECE" filter="url(#f1j4ty8p626to5)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103" x="349.5" y="427.5352">virtual_binding</text><!--MD5=[bbecc51e6dd97f842ea671000e314639]
+entity node_router_virtual_compute--><ellipse cx="558" cy="397" fill="#FEFECE" filter="url(#f1j4ty8p626to5)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="110" x="503" y="427.5352">virtual_compute</text><!--MD5=[9adfc47c24f052086377e5584ad8ffb5]
+link node_cpd_virtual_binding_relationship0_source to node_cpd_virtual_binding_relationship0--><path d="M249.2176,174.0427 C244.5866,189.0936 235.0841,219.9767 227.7729,243.738 " fill="none" id="node_cpd_virtual_binding_relationship0_source-node_cpd_virtual_binding_relationship0" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[8f6fe8f4d1c4ec422f00afa3b511e53c]
+link node_cpd to node_cpd_virtual_binding_relationship0_source--><path d="M281.147,70.2459 C272.0365,78.849 263.5542,88.8958 258,100 C250.95,114.0947 249.7888,132.0568 250.199,145.5255 " fill="none" id="node_cpd-to-node_cpd_virtual_binding_relationship0_source" style="stroke:#A80036;stroke-width:1.0;"/><path d="M259.0708,152.0075 A9,9 0 0 0 242.1882 153.0456" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="95" x="259" y="113.5684">virtual_binding</text><!--MD5=[34db459310305caefd060ebd7f8365f4]
+link node_cpd_virtual_binding_relationship1_source to node_cpd_virtual_binding_relationship1--><path d="M399.1637,174.0427 C399.4361,189.0936 399.9951,219.9767 400.4251,243.738 " fill="none" id="node_cpd_virtual_binding_relationship1_source-node_cpd_virtual_binding_relationship1" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[ff8a209eb6480f630eb73b44d1762972]
+link node_cpd to node_cpd_virtual_binding_relationship1_source--><path d="M344.2327,70.095 C358.314,94.4961 377.2824,127.3661 388.8004,147.3254 " fill="none" id="node_cpd-to-node_cpd_virtual_binding_relationship1_source" style="stroke:#A80036;stroke-width:1.0;"/><path d="M399.5887,149.0996 A9,9 0 0 0 384.9386 157.5539" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="95" x="373" y="113.5684">virtual_binding</text><!--MD5=[c190526c81498a242ac41042fc614f68]
+link node_firewall_virtual_binding to node_firewall--><path d="M209.9576,406.1322 C195.0855,423.0198 162.6432,459.8584 138.9449,486.7682 " fill="none" id="node_firewall_virtual_binding-node_firewall" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[2793a2d165473c37b8e128c598ebb3f3]
+link node_firewall_virtual_compute to node_firewall--><path d="M64.7581,406.1322 C71.7077,423.0198 86.8676,459.8584 97.9417,486.7682 " fill="none" id="node_firewall_virtual_compute-node_firewall" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[c8191abdbf12abd0b32b663be3816cea]
+link node_router_virtual_binding to node_router--><path d="M409.1176,406.1322 C424.1287,423.0198 456.8741,459.8584 480.794,486.7682 " fill="none" id="node_router_virtual_binding-node_router" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[378bc26c3e3cb48277dae84f980f6d97]
+link node_router_virtual_compute to node_router--><path d="M554.317,406.1322 C547.5064,423.0198 532.6497,459.8584 521.7972,486.7682 " fill="none" id="node_router_virtual_compute-node_router" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[e48e6304845af3bf6e8f7d4037b2cdb5]
+link node_cpd_virtual_binding_relationship0 to node_firewall_virtual_binding--><path d="M218,307.1055 C218,329.4533 218,358.697 218,377.663 " fill="none" id="node_cpd_virtual_binding_relationship0-to-node_firewall_virtual_binding" style="stroke:#A80036;stroke-width:1.0;"/><path d="M226.4573,384.6735 A9,9 0 0 0 209.5428 384.6733" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[0486cf9ff69a80489f414263c80e5bcd]
+link node_cpd_virtual_binding_relationship1 to node_router_virtual_binding--><path d="M401,307.1055 C401,329.4533 401,358.697 401,377.663 " fill="none" id="node_cpd_virtual_binding_relationship1-to-node_router_virtual_binding" style="stroke:#A80036;stroke-width:1.0;"/><path d="M409.4573,384.6735 A9,9 0 0 0 392.5428 384.6733" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[ac9672a99db42dab2c1ee1c5f1e81507]
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  backgroundColor<<relationship>> White
+}
+
+component "cpd: tosca:VduCpd" <<node>> as node_cpd
+component ": VirtualBindsTo" <<relationship>> as node_cpd_virtual_binding_relationship0
+interface " " as node_cpd_virtual_binding_relationship0_source
+node_cpd_virtual_binding_relationship0_source - - node_cpd_virtual_binding_relationship0
+node_cpd - -( node_cpd_virtual_binding_relationship0_source : virtual_binding
+component ": VirtualBindsTo" <<relationship>> as node_cpd_virtual_binding_relationship1
+interface " " as node_cpd_virtual_binding_relationship1_source
+node_cpd_virtual_binding_relationship1_source - - node_cpd_virtual_binding_relationship1
+node_cpd - -( node_cpd_virtual_binding_relationship1_source : virtual_binding
+
+component "firewall: Compute" <<node>> as node_firewall
+interface "virtual_binding" as node_firewall_virtual_binding
+node_firewall_virtual_binding - - node_firewall
+interface "virtual_compute" as node_firewall_virtual_compute
+node_firewall_virtual_compute - - node_firewall
+
+component "router: Compute" <<node>> as node_router
+interface "virtual_binding" as node_router_virtual_binding
+node_router_virtual_binding - - node_router
+interface "virtual_compute" as node_router_virtual_compute
+node_router_virtual_compute - - node_router
+
+node_cpd_virtual_binding_relationship0 - -( node_firewall_virtual_binding
+node_cpd_virtual_binding_relationship1 - -( node_router_virtual_binding
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>
