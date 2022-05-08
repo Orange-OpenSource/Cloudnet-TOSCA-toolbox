@@ -1,6 +1,6 @@
 # TOSCA Simple Profile for Network Functions Virtualization (NFV) Version 1.0
 
-Following diagrams are related to [TTOSCA Simple Profile for Network Functions Virtualization (NFV) Version 1.0](http://docs.oasis-open.org/tosca/tosca-nfv/v1.0/tosca-nfv-v1.0.html).
+Following diagrams are related to [TOSCA Simple Profile for Network Functions Virtualization (NFV) Version 1.0](http://docs.oasis-open.org/tosca/tosca-nfv/v1.0/tosca-nfv-v1.0.html).
 
 ## Data Types
 
@@ -8,28 +8,22 @@ Following diagrams are related to [TTOSCA Simple Profile for Network Functions V
 
 ## Artifact Types
 
-![Artifact Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-artifact-uml2-class-diagram.png)
+![Artifact Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-artifacts-uml2-class-diagram.png)
 
 ## Capability Types
 
-![Capability Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-capability-uml2-class-diagram.png)
+![Capability Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-capabilities-uml2-class-diagram.png)
 
 ## Relationship Types
 
-![Relationship Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-relationship-uml2-class-diagram.png)
+![Relationship Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-relationships-uml2-class-diagram.png)
 
 ## Interface Types
 
-![Interface Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-interface-uml2-class-diagram.png)
-
 ## Node Types
 
-![Node Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-node-uml2-class-diagram.png)
+![Node Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-nodes-uml2-class-diagram.png)
 
 ## Group Types
 
-![Group Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-group-uml2-class-diagram.png)
-
 ## Policy Types
-
-![Policy Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-for-nfv-1.0-policy-uml2-class-diagram.png)
