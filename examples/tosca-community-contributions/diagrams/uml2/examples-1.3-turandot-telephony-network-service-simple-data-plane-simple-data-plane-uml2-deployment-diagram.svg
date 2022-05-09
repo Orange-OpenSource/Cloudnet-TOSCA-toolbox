@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="187px" preserveAspectRatio="none" style="width:678px;height:187px;background:#FFFFFF;" version="1.1" viewBox="0 0 678 187" width="678px" zoomAndPan="magnify"><defs><filter height="300%" id="f1vpqrziyadax6" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[8c4f6a033e273add532353a41a1a9b42]
+cluster substitution_mappings--><rect fill="#FFFFFF" filter="url(#f1vpqrziyadax6)" height="81" style="stroke:#000000;stroke-width:1.5;" width="656" x="7" y="92"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="643" y="97"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="641" y="99"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="641" y="103"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="128" x="271" y="118.5352">: ns:NetworkPlane</text><!--MD5=[daa259bb3848dbd9edc8adce40e12a85]
+entity node_router--><rect fill="#FEFECE" filter="url(#f1vpqrziyadax6)" height="46.4883" style="stroke:#A80036;stroke-width:1.5;" width="157" x="381.5" y="119"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="518.5" y="124"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="516.5" y="126"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="516.5" y="130"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="117" x="396.5" y="152.5352">router: ns:Router</text><!--MD5=[18e4088a016db93dcf22f09bad0966fd]
+entity node_bridge--><rect fill="#FEFECE" filter="url(#f1vpqrziyadax6)" height="46.4883" style="stroke:#A80036;stroke-width:1.5;" width="296" x="15" y="119"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="291" y="124"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="289" y="126"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="289" y="130"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="256" x="30" y="152.5352">bridge: NetworkAttachmentDefinition</text><!--MD5=[13c1352087726fb3184affe787ca772f]
+entity substitution_mappings_capability_connection--><rect fill="#FEFECE" filter="url(#f1vpqrziyadax6)" height="46.4883" style="stroke:#A80036;stroke-width:1.5;" width="116" x="344" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="440" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="438" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="438" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="359" y="40.5352">connection</text><!--MD5=[95f18a128622c74f0821b1f5ff8a10b5]
+link node_router to node_router--><path codeLine="8" d="M538.508,131.2551 C558.4951,131.9613 573.5,135.543 573.5,142 C573.5,147.9021 560.9632,151.4018 543.5442,152.4991 " fill="none" id="node_router-to-node_router" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="538.508,152.7449,547.6924,156.3012,543.502,152.501,547.3022,148.3107,538.508,152.7449" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="86" x="579.5" y="147.0684">«Connection»</text><!--MD5=[3aa5e4ddfac1c1cbdad55c3043e75e79]
+link substitution_mappings_capability_connection to substitution_mappings--><!--MD5=[8c55754fc04c2f48512a0eba69b02a7e]
+link substitution_mappings_capability_connection to node_router--><path codeLine="11" d="M414.0176,53.2065 C423.1942,70.9267 435.8736,95.411 445.5941,114.1817 " fill="none" id="substitution_mappings_capability_connection-to-node_router" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="447.9978,118.8233,447.4111,108.9919,445.6985,114.3833,440.3071,112.6708,447.9978,118.8233" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[8288f659c9f6ef38af2e4ee2e4f98bfb]
+@startuml
+skinparam componentStyle uml2
+allowmixing
+
+component "connection" as substitution_mappings_capability_connection
+component ": ns:NetworkPlane" as substitution_mappings {
+component "router: ns:Router" as node_router
+component "bridge: NetworkAttachmentDefinition" as node_bridge
+node_router ..> node_router : <<Connection>>
+}
+substitution_mappings_capability_connection -[hidden]- substitution_mappings
+substitution_mappings_capability_connection ..> node_router
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

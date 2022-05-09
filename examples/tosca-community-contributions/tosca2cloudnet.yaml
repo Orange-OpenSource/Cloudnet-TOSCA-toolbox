@@ -13,7 +13,15 @@
 # Software description: Use case for TOSCA to Cloudnet Translator
 ######################################################################
 
-#aliased_tosca_service_templates:
+aliased_tosca_service_templates:
+  profiles/kubernetes/1.0/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/profiles/cloud.puccini/kubernetes/1.0/profile.yaml
+  profiles/kubevirt/1.0/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/profiles/cloud.puccini/kubevirt/1.0/profile.yaml
+  profiles/network-service/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/examples/1.3/turandot/telephony-network-service/telephony-network-service/profiles/network-service/profile.yaml
+  profiles/telephony/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/examples/1.3/turandot/telephony-network-service/telephony-network-service/profiles/telephony/profile.yaml
+  # Following files are missing
+  profiles/orchestration/1.0/profile.yaml: https://raw.githubusercontent.com/tliron/turandot/main/assets/tosca/profiles/orchestration/1.0/profile.yaml
+  ../../orchestration/1.0/profile.yaml: https://raw.githubusercontent.com/tliron/turandot/main/assets/tosca/profiles/orchestration/1.0/profile.yaml
+  profiles/mariadb/profile.yaml: https://raw.githubusercontent.com/tliron/turandot/main/assets/tosca/profiles/mariadb/profile.yaml
 
 # Configuration of the syntax checker.
 Syntax:

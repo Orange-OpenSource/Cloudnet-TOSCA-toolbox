@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="408px" preserveAspectRatio="none" style="width:188px;height:408px;background:#FFFFFF;" version="1.1" viewBox="0 0 188 408" width="188px" zoomAndPan="magnify"><defs/><g><ellipse cx="94" cy="16" fill="#008000" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><ellipse cx="94" cy="392" rx="10" ry="10" style="stroke:#000000;stroke-width:1.0;fill:none;"/><ellipse cx="94.5" cy="392.5" fill="#000000" rx="6" ry="6" style="stroke:none;stroke-width:1.0;"/><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="151" x="18.5" y="86"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="145" x="21.5" y="115.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="18.5" x2="169.5" y1="112.4883" y2="112.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="124" x="32" y="104.5352">undeploy_asterisk</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="131" x="30.5" y="124.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121" x="35.5" y="149.7793">asterisk undeploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="174" x="7" y="234"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="168" x="10" y="263.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="7" x2="181" y1="260.4883" y2="260.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="146" x="21" y="252.5352">undeploy_data_plane</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="154" x="19" y="272.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="144" x="24" y="297.7793">data-plane undeploy</text><!--MD5=[fc6c421c3ea25249c0fca842ab09d50c]
+link step_parallel_undeploy_undeploy_asterisk to step_parallel_undeploy_undeploy_data_plane--><path d="M94,174.0042 C94,191.1469 94,210.8749 94,228.5094 " fill="none" id="step_parallel_undeploy_undeploy_asterisk-to-step_parallel_undeploy_undeploy_data_plane" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="94,233.9098,98,224.9098,94,228.9098,90,224.9098,94,233.9098" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[e67adc418a89887ad7a4899fef81bf6d]
+link *start to step_parallel_undeploy_undeploy_asterisk--><path d="M94,26.1167 C94,38.4746 94,60.2658 94,80.7092 " fill="none" id="*start-to-step_parallel_undeploy_undeploy_asterisk" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="94,85.8711,98,76.8711,94,80.8711,90,76.8711,94,85.8711" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[a52a19e3fc674de4e5a2e916c9d0a432]
+link step_parallel_undeploy_undeploy_data_plane to *end--><path d="M94,322.0754 C94,341.3243 94,362.649 94,376.628 " fill="none" id="step_parallel_undeploy_undeploy_data_plane-to-*end" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="94,381.7845,98,372.7845,94,376.7845,90,372.7845,94,381.7845" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[2001cddb6f3630041f9c0ecfd8041b1c]
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam state {
+  ArrowColor blue
+  BorderColor blue
+  EndColor black
+  StartColor green
+  BackGroundColor<< step >> white
+  BorderColor<< step >> black
+  BackGroundColor<< delegate >> lightgrey
+  BackGroundColor<< set_state >> white
+  BackGroundColor<< call_operation >> lightblue
+  BackGroundColor<< inline >> white
+}
+skinparam ActivityBarColor<<fork>> DarkGreen
+skinparam ActivityBarColor<<join>> DarkOrange
+
+state "undeploy_asterisk" as step_parallel_undeploy_undeploy_asterisk << step >> {
+  state "asterisk undeploy" as step_parallel_undeploy_undeploy_asterisk_asterisk_undeploy << delegate >>
+}
+state "undeploy_data_plane" as step_parallel_undeploy_undeploy_data_plane << step >> {
+  state "data-plane undeploy" as step_parallel_undeploy_undeploy_data_plane_data_plane_undeploy << delegate >>
+}
+step_parallel_undeploy_undeploy_asterisk - -> step_parallel_undeploy_undeploy_data_plane
+[*] - -> step_parallel_undeploy_undeploy_asterisk
+step_parallel_undeploy_undeploy_data_plane - -> [*]
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

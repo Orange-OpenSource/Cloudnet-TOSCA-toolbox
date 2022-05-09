@@ -118,13 +118,18 @@ for file in \
       profiles/cloud.puccini/openstack/1.0/data.yaml \
       profiles/cloud.puccini/openstack/1.0/nodes.yaml \
       profiles/cloud.puccini/openstack/1.0/profile.yaml \
-      profiles/cloud.puccini/openstack/1.0/relationships.yaml
+      profiles/cloud.puccini/openstack/1.0/relationships.yaml \
+      examples/1.3/turandot/hello-world/hello-world.yaml \
+      examples/1.3/turandot/telephony-network-service/asterisk-cnf/asterisk-cnf.yaml \
+      examples/1.3/turandot/telephony-network-service/asterisk-vnf/asterisk-vnf.yaml \
+      examples/1.3/turandot/telephony-network-service/simple-data-plane/simple-data-plane.yaml \
+      examples/1.3/turandot/telephony-network-service/telephony-network-service/profiles/network-service/profile.yaml \
+      examples/1.3/turandot/telephony-network-service/telephony-network-service/profiles/telephony/profile.yaml \
+      examples/1.3/turandot/telephony-network-service/telephony-network-service/telephony-network-service.yaml
 do
   translate $BASE_URL/$file
 done
 
-#TODO: examples/1.3/turandot/hello-world/hello-world.yaml
-#TODO: examples/1.3/turandot/telephony-network-service/*.yaml
 #TODO: examples/1.3/tutorial/*.yaml
 
 # Generate TOSCA diagrams.

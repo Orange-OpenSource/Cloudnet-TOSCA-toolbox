@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="329px" preserveAspectRatio="none" style="width:307px;height:329px;background:#FFFFFF;" version="1.1" viewBox="0 0 307 329" width="307px" zoomAndPan="magnify"><defs/><g><ellipse cx="78.5" cy="51" fill="#008000" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><ellipse cx="78.5" cy="313" rx="10" ry="10" style="stroke:#000000;stroke-width:1.0;fill:none;"/><ellipse cx="79" cy="313.5" fill="#000000" rx="6" ry="6" style="stroke:none;stroke-width:1.0;"/><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="141" x="124" y="7"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="135" x="127" y="36.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="124" x2="265" y1="33.4883" y2="33.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="114" x="137.5" y="25.5352">undeploy_router</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="121" x="136" y="45.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="111" x="141" y="70.7793">router undeploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="143" x="7" y="155"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="137" x="10" y="184.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="7" x2="150" y1="181.4883" y2="181.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116" x="20.5" y="173.5352">undeploy_bridge</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="123" x="19" y="193.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="113" x="24" y="218.7793">bridge undeploy</text><!--MD5=[d6ab4583e6383259dd8f392cbf34ce3a]
+link step_parallel_undeploy_undeploy_router to step_parallel_undeploy_undeploy_router--><path d="M265.0039,23.3872 C284.8024,24.5965 300,33.8008 300,51 C300,66.7212 287.3022,75.7625 269.9996,78.1239 " fill="none" id="step_parallel_undeploy_undeploy_router-to-step_parallel_undeploy_undeploy_router" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="265.0039,78.6128,274.3508,81.7169,269.9801,78.1257,273.5714,73.755,265.0039,78.6128" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[30e3c90681886edf3086b414ee73471c]
+link *start to step_parallel_undeploy_undeploy_bridge--><path d="M78.5,61.1726 C78.5,79.212 78.5,117.9027 78.5,149.7115 " fill="none" id="*start-to-step_parallel_undeploy_undeploy_bridge" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="78.5,154.7533,82.5,145.7533,78.5,149.7533,74.5,145.7533,78.5,154.7533" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[afe2a0e3f2c5a1d6927a2d65bd27df8f]
+link step_parallel_undeploy_undeploy_bridge to *end--><path d="M78.5,243.0754 C78.5,262.3243 78.5,283.649 78.5,297.628 " fill="none" id="step_parallel_undeploy_undeploy_bridge-to-*end" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="78.5,302.7845,82.5,293.7845,78.5,297.7845,74.5,293.7845,78.5,302.7845" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[0dbe728820c18290f622b8eea61f1463]
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam state {
+  ArrowColor blue
+  BorderColor blue
+  EndColor black
+  StartColor green
+  BackGroundColor<< step >> white
+  BorderColor<< step >> black
+  BackGroundColor<< delegate >> lightgrey
+  BackGroundColor<< set_state >> white
+  BackGroundColor<< call_operation >> lightblue
+  BackGroundColor<< inline >> white
+}
+skinparam ActivityBarColor<<fork>> DarkGreen
+skinparam ActivityBarColor<<join>> DarkOrange
+
+state "undeploy_router" as step_parallel_undeploy_undeploy_router << step >> {
+  state "router undeploy" as step_parallel_undeploy_undeploy_router_router_undeploy << delegate >>
+}
+state "undeploy_bridge" as step_parallel_undeploy_undeploy_bridge << step >> {
+  state "bridge undeploy" as step_parallel_undeploy_undeploy_bridge_bridge_undeploy << delegate >>
+}
+step_parallel_undeploy_undeploy_router - -> step_parallel_undeploy_undeploy_router
+[*] - -> step_parallel_undeploy_undeploy_bridge
+step_parallel_undeploy_undeploy_bridge - -> [*]
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="544px" preserveAspectRatio="none" style="width:287px;height:544px;background:#FFFFFF;" version="1.1" viewBox="0 0 287 544" width="287px" zoomAndPan="magnify"><defs/><g><rect fill="#006400" height="8" style="stroke:none;stroke-width:1.0;" width="80" x="91" y="86"/><ellipse cx="131" cy="16" fill="#008000" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><rect fill="#FF8C00" height="8" style="stroke:none;stroke-width:1.0;" width="80" x="91" y="450"/><ellipse cx="131" cy="528" rx="10" ry="10" style="stroke:#000000;stroke-width:1.0;fill:none;"/><ellipse cx="131.5" cy="528.5" fill="#000000" rx="6" ry="6" style="stroke:none;stroke-width:1.0;"/><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="133" x="140.5" y="302"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="127" x="143.5" y="331.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="140.5" x2="273.5" y1="328.4883" y2="328.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="154" y="320.5352">deploy_asterisk</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="113" x="152.5" y="340.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103" x="157.5" y="365.7793">asterisk deploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="98" x="7" y="302"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="92" x="10" y="331.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="7" x2="105" y1="328.4883" y2="328.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="71" x="20.5" y="320.5352">deploy_db</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="78" x="19" y="340.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="68" x="24" y="365.7793">db deploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="156" x="124" y="154"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="150" x="127" y="183.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="124" x2="280" y1="180.4883" y2="180.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="128" x="138" y="172.5352">deploy_data_plane</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="136" x="136" y="192.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="126" x="141" y="217.7793">data-plane deploy</text><!--MD5=[5646c7f28fe621e3a985de9d89495bc4]
+link step_parallel_deploy_deploy_data_plane to step_parallel_deploy_deploy_asterisk--><path d="M203.4866,242.0042 C204.0658,259.1469 204.7323,278.8749 205.328,296.5094 " fill="none" id="step_parallel_deploy_deploy_data_plane-to-step_parallel_deploy_deploy_asterisk" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="205.5105,301.9098,209.204,292.7797,205.3415,296.9127,201.2086,293.0501,205.5105,301.9098" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[30fe4767625141ea303a23356d448521]
+link *start to parallel_deploy_fork--><path d="M131,26.2894 C131,40.745 131,66.8479 131,80.7308 " fill="none" id="*start-to-parallel_deploy_fork" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="131,85.8629,135,76.8629,131,80.8629,127,76.8629,131,85.8629" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[564558a3ba4b27ee41c84f1b52c79b0d]
+link parallel_deploy_fork to step_parallel_deploy_deploy_db--><path d="M129.1243,94.282 C124.7012,104.4825 113.4328,131.079 106,154 C90.493,201.8202 76.4162,257.5193 67.179,296.5711 " fill="none" id="parallel_deploy_fork-to-step_parallel_deploy_deploy_db" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="65.9644,301.7282,71.9212,293.8849,67.1107,296.8614,64.1342,292.0509,65.9644,301.7282" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[b9d91c3dbfb7aed4581857c6d57ce191]
+link parallel_deploy_fork to step_parallel_deploy_deploy_data_plane--><path d="M133.6966,94.1018 C139.8488,103.4602 155.5348,127.3206 170.3249,149.8181 " fill="none" id="parallel_deploy_fork-to-step_parallel_deploy_deploy_data_plane" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="173.0736,153.9993,171.4719,144.2816,170.3269,149.8213,164.7871,148.6763,173.0736,153.9993" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[43a5714cb5e8f4e579c72956c06b5c80]
+link parallel_deploy_join to *end--><path d="M131,458.4074 C131,468.8066 131,495.2833 131,512.4165 " fill="none" id="parallel_deploy_join-to-*end" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="131,517.8319,135,508.8319,131,512.8319,127,508.8319,131,517.8319" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[58666fb0be8e9826097e9875663f3b7e]
+link step_parallel_deploy_deploy_asterisk to parallel_deploy_join--><path d="M175.8686,390.2393 C161.2482,411.0157 145.2246,433.7861 136.8471,445.6909 " fill="none" id="step_parallel_deploy_deploy_asterisk-to-parallel_deploy_join" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="133.9363,449.8273,142.3871,444.7692,136.8139,445.7383,135.8447,440.1651,133.9363,449.8273" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[72f2e6d837847a86024390b303c2020a]
+link step_parallel_deploy_deploy_db to parallel_deploy_join--><path d="M86.7218,390.2393 C101.1498,411.0157 116.9626,433.7861 125.2298,445.6909 " fill="none" id="step_parallel_deploy_deploy_db-to-parallel_deploy_join" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="128.1023,449.8273,126.2542,440.1534,125.2503,445.7205,119.6832,444.7166,128.1023,449.8273" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[230c279bff8cda5efad95e5dbe40bb88]
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam state {
+  ArrowColor blue
+  BorderColor blue
+  EndColor black
+  StartColor green
+  BackGroundColor<< step >> white
+  BorderColor<< step >> black
+  BackGroundColor<< delegate >> lightgrey
+  BackGroundColor<< set_state >> white
+  BackGroundColor<< call_operation >> lightblue
+  BackGroundColor<< inline >> white
+}
+skinparam ActivityBarColor<<fork>> DarkGreen
+skinparam ActivityBarColor<<join>> DarkOrange
+
+state "deploy_asterisk" as step_parallel_deploy_deploy_asterisk << step >> {
+  state "asterisk deploy" as step_parallel_deploy_deploy_asterisk_asterisk_deploy << delegate >>
+}
+state "deploy_db" as step_parallel_deploy_deploy_db << step >> {
+  state "db deploy" as step_parallel_deploy_deploy_db_db_deploy << delegate >>
+}
+state "deploy_data_plane" as step_parallel_deploy_deploy_data_plane << step >> {
+  state "data-plane deploy" as step_parallel_deploy_deploy_data_plane_data_plane_deploy << delegate >>
+}
+step_parallel_deploy_deploy_data_plane - -> step_parallel_deploy_deploy_asterisk
+state parallel_deploy_fork <<fork>>
+[*] - -> parallel_deploy_fork
+parallel_deploy_fork - -> step_parallel_deploy_deploy_db
+parallel_deploy_fork - -> step_parallel_deploy_deploy_data_plane
+state parallel_deploy_join <<join>>
+parallel_deploy_join - -> [*]
+step_parallel_deploy_deploy_asterisk - -> parallel_deploy_join
+step_parallel_deploy_deploy_db - -> parallel_deploy_join
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

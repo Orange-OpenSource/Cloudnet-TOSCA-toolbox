@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="329px" preserveAspectRatio="none" style="width:280px;height:329px;background:#FFFFFF;" version="1.1" viewBox="0 0 280 329" width="280px" zoomAndPan="magnify"><defs/><g><ellipse cx="69.5" cy="51" fill="#008000" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><ellipse cx="69.5" cy="313" rx="10" ry="10" style="stroke:#000000;stroke-width:1.0;fill:none;"/><ellipse cx="70" cy="313.5" fill="#000000" rx="6" ry="6" style="stroke:none;stroke-width:1.0;"/><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="123" x="115" y="7"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="117" x="118" y="36.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="115" x2="238" y1="33.4883" y2="33.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="96" x="128.5" y="25.5352">deploy_router</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="103" x="127" y="45.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="93" x="132" y="70.7793">router deploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="125" x="7" y="155"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="119" x="10" y="184.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="7" x2="132" y1="181.4883" y2="181.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="20.5" y="173.5352">deploy_bridge</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="105" x="19" y="193.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="95" x="24" y="218.7793">bridge deploy</text><!--MD5=[cd30265b310d8b8e560882eaa6f29cb5]
+link step_parallel_deploy_deploy_router to step_parallel_deploy_deploy_router--><path d="M238.2193,23.2652 C257.6617,23.6887 273,32.9336 273,51 C273,67.3727 260.4029,76.5004 243.57,78.3831 " fill="none" id="step_parallel_deploy_deploy_router-to-step_parallel_deploy_deploy_router" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="238.2193,78.7348,247.4623,82.1358,243.2085,78.4068,246.9375,74.153,238.2193,78.7348" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[65d494b48c61a076320b90a8779276fd]
+link *start to step_parallel_deploy_deploy_bridge--><path d="M69.5,61.1726 C69.5,79.212 69.5,117.9027 69.5,149.7115 " fill="none" id="*start-to-step_parallel_deploy_deploy_bridge" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="69.5,154.7533,73.5,145.7533,69.5,149.7533,65.5,145.7533,69.5,154.7533" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[18955d7378f83c670e945eef82c0f164]
+link step_parallel_deploy_deploy_bridge to *end--><path d="M69.5,243.0754 C69.5,262.3243 69.5,283.649 69.5,297.628 " fill="none" id="step_parallel_deploy_deploy_bridge-to-*end" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="69.5,302.7845,73.5,293.7845,69.5,297.7845,65.5,293.7845,69.5,302.7845" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[24a986d4519e24f15cdb78e091bfef11]
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam state {
+  ArrowColor blue
+  BorderColor blue
+  EndColor black
+  StartColor green
+  BackGroundColor<< step >> white
+  BorderColor<< step >> black
+  BackGroundColor<< delegate >> lightgrey
+  BackGroundColor<< set_state >> white
+  BackGroundColor<< call_operation >> lightblue
+  BackGroundColor<< inline >> white
+}
+skinparam ActivityBarColor<<fork>> DarkGreen
+skinparam ActivityBarColor<<join>> DarkOrange
+
+state "deploy_router" as step_parallel_deploy_deploy_router << step >> {
+  state "router deploy" as step_parallel_deploy_deploy_router_router_deploy << delegate >>
+}
+state "deploy_bridge" as step_parallel_deploy_deploy_bridge << step >> {
+  state "bridge deploy" as step_parallel_deploy_deploy_bridge_bridge_deploy << delegate >>
+}
+step_parallel_deploy_deploy_router - -> step_parallel_deploy_deploy_router
+[*] - -> step_parallel_deploy_deploy_bridge
+step_parallel_deploy_deploy_bridge - -> [*]
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>
