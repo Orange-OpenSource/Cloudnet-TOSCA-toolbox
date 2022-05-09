@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="712px" preserveAspectRatio="none" style="width:223px;height:712px;background:#FFFFFF;" version="1.1" viewBox="0 0 223 712" width="223px" zoomAndPan="magnify"><defs/><g><ellipse cx="111.5" cy="16" fill="#008000" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><ellipse cx="111.5" cy="696" rx="10" ry="10" style="stroke:#000000;stroke-width:1.0;fill:none;"/><ellipse cx="112" cy="696.5" fill="#000000" rx="6" ry="6" style="stroke:none;stroke-width:1.0;"/><rect fill="#FFFFFF" height="240.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="197" x="13" y="86"/><rect fill="#FFFFFF" height="208" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="191" x="16" y="115.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="13" x2="210" y1="112.4883" y2="112.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="104" x="59.5" y="104.5352">stop_db_server</text><rect fill="#FFFFFF" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="142" x="42.5" y="124.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="132" x="47.5" y="149.7793">db_server stopping</text><rect fill="#ADD8E6" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="177" x="25" y="200.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="167" x="30" y="225.7793">db_server Standard.stop</text><rect fill="#FFFFFF" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="137" x="45" y="276.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="127" x="50" y="301.7793">db_server stopped</text><!--MD5=[4b5926b6ccb61cbe18026ff36383f1b5]
+link step_declarative_undeploy_stop_db_server_db_server_stopping to step_declarative_undeploy_stop_db_server_db_server_Standard.stop--><path d="M113.5,164.8549 C113.5,174.2155 113.5,185.4103 113.5,195.2956 " fill="none" id="step_declarative_undeploy_stop_db_server_db_server_stopping-to-step_declarative_undeploy_stop_db_server_db_server_Standard.stop" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="113.5,200.329,117.5,191.329,113.5,195.329,109.5,191.329,113.5,200.329" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[c02d327840fbf11fb46eaa3119930953]
+link step_declarative_undeploy_stop_db_server_db_server_Standard.stop to step_declarative_undeploy_stop_db_server_db_server_stopped--><path d="M113.5,240.8549 C113.5,250.2155 113.5,261.4103 113.5,271.2956 " fill="none" id="step_declarative_undeploy_stop_db_server_db_server_Standard.stop-to-step_declarative_undeploy_stop_db_server_db_server_stopped" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="113.5,276.329,117.5,267.329,113.5,271.329,109.5,267.329,113.5,276.329" style="stroke:#0000FF;stroke-width:1.0;"/><rect fill="#FFFFFF" height="240.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="209" x="7" y="386"/><rect fill="#FFFFFF" height="208" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="203" x="10" y="415.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="7" x2="216" y1="412.4883" y2="412.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116" x="53.5" y="404.5352">delete_db_server</text><rect fill="#FFFFFF" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="137" x="45" y="424.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="127" x="50" y="449.7793">db_server deleting</text><rect fill="#ADD8E6" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="189" x="19" y="500.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="179" x="24" y="525.7793">db_server Standard.delete</text><rect fill="#FFFFFF" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="119" x="54" y="576.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="109" x="59" y="601.7793">db_server initial</text><!--MD5=[8e3ebb301bcf44d059eaebebce5e198a]
+link step_declarative_undeploy_delete_db_server_db_server_deleting to step_declarative_undeploy_delete_db_server_db_server_Standard.delete--><path d="M113.5,464.8549 C113.5,474.2155 113.5,485.4103 113.5,495.2956 " fill="none" id="step_declarative_undeploy_delete_db_server_db_server_deleting-to-step_declarative_undeploy_delete_db_server_db_server_Standard.delete" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="113.5,500.329,117.5,491.329,113.5,495.329,109.5,491.329,113.5,500.329" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[ba24a514e9abb4af2069c2dbbdee1898]
+link step_declarative_undeploy_delete_db_server_db_server_Standard.delete to step_declarative_undeploy_delete_db_server_db_server_initial--><path d="M113.5,540.8549 C113.5,550.2155 113.5,561.4103 113.5,571.2956 " fill="none" id="step_declarative_undeploy_delete_db_server_db_server_Standard.delete-to-step_declarative_undeploy_delete_db_server_db_server_initial" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="113.5,576.329,117.5,567.329,113.5,571.329,109.5,567.329,113.5,576.329" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[61fe935cc0597903117331bdc5ae3166]
+link step_declarative_undeploy_stop_db_server to step_declarative_undeploy_delete_db_server--><path d="M111.5,326.2929 C111.5,344.1733 111.5,362.6404 111.5,380.6221 " fill="none" id="step_declarative_undeploy_stop_db_server-to-step_declarative_undeploy_delete_db_server" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="111.5,385.6801,115.5,376.6801,111.5,380.6801,107.5,376.6801,111.5,385.6801" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[41520bff47f69f9c7ad3b7a04fd846ad]
+link *start to step_declarative_undeploy_stop_db_server--><path d="M111.5,26.2152 C111.5,37.7525 111.5,57.9094 111.5,80.6599 " fill="none" id="*start-to-step_declarative_undeploy_stop_db_server" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="111.5,85.8637,115.5,76.8637,111.5,80.8637,107.5,76.8637,111.5,85.8637" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[aa035b0b667bd85d0957add4f3591ceb]
+link step_declarative_undeploy_delete_db_server to *end--><path d="M111.5,626.0605 C111.5,647.7796 111.5,667.6166 111.5,680.5716 " fill="none" id="step_declarative_undeploy_delete_db_server-to-*end" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="111.5,685.6879,115.5,676.6879,111.5,680.6879,107.5,676.6879,111.5,685.6879" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[db13192c65e24fea803f1a70493e788c]
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam state {
+  ArrowColor blue
+  BorderColor blue
+  EndColor black
+  StartColor green
+  BackGroundColor<< step >> white
+  BorderColor<< step >> black
+  BackGroundColor<< delegate >> lightgrey
+  BackGroundColor<< set_state >> white
+  BackGroundColor<< call_operation >> lightblue
+  BackGroundColor<< inline >> white
+}
+skinparam ActivityBarColor<<fork>> DarkGreen
+skinparam ActivityBarColor<<join>> DarkOrange
+
+state "stop_db_server" as step_declarative_undeploy_stop_db_server << step >> {
+  state "db_server stopping" as step_declarative_undeploy_stop_db_server_db_server_stopping << set_state >>
+  state "db_server Standard.stop" as step_declarative_undeploy_stop_db_server_db_server_Standard.stop << call_operation >>
+  state "db_server stopped" as step_declarative_undeploy_stop_db_server_db_server_stopped << set_state >>
+  step_declarative_undeploy_stop_db_server_db_server_stopping - -> step_declarative_undeploy_stop_db_server_db_server_Standard.stop
+  step_declarative_undeploy_stop_db_server_db_server_Standard.stop - -> step_declarative_undeploy_stop_db_server_db_server_stopped
+}
+state "delete_db_server" as step_declarative_undeploy_delete_db_server << step >> {
+  state "db_server deleting" as step_declarative_undeploy_delete_db_server_db_server_deleting << set_state >>
+  state "db_server Standard.delete" as step_declarative_undeploy_delete_db_server_db_server_Standard.delete << call_operation >>
+  state "db_server initial" as step_declarative_undeploy_delete_db_server_db_server_initial << set_state >>
+  step_declarative_undeploy_delete_db_server_db_server_deleting - -> step_declarative_undeploy_delete_db_server_db_server_Standard.delete
+  step_declarative_undeploy_delete_db_server_db_server_Standard.delete - -> step_declarative_undeploy_delete_db_server_db_server_initial
+}
+step_declarative_undeploy_stop_db_server - -> step_declarative_undeploy_delete_db_server
+[*] - -> step_declarative_undeploy_stop_db_server
+step_declarative_undeploy_delete_db_server - -> [*]
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>
