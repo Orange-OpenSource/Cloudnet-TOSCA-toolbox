@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="69px" preserveAspectRatio="none" style="width:105px;height:69px;background:#FFFFFF;" version="1.1" viewBox="0 0 105 69" width="105px" zoomAndPan="magnify"><defs><filter height="300%" id="fnsce1x1eflsq" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[07464b08e085c207ccd31084bdeb779f]
+class Depends_RT--><rect codeLine="2" fill="#FEFECE" filter="url(#fnsce1x1eflsq)" height="48" id="Depends_RT" style="stroke:#A80036;stroke-width:1.5;" width="84" x="7" y="7"/><ellipse cx="22" cy="23" fill="#008000" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M23.1987,23.1479 Q23.564,23.2227 23.8337,23.4924 Q24.1035,23.7622 24.4937,24.5425 L26.7349,29 L24.0454,29 L22.5513,25.8706 Q22.4849,25.7378 22.377,25.5054 Q21.7212,24.1025 20.833,24.1025 L20.0527,24.1025 L20.0527,29 L17.604,29 L17.604,16.6069 L21.1401,16.6069 Q23.5308,16.6069 24.5725,17.4536 Q25.6143,18.3003 25.6143,20.2095 Q25.6143,21.4878 24.9917,22.2432 Q24.3691,22.9985 23.1987,23.1479 Z M20.0527,18.6655 L20.0527,22.0439 L21.2065,22.0439 Q22.2109,22.0439 22.6467,21.6497 Q23.0825,21.2554 23.0825,20.3506 Q23.0825,19.4458 22.6509,19.0557 Q22.2192,18.6655 21.2065,18.6655 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="52" x="36" y="27.5352">Depends</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="90" y1="39" y2="39"/><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="90" y1="47" y2="47"/><!--MD5=[93808940a6f3acae36626005f120d10d]
+@startuml
+set namespaceSeparator none
+class "Depends" as Depends_RT << (R,green) >> {
+}
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

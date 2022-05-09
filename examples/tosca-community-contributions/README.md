@@ -25,6 +25,11 @@ This script
 * [TOSCA Simple Profile in YAML Version 2.0](docs/tosca_2_0.md)
 * [TOSCA Simple Profile for Network Functions Virtualization (NFV) Version 1.0](docs/tosca_simple_profile_for_nfv_1_0.md)
 
+* [Cloud Puccini Helm Profile Version 1.0](docs/cloud.puccini_helm_1_0.md)
+* [Cloud Puccini Kubernetes Profile Version 1.0](docs/cloud.puccini_kubernetes_1_0.md)
+* [Cloud Puccini Kubevirt Profile Version 1.0](docs/cloud.puccini_kubevirt_1_0.md)
+* [Cloud Puccini OpenStack Profile Version 1.0](docs/cloud.puccini_openstack_1_0.md)
+
 ### All generated diagrams
 
 All generated diagrams are available at
