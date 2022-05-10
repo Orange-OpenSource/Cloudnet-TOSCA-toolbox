@@ -13,21 +13,22 @@
 # Software description: Use case for TOSCA to Cloudnet Translator
 ######################################################################
 
-#aliased_tosca_service_templates:
+aliased_tosca_service_templates:
+  profiles/kubernetes/1.0/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/profiles/cloud.puccini/kubernetes/1.0/profile.yaml
+  profiles/kubevirt/1.0/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/profiles/cloud.puccini/kubevirt/1.0/profile.yaml
+  profiles/network-service/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/examples/1.3/turandot/telephony-network-service/telephony-network-service/profiles/network-service/profile.yaml
+  profiles/telephony/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/examples/1.3/turandot/telephony-network-service/telephony-network-service/profiles/telephony/profile.yaml
+  # Following files are missing
+  profiles/orchestration/1.0/profile.yaml: https://raw.githubusercontent.com/tliron/turandot/main/assets/tosca/profiles/orchestration/1.0/profile.yaml
+  ../../orchestration/1.0/profile.yaml: https://raw.githubusercontent.com/tliron/turandot/main/assets/tosca/profiles/orchestration/1.0/profile.yaml
+  profiles/mariadb/profile.yaml: https://raw.githubusercontent.com/tliron/turandot/main/assets/tosca/profiles/mariadb/profile.yaml
 
 # Configuration of the syntax checker.
 Syntax:
-  tosca_definitions_version:
-    tosca_simple_profile_for_nfv_1_0: tosca_simple_yaml_1_2
-
-TypeSystem:
-  tosca_normative_types:
-    tosca_simple_profile_for_nfv_1_0:
-      - tosca_simple_yaml_1_2
-      - https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/profiles/org.oasis-open/simple-for-nfv/1.0/profile.yaml
-  short_names:
-    "tosca:VduCpd": tosca.nodes.nfv.VduCpd
-    "tosca:VDU.Compute": tosca.nodes.nfv.VDU.Compute
+  # In TOSCA, default requirement occurrences are [1, 1].
+  # But Puccini seems to be not compliant to this rule.
+  # So default requirement occurrences shall be modified.
+  default-requirement-occurrences: [0, UNBOUNDED]
 
 Generator:
   filename-format: fullname # keep the full filename

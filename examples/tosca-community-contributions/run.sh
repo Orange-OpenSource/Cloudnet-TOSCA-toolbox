@@ -96,7 +96,14 @@ for file in \
       profiles/org.oasis-open/non-normative/artifact.yaml \
       profiles/org.oasis-open/non-normative/capability.yaml \
       profiles/org.oasis-open/non-normative/node.yaml \
-      profiles/org.oasis-open/non-normative/profile.yaml \
+      profiles/org.oasis-open/non-normative/profile.yaml
+do
+  translate $BASE_URL/$file
+done
+
+# Compile Puccini-based examples
+export TOSCAWARE_OPTS="--config-file tosca2cloudnet-puccini.yaml"
+for file in \
       profiles/cloud.puccini/helm/1.0/artifacts.yaml \
       profiles/cloud.puccini/helm/1.0/nodes.yaml \
       profiles/cloud.puccini/helm/1.0/profile.yaml \
