@@ -17,39 +17,39 @@ This script
 
 ## Generated diagrams
 
-# TOSCA Diagram
+### TOSCA Diagram
 
 ![TOSCA Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/tosca/service.png)
 
 A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/tosca/service.svg).
 
-# UML Component Diagram
+### UML Component Diagram
 
 ![UML Component Diagram 1](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/service-uml2-component-diagram1.png)
 
 A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/service-uml2-component-diagram1.svg).
 
-# UML Component Diagram including relationship nodes
+### UML Component Diagram including relationship nodes
 
 ![UML Component Diagram 2](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/service-uml2-component-diagram2.png)
 
 A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/service-uml2-component-diagram2.svg).
 
-# UML Deployment Diagram
+### UML Deployment Diagram
 
 ![UML Deployment Diagram](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/service-uml2-deployment-diagram.png)
 
 A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/service-uml2-deployment-diagram.svg).
 
-# UML Class Diagrams
+### UML Class Diagrams
 
-## Kubernetes profile
+#### Kubernetes profile
 
 ![UML Class Diagram - Kubernetes profile](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/profiles-kubernetes-types-node-uml2-class-diagram.png)
 
 ![UML Class Diagram - Kubernetes profile](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/profiles-kubernetes-types-objects-uml2-class-diagram.png)
 
-## OpenStack profile
+#### OpenStack profile
 
 ![UML Class Diagram - OpenStack profile](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/profiles-openstack-types-node-uml2-class-diagram.png)
 
