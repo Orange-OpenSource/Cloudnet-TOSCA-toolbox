@@ -25,9 +25,9 @@ then
 fi
 
 echo Processing all kubetos templates...
-for file in `grep -r -l tosca_definitions_version kubetos | grep -E '\.(yaml|yml)$'`
+for file in $(grep -r -l tosca_definitions_version kubetos | grep -E '\.(yaml|yml)$')
 do
-    translate $file
+    translate "$file"
 done
 
 # Generate all TOSCA diagrams.
