@@ -47,11 +47,17 @@ A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenS
 
 ![UML Class Diagram - Kubernetes profile](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/profiles-kubernetes-types-node-uml2-class-diagram.png)
 
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/profiles-kubernetes-types-node-uml2-class-diagram.svg).
+
 ![UML Class Diagram - Kubernetes profile](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/profiles-kubernetes-types-objects-uml2-class-diagram.png)
+
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/profiles-kubernetes-types-objects-uml2-class-diagram.svg).
 
 #### OpenStack profile
 
 ![UML Class Diagram - OpenStack profile](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/profiles-openstack-types-node-uml2-class-diagram.png)
+
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/kubetos/diagrams/uml2/profiles-openstack-types-node-uml2-class-diagram.svg).
 
 ### All generated diagrams
 
