@@ -6,30 +6,46 @@ Following diagrams are related to [TOSCA Simple Profile in YAML Version 1.0](htt
 
 ![Data Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-data-uml2-class-diagram.png)
 
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-data-uml2-class-diagram.svg).
+
 ## Artifact Types
 
 ![Artifact Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-artifact-uml2-class-diagram.png)
+
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-artifact-uml2-class-diagram.svg).
 
 ## Capability Types
 
 ![Capability Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-capability-uml2-class-diagram.png)
 
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-capability-uml2-class-diagram.svg).
+
 ## Relationship Types
 
 ![Relationship Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-relationship-uml2-class-diagram.png)
+
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-relationship-uml2-class-diagram.svg).
 
 ## Interface Types
 
 ![Interface Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-interface-uml2-class-diagram.png)
 
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-interface-uml2-class-diagram.svg).
+
 ## Node Types
 
 ![Node Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-node-uml2-class-diagram.png)
+
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-node-uml2-class-diagram.svg).
 
 ## Group Types
 
 ![Group Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-group-uml2-class-diagram.png)
 
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-group-uml2-class-diagram.svg).
+
 ## Policy Types
 
 ![Policy Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-policy-uml2-class-diagram.png)
+
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-org.oasis-open-simple-1.0-policy-uml2-class-diagram.svg).

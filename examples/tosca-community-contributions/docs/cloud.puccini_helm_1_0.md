@@ -8,6 +8,8 @@ Following diagrams are related to [Cloud Puccini Helm Profile Version 1.0](https
 
 ![Artifact Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-cloud.puccini-helm-1.0-artifacts-uml2-class-diagram.png)
 
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-cloud.puccini-helm-1.0-artifacts-uml2-class-diagram.svg).
+
 ## Capability Types
 
 ## Relationship Types
@@ -17,6 +19,8 @@ Following diagrams are related to [Cloud Puccini Helm Profile Version 1.0](https
 ## Node Types
 
 ![Node Types](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-cloud.puccini-helm-1.0-nodes-uml2-class-diagram.png)
+
+A SVG version is available [here](https://raw.githubusercontent.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/master/examples/tosca-community-contributions/diagrams/uml2/profiles-cloud.puccini-helm-1.0-nodes-uml2-class-diagram.svg).
 
 ## Group Types
 
