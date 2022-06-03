@@ -1155,6 +1155,7 @@ class PlantUMLGenerator(Generator):
                     sep="",
                 )
                 # Generate a properties map if needed
+                map_of_properties_generated = False
                 if properties is not None:
                     color = self.get_color("node", node_template_type)
                     if ';' in color:
@@ -1167,12 +1168,19 @@ class PlantUMLGenerator(Generator):
                         " {",
                         sep="",
                     )
+                    map_of_properties_generated = True
+                    node_type = self.type_system.merge_type(node_template_type)
                     for property_name in properties:
-                        self.generate(
-                            property_name,
-                            " => ",
-                            str(node_template.get("properties", {}).get(property_name, 'unset')),
+                        property_value = (
+                            node_template.get("properties", {}).get(property_name)
+                            or node_type.get("properties", {}).get(property_name, {}).get("default")
                         )
+                        if property_value != None:
+                            self.generate(
+                                property_name,
+                                " => ",
+                                self.stringify_value(property_value, str),
+                            )
                     self.generate("}")
                 for contained_name, contained_dict in containeds.items():
                     generate_container(self, contained_name, contained_dict)
@@ -1228,7 +1236,14 @@ class PlantUMLGenerator(Generator):
                             sep="",
                         )
                         self.generate("}")
-
+                    if map_of_properties_generated:
+                        self.generate(
+                            "node_%s_properties -[hidden]- node_%s_artifact_%s" % (
+                                normalize_name(container_name),
+                                normalize_name(container_name),
+                                normalize_name(artifact_name)
+                            )
+                        )
                 self.generate("}")
 
         substitution_mappings = topology_template.get(SUBSTITUTION_MAPPINGS)
@@ -1624,29 +1639,29 @@ class PlantUMLGenerator(Generator):
                     if trigger.get('action') != None:
                         generate_sequence_diagram(policy_name, policy, trigger_name, trigger)
 
-    def stringify_value(self, value):
-        tmp = repr(value)
+    def stringify_value(self, value, representation=repr):
+        tmp = representation(value)
         max_value_length = self.configuration.get(UML2, "max-value-length")
         if len(tmp) > max_value_length:
             tmp = tmp[0:max_value_length]
             if not isinstance(value, (str, int, float)):
-                tmp += '[[{%s} ...]]' % self.yamlify_value(value)
+                tmp += '[[{%s} ...]]' % self.yamlify_value(value, representation=representation)
             else:
-                tmp += '[[{%s} ...]]' % repr(value)
+                tmp += '[[{%s} ...]]' % representation(value)
         return tmp
 
-    def yamlify_value(self, value, header='', ident=''):
+    def yamlify_value(self, value, header='', ident='', representation=repr):
         result = ''
         if isinstance(value, dict):
             tmp = header
             for k, v in value.items():
-                result += tmp + str(k) + ': ' + self.yamlify_value(v, '\\n' + ident + '  ', ident + '  ')
+                result += tmp + str(k) + ': ' + self.yamlify_value(v, '\\n' + ident + '  ', ident + '  ',representation)
                 tmp = '\\n' + ident
         elif isinstance(value, list):
             tmp = header
             for v in value:
-                result += tmp + '- ' + self.yamlify_value(v, '', ident + '  ')
+                result += tmp + '- ' + self.yamlify_value(v, '', ident + '  ',representation)
                 tmp = '\\n' + ident
         else:
-            result = repr(value)
+            result = representation(value)
         return result
