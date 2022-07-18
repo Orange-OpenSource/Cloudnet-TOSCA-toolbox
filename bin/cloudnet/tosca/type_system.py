@@ -4891,7 +4891,7 @@ class TypeChecker(Checker):
                     requirement_assignment
                 )
             else:
-                self.error(
+                self.warning(
                     cem
                     + " - "
                     + array_to_string_with_or_separator(compatible_capabilities)
@@ -5582,7 +5582,7 @@ class TypeChecker(Checker):
             )
             nb_substituting_topology_templates = len(substituting_topology_templates)
             if nb_substituting_topology_templates == 0:
-                self.error(
+                self.warning(
                     cem
                     + " - no substituting topology template found for %s node type"
                     % node_type_name,

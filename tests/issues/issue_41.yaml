@@ -20,26 +20,26 @@ topology_template:
     n2:
       type: MyNodeType
       requirements:
-        - dependency: n1 # ERROR: target_cap or feature capability found!
+        - dependency: n1 # WARNING: target_cap or feature capability found!
         - dependency:
-            node: MyNodeType # ERROR: target_cap or feature capability found!
+            node: MyNodeType # WARNING: target_cap or feature capability found!
             # WARNING: n1 and n2 match!
         - dependency:
-            node: n1 # ERROR: target_cap or feature capability found!
+            node: n1 # WARNING: target_cap or feature capability found!
         - dependency:
-            node: n1 # ERROR: target_cap or feature capability found!
+            node: n1 # WARNING: target_cap or feature capability found!
             capability: tosca.capabilities.Node
         - dependency:
             node: n1 # CORRECT: no ambiguity
             capability: feature
-        - target: n1 # ERROR: target_cap or feature capability found!
+        - target: n1 # WARNING: target_cap or feature capability found!
         - target:
-            node: MyNodeType # ERROR: target_cap or feature capability found!
+            node: MyNodeType # WARNING: target_cap or feature capability found!
             # WARNING: n1 and n2 match!
         - target:
-            node: n1 # ERROR: target_cap or feature capability found!
+            node: n1 # WARNING: target_cap or feature capability found!
         - target:
-            node: n1 # ERROR: target_cap or feature capability found!
+            node: n1 # WARNING: target_cap or feature capability found!
             capability: tosca.capabilities.Node
         - target:
             node: n1 # CORRECT: no ambiguity
