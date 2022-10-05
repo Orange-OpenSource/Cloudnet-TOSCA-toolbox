@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="852px" preserveAspectRatio="none" style="width:190px;height:852px;background:#FFFFFF;" version="1.1" viewBox="0 0 190 852" width="190px" zoomAndPan="magnify"><defs/><g><ellipse cx="95" cy="16" fill="#008000" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><ellipse cx="95" cy="836" rx="10" ry="10" style="stroke:#000000;stroke-width:1.0;fill:none;"/><ellipse cx="95.5" cy="836.5" fill="#000000" rx="6" ry="6" style="stroke:none;stroke-width:1.0;"/><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="160" x="15" y="86"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="154" x="18" y="115.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="15" x2="175" y1="112.4883" y2="112.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="133" x="28.5" y="104.5352">undeploy_endpoint</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="140" x="27" y="124.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="32" y="149.7793">endpoint undeploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="158" x="16" y="234"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="152" x="19" y="263.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="174" y1="260.4883" y2="260.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="131" x="29.5" y="252.5352">undeploy_frontend</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="138" x="28" y="272.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="128" x="33" y="297.7793">frontend undeploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="176" x="7" y="382"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="170" x="10" y="411.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="7" x2="183" y1="408.4883" y2="408.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="148" x="21" y="400.5352">undeploy_web_server</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="156" x="19" y="420.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="146" x="24" y="445.7793">web-server undeploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="160" x="15" y="530"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="154" x="18" y="559.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="15" x2="175" y1="556.4883" y2="556.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="133" x="28.5" y="548.5352">undeploy_database</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="140" x="27" y="568.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="32" y="593.7793">database undeploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="159" x="15.5" y="678"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="153" x="18.5" y="707.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="15.5" x2="174.5" y1="704.4883" y2="704.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="132" x="29" y="696.5352">undeploy_directory</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="139" x="27.5" y="716.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="129" x="32.5" y="741.7793">directory undeploy</text><!--MD5=[38c442a8f8137e4e8970d6af2ffd5a18]
+link step_parallel_undeploy_undeploy_endpoint to step_parallel_undeploy_undeploy_frontend--><path d="M95,174.0042 C95,191.1469 95,210.8749 95,228.5094 " fill="none" id="step_parallel_undeploy_undeploy_endpoint-to-step_parallel_undeploy_undeploy_frontend" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="95,233.9098,99,224.9098,95,228.9098,91,224.9098,95,233.9098" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[574486a64c2281ff7b83259ee6c16299]
+link step_parallel_undeploy_undeploy_frontend to step_parallel_undeploy_undeploy_web_server--><path d="M95,322.0042 C95,339.1469 95,358.8749 95,376.5094 " fill="none" id="step_parallel_undeploy_undeploy_frontend-to-step_parallel_undeploy_undeploy_web_server" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="95,381.9098,99,372.9098,95,376.9098,91,372.9098,95,381.9098" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[a3488f06fae5c4ff74f8d71e15e7f0b3]
+link step_parallel_undeploy_undeploy_web_server to step_parallel_undeploy_undeploy_database--><path d="M95,470.0042 C95,487.1469 95,506.8749 95,524.5094 " fill="none" id="step_parallel_undeploy_undeploy_web_server-to-step_parallel_undeploy_undeploy_database" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="95,529.9098,99,520.9098,95,524.9098,91,520.9098,95,529.9098" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[3e60ec8ce3e8c16306543a54df9f5b94]
+link step_parallel_undeploy_undeploy_database to step_parallel_undeploy_undeploy_directory--><path d="M95,618.0042 C95,635.1469 95,654.8749 95,672.5094 " fill="none" id="step_parallel_undeploy_undeploy_database-to-step_parallel_undeploy_undeploy_directory" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="95,677.9098,99,668.9098,95,672.9098,91,668.9098,95,677.9098" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[356e7e84261f51079d236fe7e139f507]
+link *start to step_parallel_undeploy_undeploy_endpoint--><path d="M95,26.1167 C95,38.4746 95,60.2658 95,80.7092 " fill="none" id="*start-to-step_parallel_undeploy_undeploy_endpoint" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="95,85.8711,99,76.8711,95,80.8711,91,76.8711,95,85.8711" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[9a9511a1ddcc83031fd4b2803885174d]
+link step_parallel_undeploy_undeploy_directory to *end--><path d="M95,766.0754 C95,785.3243 95,806.649 95,820.628 " fill="none" id="step_parallel_undeploy_undeploy_directory-to-*end" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="95,825.7845,99,816.7845,95,820.7845,91,816.7845,95,825.7845" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[91c0f4ba7f97a7b195c6658328ebed28]
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam state {
+  ArrowColor blue
+  BorderColor blue
+  EndColor black
+  StartColor green
+  BackGroundColor<< step >> white
+  BorderColor<< step >> black
+  BackGroundColor<< delegate >> lightgrey
+  BackGroundColor<< set_state >> white
+  BackGroundColor<< call_operation >> lightblue
+  BackGroundColor<< inline >> white
+}
+skinparam ActivityBarColor<<fork>> DarkGreen
+skinparam ActivityBarColor<<join>> DarkOrange
+
+state "undeploy_endpoint" as step_parallel_undeploy_undeploy_endpoint << step >> {
+  state "endpoint undeploy" as step_parallel_undeploy_undeploy_endpoint_endpoint_undeploy << delegate >>
+}
+state "undeploy_frontend" as step_parallel_undeploy_undeploy_frontend << step >> {
+  state "frontend undeploy" as step_parallel_undeploy_undeploy_frontend_frontend_undeploy << delegate >>
+}
+state "undeploy_web_server" as step_parallel_undeploy_undeploy_web_server << step >> {
+  state "web-server undeploy" as step_parallel_undeploy_undeploy_web_server_web_server_undeploy << delegate >>
+}
+state "undeploy_database" as step_parallel_undeploy_undeploy_database << step >> {
+  state "database undeploy" as step_parallel_undeploy_undeploy_database_database_undeploy << delegate >>
+}
+state "undeploy_directory" as step_parallel_undeploy_undeploy_directory << step >> {
+  state "directory undeploy" as step_parallel_undeploy_undeploy_directory_directory_undeploy << delegate >>
+}
+step_parallel_undeploy_undeploy_endpoint - -> step_parallel_undeploy_undeploy_frontend
+step_parallel_undeploy_undeploy_frontend - -> step_parallel_undeploy_undeploy_web_server
+step_parallel_undeploy_undeploy_web_server - -> step_parallel_undeploy_undeploy_database
+step_parallel_undeploy_undeploy_database - -> step_parallel_undeploy_undeploy_directory
+[*] - -> step_parallel_undeploy_undeploy_endpoint
+step_parallel_undeploy_undeploy_directory - -> [*]
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

@@ -1,0 +1,44 @@
+# See https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/issues/43
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: Extract from Profile Type Definitions for ODA by Paul Jordan to show issue43
+
+capability_types:
+  run_oda_component:
+    description: >-
+      The capability to run ODA Components
+    derived_from: tosca.capabilities.Node
+
+  run_oda_component_on_emulator:
+    description: >-
+      The capability to run ODA Components
+    derived_from: run_oda_component
+
+relationship_types:
+
+  running_on_emulator:
+    derived_from: tosca.relationships.DependsOn
+    description: Used to connect an ODA component written to run on an emulator to an emulator platform
+
+node_types:
+
+  oda_component:
+    derived_from: tosca.nodes.Root
+
+  oda_platform:
+    derived_from: tosca.nodes.Root
+
+  oda_platform_emulator:
+    derived_from: oda_platform
+    capabilities:
+      feature:
+        type: run_oda_component_on_emulator
+
+  oda_component_emulator:
+    derived_from: oda_component
+    description: An abstract class definition for all ODA components on emulated platform
+    requirements:
+      - dependency:
+          node: oda_platform_emulator
+          occurrences: [1,1]
+          relationship: running_on_emulator

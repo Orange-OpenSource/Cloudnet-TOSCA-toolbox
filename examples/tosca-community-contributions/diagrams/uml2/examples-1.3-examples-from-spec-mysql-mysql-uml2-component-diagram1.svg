@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="324px" preserveAspectRatio="none" style="width:220px;height:324px;background:#FFFFFF;" version="1.1" viewBox="0 0 220 324" width="220px" zoomAndPan="magnify"><defs><filter height="300%" id="f1qf4n8opstdx3" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[db46a9f23c3f0f16d6ae563bb306d120]
+entity node_mysql--><rect fill="#FEFECE" filter="url(#f1qf4n8opstdx3)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="133" x="7" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="120" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="118" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="118" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="44" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="93" x="22" y="57.0234">mysql: MySQL</text><!--MD5=[9688f44f244222f475ba93de350f52a3]
+entity node_db_server--><rect fill="#FEFECE" filter="url(#f1qf4n8opstdx3)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="178" x="28.5" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="186.5" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="184.5" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="184.5" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="88" y="281.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="138" x="43.5" y="298.0234">db_server: Compute</text><!--MD5=[ef3c5e0bbf87f6946e3782385414c74e]
+entity node_db_server_host--><ellipse cx="73.5" cy="159" fill="#FEFECE" filter="url(#f1qf4n8opstdx3)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="58.5" y="189.5352">host</text><!--MD5=[2ebfb9c0fc99ef3681315352db15b406]
+entity node_db_server_os--><ellipse cx="162.5" cy="159" fill="#FEFECE" filter="url(#f1qf4n8opstdx3)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="16" x="154.5" y="189.5352">os</text><!--MD5=[815d1669ef48e6f9614b7a602ffff37e]
+link node_db_server_host to node_db_server--><path d="M76.8072,168.0571 C82.9028,184.7509 96.1764,221.1025 105.913,247.7674 " fill="none" id="node_db_server_host-node_db_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[08e8605818e33e8f188233ed5a5d1a55]
+link node_db_server_os to node_db_server--><path d="M159.1177,168.0571 C152.8835,184.7509 139.3082,221.1025 129.3503,247.7674 " fill="none" id="node_db_server_os-node_db_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[aa19f5fc7a5f82c58d8f44ee77922f68]
+link node_mysql to node_db_server_host--><path d="M73.5,70.16 C73.5,92.2188 73.5,120.9338 73.5,139.6589 " fill="none" id="node_mysql-to-node_db_server_host" style="stroke:#A80036;stroke-width:1.0;"/><path d="M81.9573,146.8 A9,9 0 0 0 65.0428 146.7998" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="42.7438" y="90.4709">host</text><!--MD5=[1dbd63e803665c183e74a15c28a4907b]
+@startuml
+skinparam componentStyle uml2
+
+component "mysql: MySQL" <<node>> as node_mysql
+
+component "db_server: Compute" <<node>> as node_db_server
+interface "host" as node_db_server_host
+node_db_server_host - - node_db_server
+interface "os" as node_db_server_os
+node_db_server_os - - node_db_server
+
+node_mysql "host" - -( node_db_server_host
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

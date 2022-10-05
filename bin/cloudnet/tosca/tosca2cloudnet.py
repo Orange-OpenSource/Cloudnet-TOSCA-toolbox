@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -43,6 +43,7 @@ from cloudnet.tosca.syntax import SyntaxChecker
 from cloudnet.tosca.tosca_diagrams import ToscaDiagramGenerator
 from cloudnet.tosca.type_system import TypeChecker, TypeSystem
 from cloudnet.tosca.uml2_diagrams import PlantUMLGenerator
+from cloudnet.tosca.yaml_line_numbering import Coord
 
 ALIASED_TOSCA_SERVICE_TEMPLATES = "aliased_tosca_service_templates"
 
@@ -110,10 +111,16 @@ def main(argv):
                 args.template_file, config.get(ALIASED_TOSCA_SERVICE_TEMPLATES)
             )
         except Exception as e:
+            location = ""
+            if len(e.args) != 0:
+                arg = e.args[0]
+                if isinstance(arg, Coord):
+                    location = "@%d,%d" % (arg.line, arg.column)
             print(
                 processors.CRED,
                 "[ERROR] ",
                 args.template_file,
+                location,
                 ": ",
                 e,
                 processors.CEND,
@@ -163,7 +170,6 @@ def main(argv):
             HOTGenerator,
         ]:
             generator = generator_class(generator=type_checker)
-            print("TOSCA2CLOUDNET : " + generator_class.__name__ + " ...")
             generator.generation()
             nb_errors += generator.nb_errors
             nb_warnings += generator.nb_warnings

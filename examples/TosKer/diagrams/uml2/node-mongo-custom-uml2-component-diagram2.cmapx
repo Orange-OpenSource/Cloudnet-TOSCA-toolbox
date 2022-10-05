@@ -1,0 +1,44 @@
+<map id="node-mongo-custom-uml2-component-diagram2_map" name="node-mongo-custom-uml2-component-diagram2_map">
+<area shape="rect" id="id1" href="" title="deleted: None
+created: None
+started: 
+  requires: 
+    - &#39;host&#39;
+    - &#39;db_connection&#39;" alt="" coords="908,229,920,245"/>
+<area shape="rect" id="id2" href="" title="- source: &#39;deleted&#39;
+  target: &#39;created&#39;
+  interface: &#39;my_interface&#39;
+  operation: &#39;create&#39;
+- source: &#39;created&#39;
+  target: &#39;deleted&#39;
+  interface: &#39;my_interface&#39;
+  operation: &#39;delete&#39;
+- source: &#39;created&#39;
+  target: &#39;created&#39;
+  requires: 
+    - &#39;db_connection&#39;
+  interface: &#39;my_interface&#39;
+  operation: &#39;add_examples&#39;
+- source: &#39;created&#39;
+  target: &#39;started&#39;
+  interface: &#39;my_interface&#39;
+  operation: &#39;start&#39;
+- source: &#39;started&#39;
+  target: &#39;created&#39;
+  interface: &#39;my_interface&#39;
+  operation: &#39;stop&#39;" alt="" coords="924,245,936,262"/>
+<area shape="rect" id="id3" href="" title="- source: &#39;uninstalled&#39;
+  target: &#39;installed&#39;
+  interface: &#39;my_interface&#39;
+  operation: &#39;install&#39;
+- source: &#39;installed&#39;
+  target: &#39;uninstalled&#39;
+  interface: &#39;my_interface&#39;
+  operation: &#39;uninstall&#39;" alt="" coords="498,820,510,837"/>
+<area shape="rect" id="id4" href="" title="installed: 
+  requires: 
+    - &#39;host&#39;
+  offers: 
+    - &#39;host&#39;
+uninstalled: None" alt="" coords="458,804,470,820"/>
+</map>

@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -21,6 +21,7 @@ import cloudnet.tosca.configuration as configuration
 from cloudnet.tosca.diagnostics import diagnostic
 from cloudnet.tosca.importers import ArchiveImporter
 from cloudnet.tosca.utils import normalize_name
+from .yaml_line_numbering import Coord as YamlCoord
 
 configuration.DEFAULT_CONFIGURATION["Generator"] = {"filename-format": "shortname"}
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
@@ -121,11 +122,23 @@ class Processor(object):
                     result = repository_url + "/" + import_file
         return result
 
+    def get_tosca_service_template_fullname_with_line_and_column(self, value):
+        result = self.tosca_service_template.get_fullname()
+        if value is None:
+            pass # Nothing to do
+        elif isinstance(value, bool):
+            pass # Nothing to do
+        elif isinstance(value, YamlCoord):
+            result += "@%d,%d" % (value.line, value.column)
+        else:
+            result += "@UNKNOWN"
+        return result
+
     def error(self, message, value=None):
         print(
             CRED,
             "[ERROR] ",
-            self.tosca_service_template.get_fullname(),
+            self.get_tosca_service_template_fullname_with_line_and_column(value),
             ":",
             message,
             "!",
@@ -140,7 +153,7 @@ class Processor(object):
         print(
             CYELLOW,
             "[Warning] ",
-            self.tosca_service_template.get_fullname(),
+            self.get_tosca_service_template_fullname_with_line_and_column(value),
             ":",
             message,
             "!",
@@ -155,7 +168,7 @@ class Processor(object):
         if self.logger.isEnabledFor(logging.INFO):
             print(
                 "[Info] ",
-                self.tosca_service_template.get_fullname(),
+                self.get_tosca_service_template_fullname_with_line_and_column(value),
                 ": ",
                 message,
                 sep="",
@@ -176,7 +189,7 @@ class Processor(object):
         if self.logger.isEnabledFor(logging.DEBUG):
             print(
                 "[DEBUG] ",
-                self.tosca_service_template.get_fullname(),
+                self.get_tosca_service_template_fullname_with_line_and_column(value),
                 ": ",
                 message,
                 sep="",
@@ -243,6 +256,8 @@ class Generator(Processor):
         if format == "fullname":
             return (
                 tosca_service_template.get_fullname()
+                .replace("http://", "")
+                .replace("https://", "")
                 .replace("./", "")
                 .replace("/", "-")
             )

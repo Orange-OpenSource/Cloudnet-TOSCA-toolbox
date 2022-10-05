@@ -59,6 +59,14 @@ run Show_tosca_datatypes_Root {
   expect 1
 
 //
+// The TOSCA data Type used to define a string that contains data in the JavaScript Object Notation (JSON) format
+//
+let tosca_datatypes_json = string
+//
+// The TOSCA data Type used to define a string that contains data in the Extensible Markup Language (XML) format
+//
+let tosca_datatypes_xml = string
+//
 // The TOSCA data Type used when describing authorization credentials used to access network accessible resources
 //
 sig tosca_datatypes_Credential extends tosca_datatypes_Root
@@ -122,6 +130,54 @@ run Show_tosca_datatypes_Credential {
   exactly 0 TOSCA/Interface,
   exactly 0 TOSCA/Operation,
   exactly 1 tosca_datatypes_Credential
+  expect 1
+
+//
+// The TOSCA data Type used when describing a period of time using the YAML ISO 8601 format to declare the start and end times
+//
+sig tosca_datatypes_TimeInterval extends tosca_datatypes_Root
+{
+  // --------------------------------------------------
+  // Properties
+  // --------------------------------------------------
+
+  // YAML start_time: {'description': 'The inclusive start time for the time interval', 'type': 'timestamp', 'required': True}
+  //
+  // The inclusive start time for the time interval
+  //
+  start_time: one timestamp,
+
+  // YAML end_time: {'description': 'The inclusive end time for the time interval', 'type': 'timestamp', 'required': True}
+  //
+  // The inclusive end time for the time interval
+  //
+  end_time: one timestamp,
+
+} {
+  // --------------------------------------------------
+  // Properties
+  // --------------------------------------------------
+
+
+}
+
+/** There exists some tosca.datatypes.TimeInterval */
+run Show_tosca_datatypes_TimeInterval {
+} for 5 but
+  8 Int,
+  5 seq,
+  // NOTE: Setting following scopes strongly reduces the research space.
+  exactly 0 LocationGraphs/LocationGraph,
+  exactly 0 LocationGraphs/Location,
+  exactly 0 LocationGraphs/Name,
+  exactly 0 LocationGraphs/Role,
+  exactly 0 LocationGraphs/Process,
+  exactly 0 LocationGraphs/Sort,
+  exactly 0 TOSCA/Artifact,
+  exactly 0 TOSCA/Attribute,
+  exactly 0 TOSCA/Interface,
+  exactly 0 TOSCA/Operation,
+  exactly 1 tosca_datatypes_TimeInterval
   expect 1
 
 sig tosca_datatypes_network_NetworkInfo extends tosca_datatypes_Root
@@ -2143,6 +2199,13 @@ sig tosca_nodes_BlockStorage extends tosca_nodes_Root
   property_snapshot_id: lone string,
 
   // --------------------------------------------------
+  // Attributes
+  // --------------------------------------------------
+
+  // YAML volume_id: {'type': 'string'}
+  attribute_volume_id: one string,
+
+  // --------------------------------------------------
   // Capabilities
   // --------------------------------------------------
 
@@ -2155,6 +2218,11 @@ sig tosca_nodes_BlockStorage extends tosca_nodes_Root
   // --------------------------------------------------
 
   property_size.greater_or_equal[1, MB]
+
+  // --------------------------------------------------
+  // Attributes
+  // --------------------------------------------------
+
 
   // --------------------------------------------------
   // Capabilities
@@ -2386,6 +2454,9 @@ sig tosca_nodes_network_Network extends tosca_nodes_Root
   // YAML physical_network: {'type': 'string', 'required': False}
   property_physical_network: lone string,
 
+  // YAML dhcp_enabled: {'type': 'boolean', 'required': False, 'default': True}
+  property_dhcp_enabled: lone boolean,
+
   // --------------------------------------------------
   // Capabilities
   // --------------------------------------------------
@@ -2450,6 +2521,13 @@ sig tosca_nodes_network_Port extends tosca_nodes_Root
   property_ip_range_end: lone string,
 
   // --------------------------------------------------
+  // Attributes
+  // --------------------------------------------------
+
+  // YAML ip_address: {'type': 'string'}
+  attribute_ip_address: one string,
+
+  // --------------------------------------------------
   // Requirements
   // --------------------------------------------------
 
@@ -2465,6 +2543,11 @@ sig tosca_nodes_network_Port extends tosca_nodes_Root
   // --------------------------------------------------
 
   property_order.greater_or_equal[0]
+
+  // --------------------------------------------------
+  // Attributes
+  // --------------------------------------------------
+
 
   // --------------------------------------------------
   // Requirements

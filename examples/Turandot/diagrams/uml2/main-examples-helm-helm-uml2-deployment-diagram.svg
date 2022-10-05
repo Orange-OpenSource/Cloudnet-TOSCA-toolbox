@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="143px" preserveAspectRatio="none" style="width:339px;height:143px;background:#FFFFFF;" version="1.1" viewBox="0 0 339 143" width="339px" zoomAndPan="magnify"><defs><filter height="300%" id="f1ei6rnkmihk46" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[c65503406aca28ab84a044b3196ed2b7]
+cluster node_hello_world--><rect fill="#FFFFFF" filter="url(#f1ei6rnkmihk46)" height="122" style="stroke:#000000;stroke-width:1.5;" width="318" x="7" y="7"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="305" y="12"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="303" y="14"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="303" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="188" x="72" y="33.5352">hello-world: helm:Release</text><!--MD5=[8ca577e2e52d8d51c0cea6c1ea1449af]
+cluster node_hello_world_artifact_chart--><rect fill="#FFFFFF" filter="url(#f1ei6rnkmihk46)" height="87" style="stroke:#000000;stroke-width:1.5;" width="302" x="15" y="34"/><polygon fill="#FFFFFF" points="300,39,300,53,312,53,312,45,306,39,300,39" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="306" x2="306" y1="39" y2="45"/><line style="stroke:#000000;stroke-width:1.5;" x1="312" x2="306" y1="45" y2="45"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="135" y="49.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="122" x="105" y="66.0234">chart: helm:Chart</text><!--MD5=[827612569ce652fcb0cbd6883585b163]
+entity node_hello_world_artifact_chart_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="265" x="33.5" y="100.5352">file: artifacts/charts/hello-world.tar.gz</text><!--MD5=[07f7607a13a2517198c5c0badabd3671]
+@startuml
+skinparam componentStyle uml2
+allowmixing
+
+component "hello-world: helm:Release" as node_hello_world {
+artifact "chart: helm:Chart" <<artifact>> as node_hello_world_artifact_chart {
+label "file: artifacts/charts/hello-world.tar.gz" as node_hello_world_artifact_chart_label
+}
+}
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

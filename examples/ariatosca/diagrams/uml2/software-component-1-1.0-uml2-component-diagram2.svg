@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="563px" preserveAspectRatio="none" style="width:345px;height:563px;background:#FFFFFF;" version="1.1" viewBox="0 0 345 563" width="345px" zoomAndPan="magnify"><defs><filter height="300%" id="fjfj9ypwh3lhl" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[17bd95661d8593725a6aaf9b88d5d6b8]
+entity node_my_virtual_machine--><rect fill="#FEFECE" filter="url(#fjfj9ypwh3lhl)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="324" x="7" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="311" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="309" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="309" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="139.5" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="284" x="22" y="57.0234">my_virtual_machine: SoftwareComponent</text><!--MD5=[6f3be6627eebfc4954f6a2738ae711b5]
+entity node_my_virtual_machine_host_relationship0--><rect fill="#FFFFFF" filter="url(#fjfj9ypwh3lhl)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="136" x="101" y="244"/><rect fill="#FFFFFF" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="217" y="249"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="215" y="251"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="215" y="255"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="96" x="116" y="277.5352">«relationship»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="126" y="294.0234">: HostedOn</text><!--MD5=[1f8a04db9be615d7bf954a295f800d68]
+entity node_my_virtual_machine_host_relationship0_source--><ellipse cx="169" cy="165" fill="#FEFECE" filter="url(#fjfj9ypwh3lhl)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><!--MD5=[fe3463be6c4239935f06e0ae4bdadaa4]
+entity node_my_server--><rect fill="#FEFECE" filter="url(#fjfj9ypwh3lhl)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="180" x="79" y="487"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="239" y="492"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="237" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="237" y="498"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="139.5" y="520.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="140" x="94" y="537.0234">my_server: Compute</text><!--MD5=[9a592cdf536e5997e158729fb2a670ce]
+entity node_my_server_host--><ellipse cx="169" cy="397" fill="#FEFECE" filter="url(#fjfj9ypwh3lhl)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="154" y="427.5352">host</text><!--MD5=[e62d5f66ece17137075d34e725999273]
+link node_my_virtual_machine_host_relationship0_source to node_my_virtual_machine_host_relationship0--><path d="M169,174.0427 C169,189.0936 169,219.9767 169,243.738 " fill="none" id="node_my_virtual_machine_host_relationship0_source-node_my_virtual_machine_host_relationship0" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[596ea8a52c4b14a14931bfeee0138ff9]
+link node_my_virtual_machine to node_my_virtual_machine_host_relationship0_source--><path d="M169,70.095 C169,93.9415 169,125.8764 169,145.9448 " fill="none" id="node_my_virtual_machine-to-node_my_virtual_machine_host_relationship0_source" style="stroke:#A80036;stroke-width:1.0;"/><path d="M177.4573,152.9147 A9,9 0 0 0 160.5428 152.9145" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="170" y="113.5684">host</text><!--MD5=[14207c1d032c6f453c50473e34a1bb75]
+link node_my_server_host to node_my_server--><path d="M169,406.1322 C169,423.0198 169,459.8584 169,486.7682 " fill="none" id="node_my_server_host-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[759079118b9e33d7fe2e5903ece32687]
+link node_my_virtual_machine_host_relationship0 to node_my_server_host--><path d="M169,307.1055 C169,329.4533 169,358.697 169,377.663 " fill="none" id="node_my_virtual_machine_host_relationship0-to-node_my_server_host" style="stroke:#A80036;stroke-width:1.0;"/><path d="M177.4573,384.6735 A9,9 0 0 0 160.5428 384.6733" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[efc02bee6ca28aa8fa1f9e944c99398b]
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  backgroundColor<<relationship>> White
+}
+
+component "my_virtual_machine: SoftwareComponent" <<node>> as node_my_virtual_machine
+component ": HostedOn" <<relationship>> as node_my_virtual_machine_host_relationship0
+interface " " as node_my_virtual_machine_host_relationship0_source
+node_my_virtual_machine_host_relationship0_source - - node_my_virtual_machine_host_relationship0
+node_my_virtual_machine - -( node_my_virtual_machine_host_relationship0_source : host
+
+component "my_server: Compute" <<node>> as node_my_server
+interface "host" as node_my_server_host
+node_my_server_host - - node_my_server
+
+node_my_virtual_machine_host_relationship0 - -( node_my_server_host
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

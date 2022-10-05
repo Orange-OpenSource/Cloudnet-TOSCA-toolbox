@@ -1,0 +1,14 @@
+<map id="examples-1.3-turandot-telephony-network-service-telephony-network-service-telephony-network-service-uml2-component-diagram1_map" name="examples-1.3-turandot-telephony-network-service-telephony-network-service-telephony-network-service-uml2-component-diagram1_map">
+<area shape="rect" id="id1" href="" title="namespace: 
+  get_input: &#39;namespace&#39;" alt="" coords="977,542,989,559"/>
+<area shape="rect" id="id2" href="" title="namespace: 
+  get_input: &#39;namespace&#39;
+name: &#39;data-plane&#39;
+ip-prefix: &#39;192.168.3&#39;" alt="" coords="914,856,926,873"/>
+<area shape="rect" id="id3" href="" title="namespace: 
+  get_input: &#39;namespace&#39;
+name: &#39;data-plane&#39;
+ip-prefix: &#39;192.168.2&#39;" alt="" coords="429,856,441,873"/>
+<area shape="rect" id="id4" href="" title="namespace: 
+  get_input: &#39;namespace&#39;" alt="" coords="1044,228,1056,245"/>
+</map>

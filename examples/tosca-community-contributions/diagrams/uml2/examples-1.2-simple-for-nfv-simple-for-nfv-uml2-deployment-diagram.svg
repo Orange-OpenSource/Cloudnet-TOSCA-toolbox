@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="183px" preserveAspectRatio="none" style="width:501px;height:183px;background:#FFFFFF;" version="1.1" viewBox="0 0 501 183" width="501px" zoomAndPan="magnify"><defs><filter height="300%" id="f1q8uq4cyswyuw" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[a85c72f56e60bf8bb7bbc7cc0af8d411]
+entity node_firewall--><polygon fill="#FEFECE" filter="url(#f1q8uq4cyswyuw)" points="39.5,140,49.5,130,200.5,130,200.5,166.4883,190.5,176.4883,39.5,176.4883,39.5,140" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="190.5" x2="200.5" y1="140" y2="130"/><line style="stroke:#000000;stroke-width:1.5;" x1="39.5" x2="190.5" y1="140" y2="140"/><line style="stroke:#000000;stroke-width:1.5;" x1="190.5" x2="190.5" y1="140" y2="176.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121" x="54.5" y="163.5352">firewall: Compute</text><!--MD5=[daa259bb3848dbd9edc8adce40e12a85]
+entity node_router--><polygon fill="#FEFECE" filter="url(#f1q8uq4cyswyuw)" points="301,140,311,130,455,130,455,166.4883,445,176.4883,301,176.4883,301,140" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="445" x2="455" y1="140" y2="130"/><line style="stroke:#000000;stroke-width:1.5;" x1="301" x2="445" y1="140" y2="140"/><line style="stroke:#000000;stroke-width:1.5;" x1="445" x2="445" y1="140" y2="176.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="114" x="316" y="163.5352">router: Compute</text><!--MD5=[f9022d93b1b43a0eb37a3ebd3e45dee6]
+entity node_cpd_firewall--><rect fill="#FEFECE" filter="url(#f1q8uq4cyswyuw)" height="46.4883" style="stroke:#A80036;stroke-width:1.5;" width="226" x="7" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="213" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="211" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="211" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="186" x="22" y="40.5352">cpd-firewall: tosca:VduCpd</text><!--MD5=[848868f652f3b155aa649cf1e73af474]
+entity node_cpd_router--><rect fill="#FEFECE" filter="url(#f1q8uq4cyswyuw)" height="46.4883" style="stroke:#A80036;stroke-width:1.5;" width="219" x="268.5" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="467.5" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="465.5" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="465.5" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="179" x="283.5" y="40.5352">cpd-router: tosca:VduCpd</text><!--MD5=[85471cd547633037c89828c996aa9f88]
+link node_cpd_firewall to node_firewall--><path codeLine="8" d="M120,53.1354 C120,73.4937 120,103.1907 120,124.908 " fill="none" id="node_cpd_firewall-to-node_firewall" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="120,129.9684,124,120.9684,120,124.9684,116,120.9684,120,129.9684" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="105" x="121" y="96.5684">«VirtualBindsTo»</text><!--MD5=[48f9d529225513ead3995d55fab93728]
+link node_cpd_router to node_router--><path codeLine="9" d="M378,53.1354 C378,73.4937 378,103.1907 378,124.908 " fill="none" id="node_cpd_router-to-node_router" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="378,129.9684,382,120.9684,378,124.9684,374,120.9684,378,129.9684" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="105" x="379" y="96.5684">«VirtualBindsTo»</text><!--MD5=[1e40b366200d8c1cea8521955666c27d]
+@startuml
+skinparam componentStyle uml2
+allowmixing
+
+node "firewall: Compute" as node_firewall
+node "router: Compute" as node_router
+component "cpd-firewall: tosca:VduCpd" as node_cpd_firewall
+component "cpd-router: tosca:VduCpd" as node_cpd_router
+node_cpd_firewall ..> node_firewall : <<VirtualBindsTo>>
+node_cpd_router ..> node_router : <<VirtualBindsTo>>
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -996,6 +996,9 @@ class AbstractAlloySigGenerator(Generator):
                 property_name_format % utils.normalize_name(property_name)
             )
             property_value = template_properties.get(property_name)
+            if property_value is None and property_declaration is not None:
+                # if the property is unassigned then get the value for the property definition
+                property_value = property_declaration.get("value")
             if property_value is not None:
                 value = property_value
                 if isinstance(value, str):  # escape multi-line properties
@@ -1076,7 +1079,7 @@ class AbstractAlloySigGenerator(Generator):
                         value = self.stringify_value(
                             constraint_yaml, yaml, ctx_error_msg, ", "
                         )
-                    elif constraint_name in ["min_length", "max_length"]:
+                    elif constraint_name in ["length", "min_length", "max_length"]:
                         value = self.stringify_value(
                             constraint_yaml, {TYPE: "integer"}, ctx_error_msg, ", "
                         )
@@ -1278,7 +1281,7 @@ class AbstractAlloySigGenerator(Generator):
                 self.generate("  // YAML   ", input_name, ":", sep="")
                 self.generate(
                     "  one",
-                    "input_" + input_name,
+                    "input_" + utils.normalize_name(input_name),
                     ":",
                     prefix + 'input["' + input_name + '"]',
                     "{",
@@ -1286,7 +1289,7 @@ class AbstractAlloySigGenerator(Generator):
                 self.generate_parameter_facts(
                     "    ",
                     "input_",
-                    input_name,
+                    utils.normalize_name(input_name),
                     input_yaml,
                     context_error_message + ":" + INPUTS + ":" + input_name,
                 )
@@ -2913,8 +2916,13 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
                     merged_capability_type = self.type_system.merge_type(
                         get_capability_type(capability_yaml)
                     )
+                    capability_def = all_capabilities.get(capability_name)
+                    capability_properties = capability_def.get("properties", {}) if isinstance(capability_def, dict) else {}
                     self.generate_all_properties(
-                        get_dict(merged_capability_type, PROPERTIES),
+                        utils.merge_dict(
+                            get_dict(merged_capability_type, PROPERTIES),
+                            capability_properties
+                        ),
                         get_dict(capability_value, PROPERTIES),
                         prefixed_capability_name,
                         context_error_message

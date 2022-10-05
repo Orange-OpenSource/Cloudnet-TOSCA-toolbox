@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="140px" preserveAspectRatio="none" style="width:560px;height:140px;background:#FFFFFF;" version="1.1" viewBox="0 0 560 140" width="560px" zoomAndPan="magnify"><defs><filter height="300%" id="feb4xxd6dt9zj" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[e9cbdf2d26e66c940186d7250a586e3d]
+cluster node_docker_container--><polygon fill="#FFFFFF" filter="url(#feb4xxd6dt9zj)" points="16,16,26,6,292,6,292,123,282,133,16,133,16,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="282" x2="292" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="282" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="282" x2="282" y1="16" y2="133"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="200" x="50" y="32.5352">docker_container: Container</text><!--MD5=[0f81431675faad33db8f9f607cb54c60]
+cluster node_docker_container_artifact_my_image--><rect fill="#FFFFFF" filter="url(#feb4xxd6dt9zj)" height="87" style="stroke:#000000;stroke-width:1.5;" width="147" x="80" y="38"/><polygon fill="#FFFFFF" points="210,43,210,57,222,57,222,49,216,43,210,43" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="216" x2="216" y1="43" y2="49"/><line style="stroke:#000000;stroke-width:1.5;" x1="222" x2="216" y1="49" y2="49"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="122.5" y="53.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="131" x="88" y="70.0234">my_image: Service</text><!--MD5=[3563e948830ff91452ff68b12233380e]
+cluster node_share_folder--><polygon fill="#FFFFFF" filter="url(#feb4xxd6dt9zj)" points="300,16,310,6,543,6,543,123,533,133,300,133,300,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="533" x2="543" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="300" x2="533" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="533" x2="533" y1="16" y2="133"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="167" x="334" y="32.5352">share_folder: Container</text><!--MD5=[3ecb696c428d06a58943be73c5f7e58b]
+cluster node_share_folder_artifact_my_image--><rect fill="#FFFFFF" filter="url(#feb4xxd6dt9zj)" height="87" style="stroke:#000000;stroke-width:1.5;" width="147" x="348" y="38"/><polygon fill="#FFFFFF" points="478,43,478,57,490,57,490,49,484,43,478,43" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="484" x2="484" y1="43" y2="49"/><line style="stroke:#000000;stroke-width:1.5;" x1="490" x2="484" y1="49" y2="49"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="390.5" y="53.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="131" x="356" y="70.0234">my_image: Service</text><!--MD5=[1e9c3424bef3c1d6f868da2f73685ae0]
+entity node_docker_container_artifact_my_image_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="115" y="104.5352">file: docker</text><!--MD5=[d3f8e8b15a47390c931af17a8661de60]
+entity node_share_folder_artifact_my_image_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="71" x="385.5" y="104.5352">file: alpine</text><!--MD5=[7748a36df65cec77b7aae842cbb86805]
+@startuml
+skinparam componentStyle uml2
+allowmixing
+
+node "docker_container: Container" as node_docker_container {
+artifact "my_image: Service" <<artifact>> as node_docker_container_artifact_my_image {
+label "file: docker" as node_docker_container_artifact_my_image_label
+}
+}
+node "share_folder: Container" as node_share_folder {
+artifact "my_image: Service" <<artifact>> as node_share_folder_artifact_my_image {
+label "file: alpine" as node_share_folder_artifact_my_image_label
+}
+}
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

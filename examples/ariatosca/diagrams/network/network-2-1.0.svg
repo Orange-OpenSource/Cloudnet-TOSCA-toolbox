@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg viewBox="0 0 304 300" xmlns="http://www.w3.org/2000/svg" xmlns:inkspace="http://www.inkscape.org/namespaces/inkscape" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs id="defs_block">
+    <filter height="1.504" id="filter_blur" inkspace:collect="always" width="1.1575" x="-0.07875" y="-0.252">
+      <feGaussianBlur id="feGaussianBlur3780" inkspace:collect="always" stdDeviation="4.2" />
+    </filter>
+  </defs>
+  <title>blockdiag</title>
+  <desc>{
+  network "my_network" {
+    label = "my_network"
+    address = ""
+    color = "lightblue"
+    textcolor = "black"
+    "my_server"[label="my_server", address="", shape="box", color="white", textcolor="black", style="solid"];
+  }
+}
+</desc>
+  <rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="104" x="155" y="162" />
+  <path d="M 131 103 L 283 103 A2,4 0 0 1 283 111 L 131 111 A2,4 0 0 1 131 103" fill="rgb(0,0,0)" style="filter:url(#filter_blur)" />
+  <path d="M 128 100 L 280 100 A2,4 0 0 1 280 108 L 128 108 A2,4 0 0 1 128 100" fill="rgb(173,216,230)" stroke="rgb(0,0,0)" />
+  <path d="M 280 108 A2,4 0 0 1 280 100" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 128 100 L 280 100" fill="none" stroke="none" />
+  <path d="M 204 35 L 204 100" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="68" x="86.0" y="111">my_network</text>
+  <path d="M 204 108 L 204 156" fill="none" stroke="rgb(0,0,0)" />
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="104" x="152" y="156" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="58" x="204.0" y="183">my_server</text>
+</svg>

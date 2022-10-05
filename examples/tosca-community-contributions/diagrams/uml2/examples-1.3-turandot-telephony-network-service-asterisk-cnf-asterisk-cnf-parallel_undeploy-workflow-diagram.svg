@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="396px" preserveAspectRatio="none" style="width:374px;height:396px;background:#FFFFFF;" version="1.1" viewBox="0 0 374 396" width="374px" zoomAndPan="magnify"><defs/><g><rect fill="#006400" height="8" style="stroke:none;stroke-width:1.0;" width="80" x="141.5" y="86"/><ellipse cx="181.5" cy="16" fill="#008000" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><rect fill="#FF8C00" height="8" style="stroke:none;stroke-width:1.0;" width="80" x="141.5" y="302"/><ellipse cx="181.5" cy="380" rx="10" ry="10" style="stroke:#000000;stroke-width:1.0;fill:none;"/><ellipse cx="182" cy="380.5" fill="#000000" rx="6" ry="6" style="stroke:none;stroke-width:1.0;"/><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="151" x="7" y="154"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="145" x="10" y="183.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="7" x2="158" y1="180.4883" y2="180.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="124" x="20.5" y="172.5352">undeploy_asterisk</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="131" x="19" y="192.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121" x="24" y="217.7793">asterisk undeploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="174" x="193.5" y="154"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="168" x="196.5" y="183.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="193.5" x2="367.5" y1="180.4883" y2="180.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="146" x="207.5" y="172.5352">undeploy_data_plane</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="154" x="205.5" y="192.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="144" x="210.5" y="217.7793">data-plane undeploy</text><!--MD5=[1ba660ebc1fe4a2f65cec9060adc187c]
+link *start to parallel_undeploy_fork--><path d="M181.5,26.2894 C181.5,40.745 181.5,66.8479 181.5,80.7308 " fill="none" id="*start-to-parallel_undeploy_fork" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="181.5,85.8629,185.5,76.8629,181.5,80.8629,177.5,76.8629,181.5,85.8629" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[68781bd41c7339ef21e7db30195fb66c]
+link parallel_undeploy_fork to step_parallel_undeploy_undeploy_asterisk--><path d="M177.74,94.1018 C169.1259,103.499 147.1077,127.5189 126.4101,150.0981 " fill="none" id="parallel_undeploy_fork-to-step_parallel_undeploy_undeploy_asterisk" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="122.834,153.9993,131.8641,150.0678,126.2126,150.3135,125.9669,144.662,122.834,153.9993" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[13a92969f1e9cbba8275750885965766]
+link parallel_undeploy_fork to step_parallel_undeploy_undeploy_data_plane--><path d="M185.26,94.1018 C193.8741,103.499 215.8923,127.5189 236.5899,150.0981 " fill="none" id="parallel_undeploy_fork-to-step_parallel_undeploy_undeploy_data_plane" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="240.166,153.9993,237.0331,144.662,236.7874,150.3135,231.1359,150.0678,240.166,153.9993" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[b5726277a51be5274253853891e80363]
+link parallel_undeploy_join to *end--><path d="M181.5,310.4074 C181.5,320.8066 181.5,347.2833 181.5,364.4165 " fill="none" id="parallel_undeploy_join-to-*end" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="181.5,369.8319,185.5,360.8319,181.5,364.8319,177.5,360.8319,181.5,369.8319" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[831c6674c1ac85bd2588391e9a791df5]
+link step_parallel_undeploy_undeploy_asterisk to parallel_undeploy_join--><path d="M123.0527,242.2393 C142.2663,263.1996 163.3402,286.1893 174.1707,298.0044 " fill="none" id="step_parallel_undeploy_undeploy_asterisk-to-parallel_undeploy_join" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="177.675,301.8273,174.5423,292.49,174.2964,298.1415,168.6449,297.8956,177.675,301.8273" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[804f82a151d5025e2e149766022c9e9f]
+link step_parallel_undeploy_undeploy_data_plane to parallel_undeploy_join--><path d="M239.9473,242.2393 C220.7337,263.1996 199.6598,286.1893 188.8293,298.0044 " fill="none" id="step_parallel_undeploy_undeploy_data_plane-to-parallel_undeploy_join" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="185.325,301.8273,194.3551,297.8956,188.7036,298.1415,188.4577,292.49,185.325,301.8273" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[3381d4f5ba38692226126288806a0cd1]
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam state {
+  ArrowColor blue
+  BorderColor blue
+  EndColor black
+  StartColor green
+  BackGroundColor<< step >> white
+  BorderColor<< step >> black
+  BackGroundColor<< delegate >> lightgrey
+  BackGroundColor<< set_state >> white
+  BackGroundColor<< call_operation >> lightblue
+  BackGroundColor<< inline >> white
+}
+skinparam ActivityBarColor<<fork>> DarkGreen
+skinparam ActivityBarColor<<join>> DarkOrange
+
+state "undeploy_asterisk" as step_parallel_undeploy_undeploy_asterisk << step >> {
+  state "asterisk undeploy" as step_parallel_undeploy_undeploy_asterisk_asterisk_undeploy << delegate >>
+}
+state "undeploy_data_plane" as step_parallel_undeploy_undeploy_data_plane << step >> {
+  state "data-plane undeploy" as step_parallel_undeploy_undeploy_data_plane_data_plane_undeploy << delegate >>
+}
+state parallel_undeploy_fork <<fork>>
+[*] - -> parallel_undeploy_fork
+parallel_undeploy_fork - -> step_parallel_undeploy_undeploy_asterisk
+parallel_undeploy_fork - -> step_parallel_undeploy_undeploy_data_plane
+state parallel_undeploy_join <<join>>
+parallel_undeploy_join - -> [*]
+step_parallel_undeploy_undeploy_asterisk - -> parallel_undeploy_join
+step_parallel_undeploy_undeploy_data_plane - -> parallel_undeploy_join
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

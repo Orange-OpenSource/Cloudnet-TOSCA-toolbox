@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="565px" preserveAspectRatio="none" style="width:596px;height:565px;background:#FFFFFF;" version="1.1" viewBox="0 0 596 565" width="596px" zoomAndPan="magnify"><defs><filter height="300%" id="f1n49y6kxu45rb" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[1bd0dd4641043e210f12b2258736c4b5]
+entity node_server1--><rect fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="159" x="22" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="161" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="159" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="159" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="72" y="281.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119" x="37" y="298.0234">server1: Software</text><!--MD5=[bcb5973b5fff97cd260fcb85326e920a]
+entity node_server1_endpoint--><ellipse cx="143.5" cy="159" fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62" x="112.5" y="189.5352">endpoint</text><!--MD5=[6f781a85ba203a7ef99b7b8ad458c59b]
+entity node_server2--><rect fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="159" x="217" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="356" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="354" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="354" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="267" y="281.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119" x="232" y="298.0234">server2: Software</text><!--MD5=[93371b55c1d0bf118cd1047d2cae842e]
+entity node_server2_endpoint--><ellipse cx="296.5" cy="159" fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62" x="265.5" y="189.5352">endpoint</text><!--MD5=[e2b6b6b9df1525efd08f774bfc8e0ad7]
+entity node_server3--><rect fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="159" x="217" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="356" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="354" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="354" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="267" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119" x="232" y="57.0234">server3: Software</text><!--MD5=[4b7bb71e7ed20009fc61f75fc917485f]
+entity node_nodejs1--><rect fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="171" x="7" y="489"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="158" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="156" y="496"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="156" y="500"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="63" y="522.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="131" x="22" y="539.0234">nodejs1: Container</text><!--MD5=[d0d42e7c2816d33423abb639e40d48ab]
+entity node_nodejs1_host--><ellipse cx="95.5" cy="400" fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="80.5" y="430.5352">host</text><!--MD5=[e8d31a3952e4007033ec5ddf92cd912f]
+entity node_nodejs2--><rect fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="171" x="213" y="489"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="364" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="362" y="496"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="362" y="500"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="269" y="522.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="131" x="228" y="539.0234">nodejs2: Container</text><!--MD5=[9a9d2e80eb5708ac531e572d7e163376]
+entity node_nodejs2_host--><ellipse cx="297.5" cy="400" fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="282.5" y="430.5352">host</text><!--MD5=[b8d045531962dd389e3b6a15a6895fb8]
+entity node_nodejs3--><rect fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="171" x="411" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="562" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="560" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="560" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="467" y="281.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="131" x="426" y="298.0234">nodejs3: Container</text><!--MD5=[9efdd8c4d98c8871e03f275be2de20c4]
+entity node_nodejs3_host--><ellipse cx="446.5" cy="159" fill="#FEFECE" filter="url(#f1n49y6kxu45rb)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="431.5" y="189.5352">host</text><!--MD5=[eca31540a8565277520ba2e691b0445d]
+link node_server1_endpoint to node_server1--><path d="M140.3432,168.0571 C134.5246,184.7509 121.8543,221.1025 112.5603,247.7674 " fill="none" id="node_server1_endpoint-node_server1" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[e911599116e910f008da0ce7125d50a7]
+link node_server2_endpoint to node_server2--><path d="M296.5,168.0571 C296.5,184.7509 296.5,221.1025 296.5,247.7674 " fill="none" id="node_server2_endpoint-node_server2" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[4403404f3dbfced7172b122c7c06990a]
+link node_nodejs1_host to node_nodejs1--><path d="M95.2745,409.0571 C94.8589,425.7509 93.9539,462.1025 93.29,488.7674 " fill="none" id="node_nodejs1_host-node_nodejs1" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[840128c0e3be567c61a2a8736be30dad]
+link node_nodejs2_host to node_nodejs2--><path d="M297.5752,409.0571 C297.7137,425.7509 298.0154,462.1025 298.2367,488.7674 " fill="none" id="node_nodejs2_host-node_nodejs2" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[f7da188efc1cca8c5e185f41439c7960]
+link node_nodejs3_host to node_nodejs3--><path d="M450.2581,168.0571 C457.185,184.7509 472.2687,221.1025 483.333,247.7674 " fill="none" id="node_nodejs3_host-node_nodejs3" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[0c53e889a8db7e794000b219db1f7c8b]
+link node_server1 to node_nodejs1_host--><path d="M99.9236,311.16 C98.8252,333.2188 97.3954,361.9338 96.463,380.6589 " fill="none" id="node_server1-to-node_nodejs1_host" style="stroke:#A80036;stroke-width:1.0;"/><path d="M104.5541,388.2244 A9,9 0 0 0 87.6606 387.383" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="68.857" y="331.4709">host</text><!--MD5=[f97e2a0a67a2e9da23ed8b3a60947bf7]
+link node_server2 to node_nodejs2_host--><path d="M296.7627,311.16 C296.9458,333.2188 297.1841,361.9338 297.3395,380.6589 " fill="none" id="node_server2-to-node_nodejs2_host" style="stroke:#A80036;stroke-width:1.0;"/><path d="M305.8556,387.7297 A9,9 0 0 0 288.9418 387.8703" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="266.0582" y="331.4709">host</text><!--MD5=[6d0765e2f5ad14579172b4742a5f8fd1]
+link node_server3 to node_nodejs3_host--><path d="M335.9107,70.16 C366.256,94.5373 406.7203,127.0436 429.3376,145.2128 " fill="none" id="node_server3-to-node_nodejs3_host" style="stroke:#A80036;stroke-width:1.0;"/><path d="M440.2325,143.1169 A9,9 0 0 0 429.6392 156.3033" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="331.4156" y="90.2308">host</text><!--MD5=[0b6c0387e5bf96ebc0d12ab0cf4e872f]
+link node_server3 to node_server1_endpoint--><path d="M256.3011,70.16 C225.1925,94.6605 183.6581,127.3722 160.6575,145.487 " fill="none" id="node_server3-to-node_server1_endpoint" style="stroke:#A80036;stroke-width:1.0;"/><path d="M160.1964,156.6154 A9,9 0 0 0 149.7311 143.3273" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="171.4963" y="90.4709">connection</text><!--MD5=[08e9c4dde1fb266958802a256c49e743]
+link node_server3 to node_server2_endpoint--><path d="M296.5,70.16 C296.5,92.2188 296.5,120.9338 296.5,139.6589 " fill="none" id="node_server3-to-node_server2_endpoint" style="stroke:#A80036;stroke-width:1.0;"/><path d="M304.9573,146.8 A9,9 0 0 0 288.0428 146.7998" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="303.3906" y="90.4709">connection</text><!--MD5=[3b963bc6b1ab73fc87b8dcd8b5e7f8e1]
+@startuml
+skinparam componentStyle uml2
+
+component "server1: Software" <<node>> as node_server1
+interface "endpoint" as node_server1_endpoint
+node_server1_endpoint - - node_server1
+
+component "server2: Software" <<node>> as node_server2
+interface "endpoint" as node_server2_endpoint
+node_server2_endpoint - - node_server2
+
+component "server3: Software" <<node>> as node_server3
+
+component "nodejs1: Container" <<node>> as node_nodejs1
+interface "host" as node_nodejs1_host
+node_nodejs1_host - - node_nodejs1
+
+component "nodejs2: Container" <<node>> as node_nodejs2
+interface "host" as node_nodejs2_host
+node_nodejs2_host - - node_nodejs2
+
+component "nodejs3: Container" <<node>> as node_nodejs3
+interface "host" as node_nodejs3_host
+node_nodejs3_host - - node_nodejs3
+
+node_server1 "host" - -( node_nodejs1_host
+node_server2 "host" - -( node_nodejs2_host
+node_server3 "host" - -( node_nodejs3_host
+node_server3 "connection" - -( node_server1_endpoint
+node_server3 "connection" - -( node_server2_endpoint
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

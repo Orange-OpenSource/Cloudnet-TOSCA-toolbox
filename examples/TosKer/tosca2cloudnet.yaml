@@ -1,0 +1,82 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2022 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+aliased_tosca_service_templates:
+  tosker-types.yaml: file:./TosKer/data/tosker-types.yaml
+
+# Configuration of the syntax checker.
+#Syntax:
+
+# Configuration of the Alloy generator.
+Alloy:
+  # Target directory where Alloy files are generated.
+  target-directory: RESULTS/Alloy
+
+# Configuration of the declarative workflow generator.
+DeclarativeWorkflows:
+  # Target directory where declarative workflows are generated.
+  target-directory: RESULTS/DeclarativeWorkflows
+
+# Configuration of the network diagram generator.
+nwdiag:
+  # Target directory where network diagrams are generated.
+  target-directory: diagrams/network
+
+# Configuration of the TOSCA diagram generator.
+tosca_diagrams:
+  # Target directory where network diagrams are generated.
+  target-directory: diagrams/tosca
+
+# Configuration of the UML2 diagram generator.
+UML2:
+  # Target directory where UML2 diagrams are generated.
+  target-directory: diagrams/uml2
+
+  kinds:
+    tosker.nodes.Volume: database
+    tosker.nodes.Container: node
+    tosker.nodes.Software: component
+
+HOT:
+  # Target directory where HOT templates are generated.
+  target-directory: RESULTS/HOT
+
+# Logging configuration.
+logging:
+  loggers:
+    cloudnet.tosca.configuration:
+      level: WARNING
+    cloudnet.tosca.importers:
+      level: WARNING
+    cloudnet.tosca.processors:
+      level: WARNING
+    cloudnet.tosca.syntax:
+      level: WARNING
+    cloudnet.tosca.type_system:
+      level: WARNING
+    cloudnet.tosca.declarative_workflows:
+      level: WARNING
+    cloudnet.tosca.alloy:
+      level: WARNING
+    cloudnet.tosca.network_diagrams:
+      level: WARNING
+    cloudnet.tosca.tosca_diagrams:
+      level: WARNING
+    cloudnet.tosca.uml2_diagrams:
+      level: WARNING
+    cloudnet.tosca.hot:
+      level: WARNING
+  root:
+    level: WARNING

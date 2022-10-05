@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -45,7 +45,8 @@ DEFAULT_CONFIGURATION[UML2] = {
     "artifact_types": {
     },
     "node_types": {
-    }
+    },
+    "max-value-length": 40,
 }
 DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
@@ -57,6 +58,17 @@ LOGGER = logging.getLogger(__name__)
 class PlantUMLGenerator(Generator):
     def generator_configuration_id(self):
         return UML2
+
+    def get_relationship_type(self, capability_type_name):
+        relationship_types = \
+            self.type_system. \
+            get_relationship_types_compatible_with_capability_type(
+                capability_type_name
+            )
+        if len(relationship_types) > 0:
+            return relationship_types[0]
+        else:
+            return "**<color:orange>UNDEFINED</color>**"
 
     def generation(self):
         self.info("UML2 diagram generation")
@@ -112,22 +124,39 @@ class PlantUMLGenerator(Generator):
         self.generate("set namespaceSeparator none")
 
         def generate_class(class_name, class_kind, type_yaml, types):
-            def generate_field(field_name, field_yaml):
-                declaration = "+"
-                if is_property_required(field_yaml):
+            type_definition = self.type_system.merge_type(class_name)
+            type_properties_definition = type_definition.get("properties", {})
+
+            def generate_field(field_name, field_yaml, field_required, indentation = "+"):
+                declaration = indentation
+                if field_required:
                     declaration = declaration + "<b>"
                 declaration = declaration + field_name
-                field_type = syntax.get_type(field_yaml)
-                if field_type:
-                    declaration = declaration + " : " + field_type
-                    if field_type in ["list", "map"]:
-                        entry_schema_type = get_entry_schema_type(field_yaml)
-                        if entry_schema_type is None:
-                            entry_schema_type = "?"
-                        declaration = declaration + "<" + entry_schema_type + ">"
-                field_default = syntax.get_default(field_yaml)
-                if field_default:
-                    declaration = declaration + " = " + str(field_default)
+                if isinstance(field_yaml, dict):
+                    field_type = syntax.get_type(field_yaml)
+                    if field_type:
+                        declaration = declaration + " : " + field_type
+                        if field_type == "list":
+                            entry_schema_type = get_entry_schema_type(field_yaml)
+                            if entry_schema_type is None:
+                                entry_schema_type = "?"
+                            declaration = declaration + "<" + entry_schema_type + ">"
+                        elif field_type == "map":
+                            key_schema_type = field_yaml.get("key_schema", {}).get('type')
+                            entry_schema_type = get_entry_schema_type(field_yaml)
+                            if entry_schema_type is None:
+                                entry_schema_type = "?"
+                            if key_schema_type is None:
+                                declaration += "<%s>" % entry_schema_type
+                            else:
+                                declaration += "<%s, %s>" % (key_schema_type, entry_schema_type)
+
+                value = \
+                    ( isinstance(field_yaml, (str, bool, int, float, list)) and field_yaml ) \
+                    or ( isinstance(field_yaml, dict) and field_yaml.get("value") ) \
+                    or syntax.get_default(field_yaml)
+                if value is not None:
+                    declaration = declaration + " = " + self.stringify_value(value)
                 self.generate(declaration)
 
             def translateToscaOccurrences2UmlMultiplicity(occurrences):
@@ -164,12 +193,18 @@ class PlantUMLGenerator(Generator):
             if len(attributes):
                 self.generate(".. attributes ..")
                 for attribute_name, attribute_yaml in attributes.items():
-                    generate_field(attribute_name, attribute_yaml)
+                    generate_field(attribute_name, attribute_yaml, True)
             properties = get_dict(type_yaml, PROPERTIES)
             if len(properties):
                 self.generate(".. properties ..")
                 for property_name, property_yaml in properties.items():
-                    generate_field(property_name, property_yaml)
+                    generate_field(
+                        property_name,
+                        property_yaml,
+                        is_property_required(
+                            type_properties_definition.get(property_name)
+                        )
+                    )
             capabilities = syntax.get_capabilities(type_yaml)
             if len(capabilities):
                 self.generate(".. capabilities ..")
@@ -191,6 +226,31 @@ class PlantUMLGenerator(Generator):
                             sep="",
                         )
                     if isinstance(capability_yaml, dict):
+                        attributes = get_dict(capability_yaml, ATTRIBUTES)
+                        if len(attributes):
+                            self.generate(" attributes :")
+                            for attribute_name, attribute_yaml in attributes.items():
+                                generate_field(
+                                    attribute_name,
+                                    attribute_yaml,
+                                    True,
+                                    "<color:business>  </color>"
+                                )
+                        properties = get_dict(capability_yaml, PROPERTIES)
+                        if len(properties):
+                            self.generate(" properties :")
+                            capability_properties_definition = \
+                                self.type_system.merge_type( \
+                                    type_definition.get("capabilities", {}).get(capability_name).get('type')
+                                ) \
+                                .get("properties", {})
+                            for property_name, property_yaml in properties.items():
+                                generate_field(
+                                    property_name,
+                                    property_yaml,
+                                    is_property_required(capability_properties_definition.get(property_name)),
+                                    "<color:business>  </color>"
+                                )
                         capability_valid_source_types = capability_yaml.get(
                             VALID_SOURCE_TYPES
                         )
@@ -200,6 +260,7 @@ class PlantUMLGenerator(Generator):
                                 capability_valid_source_types,
                                 sep="",
                             )
+
             requirements = get_dict(type_yaml, REQUIREMENTS)
             if len(requirements):
                 self.generate(".. requirements ..")
@@ -272,14 +333,29 @@ class PlantUMLGenerator(Generator):
                     for key, value in (
                         syntax.get_operations(interface_yaml).get(OPERATIONS).items()
                     ):
-                        self.generate(key,  value)
+                        generate_operation(key, value)
             if class_kind == "I":
                 for key, value in (
                     syntax.get_operations(type_yaml).get(OPERATIONS).items()
                 ):
-                    self.generate(key, value)
+                    generate_operation(key, value)
+
+            artifacts = get_dict(type_yaml, ARTIFACTS)
+            if len(artifacts):
+                self.generate(".. artifacts ..")
+                for artifact_name, artifact_yaml in artifacts.items():
+                    self.generate("+", artifact_name, sep="")
+                    if isinstance(artifact_yaml, str):
+                        self.generate(" file : ", artifact_yaml, sep="")
+                    else:
+                        artifact_type = artifact_yaml.get("type")
+                        if artifact_type != None:
+                            self.generate(" type : ", artifact_type, sep="")
+                        artifact_file = artifact_yaml.get("file")
+                        if artifact_file != None:
+                            self.generate(" file : ", artifact_file, sep="")
             self.generate("}")
-            for attribute_name, attribute_yaml in attributes.items():
+            for attribute_name, attribute_yaml in get_dict(type_yaml, ATTRIBUTES).items():
                 attribute_type = attribute_yaml.get(TYPE)
                 if data_types.get(attribute_type):
                     self.generate(
@@ -303,7 +379,7 @@ class PlantUMLGenerator(Generator):
                             attribute_name,
                             sep="",
                         )
-            for property_name, property_yaml in properties.items():
+            for property_name, property_yaml in get_dict(type_yaml, PROPERTIES).items():
                 property_type = syntax.get_property_type(property_yaml)
                 if data_types.get(property_type):
                     self.generate(
@@ -570,6 +646,10 @@ class PlantUMLGenerator(Generator):
             return "%s: %s" % (node_name, short_type_name(type_name))
 
     def generate_UML2_component_diagram(self, topology_template, with_relationships):
+        substitution_mappings = topology_template.get(SUBSTITUTION_MAPPINGS)
+        node_templates = topology_template.get(NODE_TEMPLATES, {})
+        relationship_templates = topology_template.get(RELATIONSHIP_TEMPLATES, {})
+
         self.generate("@startuml")
         self.generate("skinparam componentStyle uml2")
         if with_relationships:
@@ -578,23 +658,55 @@ class PlantUMLGenerator(Generator):
             self.generate("}")
         self.generate()
 
-        substitution_mappings = topology_template.get(SUBSTITUTION_MAPPINGS)
+        #
+        # Compute all the capabilities to display
+        #
+        used_capabilities = {}
+        for node_template_name, _ in node_templates.items():
+            used_capabilities[node_template_name] = set()
+
+        if substitution_mappings:
+            for cap_name, cap_mapping in \
+                substitution_mappings.get("capabilities", {}).items():
+                used_capabilities[cap_mapping[0]].add(cap_mapping[1])
+
+        for node_template_name, node_template_yaml in node_templates.items():
+            for cap_name, _ in \
+                node_template_yaml.get("capabilities", {}).items():
+                used_capabilities[node_template_name].add(cap_name)
+
+            merged_node_template_type = self.type_system.merge_node_type(
+                node_template_yaml.get(TYPE)
+            )
+            for requirement in get_list(node_template_yaml, REQUIREMENTS):
+                for requirement_name, requirement_yaml in requirement.items():
+                    requirement_node = get_requirement_node_template(requirement_yaml)
+                    requirement_capability_type = syntax.get_requirement_capability(
+                        get_dict(merged_node_template_type, REQUIREMENTS).get(
+                            requirement_name
+                        )
+                    )
+                    compatible_capabilities = \
+                        self.type_system.get_compatible_capabilities(
+                                node_templates[requirement_node]["type"],
+                                None,
+                                requirement_capability_type
+                        )
+                    if len(compatible_capabilities) > 0:
+                        used_capabilities[requirement_node].add(compatible_capabilities[0])
+
         if substitution_mappings:
             substitution_mappings_uml_id = SUBSTITUTION_MAPPINGS
-            substitution_mappings_node_type = substitution_mappings.get(NODE_TYPE)
-            merged_substitution_mappings_type = self.type_system.merge_node_type(
-                substitution_mappings_node_type
-            )
-            for capability_name, capability_yaml in get_dict(
-                merged_substitution_mappings_type, CAPABILITIES
-            ).items():
-                capability_uml_id = (
-                    substitution_mappings_uml_id + "_" + normalize_name(capability_name)
-                )
+            for capability_name, _ in substitution_mappings.get(CAPABILITIES,{}).items():
                 # Declare an UML interface for the substitution_mappings capability.
                 self.generate(
-                    'interface "', capability_name, '" as ', capability_uml_id, sep=""
+                    'interface "',
+                    capability_name,
+                    '" as ',
+                    substitution_mappings_uml_id + "_" + normalize_name(capability_name),
+                    sep=""
                 )
+            substitution_mappings_node_type = substitution_mappings.get(NODE_TYPE)
             self.generate(
                 'component ": ',
                 substitution_mappings_node_type,
@@ -605,12 +717,7 @@ class PlantUMLGenerator(Generator):
                 sep="",
             )
 
-        relationship_templates = get_dict(topology_template, RELATIONSHIP_TEMPLATES)
-
-        already_generated_interfaces = {}
-
         # Iterate over all node templates.
-        node_templates = get_dict(topology_template, NODE_TEMPLATES)
         for node_template_name, node_template_yaml in node_templates.items():
             node_template_type = node_template_yaml.get(TYPE)
             merged_node_template_type = self.type_system.merge_node_type(
@@ -647,30 +754,21 @@ class PlantUMLGenerator(Generator):
                     sep="",
                 )
             # Iterate over all capabilities of the node template.
-            for capability_name, capability_yaml in get_dict(
-                merged_node_template_type, CAPABILITIES
-            ).items():
-                if isinstance(capability_yaml, dict):
-                    capability_occurrences = capability_yaml.get(OCCURRENCES)
-                else:
-                    capability_occurrences = None
-                if with_relationships or (
-                    capability_occurrences and capability_occurrences[0] > 0
-                ):
-                    capability_uml_id = (
-                        node_template_uml_id + "_" + normalize_name(capability_name)
-                    )
-                    # Declare an UML interface for the node template capability.
-                    self.generate(
-                        'interface "',
-                        capability_name,
-                        '" as ',
-                        capability_uml_id,
-                        sep="",
-                    )
-                    # Connect the capability UML interface to the node template UML component.
-                    self.generate(capability_uml_id, "--", node_template_uml_id)
-                    already_generated_interfaces[capability_uml_id] = capability_uml_id
+            for capability_name in sorted(used_capabilities[node_template_name]):
+                capability_uml_id = (
+                    node_template_uml_id + "_" + normalize_name(capability_name)
+                )
+                # Declare an UML interface for the node template capability.
+                self.generate(
+                    'interface "',
+                    capability_name,
+                    '" as ',
+                    capability_uml_id,
+                    sep="",
+                )
+                # Connect the capability UML interface to the node template UML component.
+                self.generate(capability_uml_id, "--", node_template_uml_id)
+
             if with_relationships:
                 # Iterate over all requirements of the node template.
                 index = 0
@@ -728,7 +826,11 @@ class PlantUMLGenerator(Generator):
                                 tmp
                             )
                         if relationship_component_type is None:
-                            continue
+                            relationship_component_type = \
+                                self.get_relationship_type(
+                                    requirement.get("capability")
+                                )
+
                         # Declare an UML component for the node template requirement relationship.
                         self.generate(
                             'component "',
@@ -820,32 +922,10 @@ class PlantUMLGenerator(Generator):
                                 source_uml_id, " --( ", target_capability_uml_id, sep=""
                             )
                         else:
-                            if (
-                                already_generated_interfaces.get(
-                                    target_capability_uml_id
-                                )
-                                is None
-                            ):
-                                self.generate(
-                                    'interface "',
-                                    capability_name,
-                                    '" as ',
-                                    target_capability_uml_id,
-                                    sep="",
-                                )
-                                # Connect the capability UML interface to the node template UML component.
-                                self.generate(
-                                    target_capability_uml_id, "--", target_node_uml_id
-                                )
-                                already_generated_interfaces[
-                                    target_capability_uml_id
-                                ] = target_capability_uml_id
                             self.generate(
                                 source_uml_id,
-                                " --( ",
+                                ' "' + requirement_name + '" --( ',
                                 target_capability_uml_id,
-                                " : ",
-                                requirement_name,
                                 sep="",
                             )
 
@@ -894,85 +974,38 @@ class PlantUMLGenerator(Generator):
                             self.generate(policy_uml_id, " -up-> ", member_uml_id, sep="")
 
         if substitution_mappings:
-            capabilities = get_dict(substitution_mappings, CAPABILITIES)
-
-            for capability_name, capability_yaml in get_dict(
-                merged_substitution_mappings_type, CAPABILITIES
-            ).items():
-                capability = capabilities.get(capability_name)
-                if capability is not None:
-                    if not isinstance(capability, list):
-                        continue  # TODO when capability is not a list
-                    target_node_uml_id = "node_" + normalize_name(capability[0])
-                    target_uml_id = (
-                        target_node_uml_id + "_" + normalize_name(capability[1])
-                    )
-
-                    if already_generated_interfaces.get(target_uml_id) is None:
-                        self.generate(
-                            'interface "',
-                            normalize_name(capability[1]),
-                            '" as ',
-                            target_uml_id,
-                            sep="",
-                        )
-                        # Connect the capability UML interface to the node template UML component.
-                        self.generate(target_uml_id, "--", target_node_uml_id)
-                        already_generated_interfaces[target_uml_id] = target_uml_id
-
             self.generate("}")
-
-            for capability_name, capability_yaml in get_dict(
-                merged_substitution_mappings_type, CAPABILITIES
-            ).items():
-                capability_uml_id = (
-                    substitution_mappings_uml_id + "_" + normalize_name(capability_name)
-                )
+            for (
+                capability_name,
+                capability
+            ) in substitution_mappings.get(CAPABILITIES, {}).items():
+                if not isinstance(capability, list):
+                    continue  # TODO when capability is not a list
                 # Connect the capability UML interface to the node template UML component.
-                capability = capabilities.get(capability_name)
-                if capability is not None:
-                    if not isinstance(capability, list):
-                        continue  # TODO when capability is not a list
-                    target_node_uml_id = "node_" + normalize_name(capability[0])
-                    target_uml_id = (
-                        target_node_uml_id + "_" + normalize_name(capability[1])
-                    )
-                    self.generate(capability_uml_id, "--(", target_uml_id)
-                else:
-                    self.generate(capability_uml_id, "--", substitution_mappings_uml_id)
+                self.generate(
+                    substitution_mappings_uml_id + "_" + normalize_name(capability_name),
+                    "--(",
+                    "node_" + normalize_name(capability[0]) + "_" + normalize_name(capability[1])
+                )
 
-            index = 0
-            requirements = syntax.get_substitution_mappings_requirements(substitution_mappings)
             for (
                 requirement_name,
-                requirement_def,
-             ) in merged_substitution_mappings_type.get(
-                 REQUIREMENTS, {}
-             ).items():
+                requirement_yaml,
+             ) in get_substitution_mappings_requirements(substitution_mappings).items():
                 interface_uml_id = (
                     substitution_mappings_uml_id + "_"
                     + normalize_name(requirement_name)
-                    + str(index)
                 )
-                index = index + 1
                 self.generate(
-                    'interface "',requirement_name, '" as ', interface_uml_id
+                    'label "',requirement_name, '" as ', interface_uml_id,
+                    sep="",
                 )
-                requirement_yaml = requirements.get(requirement_name)
-                if requirement_yaml:
-                    source_uml_id = 'node_' + normalize_name(requirement_yaml[0])
-                    self.generate(
-                        source_uml_id,
-                        ' "' + requirement_yaml[1] + '" --( ',
-                        interface_uml_id,
-                        sep="",
-                    )
-                else:
-                    self.generate(
-                        substitution_mappings_uml_id,
-                        " --( ",
-                        interface_uml_id
-                    )
+                self.generate(
+                    'node_' + normalize_name(requirement_yaml[0]),
+                    ' "' + requirement_yaml[1] + '" --( ',
+                    interface_uml_id,
+                    sep="",
+                )
 
         self.generate("@enduml")
 
@@ -1019,13 +1052,19 @@ class PlantUMLGenerator(Generator):
                 for requirement_name, requirement_yaml in requirement.items():
                     requirement_definition = get_dict(
                         merged_node_template_type, REQUIREMENTS
-                    ).get(requirement_name)
+                    ).get(requirement_name, {})
                     requirement_relationship = syntax.get_requirement_relationship(
                         requirement_definition
                     )
                     requirement_relationship_type = syntax.get_relationship_type(
                         requirement_relationship
                     )
+                    if requirement_relationship_type is None:
+                        requirement_relationship_type = \
+                            self.get_relationship_type(
+                                requirement_definition.get("capability")
+                            )
+
                     if self.type_system.is_derived_from(
                         requirement_relationship_type, "tosca.relationships.HostedOn"
                     ):
@@ -1116,6 +1155,7 @@ class PlantUMLGenerator(Generator):
                     sep="",
                 )
                 # Generate a properties map if needed
+                map_of_properties_generated = False
                 if properties is not None:
                     color = self.get_color("node", node_template_type)
                     if ';' in color:
@@ -1128,12 +1168,19 @@ class PlantUMLGenerator(Generator):
                         " {",
                         sep="",
                     )
+                    map_of_properties_generated = True
+                    node_type = self.type_system.merge_type(node_template_type)
                     for property_name in properties:
-                        self.generate(
-                            property_name,
-                            " => ",
-                            str(node_template.get("properties", {}).get(property_name, 'unset')),
+                        property_value = (
+                            node_template.get("properties", {}).get(property_name)
+                            or node_type.get("properties", {}).get(property_name, {}).get("default")
                         )
+                        if property_value != None:
+                            self.generate(
+                                property_name,
+                                " => ",
+                                self.stringify_value(property_value, str),
+                            )
                     self.generate("}")
                 for contained_name, contained_dict in containeds.items():
                     generate_container(self, contained_name, contained_dict)
@@ -1156,10 +1203,12 @@ class PlantUMLGenerator(Generator):
                             sep="",
                         )
                         self.generate(
-                            'label "',
+                            'label "file: ',
                             syntax.get_artifact_file(artifact_yaml),
-                            '" as ',
+                            '" as node_',
                             normalize_name(container_name),
+                            "_artifact_",
+                            normalize_name(artifact_name),
                             "_label",
                             sep="",
                         )
@@ -1167,13 +1216,33 @@ class PlantUMLGenerator(Generator):
                     else:
                         self.generate(
                             'artifact "',
-                            self.get_label("artifact", syntax.get_artifact_file(artifact_yaml), artifact_type),
+                            self.get_label("artifact", artifact_name, artifact_type),
                             '" <<artifact>> as node_',
                             normalize_name(container_name),
                             "_artifact_",
                             normalize_name(artifact_name),
                             self.get_color("artifact", artifact_type),
+                            " {",
                             sep="",
+                        )
+                        self.generate(
+                            'label "file: ',
+                            syntax.get_artifact_file(artifact_yaml),
+                            '" as node_',
+                            normalize_name(container_name),
+                            "_artifact_",
+                            normalize_name(artifact_name),
+                            "_label",
+                            sep="",
+                        )
+                        self.generate("}")
+                    if map_of_properties_generated:
+                        self.generate(
+                            "node_%s_properties -[hidden]- node_%s_artifact_%s" % (
+                                normalize_name(container_name),
+                                normalize_name(container_name),
+                                normalize_name(artifact_name)
+                            )
                         )
                 self.generate("}")
 
@@ -1184,8 +1253,9 @@ class PlantUMLGenerator(Generator):
                 substitution_mappings, CAPABILITIES
             ).items():
                 self.generate(
-                    'component "a node" as substitution_mappings_capability_',
+                    'component "' + capability_name + '" as substitution_mappings_capability_',
                     normalize_name(capability_name),
+#                    " #line.dotted", #TODO: wait for https://github.com/plantuml/plantuml/issues/931
                     sep="",
                 )
 
@@ -1245,7 +1315,10 @@ class PlantUMLGenerator(Generator):
                             tmp
                         )
                     if requirement_relationship_type is None:
-                        continue
+                        requirement_relationship_type = \
+                            self.get_relationship_type(
+                                requirement.get("capability")
+                            )
 
                     if not self.type_system.is_derived_from(
                         requirement_relationship_type, "tosca.relationships.HostedOn"
@@ -1279,9 +1352,13 @@ class PlantUMLGenerator(Generator):
                 self.generate(
                     "substitution_mappings_capability_",
                     normalize_name(capability_name),
-                    ' "',
-                    capability_name,
-                    '" ..> node_',
+                    ' -[hidden]- substitution_mappings',
+                    sep="",
+                )
+                self.generate(
+                    "substitution_mappings_capability_",
+                    normalize_name(capability_name),
+                    ' ..> node_',
                     normalize_name(target_node_name),
                     sep="",
                 )
@@ -1293,7 +1370,6 @@ class PlantUMLGenerator(Generator):
             all_requirement_declarations = get_dict(
                 merged_substitution_mappings_node_type, REQUIREMENTS
             )
-            req_idx = 0
             # Iterate over all requirements of the substitution mapping.
             for (
                 requirement_name,
@@ -1308,10 +1384,10 @@ class PlantUMLGenerator(Generator):
                     continue
                 self.generate(
                     get_uml2_kind(requirement_capability),
-                    ' ": ',
-                    short_type_name(requirement_capability),
+                    ' "' + requirement_name,
                     '" as substitution_mappings_requirement_',
-                    req_idx,
+                    requirement_name,
+#                    " #line.dotted", #TODO: wait for https://github.com/plantuml/plantuml/issues/931
                     sep="",
                 )
                 requirement_node = requirement_yaml[0]
@@ -1319,15 +1395,11 @@ class PlantUMLGenerator(Generator):
                 self.generate(
                     "node_",
                     normalize_name(requirement_node),
-                    ' "',
-                    normalize_name(requirement_node_capability),
-                    '" ..> "',
+                    ' ..> ',
+                    ' substitution_mappings_requirement_',
                     requirement_name,
-                    '" substitution_mappings_requirement_',
-                    req_idx,
                     sep="",
                 )
-                req_idx = req_idx + 1
 
         self.generate("@enduml")
 
@@ -1567,24 +1639,29 @@ class PlantUMLGenerator(Generator):
                     if trigger.get('action') != None:
                         generate_sequence_diagram(policy_name, policy, trigger_name, trigger)
 
-    def stringify_value(self, value):
-        if not isinstance(value, (str, int, float)):
-            return '[[{' + self.yamlify_value(value) + '} ...]]'
-        else:
-            return repr(value)
+    def stringify_value(self, value, representation=repr):
+        tmp = representation(value)
+        max_value_length = self.configuration.get(UML2, "max-value-length")
+        if len(tmp) > max_value_length:
+            tmp = tmp[0:max_value_length]
+            if not isinstance(value, (str, int, float)):
+                tmp += '[[{%s} ...]]' % self.yamlify_value(value, representation=representation)
+            else:
+                tmp += '[[{%s} ...]]' % representation(value)
+        return tmp
 
-    def yamlify_value(self, value, header='', ident=''):
+    def yamlify_value(self, value, header='', ident='', representation=repr):
         result = ''
         if isinstance(value, dict):
             tmp = header
             for k, v in value.items():
-                result += tmp + str(k) + ': ' + self.yamlify_value(v, '\\n' + ident + '  ', ident + '  ')
+                result += tmp + str(k) + ': ' + self.yamlify_value(v, '\\n' + ident + '  ', ident + '  ',representation)
                 tmp = '\\n' + ident
         elif isinstance(value, list):
             tmp = header
             for v in value:
-                result += tmp + '- ' + self.yamlify_value(v, '', ident + '  ')
+                result += tmp + '- ' + self.yamlify_value(v, '', ident + '  ',representation)
                 tmp = '\\n' + ident
         else:
-            result = repr(value)
+            result = representation(value)
         return result

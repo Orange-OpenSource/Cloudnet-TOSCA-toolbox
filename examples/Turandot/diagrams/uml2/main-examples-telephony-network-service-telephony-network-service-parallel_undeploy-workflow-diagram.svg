@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="613px" preserveAspectRatio="none" style="width:383px;height:613px;background:#FFFFFF;" version="1.1" viewBox="0 0 383 613" width="383px" zoomAndPan="magnify"><defs/><g><rect fill="#FF8C00" height="8" style="stroke:none;stroke-width:1.0;" width="80" x="54" y="331"/><rect fill="#006400" height="8" style="stroke:none;stroke-width:1.0;" width="80" x="137" y="7"/><rect fill="#006400" height="8" style="stroke:none;stroke-width:1.0;" width="80" x="137" y="223"/><ellipse cx="94" cy="597" rx="10" ry="10" style="stroke:#000000;stroke-width:1.0;fill:none;"/><ellipse cx="94.5" cy="597.5" fill="#000000" rx="6" ry="6" style="stroke:none;stroke-width:1.0;"/><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="180" x="196" y="291"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="174" x="199" y="320.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="196" x2="376" y1="317.4883" y2="317.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="152" x="210" y="309.5352">undeploy_central_pbx</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="160" x="208" y="329.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="150" x="213" y="354.7793">central-pbx undeploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="167" x="93.5" y="75"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="161" x="96.5" y="104.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="93.5" x2="260.5" y1="101.4883" y2="101.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="139" x="107.5" y="93.5352">undeploy_edge_pbx</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="147" x="105.5" y="113.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="137" x="110.5" y="138.7793">edge-pbx undeploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="174" x="7" y="439"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="168" x="10" y="468.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="7" x2="181" y1="465.4883" y2="465.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="146" x="21" y="457.5352">undeploy_data_plane</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="154" x="19" y="477.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="144" x="24" y="502.7793">data-plane undeploy</text><!--MD5=[7e0a4f404bea24a640e461aa62e5f14e]
+link step_parallel_undeploy_undeploy_data_plane_join to step_parallel_undeploy_undeploy_data_plane--><path d="M94,339.2697 C94,353.0927 94,397.8066 94,433.7325 " fill="none" id="step_parallel_undeploy_undeploy_data_plane_join-to-step_parallel_undeploy_undeploy_data_plane" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="94,438.9646,98,429.9646,94,433.9646,90,429.9646,94,438.9646" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[5e364a5d2018d7c603f14344a43315e1]
+link step_parallel_undeploy_undeploy_central_pbx to step_parallel_undeploy_undeploy_central_pbx_fork--><path d="M296.5033,290.7074 C306.9232,236.0987 316.374,142.2749 278,75 C260.0437,43.5202 219.6062,25.2119 195.7011,16.7505 " fill="none" id="step_parallel_undeploy_undeploy_central_pbx-to-step_parallel_undeploy_undeploy_central_pbx_fork" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="190.865,15.0932,198.0821,21.7949,195.5949,16.7142,200.6757,14.227,190.865,15.0932" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[747b9f45ac68fdb639f3117e85d5e285]
+link step_parallel_undeploy_undeploy_central_pbx_fork to step_parallel_undeploy_undeploy_edge_pbx--><path d="M177,15.1018 C177,24.3437 177,47.7288 177,69.9774 " fill="none" id="step_parallel_undeploy_undeploy_central_pbx_fork-to-step_parallel_undeploy_undeploy_edge_pbx" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="177,74.9993,181,65.9993,177,69.9993,173,65.9993,177,74.9993" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[bdb9e395c1ab559a2c0e0e8143884042]
+link step_parallel_undeploy_undeploy_central_pbx_fork to step_parallel_undeploy_undeploy_data_plane_join--><path d="M163.0215,15.0296 C139.9793,22.5167 94.7127,40.9892 76,75 C27.9672,162.3008 75.8928,291.8028 90.2283,326.2984 " fill="none" id="step_parallel_undeploy_undeploy_central_pbx_fork-to-step_parallel_undeploy_undeploy_data_plane_join" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="92.2208,330.998,92.3901,321.1506,90.2689,326.3947,85.0248,324.2736,92.2208,330.998" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[a13cd2336f26551e44ec81a28a37e5bb]
+link step_parallel_undeploy_undeploy_edge_pbx to step_parallel_undeploy_undeploy_edge_pbx_fork--><path d="M177,163.2393 C177,183.4642 177,205.5785 177,217.72 " fill="none" id="step_parallel_undeploy_undeploy_edge_pbx-to-step_parallel_undeploy_undeploy_edge_pbx_fork" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="177,222.8273,181,213.8273,177,217.8273,173,213.8273,177,222.8273" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[6e5bf48691cfefe10346b770cbb214df]
+link step_parallel_undeploy_undeploy_edge_pbx_fork to step_parallel_undeploy_undeploy_central_pbx--><path d="M181.1398,231.1018 C190.6632,240.5379 215.0669,264.7176 237.937,287.378 " fill="none" id="step_parallel_undeploy_undeploy_edge_pbx_fork-to-step_parallel_undeploy_undeploy_central_pbx" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="241.5918,290.9993,238.014,281.8233,238.04,287.4801,232.3832,287.5061,241.5918,290.9993" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[fbe5149ee623a8c0a3637325ec513464]
+link step_parallel_undeploy_undeploy_edge_pbx_fork to step_parallel_undeploy_undeploy_data_plane_join--><path d="M173.8477,231.1018 C161.5733,247.0732 116.8372,305.2841 100.2467,326.8718 " fill="none" id="step_parallel_undeploy_undeploy_edge_pbx_fork-to-step_parallel_undeploy_undeploy_data_plane_join" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="97.1555,330.8941,105.8112,326.1953,100.2022,326.9296,99.4679,321.3206,97.1555,330.8941" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[a52a19e3fc674de4e5a2e916c9d0a432]
+link step_parallel_undeploy_undeploy_data_plane to *end--><path d="M94,527.0754 C94,546.3243 94,567.649 94,581.628 " fill="none" id="step_parallel_undeploy_undeploy_data_plane-to-*end" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="94,586.7845,98,577.7845,94,581.7845,90,577.7845,94,586.7845" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[1700fc9f22e346c0114459a08f83f208]
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam state {
+  ArrowColor blue
+  BorderColor blue
+  EndColor black
+  StartColor green
+  BackGroundColor<< step >> white
+  BorderColor<< step >> black
+  BackGroundColor<< delegate >> lightgrey
+  BackGroundColor<< set_state >> white
+  BackGroundColor<< call_operation >> lightblue
+  BackGroundColor<< inline >> white
+}
+skinparam ActivityBarColor<<fork>> DarkGreen
+skinparam ActivityBarColor<<join>> DarkOrange
+
+state "undeploy_central_pbx" as step_parallel_undeploy_undeploy_central_pbx << step >> {
+  state "central-pbx undeploy" as step_parallel_undeploy_undeploy_central_pbx_central_pbx_undeploy << delegate >>
+}
+state "undeploy_edge_pbx" as step_parallel_undeploy_undeploy_edge_pbx << step >> {
+  state "edge-pbx undeploy" as step_parallel_undeploy_undeploy_edge_pbx_edge_pbx_undeploy << delegate >>
+}
+state "undeploy_data_plane" as step_parallel_undeploy_undeploy_data_plane << step >> {
+  state "data-plane undeploy" as step_parallel_undeploy_undeploy_data_plane_data_plane_undeploy << delegate >>
+}
+  state step_parallel_undeploy_undeploy_data_plane_join <<join>>
+  step_parallel_undeploy_undeploy_data_plane_join - -> step_parallel_undeploy_undeploy_data_plane
+state step_parallel_undeploy_undeploy_central_pbx_fork <<fork>>
+step_parallel_undeploy_undeploy_central_pbx - -> step_parallel_undeploy_undeploy_central_pbx_fork
+step_parallel_undeploy_undeploy_central_pbx_fork - -> step_parallel_undeploy_undeploy_edge_pbx
+step_parallel_undeploy_undeploy_central_pbx_fork - -> step_parallel_undeploy_undeploy_data_plane_join
+state step_parallel_undeploy_undeploy_edge_pbx_fork <<fork>>
+step_parallel_undeploy_undeploy_edge_pbx - -> step_parallel_undeploy_undeploy_edge_pbx_fork
+step_parallel_undeploy_undeploy_edge_pbx_fork - -> step_parallel_undeploy_undeploy_central_pbx
+step_parallel_undeploy_undeploy_edge_pbx_fork - -> step_parallel_undeploy_undeploy_data_plane_join
+step_parallel_undeploy_undeploy_data_plane - -> [*]
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>
