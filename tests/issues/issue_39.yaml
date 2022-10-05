@@ -1,0 +1,20 @@
+# https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/issues/39
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+capability_types:
+  TMFAPI:
+    derived_from: tosca.capabilities.Node
+    description: a TMForum defined REST API
+    properties:
+      id:
+        type: string
+        description: the id e.g TMF632
+      name:
+        type: string
+        description: the name, e.g. party
+
+  TMF632:
+    derived_from: TMFAPI
+    properties:
+      id: TMF632
+      name: party

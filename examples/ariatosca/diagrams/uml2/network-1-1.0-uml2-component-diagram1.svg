@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="324px" preserveAspectRatio="none" style="width:444px;height:324px;background:#FFFFFF;" version="1.1" viewBox="0 0 444 324" width="444px" zoomAndPan="magnify"><defs><filter height="300%" id="f1o0lynd4mn7i3" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[fe3463be6c4239935f06e0ae4bdadaa4]
+entity node_my_server--><rect fill="#FEFECE" filter="url(#f1o0lynd4mn7i3)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="180" x="27.5" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="187.5" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="185.5" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="185.5" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="88" y="281.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="140" x="42.5" y="298.0234">my_server: Compute</text><!--MD5=[85f2d477fe64cd91b942e8d12b1b6d33]
+entity node_my_server_binding--><ellipse cx="32.5" cy="159" fill="#FEFECE" filter="url(#f1o0lynd4mn7i3)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="53" x="6" y="189.5352">binding</text><!--MD5=[9a592cdf536e5997e158729fb2a670ce]
+entity node_my_server_host--><ellipse cx="128.5" cy="159" fill="#FEFECE" filter="url(#f1o0lynd4mn7i3)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="113.5" y="189.5352">host</text><!--MD5=[d881c44ba020ff3b61a6f1b991631ed5]
+entity node_my_server_os--><ellipse cx="217.5" cy="159" fill="#FEFECE" filter="url(#f1o0lynd4mn7i3)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="16" x="209.5" y="189.5352">os</text><!--MD5=[b2f9a86e64ab3d0701cf9e854d27d8b4]
+entity node_my_network--><rect fill="#FEFECE" filter="url(#f1o0lynd4mn7i3)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="188" x="242.5" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="410.5" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="408.5" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="408.5" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="307" y="281.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="148" x="257.5" y="298.0234">my_network: Network</text><!--MD5=[ca604ba608a5accad248bdae6c5175a3]
+entity node_my_network_link--><ellipse cx="326.5" cy="159" fill="#FEFECE" filter="url(#f1o0lynd4mn7i3)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="25" x="314" y="189.5352">link</text><!--MD5=[25b625329a573b90fb5f3840b78aa77f]
+entity node_my_port--><rect fill="#FEFECE" filter="url(#f1o0lynd4mn7i3)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="132" x="103.5" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="215.5" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="213.5" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="213.5" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="140" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="92" x="118.5" y="57.0234">my_port: Port</text><!--MD5=[6ef835732897916b211053cee01285d8]
+link node_my_server_binding to node_my_server--><path d="M38.8888,168.0571 C50.6645,184.7509 76.3067,221.1025 95.116,247.7674 " fill="none" id="node_my_server_binding-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[14207c1d032c6f453c50473e34a1bb75]
+link node_my_server_host to node_my_server--><path d="M127.6732,168.0571 C126.1493,184.7509 122.8309,221.1025 120.3968,247.7674 " fill="none" id="node_my_server_host-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[4783d47b3c4197870ef96b417ea6115d]
+link node_my_server_os to node_my_server--><path d="M209.9837,168.0571 C196.13,184.7509 165.9627,221.1025 143.8341,247.7674 " fill="none" id="node_my_server_os-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[0b987a2ce5e2af8aa6c0e2a6ecfe7d3b]
+link node_my_network_link to node_my_network--><path d="M327.2516,168.0571 C328.637,184.7509 331.6537,221.1025 333.8666,247.7674 " fill="none" id="node_my_network_link-node_my_network" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[382204f0631ae79e0ec6093bf037894b]
+link node_my_port to node_my_server_binding--><path d="M133.5049,70.16 C106.3302,94.0618 70.2706,125.7784 49.4025,144.1332 " fill="none" id="node_my_port-to-node_my_server_binding" style="stroke:#A80036;stroke-width:1.0;"/><path d="M49.6019,155.2209 A9,9 0 0 0 38.4308 142.5203" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="48" x="73.6934" y="90.4709">binding</text><!--MD5=[f44e3ee1584717d959a50d40914fd3d9]
+link node_my_port to node_my_network_link--><path d="M210.7499,70.16 C242.813,94.7689 285.6693,127.6618 309.2061,145.7266 " fill="none" id="node_my_port-to-node_my_network_link" style="stroke:#A80036;stroke-width:1.0;"/><path d="M319.9254,143.2928 A9,9 0 0 0 309.6269 156.7106" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="24" x="192.5085" y="90.4709">link</text><!--MD5=[c717eca0920672cc003814ea3e534354]
+@startuml
+skinparam componentStyle uml2
+
+component "my_server: Compute" <<node>> as node_my_server
+interface "binding" as node_my_server_binding
+node_my_server_binding - - node_my_server
+interface "host" as node_my_server_host
+node_my_server_host - - node_my_server
+interface "os" as node_my_server_os
+node_my_server_os - - node_my_server
+
+component "my_network: Network" <<node>> as node_my_network
+interface "link" as node_my_network_link
+node_my_network_link - - node_my_network
+
+component "my_port: Port" <<node>> as node_my_port
+
+node_my_port "binding" - -( node_my_server_binding
+node_my_port "link" - -( node_my_network_link
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

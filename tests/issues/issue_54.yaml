@@ -1,0 +1,36 @@
+# See https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/issues/54
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: >-
+  Abstract template (no deployable nodes) used to reproduce diagram in https://projects.tmforum.org/wiki/display/TAC/Components+Interactions+in+Core+Commerce+Management
+
+capability_types:
+
+  TMFAPI:
+    derived_from: tosca.capabilities.Node
+    description: a TMForum defined REST API
+    properties:
+      id:
+        type: string
+        description: the id e.g TMF632
+        required: True
+
+  TMF620:
+    derived_from: TMFAPI
+    properties:
+      id: TMF620
+
+node_types:
+
+  TMFC001:
+    derived_from: tosca.nodes.Root
+    capabilities:
+      TMF620_capability:
+        type: TMF620
+
+topology_template:
+
+  node_templates:
+
+    PrdCtgMgmt:
+      type: TMFC001

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="660px" preserveAspectRatio="none" style="width:237px;height:660px;background:#FFFFFF;" version="1.1" viewBox="0 0 237 660" width="237px" zoomAndPan="magnify"><defs><filter height="300%" id="fagc6uijt07x2" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[fe3463be6c4239935f06e0ae4bdadaa4]
+entity node_my_server--><rect fill="#FEFECE" filter="url(#fagc6uijt07x2)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="180" x="25" y="104"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="185" y="109"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="183" y="111"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="183" y="115"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="85.5" y="137.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="140" x="40" y="154.0234">my_server: Compute</text><!--MD5=[9a592cdf536e5997e158729fb2a670ce]
+entity node_my_server_host--><ellipse cx="71" cy="14" fill="#FEFECE" filter="url(#fagc6uijt07x2)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="56" y="44.5352">host</text><!--MD5=[d881c44ba020ff3b61a6f1b991631ed5]
+entity node_my_server_os--><ellipse cx="160" cy="14" fill="#FEFECE" filter="url(#fagc6uijt07x2)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="16" x="152" y="44.5352">os</text><!--MD5=[c8ac7e05ff61c3a88a2636ea61ff37b8]
+entity node_my_server_local_storage_relationship0--><rect fill="#FFFFFF" filter="url(#fagc6uijt07x2)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="136" x="47" y="341"/><rect fill="#FFFFFF" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="163" y="346"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="161" y="348"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="161" y="352"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="96" x="62" y="374.5352">«relationship»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="85" x="67.5" y="391.0234">: AttachesTo</text><!--MD5=[ac4f34ffec240db5c3e23a07f7f1cdf8]
+entity node_my_server_local_storage_relationship0_source--><ellipse cx="115" cy="262" fill="#FEFECE" filter="url(#fagc6uijt07x2)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><!--MD5=[37aa297d2cd2906ec8917eab968865d4]
+entity node_my_storage--><rect fill="#FEFECE" filter="url(#fagc6uijt07x2)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="216" x="7" y="584"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="203" y="589"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="201" y="591"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="201" y="595"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="85.5" y="617.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="176" x="22" y="634.0234">my_storage: BlockStorage</text><!--MD5=[2cf07b435eae4e50c4f6324e47b2021d]
+entity node_my_storage_attachment--><ellipse cx="115" cy="494" fill="#FEFECE" filter="url(#fagc6uijt07x2)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="77" x="76.5" y="524.5352">attachment</text><!--MD5=[14207c1d032c6f453c50473e34a1bb75]
+link node_my_server_host to node_my_server--><path d="M74.3072,23.1322 C80.4228,40.0198 93.7635,76.8584 103.5087,103.7682 " fill="none" id="node_my_server_host-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[4783d47b3c4197870ef96b417ea6115d]
+link node_my_server_os to node_my_server--><path d="M156.6177,23.1322 C150.3631,40.0198 136.7191,76.8584 126.7525,103.7682 " fill="none" id="node_my_server_os-node_my_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[7f711bb7332d750c80888720d0ab4e91]
+link node_my_server_local_storage_relationship0_source to node_my_server_local_storage_relationship0--><path d="M115,271.0427 C115,286.0936 115,316.9767 115,340.738 " fill="none" id="node_my_server_local_storage_relationship0_source-node_my_server_local_storage_relationship0" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[2ad184ab287267f0688e0661619fed49]
+link node_my_server to node_my_server_local_storage_relationship0_source--><path d="M115,167.095 C115,190.9415 115,222.8764 115,242.9448 " fill="none" id="node_my_server-to-node_my_server_local_storage_relationship0_source" style="stroke:#A80036;stroke-width:1.0;"/><path d="M123.4573,249.9147 A9,9 0 0 0 106.5428 249.9145" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="84" x="116" y="210.5684">local_storage</text><!--MD5=[c98ba8ed78b344c5f7fec39dc6c9d488]
+link node_my_storage_attachment to node_my_storage--><path d="M115,503.1322 C115,520.0198 115,556.8584 115,583.7682 " fill="none" id="node_my_storage_attachment-node_my_storage" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[be9c0ebc61b4edc0ff9f2e94d14f3036]
+link node_my_server_local_storage_relationship0 to node_my_storage_attachment--><path d="M115,404.1055 C115,426.4533 115,455.697 115,474.663 " fill="none" id="node_my_server_local_storage_relationship0-to-node_my_storage_attachment" style="stroke:#A80036;stroke-width:1.0;"/><path d="M123.4573,481.6735 A9,9 0 0 0 106.5428 481.6733" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[4698e3c7b224c44fdbadcf1438a9892e]
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  backgroundColor<<relationship>> White
+}
+
+component "my_server: Compute" <<node>> as node_my_server
+interface "host" as node_my_server_host
+node_my_server_host - - node_my_server
+interface "os" as node_my_server_os
+node_my_server_os - - node_my_server
+component ": AttachesTo" <<relationship>> as node_my_server_local_storage_relationship0
+interface " " as node_my_server_local_storage_relationship0_source
+node_my_server_local_storage_relationship0_source - - node_my_server_local_storage_relationship0
+node_my_server - -( node_my_server_local_storage_relationship0_source : local_storage
+
+component "my_storage: BlockStorage" <<node>> as node_my_storage
+interface "attachment" as node_my_storage_attachment
+node_my_storage_attachment - - node_my_storage
+
+node_my_server_local_storage_relationship0 - -( node_my_storage_attachment
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

@@ -1,0 +1,21 @@
+# https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/issues/40
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+capability_types:
+  CT:
+    properties:
+      p1:
+        type: integer
+
+node_types:
+  NT:
+    capabilities:
+      c1:
+        type: CT
+
+topology_template:
+  node_templates:
+    n1:
+      type: NT
+      # ERROR: p1 required property unassigned
+      # ERROR: same produced by Alloy generator

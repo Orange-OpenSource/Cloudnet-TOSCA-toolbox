@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="220px" preserveAspectRatio="none" style="width:413px;height:220px;background:#FFFFFF;" version="1.1" viewBox="0 0 413 220" width="413px" zoomAndPan="magnify"><defs><filter height="300%" id="f1uf1882o6qko4" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[a4c4f69c835f7f05c845641536bb01a8]
+class Key_AT--><rect codeLine="2" fill="#FEFECE" filter="url(#f1uf1882o6qko4)" height="69.9102" id="Key_AT" style="stroke:#A80036;stroke-width:1.5;" width="173" x="7" y="7"/><ellipse cx="78.75" cy="23" fill="#008000" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M78.8633,18.3481 L77.7095,23.4199 L80.0254,23.4199 Z M77.3691,16.1069 L80.3657,16.1069 L83.7109,28.5 L81.2622,28.5 L80.4985,25.437 L77.2197,25.437 L76.4727,28.5 L74.0239,28.5 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="21" x="99.25" y="27.5352">Key</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="179" y1="39" y2="39"/><ellipse cx="18" cy="66.9551" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="11" font-weight="bold" lengthAdjust="spacing" textLength="147" x="27" y="70.5898">generate : boolean = False</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="8" x2="65.5" y1="53.4775" y2="53.4775"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="56" x="65.5" y="57.1348">properties</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="121.5" x2="179" y1="53.4775" y2="53.4775"/><!--MD5=[5e56c486f9e954837e68f46440cf7c06]
+class Deployable_AT--><rect codeLine="6" fill="#FEFECE" filter="url(#f1uf1882o6qko4)" height="69.9102" id="Deployable_AT" style="stroke:#A80036;stroke-width:1.5;" width="184" x="215.5" y="7"/><ellipse cx="270.75" cy="23" fill="#008000" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M270.8633,18.3481 L269.7095,23.4199 L272.0254,23.4199 Z M269.3691,16.1069 L272.3657,16.1069 L275.7109,28.5 L273.2622,28.5 L272.4985,25.437 L269.2197,25.437 L268.4727,28.5 L266.0239,28.5 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="65" x="291.25" y="27.5352">Deployable</text><line style="stroke:#A80036;stroke-width:1.5;" x1="216.5" x2="398.5" y1="39" y2="39"/><ellipse cx="226.5" cy="66.9551" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="158" x="235.5" y="70.5898">permissions : FilePermissions</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="216.5" x2="279.5" y1="53.4775" y2="53.4775"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="56" x="279.5" y="57.1348">properties</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="335.5" x2="398.5" y1="53.4775" y2="53.4775"/><!--MD5=[b6a01dc42a50a2f9bd7509f44d45e132]
+class Executable_AT--><rect codeLine="10" fill="#FEFECE" filter="url(#f1uf1882o6qko4)" height="69.9102" id="Executable_AT" style="stroke:#A80036;stroke-width:1.5;" width="128" x="243.5" y="137"/><ellipse cx="273.35" cy="153" fill="#008000" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M273.4633,148.3481 L272.3095,153.4199 L274.6254,153.4199 Z M271.9691,146.1069 L274.9657,146.1069 L278.3109,158.5 L275.8622,158.5 L275.0985,155.437 L271.8197,155.437 L271.0727,158.5 L268.6239,158.5 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="63" x="290.65" y="157.5352">Executable</text><line style="stroke:#A80036;stroke-width:1.5;" x1="244.5" x2="370.5" y1="169" y2="169"/><ellipse cx="254.5" cy="196.9551" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="102" x="263.5" y="200.5898">permissions = 493</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="244.5" x2="279.5" y1="183.4775" y2="183.4775"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="56" x="279.5" y="187.1348">properties</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="335.5" x2="370.5" y1="183.4775" y2="183.4775"/><!--MD5=[3836e09295cdc7d17cd3a1f37580242a]
+reverse link Deployable_AT to Executable_AT--><path codeLine="14" d="M307.5,97.3803 C307.5,110.738 307.5,124.6499 307.5,136.792 " fill="none" id="Deployable_AT-backto-Executable_AT" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="none" points="300.5001,97.1799,307.5,77.1799,314.5001,97.1798,300.5001,97.1799" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[bc720b92bba13fbebf1abda00ac3c1b3]
+@startuml
+set namespaceSeparator none
+class "Key" as Key_AT << (A,green) >> {
+.. properties ..
++<b>generate : boolean = False
+}
+class "Deployable" as Deployable_AT << (A,green) >> {
+.. properties ..
++permissions : FilePermissions
+}
+class "Executable" as Executable_AT << (A,green) >> {
+.. properties ..
++permissions = 493
+}
+Deployable_AT <|- - Executable_AT
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

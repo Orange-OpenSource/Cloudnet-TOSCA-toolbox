@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="181px" preserveAspectRatio="none" style="width:558px;height:181px;background:#FFFFFF;" version="1.1" viewBox="0 0 558 181" width="558px" zoomAndPan="magnify"><defs><filter height="300%" id="fh6b5mu7tv2ya" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[cfc1dfafb1802fa660fc1ba9ac9e0b24]
+entity node_my_web_app_tier_1--><polygon fill="#FEFECE" filter="url(#fh6b5mu7tv2ya)" points="16,16,26,6,261,6,261,42.4883,251,52.4883,16,52.4883,16,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="251" x2="261" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="251" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="251" x2="251" y1="16" y2="52.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="205" x="31" y="39.5352">my_web_app_tier_1: Compute</text><!--MD5=[5567e1b8c8e741aded710beccfc80dfc]
+entity node_my_web_app_tier_2--><polygon fill="#FEFECE" filter="url(#fh6b5mu7tv2ya)" points="296,16,306,6,541,6,541,42.4883,531,52.4883,296,52.4883,296,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="531" x2="541" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="296" x2="531" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="531" x2="531" y1="16" y2="52.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="205" x="311" y="39.5352">my_web_app_tier_2: Compute</text><!--MD5=[37aa297d2cd2906ec8917eab968865d4]
+entity node_my_storage--><path d="M180.5,139 C180.5,129 278.5,129 278.5,129 C278.5,129 376.5,129 376.5,139 L376.5,164.4883 C376.5,174.4883 278.5,174.4883 278.5,174.4883 C278.5,174.4883 180.5,174.4883 180.5,164.4883 L180.5,139 " fill="#FEFECE" filter="url(#fh6b5mu7tv2ya)" style="stroke:#000000;stroke-width:1.5;"/><path d="M180.5,139 C180.5,149 278.5,149 278.5,149 C278.5,149 376.5,149 376.5,139 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="176" x="190.5" y="166.5352">my_storage: BlockStorage</text><!--MD5=[93c568ec8fe50e464036265b6ee24468]
+link node_my_web_app_tier_1 to node_my_storage--><path codeLine="7" d="M164.8329,52.0413 C188.742,72.9618 223.9674,103.784 248.8558,125.5613 " fill="none" id="node_my_web_app_tier_1-to-node_my_storage" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="252.7582,128.9759,248.6189,120.0391,248.9953,125.6834,243.351,126.0598,252.7582,128.9759" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="103" x="218.5" y="95.5684">«MyAttachesTo»</text><!--MD5=[86ba9c3fc815a7704bcd481a7aebea7c]
+link node_my_web_app_tier_2 to node_my_storage--><path codeLine="8" d="M392.1671,52.0413 C368.258,72.9618 333.0326,103.784 308.1442,125.5613 " fill="none" id="node_my_web_app_tier_2-to-node_my_storage" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="304.2418,128.9759,313.649,126.0598,308.0047,125.6834,308.3811,120.0391,304.2418,128.9759" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="103" x="357.5" y="95.5684">«MyAttachesTo»</text><!--MD5=[e791e9e4b61ca5d93a44ded219b16077]
+@startuml
+skinparam componentStyle uml2
+allowmixing
+
+node "my_web_app_tier_1: Compute" as node_my_web_app_tier_1
+node "my_web_app_tier_2: Compute" as node_my_web_app_tier_2
+database "my_storage: BlockStorage" as node_my_storage
+node_my_web_app_tier_1 ..> node_my_storage : <<MyAttachesTo>>
+node_my_web_app_tier_2 ..> node_my_storage : <<MyAttachesTo>>
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

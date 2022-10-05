@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg viewBox="0 0 304 444" xmlns="http://www.w3.org/2000/svg" xmlns:inkspace="http://www.inkscape.org/namespaces/inkscape" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs id="defs_block">
+    <filter height="1.504" id="filter_blur" inkspace:collect="always" width="1.1575" x="-0.07875" y="-0.252">
+      <feGaussianBlur id="feGaussianBlur3780" inkspace:collect="always" stdDeviation="4.2" />
+    </filter>
+  </defs>
+  <title>blockdiag</title>
+  <desc>{
+  network "my_network1" {
+    label = "net1"
+    address = "192.168.1.0/24"
+    color = "lightblue"
+    textcolor = "black"
+    "my_server"[label="my_server", address="", shape="box", color="white", textcolor="black", style="solid"];
+  }
+  network "my_network2" {
+    label = "net2"
+    address = "192.168.2.0/24"
+    color = "lightblue"
+    textcolor = "black"
+    "my_server"[label="my_server", address="", shape="box", color="white", textcolor="black", style="solid"];
+  }
+  network "my_network3" {
+    label = "net3"
+    address = "192.168.3.0/24"
+    color = "lightblue"
+    textcolor = "black"
+    "my_server"[label="my_server", address="", shape="box", color="white", textcolor="black", style="solid"];
+  }
+}
+</desc>
+  <rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="104" x="155" y="162" />
+  <path d="M 131 103 L 283 103 A2,4 0 0 1 283 111 L 131 111 A2,4 0 0 1 131 103" fill="rgb(0,0,0)" style="filter:url(#filter_blur)" />
+  <path d="M 131 247 L 283 247 A2,4 0 0 1 283 255 L 131 255 A2,4 0 0 1 131 247" fill="rgb(0,0,0)" style="filter:url(#filter_blur)" />
+  <path d="M 131 391 L 283 391 A2,4 0 0 1 283 399 L 131 399 A2,4 0 0 1 131 391" fill="rgb(0,0,0)" style="filter:url(#filter_blur)" />
+  <path d="M 128 100 L 280 100 A2,4 0 0 1 280 108 L 128 108 A2,4 0 0 1 128 100" fill="rgb(173,216,230)" stroke="rgb(0,0,0)" />
+  <path d="M 280 108 A2,4 0 0 1 280 100" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 128 100 L 280 100" fill="none" stroke="none" />
+  <path d="M 204 35 L 204 100" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 128 244 L 280 244 A2,4 0 0 1 280 252 L 128 252 A2,4 0 0 1 128 244" fill="rgb(173,216,230)" stroke="rgb(0,0,0)" />
+  <path d="M 280 252 A2,4 0 0 1 280 244" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 128 244 L 280 244" fill="none" stroke="none" />
+  <path d="M 128 388 L 280 388 A2,4 0 0 1 280 396 L 128 396 A2,4 0 0 1 128 388" fill="rgb(173,216,230)" stroke="rgb(0,0,0)" />
+  <path d="M 280 396 A2,4 0 0 1 280 388" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 128 388 L 280 388" fill="none" stroke="none" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="25" x="107.5" y="103">net1</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="84" x="78.0" y="117">192.168.1.0/24</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="25" x="107.5" y="247">net2</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="84" x="78.0" y="261">192.168.2.0/24</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="25" x="107.5" y="391">net3</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="84" x="78.0" y="405">192.168.3.0/24</text>
+  <path d="M 204 108 L 204 156" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 212 196 L 212 244" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 196 196 L 196 240" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 196.0 240.0 A8.0,8.0 0 0 1 196.0 256.0" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 196 256 L 196 388" fill="none" stroke="rgb(0,0,0)" />
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="104" x="152" y="156" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="58" x="204.0" y="183">my_server</text>
+</svg>

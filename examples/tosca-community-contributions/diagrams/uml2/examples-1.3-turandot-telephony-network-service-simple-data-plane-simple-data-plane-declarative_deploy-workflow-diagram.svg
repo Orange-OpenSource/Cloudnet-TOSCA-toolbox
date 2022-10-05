@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="396px" preserveAspectRatio="none" style="width:297px;height:396px;background:#FFFFFF;" version="1.1" viewBox="0 0 297 396" width="297px" zoomAndPan="magnify"><defs/><g><rect fill="#006400" height="8" style="stroke:none;stroke-width:1.0;" width="80" x="107.5" y="86"/><ellipse cx="147.5" cy="16" fill="#008000" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><rect fill="#FF8C00" height="8" style="stroke:none;stroke-width:1.0;" width="80" x="107.5" y="302"/><ellipse cx="147.5" cy="380" rx="10" ry="10" style="stroke:#000000;stroke-width:1.0;fill:none;"/><ellipse cx="148" cy="380.5" fill="#000000" rx="6" ry="6" style="stroke:none;stroke-width:1.0;"/><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="123" x="7" y="154"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="117" x="10" y="183.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="7" x2="130" y1="180.4883" y2="180.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="96" x="20.5" y="172.5352">deploy_router</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="103" x="19" y="192.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="93" x="24" y="217.7793">router deploy</text><rect fill="#FFFFFF" height="88.4883" rx="12.5" ry="12.5" style="stroke:#000000;stroke-width:1.5;" width="125" x="165" y="154"/><rect fill="#FFFFFF" height="56" rx="12.5" ry="12.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="119" x="168" y="183.4883"/><line style="stroke:#000000;stroke-width:1.5;" x1="165" x2="290" y1="180.4883" y2="180.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="178.5" y="172.5352">deploy_bridge</text><rect fill="#D3D3D3" height="40" rx="12.5" ry="12.5" style="stroke:#0000FF;stroke-width:1.5;" width="105" x="177" y="192.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="95" x="182" y="217.7793">bridge deploy</text><!--MD5=[269479dbfff9de025be372388bab6db6]
+link *start to declarative_deploy_fork--><path d="M147.5,26.2894 C147.5,40.745 147.5,66.8479 147.5,80.7308 " fill="none" id="*start-to-declarative_deploy_fork" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="147.5,85.8629,151.5,76.8629,147.5,80.8629,143.5,76.8629,147.5,85.8629" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[87286345a901fa116cae9f79933e91b5]
+link declarative_deploy_fork to step_declarative_deploy_deploy_router--><path d="M144.4996,94.1018 C137.6541,103.4602 120.2007,127.3206 103.7441,149.8181 " fill="none" id="declarative_deploy_fork-to-step_declarative_deploy_deploy_router" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="100.6857,153.9993,109.2277,149.0969,103.6377,149.9637,102.7708,144.3737,100.6857,153.9993" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[bc63ec0b5c8dac9ebea0be7c3208d502]
+link declarative_deploy_fork to step_declarative_deploy_deploy_bridge--><path d="M150.5384,94.1018 C157.4705,103.4602 175.1449,127.3206 191.8097,149.8181 " fill="none" id="declarative_deploy_fork-to-step_declarative_deploy_deploy_bridge" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="194.9069,153.9993,192.7642,144.3864,191.9308,149.9815,186.3357,149.1481,194.9069,153.9993" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[6405e0537ceac305b1a70ff32fab17c5]
+link declarative_deploy_join to *end--><path d="M147.5,310.4074 C147.5,320.8066 147.5,347.2833 147.5,364.4165 " fill="none" id="declarative_deploy_join-to-*end" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="147.5,369.8319,151.5,360.8319,147.5,364.8319,143.5,360.8319,147.5,369.8319" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[4f83abfd3b2f76c12ccb6545c2217750]
+link step_declarative_deploy_deploy_router to declarative_deploy_join--><path d="M100.8603,242.2393 C116.0578,263.0157 132.7139,285.7861 141.4221,297.6909 " fill="none" id="step_declarative_deploy_deploy_router-to-declarative_deploy_join" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="144.4477,301.8273,142.3626,292.2017,141.4957,297.7917,135.9057,296.9249,144.4477,301.8273" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[3fdeb8c620ea0238f943f15d54562815]
+link step_declarative_deploy_deploy_bridge to declarative_deploy_join--><path d="M194.7301,242.2393 C179.3402,263.0157 162.4732,285.7861 153.6549,297.6909 " fill="none" id="step_declarative_deploy_deploy_bridge-to-declarative_deploy_join" style="stroke:#0000FF;stroke-width:1.0;"/><polygon fill="#0000FF" points="150.5909,301.8273,159.1623,296.9763,153.5671,297.8096,152.7339,292.2144,150.5909,301.8273" style="stroke:#0000FF;stroke-width:1.0;"/><!--MD5=[2879f1750697bde6a5a00a80ba75d0dc]
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam state {
+  ArrowColor blue
+  BorderColor blue
+  EndColor black
+  StartColor green
+  BackGroundColor<< step >> white
+  BorderColor<< step >> black
+  BackGroundColor<< delegate >> lightgrey
+  BackGroundColor<< set_state >> white
+  BackGroundColor<< call_operation >> lightblue
+  BackGroundColor<< inline >> white
+}
+skinparam ActivityBarColor<<fork>> DarkGreen
+skinparam ActivityBarColor<<join>> DarkOrange
+
+state "deploy_router" as step_declarative_deploy_deploy_router << step >> {
+  state "router deploy" as step_declarative_deploy_deploy_router_router_deploy << delegate >>
+}
+state "deploy_bridge" as step_declarative_deploy_deploy_bridge << step >> {
+  state "bridge deploy" as step_declarative_deploy_deploy_bridge_bridge_deploy << delegate >>
+}
+state declarative_deploy_fork <<fork>>
+[*] - -> declarative_deploy_fork
+declarative_deploy_fork - -> step_declarative_deploy_deploy_router
+declarative_deploy_fork - -> step_declarative_deploy_deploy_bridge
+state declarative_deploy_join <<join>>
+declarative_deploy_join - -> [*]
+step_declarative_deploy_deploy_router - -> declarative_deploy_join
+step_declarative_deploy_deploy_bridge - -> declarative_deploy_join
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

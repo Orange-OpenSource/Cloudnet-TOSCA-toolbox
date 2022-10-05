@@ -1,0 +1,92 @@
+######################################################################
+#
+# Software Name : Cloudnet TOSCA toolbox
+# Version: 1.0
+# SPDX-FileCopyrightText: Copyright (c) 2022 Orange
+# SPDX-License-Identifier: Apache-2.0
+#
+# This software is distributed under the Apache License 2.0
+# the text of which is available at http://www.apache.org/licenses/LICENSE-2.0
+# or see the "LICENSE-2.0.txt" file for more details.
+#
+# Author: Philippe Merle <philippe.merle@inria.fr>
+# Software description: Use case for TOSCA to Cloudnet Translator
+######################################################################
+
+aliased_tosca_service_templates:
+  profiles/kubernetes/1.0/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/profiles/cloud.puccini/kubernetes/1.0/profile.yaml
+  profiles/kubevirt/1.0/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/profiles/cloud.puccini/kubevirt/1.0/profile.yaml
+  profiles/network-service/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/examples/1.3/turandot/telephony-network-service/telephony-network-service/profiles/network-service/profile.yaml
+  profiles/telephony/profile.yaml: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/examples/1.3/turandot/telephony-network-service/telephony-network-service/profiles/telephony/profile.yaml
+  # Following files are missing
+  profiles/orchestration/1.0/profile.yaml: https://raw.githubusercontent.com/tliron/turandot/main/assets/tosca/profiles/orchestration/1.0/profile.yaml
+  ../../orchestration/1.0/profile.yaml: https://raw.githubusercontent.com/tliron/turandot/main/assets/tosca/profiles/orchestration/1.0/profile.yaml
+  profiles/mariadb/profile.yaml: https://raw.githubusercontent.com/tliron/turandot/main/assets/tosca/profiles/mariadb/profile.yaml
+
+# Configuration of the syntax checker.
+Syntax:
+  # In TOSCA, default requirement occurrences are [1, 1].
+  # But Puccini seems to be not compliant to this rule.
+  # So default requirement occurrences shall be modified.
+  default-requirement-occurrences: [0, UNBOUNDED]
+
+Generator:
+  filename-format: fullname # keep the full filename
+  remove-filename-prefix: https://raw.githubusercontent.com/oasis-open/tosca-community-contributions/master/
+
+# Configuration of the Alloy generator.
+Alloy:
+  # Target directory where Alloy files are generated.
+  target-directory: RESULTS/Alloy
+
+# Configuration of the declarative workflow generator.
+DeclarativeWorkflows:
+  # Target directory where declarative workflows are generated.
+  target-directory: RESULTS/DeclarativeWorkflows
+
+# Configuration of the network diagram generator.
+nwdiag:
+  # Target directory where network diagrams are generated.
+  target-directory: diagrams/network
+
+# Configuration of the TOSCA diagram generator.
+tosca_diagrams:
+  # Target directory where network diagrams are generated.
+  target-directory: diagrams/tosca
+
+# Configuration of the UML2 diagram generator.
+UML2:
+  # Target directory where UML2 diagrams are generated.
+  target-directory: diagrams/uml2
+
+HOT:
+  # Target directory where HOT templates are generated.
+  target-directory: RESULTS/HOT
+
+# Logging configuration.
+logging:
+  loggers:
+    cloudnet.tosca.configuration:
+      level: WARNING
+    cloudnet.tosca.importers:
+      level: WARNING
+    cloudnet.tosca.processors:
+      level: WARNING
+    cloudnet.tosca.syntax:
+      level: WARNING
+    cloudnet.tosca.type_system:
+      level: WARNING
+    cloudnet.tosca.declarative_workflows:
+      level: WARNING
+    cloudnet.tosca.alloy:
+      level: WARNING
+    cloudnet.tosca.network_diagrams:
+      level: WARNING
+    cloudnet.tosca.tosca_diagrams:
+      level: WARNING
+    cloudnet.tosca.uml2_diagrams:
+      level: WARNING
+    cloudnet.tosca.hot:
+      level: WARNING
+  root:
+    level: WARNING

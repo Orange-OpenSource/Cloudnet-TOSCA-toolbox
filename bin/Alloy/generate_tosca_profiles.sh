@@ -23,7 +23,7 @@
 ######################################################################
 
 # Load cloudnet commands.
-CLOUDNET_BINDIR=$PWD/..
+CLOUDNET_BINDIR=..
 . ${CLOUDNET_BINDIR}/cloudnet_rc.sh
 
 generate_tosca_profile()

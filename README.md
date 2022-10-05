@@ -1,9 +1,9 @@
-# What is Cloudnet-TOSCA-toolbox?
+# What is Cloudnet TOSCA toolbox?
 
 Cloudnet TOSCA toolbox is an OASIS TOSCA processor for checking and adjusting TOSCA service templates.
 TOSCA templates specify service structure and the procedure governing their life cycle. Services are typically application, infrastructure or network services.  
 This set of tools is intended for syntax and type checking of any service templates written in TOSCA, including e.g. [NFV descriptors](https://forge.etsi.org/rep/nfv/SOL001).  
-It also allows for visualizing the associated architecture in different ways (UML, TOSCA, network diagrams).  
+It also allows for visualizing the associated architecture in different ways (UML, TOSCA, network diagrams). Have a look to [this video](https://www.youtube.com/watch?v=6yt-mqzbos4).  
 A web portal based on this code is available at this url: [https://toscatoolbox.orange.com](https://toscatoolbox.orange.com).
 
 ## Table of contents

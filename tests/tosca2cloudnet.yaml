@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -12,6 +12,10 @@
 # Author: Philippe Merle <philippe.merle@inria.fr>
 # Software description: Configuration of the TOSCA toolchain
 ######################################################################
+
+# Configuration of the type checker.
+TypeSystem:
+  warning-on-definitions-allowing-negative-values: False
 
 # Configuration of the Alloy generator.
 Alloy:
@@ -42,26 +46,26 @@ UML2:
 logging:
   loggers:
     cloudnet.tosca.configuration:
-      level: INFO
+      level: WARNING
     cloudnet.tosca.importers:
-      level: INFO
+      level: WARNING
     cloudnet.tosca.processors:
-      level: INFO
+      level: WARNING
     cloudnet.tosca.syntax:
-      level: INFO
+      level: WARNING
     cloudnet.tosca.type_system:
-      level: INFO
+      level: WARNING
     cloudnet.tosca.declarative_workflows:
-      level: INFO
+      level: WARNING
     cloudnet.tosca.alloy:
-      level: INFO
+      level: WARNING
     cloudnet.tosca.network_diagrams:
-      level: INFO
+      level: WARNING
     cloudnet.tosca.tosca_diagrams:
-      level: INFO
+      level: WARNING
     cloudnet.tosca.uml2_diagrams:
-      level: INFO
+      level: WARNING
     cloudnet.tosca.hot:
-      level: INFO
+      level: WARNING
   root:
-    level: INFO
+    level: WARNING

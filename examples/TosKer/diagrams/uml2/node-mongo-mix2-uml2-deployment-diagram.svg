@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="306px" preserveAspectRatio="none" style="width:353px;height:306px;background:#FFFFFF;" version="1.1" viewBox="0 0 353 306" width="353px" zoomAndPan="magnify"><defs><filter height="300%" id="firq94tcfmbu3" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[a674f4509d1e2ca0697f9b719c0fddd0]
+cluster node_app_container--><polygon fill="#FFFFFF" filter="url(#firq94tcfmbu3)" points="78,16,88,6,332,6,332,123,322,133,78,133,78,16" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="322" x2="332" y1="16" y2="6"/><line style="stroke:#000000;stroke-width:1.5;" x1="78" x2="322" y1="16" y2="16"/><line style="stroke:#000000;stroke-width:1.5;" x1="322" x2="322" y1="16" y2="133"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="178" x="112" y="32.5352">app_container: Container</text><!--MD5=[4800b451976cbb1d8d7b72a799194929]
+cluster node_app_container_artifact_node_mogo_image--><rect fill="#FFFFFF" filter="url(#firq94tcfmbu3)" height="87" style="stroke:#000000;stroke-width:1.5;" width="208" x="115" y="38"/><polygon fill="#FFFFFF" points="306,43,306,57,318,57,318,49,312,43,306,43" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="312" x2="312" y1="43" y2="49"/><line style="stroke:#000000;stroke-width:1.5;" x1="318" x2="312" y1="49" y2="49"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="188" y="53.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="192" x="123" y="70.0234">node_mogo_image: Service</text><!--MD5=[5f67ddc42c3948d3bb3578393b31abe6]
+cluster node_server2--><polygon fill="#FFFFFF" filter="url(#firq94tcfmbu3)" points="16,182,26,172,336,172,336,289,326,299,16,299,16,182" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="326" x2="336" y1="182" y2="172"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="326" y1="182" y2="182"/><line style="stroke:#000000;stroke-width:1.5;" x1="326" x2="326" y1="182" y2="299"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="131" x="106.5" y="198.5352">server2: Container</text><!--MD5=[306a99b9a2ed79445c51f06d2a7a4fcf]
+cluster node_server2_artifact_ubuntu_image--><rect fill="#FFFFFF" filter="url(#firq94tcfmbu3)" height="87" style="stroke:#000000;stroke-width:1.5;" width="170" x="158" y="204"/><polygon fill="#FFFFFF" points="311,209,311,223,323,223,323,215,317,209,311,209" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="317" x2="317" y1="209" y2="215"/><line style="stroke:#000000;stroke-width:1.5;" x1="323" x2="317" y1="215" y2="215"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="62" x="212" y="219.5352">«artifact»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="154" x="166" y="236.0234">ubuntu_image: Image</text><!--MD5=[298decb577be3e15f65652a911f6d81d]
+entity node_app_container_artifact_node_mogo_image_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="171" x="133.5" y="104.5352">file: code/app/Dockerfile</text><!--MD5=[ac0378eaee94a030291fca69d3db3006]
+entity node_db--><rect fill="#FEFECE" filter="url(#firq94tcfmbu3)" height="46.4883" style="stroke:#A80036;stroke-width:1.5;" width="126" x="24" y="242"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="130" y="247"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="128" y="249"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="128" y="253"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86" x="39" y="275.5352">db: Software</text><!--MD5=[7180ef798fad356cdc1adda8184885b9]
+entity node_server2_artifact_ubuntu_image_label--><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="79" x="212.5" y="270.5352">file: ubuntu</text><!--MD5=[62057ba200913908d62f9746ce39bad0]
+link node_app_container to node_db--><path codeLine="15" d="M87,133.5198 C87,133.7099 87,133.9005 87,134.0917 C87,140.2088 87,146.8538 87,153.7977 C87,181.5734 87,214.1314 87,236.8127 " fill="none" id="node_app_container-to-node_db" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="87,241.8748,91,232.8748,87,236.8748,83,232.8748,87,241.8748" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="89" x="88" y="160.5684">«ConnectsTo»</text><!--MD5=[9e535ef584a2026d11930bdf8a8aee8f]
+@startuml
+skinparam componentStyle uml2
+allowmixing
+
+node "app_container: Container" as node_app_container {
+artifact "node_mogo_image: Service" <<artifact>> as node_app_container_artifact_node_mogo_image {
+label "file: code/app/Dockerfile" as node_app_container_artifact_node_mogo_image_label
+}
+}
+node "server2: Container" as node_server2 {
+component "db: Software" as node_db
+artifact "ubuntu_image: Image" <<artifact>> as node_server2_artifact_ubuntu_image {
+label "file: ubuntu" as node_server2_artifact_ubuntu_image_label
+}
+}
+node_app_container ..> node_db : <<ConnectsTo>>
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

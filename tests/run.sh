@@ -3,7 +3,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -16,7 +16,7 @@
 
 # Load cloudnet commands.
 # shellcheck source=./bin/cloudnet_rc.sh
-CLOUDNET_BINDIR="$PWD/../bin"
+CLOUDNET_BINDIR="../bin"
 . "${CLOUDNET_BINDIR}/cloudnet_rc.sh"
 
 exit_code=0
@@ -45,12 +45,10 @@ check_regression()
 }
 
 # YAML parsing
-check_regression yaml_parsing/incorrect_indentation_in_definition.yaml
-check_regression yaml_parsing/incorrect_indentation_in_mapping.yaml
-check_regression yaml_parsing/incorrect_indentation_in_sequence.yaml
-check_regression yaml_parsing/missed_quote_error.yaml
-check_regression yaml_parsing/string_must_be_quoted.yaml
-check_regression yaml_parsing/unexpected_carriage_return.yaml
+for file in $(ls yaml_parsing/*.yaml)
+do
+  check_regression $file
+done
 
 # TOSCA syntax checking
 check_regression syntax_checking-1.2.yaml # tosca_definitions_version: tosca_simple_yaml_1_2
@@ -64,5 +62,16 @@ translate /cloudnet/tosca/profiles/tosca_simple_yaml_1_3/types.yaml
 check_regression type_checking.yaml
 check_regression type_checking-1.3.yaml
 check_regression topology_template_substitution_mapping.yaml
+
+# Cloudnet TOSCA Toolbox issues
+check_regression issues/issue_39.yaml
+check_regression issues/issue_40.yaml
+check_regression issues/issue_41.yaml
+check_regression issues/issue_42.yaml
+check_regression issues/issue_43.yaml
+check_regression issues/issue_52.yaml
+check_regression issues/issue_54.yaml
+check_regression issues/issue_55.yaml
+check_regression issues/issue_56.yaml
 
 exit ${exit_code}

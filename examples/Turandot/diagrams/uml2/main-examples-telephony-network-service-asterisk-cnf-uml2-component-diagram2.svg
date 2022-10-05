@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="346px" preserveAspectRatio="none" style="width:705px;height:346px;background:#FFFFFF;" version="1.1" viewBox="0 0 705 346" width="705px" zoomAndPan="magnify"><defs><filter height="300%" id="fwzdro9b7cr6y" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[8c4f6a033e273add532353a41a1a9b42]
+cluster substitution_mappings--><rect fill="#FFFFFF" filter="url(#fwzdro9b7cr6y)" height="272" style="stroke:#000000;stroke-width:1.5;" width="684" x="7" y="60"/><rect fill="#FFFFFF" height="10" style="stroke:#000000;stroke-width:1.5;" width="15" x="671" y="65"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="669" y="67"/><rect fill="#FFFFFF" height="2" style="stroke:#000000;stroke-width:1.5;" width="4" x="669" y="71"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="324.5" y="86.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="109" x="294.5" y="103.0234">: telephony:PBX</text><!--MD5=[7cc49f27f4874c2745bb5505d41be8d3]
+entity node_asterisk--><rect fill="#FEFECE" filter="url(#fwzdro9b7cr6y)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="156" x="108" y="243.5"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="244" y="248.5"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="242" y="250.5"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="242" y="254.5"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="156.5" y="277.0352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116" x="123" y="293.5234">asterisk: Asterisk</text><!--MD5=[1db73e4bd498051284e64f8151b6715b]
+entity node_asterisk_deployment--><ellipse cx="362" cy="134.5" fill="#FEFECE" filter="url(#fwzdro9b7cr6y)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="81" x="321.5" y="165.0352">deployment</text><!--MD5=[4aee4953fb52c7120decc6666f682faa]
+entity node_asterisk_metadata--><ellipse cx="239" cy="134.5" fill="#FEFECE" filter="url(#fwzdro9b7cr6y)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="64" x="207" y="165.0352">metadata</text><!--MD5=[2a19962ea18437c94b5392ca77d2b0df]
+entity node_asterisk_trunks--><ellipse cx="134" cy="134.5" fill="#FEFECE" filter="url(#fwzdro9b7cr6y)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="44" x="112" y="165.0352">trunks</text><!--MD5=[f8f739a0356f9e920cf0e5e3ead7e939]
+entity node_asterisk_udp--><ellipse cx="42" cy="134.5" fill="#FEFECE" filter="url(#fwzdro9b7cr6y)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="27" x="28.5" y="165.0352">udp</text><!--MD5=[77d0d31fe7c712d8f4dbca7c082f861d]
+entity node_data_plane--><rect fill="#FEFECE" filter="url(#fwzdro9b7cr6y)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="238" x="445" y="103"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="663" y="108"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="661" y="110"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="661" y="114"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="534.5" y="136.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="198" x="460" y="153.0234">data-plane: ns:NetworkPlane</text><!--MD5=[769e83ace09eac0b0a250ddd64b024f4]
+entity policy_data_plane--><rect fill="#F0F8FF" filter="url(#fwzdro9b7cr6y)" height="97.9531" style="stroke:#A80036;stroke-width:1.5;" width="160" x="484" y="226"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="54" x="537" y="249.5352">«policy»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="125" x="494" y="266.0234">o11n:Provisioning</text><line style="stroke:#A80036;stroke-width:1.0;" x1="485" x2="643" y1="268.9766" y2="268.9766"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="134" x="494" y="307">instantiable = False</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="485" x2="528.5" y1="285.2207" y2="285.2207"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="71" x="528.5" y="290.0117">properties</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="599.5" x2="643" y1="285.2207" y2="285.2207"/><!--MD5=[44ae3c9c54c115c2ca4cdb96c0365464]
+entity substitution_mappings_trunks--><ellipse cx="134" cy="14" fill="#FEFECE" filter="url(#fwzdro9b7cr6y)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="44" x="112" y="44.5352">trunks</text><!--MD5=[4facab57dd26d66da3b2c1a483e17858]
+link node_asterisk_deployment to node_asterisk--><path d="M352.5375,142.0539 C329.0467,160.8064 266.9808,210.3534 225.6144,243.376 " fill="none" id="node_asterisk_deployment-node_asterisk" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[d1904476267a9cc3dfd687096f116527]
+link node_asterisk_metadata to node_asterisk--><path d="M235.5225,143.7186 C228.0149,163.6208 209.9908,211.4017 197.886,243.4909 " fill="none" id="node_asterisk_metadata-node_asterisk" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[902807baac56ee4c35679f59d55a0895]
+link node_asterisk_trunks to node_asterisk--><path d="M137.4119,143.7186 C144.7778,163.6208 162.4618,211.4017 174.3383,243.4909 " fill="none" id="node_asterisk_trunks-node_asterisk" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[e64767112c90cb3fa1191a7b6c6c2860]
+link node_asterisk_udp to node_asterisk--><path d="M51.0078,143.2889 C71.0805,162.8737 120.3191,210.9155 153.4451,243.2363 " fill="none" id="node_asterisk_udp-node_asterisk" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[201689f7f8711d21ff1ebabc381d8eaf]
+reverse link node_data_plane to policy_data_plane--><path d="M564,171.1104 C564,187.8416 564,207.9052 564,225.92 " fill="none" id="node_data_plane-backto-policy_data_plane" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="564,166.0309,560,175.0309,564,171.0309,568,175.0309,564,166.0309" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[0b7e668e72a2463ec87ae284605f9704]
+link substitution_mappings_trunks to node_asterisk_trunks--><path d="M134,23.0571 C134,42.5098 134,88.6548 134,115.0617 " fill="none" id="substitution_mappings_trunks-to-node_asterisk_trunks" style="stroke:#A80036;stroke-width:1.0;"/><path d="M142.4572,122.2596 A9,9 0 0 0 125.5428 122.2596" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[f0843fe0601e1ef33803f2084fb6c3b9]
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  backgroundColor<<relationship>> White
+}
+
+interface "trunks" as substitution_mappings_trunks
+component ": telephony:PBX" <<node>> as substitution_mappings {
+component "asterisk: Asterisk" <<node>> as node_asterisk
+interface "deployment" as node_asterisk_deployment
+node_asterisk_deployment - - node_asterisk
+interface "metadata" as node_asterisk_metadata
+node_asterisk_metadata - - node_asterisk
+interface "trunks" as node_asterisk_trunks
+node_asterisk_trunks - - node_asterisk
+interface "udp" as node_asterisk_udp
+node_asterisk_udp - - node_asterisk
+
+component "data-plane: ns:NetworkPlane" <<node>> as node_data_plane
+
+agent policy_data_plane <<policy>> #AliceBlue [
+o11n:Provisioning
+- - -
+.. properties ..
+instantiable = False
+]
+policy_data_plane -up-> node_data_plane
+}
+substitution_mappings_trunks - -( node_asterisk_trunks
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

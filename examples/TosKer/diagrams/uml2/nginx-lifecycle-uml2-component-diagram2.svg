@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="563px" preserveAspectRatio="none" style="width:179px;height:563px;background:#FFFFFF;" version="1.1" viewBox="0 0 179 563" width="179px" zoomAndPan="magnify"><defs><filter height="300%" id="fdpgvpion46s" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[fa5f437b2296d134fbe58e4029fb9ca8]
+entity node_nginx--><rect fill="#FEFECE" filter="url(#fdpgvpion46s)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="148" x="12" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="140" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="138" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="138" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="56.5" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="108" x="27" y="57.0234">nginx: Software</text><!--MD5=[bc03c002944e60f184b90455242afc18]
+entity node_nginx_host_relationship0--><rect fill="#FFFFFF" filter="url(#fdpgvpion46s)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="136" x="18" y="244"/><rect fill="#FFFFFF" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="134" y="249"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="132" y="251"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="132" y="255"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="96" x="33" y="277.5352">«relationship»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="43" y="294.0234">: HostedOn</text><!--MD5=[b95969f42baf0817826e7b5119d0d6eb]
+entity node_nginx_host_relationship0_source--><ellipse cx="86" cy="165" fill="#FEFECE" filter="url(#fdpgvpion46s)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><!--MD5=[d4b2a60a54f1b519147d3b0ac9244b09]
+entity node_server--><rect fill="#FEFECE" filter="url(#fdpgvpion46s)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="158" x="7" y="487"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="145" y="492"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="143" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="143" y="498"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="56.5" y="520.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="118" x="22" y="537.0234">server: Container</text><!--MD5=[a64059e30a59ac3c06e0012a16b90e79]
+entity node_server_host--><ellipse cx="86" cy="397" fill="#FEFECE" filter="url(#fdpgvpion46s)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="71" y="427.5352">host</text><!--MD5=[100f53527b3157c747853baa6ed0172a]
+link node_nginx_host_relationship0_source to node_nginx_host_relationship0--><path d="M86,174.0427 C86,189.0936 86,219.9767 86,243.738 " fill="none" id="node_nginx_host_relationship0_source-node_nginx_host_relationship0" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[000600790b57e15aaf5013a09d653573]
+link node_nginx to node_nginx_host_relationship0_source--><path d="M86,70.095 C86,93.9415 86,125.8764 86,145.9448 " fill="none" id="node_nginx-to-node_nginx_host_relationship0_source" style="stroke:#A80036;stroke-width:1.0;"/><path d="M94.4573,152.9147 A9,9 0 0 0 77.5428 152.9145" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="87" y="113.5684">host</text><!--MD5=[72fd7734bd51a9f3d387645fd5d885e4]
+link node_server_host to node_server--><path d="M86,406.1322 C86,423.0198 86,459.8584 86,486.7682 " fill="none" id="node_server_host-node_server" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[084bd4024f4dcff35d5ea50c06fa2e34]
+link node_nginx_host_relationship0 to node_server_host--><path d="M86,307.1055 C86,329.4533 86,358.697 86,377.663 " fill="none" id="node_nginx_host_relationship0-to-node_server_host" style="stroke:#A80036;stroke-width:1.0;"/><path d="M94.4573,384.6735 A9,9 0 0 0 77.5428 384.6733" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[e73f6f62b853015e2af94e5eef664092]
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  backgroundColor<<relationship>> White
+}
+
+component "nginx: Software" <<node>> as node_nginx
+component ": HostedOn" <<relationship>> as node_nginx_host_relationship0
+interface " " as node_nginx_host_relationship0_source
+node_nginx_host_relationship0_source - - node_nginx_host_relationship0
+node_nginx - -( node_nginx_host_relationship0_source : host
+
+component "server: Container" <<node>> as node_server
+interface "host" as node_server_host
+node_server_host - - node_server
+
+node_nginx_host_relationship0 - -( node_server_host
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

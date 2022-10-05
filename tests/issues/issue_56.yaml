@@ -1,0 +1,23 @@
+# https://github.com/oasis-open/tosca-community-contributions/issues/56
+tosca_definitions_version: tosca_simple_yaml_1_3
+topology_template:
+  node_templates:
+    compute:
+      type: tosca.nodes.Compute
+      capabilities:
+        host:
+          properties:
+            name: mycompute
+    software:
+      type: tosca.nodes.SoftwareComponent
+      requirements:
+        - host: compute
+      interfaces:
+        Standard:
+          operations:
+            configure:
+              inputs:
+                property_host_name:  { get_property: [ SELF, host, name ]}
+                attribute_host_name: { get_attribute: [ SELF, host, name ]}
+                error1: { get_attribute: [ SELF, xxx, name ]} # ERROR: xxx capability or requirement undefined!
+                error2: { get_attribute: [ SELF, host, yyy ]} # ERROR: yyy attribute undefined in tosca.capabilities.Compute!

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="1043px" preserveAspectRatio="none" style="width:249px;height:1043px;background:#FFFFFF;" version="1.1" viewBox="0 0 249 1043" width="249px" zoomAndPan="magnify"><defs><filter height="300%" id="f2hy7it8f1uqo" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[bc112a35a61567ebf468c2abd7b6c119]
+entity node_wp_container--><rect fill="#FEFECE" filter="url(#f2hy7it8f1uqo)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="208" x="17" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="205" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="203" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="203" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="91.5" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="168" x="32" y="57.0234">wp_container: Container</text><!--MD5=[fc5a47af5bb71a5629a73e81186c58a3]
+entity node_wp_container_connection_relationship0--><rect fill="#FFFFFF" filter="url(#f2hy7it8f1uqo)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="136" x="53" y="244"/><rect fill="#FFFFFF" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="169" y="249"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="167" y="251"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="167" y="255"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="96" x="68" y="277.5352">«relationship»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="90" x="71" y="294.0234">: ConnectsTo</text><!--MD5=[0ccc514b4037a55ebda4724f99b0aa13]
+entity node_wp_container_connection_relationship0_source--><ellipse cx="121" cy="165" fill="#FEFECE" filter="url(#f2hy7it8f1uqo)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><!--MD5=[af739ca8495e458ad1b7bb18ef0c36bf]
+entity node_mysql_container--><rect fill="#FEFECE" filter="url(#f2hy7it8f1uqo)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="228" x="7" y="487"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="215" y="492"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="213" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="213" y="498"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="91.5" y="520.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="188" x="22" y="537.0234">mysql_container: Container</text><!--MD5=[5e798255b6246f16e1e23842558c0919]
+entity node_mysql_container_endpoint--><ellipse cx="121" cy="397" fill="#FEFECE" filter="url(#f2hy7it8f1uqo)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62" x="90" y="427.5352">endpoint</text><!--MD5=[fe835652e4c59d755a7b6f6905136061]
+entity node_mysql_container_storage_relationship0--><rect fill="#FFFFFF" filter="url(#f2hy7it8f1uqo)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="136" x="53" y="724"/><rect fill="#FFFFFF" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="169" y="729"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="167" y="731"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="167" y="735"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="96" x="68" y="757.5352">«relationship»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="85" x="73.5" y="774.0234">: AttachesTo</text><!--MD5=[66af15c64d6df3e38184ffd48663d2e4]
+entity node_mysql_container_storage_relationship0_source--><ellipse cx="121" cy="645" fill="#FEFECE" filter="url(#f2hy7it8f1uqo)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><!--MD5=[14b66136619b78d40cf23df1e9e97b0b]
+entity node_mysql_volume--><rect fill="#FEFECE" filter="url(#f2hy7it8f1uqo)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="197" x="22.5" y="967"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="199.5" y="972"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="197.5" y="974"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="197.5" y="978"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="91.5" y="1000.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="157" x="37.5" y="1017.0234">mysql_volume: Volume</text><!--MD5=[011fdbb6b94f6b9bfecc83c4f66bcdc8]
+entity node_mysql_volume_attachment--><ellipse cx="121" cy="877" fill="#FEFECE" filter="url(#f2hy7it8f1uqo)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="77" x="82.5" y="907.5352">attachment</text><!--MD5=[c300eb31d76e58c249a57db062f97657]
+link node_wp_container_connection_relationship0_source to node_wp_container_connection_relationship0--><path d="M121,174.0427 C121,189.0936 121,219.9767 121,243.738 " fill="none" id="node_wp_container_connection_relationship0_source-node_wp_container_connection_relationship0" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[b0702f4ac3ef5128d165dd8e09785124]
+link node_wp_container to node_wp_container_connection_relationship0_source--><path d="M121,70.095 C121,93.9415 121,125.8764 121,145.9448 " fill="none" id="node_wp_container-to-node_wp_container_connection_relationship0_source" style="stroke:#A80036;stroke-width:1.0;"/><path d="M129.4573,152.9147 A9,9 0 0 0 112.5428 152.9145" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="122" y="113.5684">connection</text><!--MD5=[8c9f7dc18c6030053a50eba6ce2cf62d]
+link node_mysql_container_endpoint to node_mysql_container--><path d="M121,406.1322 C121,423.0198 121,459.8584 121,486.7682 " fill="none" id="node_mysql_container_endpoint-node_mysql_container" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[e2d85fd9a069fbd1cc2a41962cd6875b]
+link node_mysql_container_storage_relationship0_source to node_mysql_container_storage_relationship0--><path d="M121,654.0427 C121,669.0936 121,699.9767 121,723.738 " fill="none" id="node_mysql_container_storage_relationship0_source-node_mysql_container_storage_relationship0" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[47cd7cac1137e103a447655e7810afd9]
+link node_mysql_container to node_mysql_container_storage_relationship0_source--><path d="M121,550.095 C121,573.9415 121,605.8764 121,625.9448 " fill="none" id="node_mysql_container-to-node_mysql_container_storage_relationship0_source" style="stroke:#A80036;stroke-width:1.0;"/><path d="M129.4573,632.9147 A9,9 0 0 0 112.5428 632.9145" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="47" x="122" y="593.5684">storage</text><!--MD5=[c69a9584c3e18f3efc6461d60fc9030e]
+link node_mysql_volume_attachment to node_mysql_volume--><path d="M121,886.1322 C121,903.0198 121,939.8584 121,966.7682 " fill="none" id="node_mysql_volume_attachment-node_mysql_volume" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[1581571cbd9d0726d216768ca5805cac]
+link node_wp_container_connection_relationship0 to node_mysql_container_endpoint--><path d="M121,307.1055 C121,329.4533 121,358.697 121,377.663 " fill="none" id="node_wp_container_connection_relationship0-to-node_mysql_container_endpoint" style="stroke:#A80036;stroke-width:1.0;"/><path d="M129.4573,384.6735 A9,9 0 0 0 112.5428 384.6733" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[8e1ce8491a11861ac27d751a9fafa50f]
+link node_mysql_container_storage_relationship0 to node_mysql_volume_attachment--><path d="M121,787.1055 C121,809.4533 121,838.697 121,857.663 " fill="none" id="node_mysql_container_storage_relationship0-to-node_mysql_volume_attachment" style="stroke:#A80036;stroke-width:1.0;"/><path d="M129.4573,864.6735 A9,9 0 0 0 112.5428 864.6733" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[fbb6e7789e4f90028536839ae9e64f19]
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  backgroundColor<<relationship>> White
+}
+
+component "wp_container: Container" <<node>> as node_wp_container
+component ": ConnectsTo" <<relationship>> as node_wp_container_connection_relationship0
+interface " " as node_wp_container_connection_relationship0_source
+node_wp_container_connection_relationship0_source - - node_wp_container_connection_relationship0
+node_wp_container - -( node_wp_container_connection_relationship0_source : connection
+
+component "mysql_container: Container" <<node>> as node_mysql_container
+interface "endpoint" as node_mysql_container_endpoint
+node_mysql_container_endpoint - - node_mysql_container
+component ": AttachesTo" <<relationship>> as node_mysql_container_storage_relationship0
+interface " " as node_mysql_container_storage_relationship0_source
+node_mysql_container_storage_relationship0_source - - node_mysql_container_storage_relationship0
+node_mysql_container - -( node_mysql_container_storage_relationship0_source : storage
+
+component "mysql_volume: Volume" <<node>> as node_mysql_volume
+interface "attachment" as node_mysql_volume_attachment
+node_mysql_volume_attachment - - node_mysql_volume
+
+node_wp_container_connection_relationship0 - -( node_mysql_container_endpoint
+node_mysql_container_storage_relationship0 - -( node_mysql_volume_attachment
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

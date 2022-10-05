@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="563px" preserveAspectRatio="none" style="width:223px;height:563px;background:#FFFFFF;" version="1.1" viewBox="0 0 223 563" width="223px" zoomAndPan="magnify"><defs><filter height="300%" id="f9hxqspdirq8y" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[453ca84abc47e4dfa025ad16c70dc8fc]
+entity node_live_test--><rect fill="#FEFECE" filter="url(#f9hxqspdirq8y)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="158" x="29" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="167" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="165" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="165" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="78.5" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="118" x="44" y="57.0234">live_test: LiveTest</text><!--MD5=[d8ced928827712651d0edf89806d6b7e]
+entity node_live_test_host_relationship0--><rect fill="#FFFFFF" filter="url(#f9hxqspdirq8y)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="136" x="40" y="244"/><rect fill="#FFFFFF" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="156" y="249"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="154" y="251"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="154" y="255"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="96" x="55" y="277.5352">«relationship»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="65" y="294.0234">: HostedOn</text><!--MD5=[d16e8ca0b392d14444baad7098720109]
+entity node_live_test_host_relationship0_source--><ellipse cx="108" cy="165" fill="#FEFECE" filter="url(#f9hxqspdirq8y)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><!--MD5=[2a81c370cf31a6325962262b0e137732]
+entity node_existing_host--><rect fill="#FEFECE" filter="url(#f9hxqspdirq8y)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="202" x="7" y="487"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="189" y="492"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="187" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="187" y="498"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="78.5" y="520.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="162" x="22" y="537.0234">existing_host: HostBase</text><!--MD5=[f6c0d6605fea12f99864e8e969c6d942]
+entity node_existing_host_host--><ellipse cx="108" cy="397" fill="#FEFECE" filter="url(#f9hxqspdirq8y)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="93" y="427.5352">host</text><!--MD5=[048033542a8d628eba4fa2eb1f311bab]
+link node_live_test_host_relationship0_source to node_live_test_host_relationship0--><path d="M108,174.0427 C108,189.0936 108,219.9767 108,243.738 " fill="none" id="node_live_test_host_relationship0_source-node_live_test_host_relationship0" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[53a65ca574e2d1ea9c11e0747c313b2e]
+link node_live_test to node_live_test_host_relationship0_source--><path d="M108,70.095 C108,93.9415 108,125.8764 108,145.9448 " fill="none" id="node_live_test-to-node_live_test_host_relationship0_source" style="stroke:#A80036;stroke-width:1.0;"/><path d="M116.4573,152.9147 A9,9 0 0 0 99.5428 152.9145" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="109" y="113.5684">host</text><!--MD5=[c059e24acaf93647e12220db881fa90e]
+link node_existing_host_host to node_existing_host--><path d="M108,406.1322 C108,423.0198 108,459.8584 108,486.7682 " fill="none" id="node_existing_host_host-node_existing_host" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[3c65ec0089e17b19bdf0af1fceaee92a]
+link node_live_test_host_relationship0 to node_existing_host_host--><path d="M108,307.1055 C108,329.4533 108,358.697 108,377.663 " fill="none" id="node_live_test_host_relationship0-to-node_existing_host_host" style="stroke:#A80036;stroke-width:1.0;"/><path d="M116.4573,384.6735 A9,9 0 0 0 99.5428 384.6733" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[4b76ece16b5d65f2c4117cc1de4a040d]
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  backgroundColor<<relationship>> White
+}
+
+component "live_test: LiveTest" <<node>> as node_live_test
+component ": HostedOn" <<relationship>> as node_live_test_host_relationship0
+interface " " as node_live_test_host_relationship0_source
+node_live_test_host_relationship0_source - - node_live_test_host_relationship0
+node_live_test - -( node_live_test_host_relationship0_source : host
+
+component "existing_host: HostBase" <<node>> as node_existing_host
+interface "host" as node_existing_host_host
+node_existing_host_host - - node_existing_host
+
+node_live_test_host_relationship0 - -( node_existing_host_host
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

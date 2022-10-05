@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="1043px" preserveAspectRatio="none" style="width:235px;height:1043px;background:#FFFFFF;" version="1.1" viewBox="0 0 235 1043" width="235px" zoomAndPan="magnify"><defs><filter height="300%" id="f1vcf3ldl6atpw" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[ac0378eaee94a030291fca69d3db3006]
+entity node_db--><rect fill="#FEFECE" filter="url(#f1vcf3ldl6atpw)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="126" x="51" y="487"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="157" y="492"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="155" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="155" y="498"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="84.5" y="520.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86" x="66" y="537.0234">db: Software</text><!--MD5=[723fa73b85113c6e85becfa743691553]
+entity node_db_endpoint--><ellipse cx="114" cy="397" fill="#FEFECE" filter="url(#f1vcf3ldl6atpw)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62" x="83" y="427.5352">endpoint</text><!--MD5=[030ca8908ae80570809bd8710d7f4cc9]
+entity node_db_host_relationship0--><rect fill="#FFFFFF" filter="url(#f1vcf3ldl6atpw)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="136" x="46" y="724"/><rect fill="#FFFFFF" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="162" y="729"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="160" y="731"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="160" y="735"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="96" x="61" y="757.5352">«relationship»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="71" y="774.0234">: HostedOn</text><!--MD5=[cf80b3232cd95765a695fc35bbd5d738]
+entity node_db_host_relationship0_source--><ellipse cx="114" cy="645" fill="#FEFECE" filter="url(#f1vcf3ldl6atpw)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><!--MD5=[891bc38d85e68dfb3eedf4a4bba7ee2b]
+entity node_app_container--><rect fill="#FEFECE" filter="url(#f1vcf3ldl6atpw)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="214" x="7" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="201" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="199" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="199" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="84.5" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="174" x="22" y="57.0234">app_container: Container</text><!--MD5=[8516f152f7f6d3a2759af7c3d3fdc2c1]
+entity node_app_container_connection_relationship0--><rect fill="#FFFFFF" filter="url(#f1vcf3ldl6atpw)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="136" x="46" y="244"/><rect fill="#FFFFFF" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="162" y="249"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="160" y="251"/><rect fill="#FFFFFF" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="160" y="255"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="96" x="61" y="277.5352">«relationship»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="90" x="64" y="294.0234">: ConnectsTo</text><!--MD5=[b4b5e80acf5dc95e191b71e0c26d3a31]
+entity node_app_container_connection_relationship0_source--><ellipse cx="114" cy="165" fill="#FEFECE" filter="url(#f1vcf3ldl6atpw)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><!--MD5=[6f781a85ba203a7ef99b7b8ad458c59b]
+entity node_server2--><rect fill="#FEFECE" filter="url(#f1vcf3ldl6atpw)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="167" x="30.5" y="967"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="177.5" y="972"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="175.5" y="974"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="175.5" y="978"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="84.5" y="1000.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="127" x="45.5" y="1017.0234">server2: Container</text><!--MD5=[e0f240d9da9ab1b96dc6917d84692b6b]
+entity node_server2_host--><ellipse cx="114" cy="877" fill="#FEFECE" filter="url(#f1vcf3ldl6atpw)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="99" y="907.5352">host</text><!--MD5=[33d7fdad444a5b148ed297025241d7ff]
+link node_db_endpoint to node_db--><path d="M114,406.1322 C114,423.0198 114,459.8584 114,486.7682 " fill="none" id="node_db_endpoint-node_db" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[3f794b2594a899001f573782a36d892a]
+link node_db_host_relationship0_source to node_db_host_relationship0--><path d="M114,654.0427 C114,669.0936 114,699.9767 114,723.738 " fill="none" id="node_db_host_relationship0_source-node_db_host_relationship0" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[72f9ab9c9af587d946bebb14a13cd448]
+link node_db to node_db_host_relationship0_source--><path d="M114,550.095 C114,573.9415 114,605.8764 114,625.9448 " fill="none" id="node_db-to-node_db_host_relationship0_source" style="stroke:#A80036;stroke-width:1.0;"/><path d="M122.4573,632.9147 A9,9 0 0 0 105.5428 632.9145" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="115" y="593.5684">host</text><!--MD5=[788f1d1f478306e105c16dab76a59446]
+link node_app_container_connection_relationship0_source to node_app_container_connection_relationship0--><path d="M114,174.0427 C114,189.0936 114,219.9767 114,243.738 " fill="none" id="node_app_container_connection_relationship0_source-node_app_container_connection_relationship0" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[d710e65f913508dc26cd5ea125bb8d93]
+link node_app_container to node_app_container_connection_relationship0_source--><path d="M114,70.095 C114,93.9415 114,125.8764 114,145.9448 " fill="none" id="node_app_container-to-node_app_container_connection_relationship0_source" style="stroke:#A80036;stroke-width:1.0;"/><path d="M122.4573,152.9147 A9,9 0 0 0 105.5428 152.9145" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="115" y="113.5684">connection</text><!--MD5=[59de0ca1c2e763dffdb616214830e75e]
+link node_server2_host to node_server2--><path d="M114,886.1322 C114,903.0198 114,939.8584 114,966.7682 " fill="none" id="node_server2_host-node_server2" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[27dc5c83de14c4d4ec11c5bab80cffcf]
+link node_db_host_relationship0 to node_server2_host--><path d="M114,787.1055 C114,809.4533 114,838.697 114,857.663 " fill="none" id="node_db_host_relationship0-to-node_server2_host" style="stroke:#A80036;stroke-width:1.0;"/><path d="M122.4573,864.6735 A9,9 0 0 0 105.5428 864.6733" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[9a79c8a2c65dfaa40668007e7b1c025f]
+link node_app_container_connection_relationship0 to node_db_endpoint--><path d="M114,307.1055 C114,329.4533 114,358.697 114,377.663 " fill="none" id="node_app_container_connection_relationship0-to-node_db_endpoint" style="stroke:#A80036;stroke-width:1.0;"/><path d="M122.4573,384.6735 A9,9 0 0 0 105.5428 384.6733" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><!--MD5=[0c3cd2860f5e6a4c0acf3ccd24d6b286]
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  backgroundColor<<relationship>> White
+}
+
+component "db: Software" <<node>> as node_db
+interface "endpoint" as node_db_endpoint
+node_db_endpoint - - node_db
+component ": HostedOn" <<relationship>> as node_db_host_relationship0
+interface " " as node_db_host_relationship0_source
+node_db_host_relationship0_source - - node_db_host_relationship0
+node_db - -( node_db_host_relationship0_source : host
+
+component "app_container: Container" <<node>> as node_app_container
+component ": ConnectsTo" <<relationship>> as node_app_container_connection_relationship0
+interface " " as node_app_container_connection_relationship0_source
+node_app_container_connection_relationship0_source - - node_app_container_connection_relationship0
+node_app_container - -( node_app_container_connection_relationship0_source : connection
+
+component "server2: Container" <<node>> as node_server2
+interface "host" as node_server2_host
+node_server2_host - - node_server2
+
+node_db_host_relationship0 - -( node_server2_host
+node_app_container_connection_relationship0 - -( node_db_endpoint
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

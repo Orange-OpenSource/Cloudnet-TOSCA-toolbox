@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="565px" preserveAspectRatio="none" style="width:249px;height:565px;background:#FFFFFF;" version="1.1" viewBox="0 0 249 565" width="249px" zoomAndPan="magnify"><defs><filter height="300%" id="fg9gmr7n7leam" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[bc112a35a61567ebf468c2abd7b6c119]
+entity node_wp_container--><rect fill="#FEFECE" filter="url(#fg9gmr7n7leam)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="208" x="17" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="205" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="203" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="203" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="91.5" y="40.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="168" x="32" y="57.0234">wp_container: Container</text><!--MD5=[af739ca8495e458ad1b7bb18ef0c36bf]
+entity node_mysql_container--><rect fill="#FEFECE" filter="url(#fg9gmr7n7leam)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="228" x="7" y="248"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="215" y="253"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="213" y="255"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="213" y="259"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="91.5" y="281.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="188" x="22" y="298.0234">mysql_container: Container</text><!--MD5=[5e798255b6246f16e1e23842558c0919]
+entity node_mysql_container_endpoint--><ellipse cx="121" cy="159" fill="#FEFECE" filter="url(#fg9gmr7n7leam)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62" x="90" y="189.5352">endpoint</text><!--MD5=[14b66136619b78d40cf23df1e9e97b0b]
+entity node_mysql_volume--><rect fill="#FEFECE" filter="url(#fg9gmr7n7leam)" height="62.9766" style="stroke:#A80036;stroke-width:1.5;" width="197" x="22.5" y="489"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="199.5" y="494"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="197.5" y="496"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="197.5" y="500"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="49" x="91.5" y="522.5352">«node»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="157" x="37.5" y="539.0234">mysql_volume: Volume</text><!--MD5=[011fdbb6b94f6b9bfecc83c4f66bcdc8]
+entity node_mysql_volume_attachment--><ellipse cx="121" cy="400" fill="#FEFECE" filter="url(#fg9gmr7n7leam)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="77" x="82.5" y="430.5352">attachment</text><!--MD5=[8c9f7dc18c6030053a50eba6ce2cf62d]
+link node_mysql_container_endpoint to node_mysql_container--><path d="M121,168.0571 C121,184.7509 121,221.1025 121,247.7674 " fill="none" id="node_mysql_container_endpoint-node_mysql_container" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[c69a9584c3e18f3efc6461d60fc9030e]
+link node_mysql_volume_attachment to node_mysql_volume--><path d="M121,409.0571 C121,425.7509 121,462.1025 121,488.7674 " fill="none" id="node_mysql_volume_attachment-node_mysql_volume" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[8fbbc97eadfc9d45b35cca94e7c79810]
+link node_wp_container to node_mysql_container_endpoint--><path d="M121,70.16 C121,92.2188 121,120.9338 121,139.6589 " fill="none" id="node_wp_container-to-node_mysql_container_endpoint" style="stroke:#A80036;stroke-width:1.0;"/><path d="M129.4573,146.8 A9,9 0 0 0 112.5428 146.7998" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="44.1094" y="90.4709">connection</text><!--MD5=[02b35ecdbd80d7a832441f20f19df96b]
+link node_mysql_container to node_mysql_volume_attachment--><path d="M121,311.16 C121,333.2188 121,361.9338 121,380.6589 " fill="none" id="node_mysql_container-to-node_mysql_volume_attachment" style="stroke:#A80036;stroke-width:1.0;"/><path d="M129.4573,387.8 A9,9 0 0 0 112.5428 387.7998" style="stroke:#A80036;stroke-width:1.5;fill:none;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="47" x="69.3734" y="331.4709">storage</text><!--MD5=[1a4a2c8d998d9b6787478afbfaf50647]
+@startuml
+skinparam componentStyle uml2
+
+component "wp_container: Container" <<node>> as node_wp_container
+
+component "mysql_container: Container" <<node>> as node_mysql_container
+interface "endpoint" as node_mysql_container_endpoint
+node_mysql_container_endpoint - - node_mysql_container
+
+component "mysql_volume: Volume" <<node>> as node_mysql_volume
+interface "attachment" as node_mysql_volume_attachment
+node_mysql_volume_attachment - - node_mysql_volume
+
+node_wp_container "connection" - -( node_mysql_container_endpoint
+node_mysql_container "storage" - -( node_mysql_volume_attachment
+@enduml
+
+PlantUML version 1.2021.13(Mon Nov 01 12:38:45 CET 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: fr
+Country: FR
+--></g></svg>

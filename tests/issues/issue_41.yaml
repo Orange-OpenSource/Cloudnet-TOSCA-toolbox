@@ -1,0 +1,46 @@
+# https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/issues/41
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  MyNodeType:
+    derived_from: tosca.nodes.Root
+    capabilities:
+      target_cap:
+        type: tosca.capabilities.Node
+    requirements:
+      - target:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.DependsOn
+          occurrences: [0, UNBOUNDED]
+
+topology_template:
+  node_templates:
+    n1:
+      type: MyNodeType
+    n2:
+      type: MyNodeType
+      requirements:
+        - dependency: n1 # WARNING: target_cap or feature capability found!
+        - dependency:
+            node: MyNodeType # WARNING: target_cap or feature capability found!
+            # WARNING: n1 and n2 match!
+        - dependency:
+            node: n1 # WARNING: target_cap or feature capability found!
+        - dependency:
+            node: n1 # WARNING: target_cap or feature capability found!
+            capability: tosca.capabilities.Node
+        - dependency:
+            node: n1 # CORRECT: no ambiguity
+            capability: feature
+        - target: n1 # WARNING: target_cap or feature capability found!
+        - target:
+            node: MyNodeType # WARNING: target_cap or feature capability found!
+            # WARNING: n1 and n2 match!
+        - target:
+            node: n1 # WARNING: target_cap or feature capability found!
+        - target:
+            node: n1 # WARNING: target_cap or feature capability found!
+            capability: tosca.capabilities.Node
+        - target:
+            node: n1 # CORRECT: no ambiguity
+            capability: target_cap

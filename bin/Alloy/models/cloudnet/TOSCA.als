@@ -2,7 +2,7 @@
  *
  * Software Name : Cloudnet TOSCA toolbox
  * Version: 1.0
- * SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+ * SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
  * SPDX-License-Identifier: Apache-2.0
  *
  * This software is distributed under the Apache License 2.0
@@ -153,6 +153,11 @@ pred valid_values[variable: one String, values: set String]
   variable in values
 }
 
+pred valid_values[variable: seq string, values: integer -> string]
+{
+//TODO
+}
+
 pred string.pattern[value: one string]
 {
   // Do nothing as can not be expressed with Alloy.
@@ -197,6 +202,11 @@ pred integer.in_range[lower: one integer, upper: one integer]
 {
   lower <= this
   this <= upper
+}
+
+pred length[variable: seq univ, value: one Int]
+{
+  #variable = value
 }
 
 pred min_length[variable: one String, value: one Int]

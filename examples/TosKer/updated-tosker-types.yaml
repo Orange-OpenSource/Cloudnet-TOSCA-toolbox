@@ -1,0 +1,221 @@
+tosca_definitions_version: tosca_simple_yaml_1_3 #ISSUE: moved from tosca_simple_yaml_1_0
+
+description: Definition of the custom types of TosKer.
+
+
+group_types:
+  tosker.groups.DeploymentUnit:
+    derived_from: tosca.groups.Root
+
+data_types: #ISSUE: missing types added
+  tosker.datatypes.State:
+    properties:
+      requires:
+        type: list
+        entry_schema:
+          type: string
+        required: false
+      offers:
+        type: list
+        entry_schema:
+          type: string
+        required: false
+
+  tosker.datatypes.Transition:
+    properties:
+      source:
+        type: string
+      target:
+        type: string
+      requires:
+        type: list
+        entry_schema:
+          type: string
+        required: false
+      interface:
+        type: string
+      operation:
+        type: string
+
+policy_types:
+  tosker.policies.Protocol:
+    derived_from: tosca.policies.Root
+    properties:
+      initial_state:
+        type: string
+        required: true
+      states:
+        type: map
+        entry_schema: #ISSUE: missing entry schema added
+          type: tosker.datatypes.State
+        required: true
+      transitions:
+        type: list
+        entry_schema: #ISSUE: missing entry schema added
+          type: tosker.datatypes.Transition
+        required: true
+    targets: [ tosker.nodes.Software ]
+
+
+node_types:
+  tosker.nodes.Root:
+    derived_from: tosca.nodes.Root
+
+  tosker.nodes.Container:
+    derived_from: tosca.nodes.Root
+    attributes:
+      id:
+        type: string
+      private_address:
+        type: string
+      public_address:
+        type: string
+      # BEGIN work around for the get_attribute bug in toscaparser
+      ports:
+        type: map
+        key_schema: #ISSUE: missing key schema added
+          type: integer
+          constraints:
+            - greater_or_equal: 0
+        entry_schema: #ISSUE: missing entry schema added
+          type: integer
+          constraints:
+            - greater_or_equal: 0
+      env_variable:
+        type: map
+        entry_schema: #ISSUE: missing entry schema added
+          type: string
+      command:
+        type: string
+      share_data:
+        type: map
+        entry_schema: #ISSUE: missing entry schema added
+          type: string
+      supported_sw:
+        type: map
+        entry_schema: #ISSUE: missing entry schema added
+          type: string
+      os_distribution:
+        type: string
+      # END
+    properties:
+      ports:
+        type: map
+        key_schema: #ISSUE: missing key schema added
+          type: integer
+          constraints:
+            - greater_or_equal: 0
+        entry_schema: #ISSUE: missing entry schema added
+          type: integer
+          constraints:
+            - greater_or_equal: 0
+        required: false
+      env_variable:
+        type: map
+        entry_schema: #ISSUE: missing entry schema added
+          type: string
+        required: false
+      command:
+        type: string
+        required: false
+      share_data:
+        type: map
+        entry_schema: #ISSUE: missing entry schema added
+          type: string
+        required: false
+      supported_sw:
+        type: map
+        entry_schema: #ISSUE: missing entry schema added
+          type: string
+        required: false
+      os_distribution:
+        type: string
+        required: false
+    requirements:
+    - storage:
+        capability: tosca.capabilities.Attachment
+        occurrences: [0, UNBOUNDED]
+        node: tosker.nodes.Volume
+        relationship: tosca.relationships.AttachesTo
+    - connection:
+        capability: tosca.capabilities.Endpoint
+        occurrences: [0, UNBOUNDED]
+#        node: tosker.nodes.Root #ISSUE: commented because tosker.nodes.Root has no tosca.capabilities.Endpoint
+        relationship: tosca.relationships.ConnectsTo
+    - dependency:
+        capability: tosca.capabilities.Node
+        occurrences: [0, UNBOUNDED]
+        node: tosker.nodes.Root
+        relationship: tosca.relationships.DependsOn
+    capabilities:
+      host:
+        type: tosca.capabilities.Container
+        valid_source_types: [tosker.nodes.Software]
+        occurrences: [0, UNBOUNDED]
+      endpoint:
+        type: tosca.capabilities.Endpoint
+        valid_source_types: [tosker.nodes.Software, tosker.nodes.Container]
+        occurrences: [0, UNBOUNDED]
+      feature:
+        type: tosca.capabilities.Node
+        valid_source_types: [tosker.nodes.Software, tosker.nodes.Container]
+#        occurrences: [0, UNBOUNDED] #ISSUE: commented because inherited occurrences are [1, UNBOUNDED]
+
+  tosker.nodes.Volume:
+    derived_from: tosker.nodes.Root
+    attributes:
+      id:
+        type: string
+    capabilities:
+      attachment:
+        type: tosca.capabilities.Attachment
+        valid_source_types: [tosker.nodes.Container]
+        occurrences: [0, UNBOUNDED]
+
+  tosker.nodes.Software:
+    derived_from: tosker.nodes.Root
+    requirements:
+    - connection:
+        capability: tosca.capabilities.Endpoint
+        occurrences: [0, UNBOUNDED]
+#        node: tosker.nodes.Root #ISSUE: commented because tosker.nodes.Root has no tosca.capabilities.Endpoint
+        relationship: tosca.relationships.ConnectsTo
+    - dependency:
+        capability: tosca.capabilities.Node
+        occurrences: [0, UNBOUNDED]
+        node: tosker.nodes.Root
+        relationship: tosca.relationships.DependsOn
+    - host:
+        capability: tosca.capabilities.Container
+#        occurrences: 1 #ISSUE: commented because not compliant with TOSCA grammar
+#        node: tosker.nodes.Container #ISSUE: commented because Software can be hosted in another Software
+        relationship: tosca.relationships.HostedOn
+    capabilities:
+      endpoint:
+        type: tosca.capabilities.Endpoint
+        valid_source_types: [tosker.nodes.Software, tosker.nodes.Container]
+        occurrences: [0, UNBOUNDED]
+      feature:
+        type: tosca.capabilities.Node
+        valid_source_types: [tosker.nodes.Software, tosker.nodes.Container]
+#        occurrences: [0, UNBOUNDED] #ISSUE: commented because inherited occurrences are [1, UNBOUNDED]
+      host:
+        type: tosca.capabilities.Container
+        valid_source_types: [tosker.nodes.Software]
+        occurrences: [0, UNBOUNDED]
+
+artifact_types:
+  tosker.artifacts.Root:
+    derived_from: tosca.artifacts.Root
+  tosker.artifacts.Image:
+    derived_from: tosker.artifacts.Root
+    description: a Docker image
+  tosker.artifacts.Image.Service:
+    derived_from: tosker.artifacts.Image
+    description: a Docker image executable
+  tosker.artifacts.Dockerfile:
+    derived_from: tosker.artifacts.Root
+    description: a Dockerfile to be build
+  tosker.artifacts.Dockerfile.Service:
+    derived_from: tosker.artifacts.Dockerfile
+    description: a Dockerfile to be build in a executable image

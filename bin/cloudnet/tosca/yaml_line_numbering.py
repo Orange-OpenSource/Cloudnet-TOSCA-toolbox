@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -13,9 +13,12 @@
 # Software description: TOSCA to Cloudnet Translator
 ######################################################################
 
+import collections.abc
 import datetime
 import re
 import yaml
+from yaml.constructor import ConstructorError
+from yaml.nodes import MappingNode
 
 
 class Coord:
@@ -116,16 +119,34 @@ class SafeLineLoader(yaml.SafeLoader):
         return result
 
     def construct_yaml_map(self, node):
-        # PM: don't understand how to use the result of super().construct_yaml_map()
-        #        result = super().construct_yaml_map(node)
-        # PM: so I duplicate the code
-        result = DictCoord(
+        data = DictCoord(
             line=node.start_mark.line + 1,
             column=node.start_mark.column + 1,
         )
-        result.update(self.construct_mapping(node))
-        return result
+        # PM: Following is copied from PyYAML code base
+        yield data
+        value = self.construct_mapping(node)
+        data.update(value)
 
+    def construct_mapping(self, node, deep=False):
+        # PM: Following is copied from PyYAML code base
+        if not isinstance(node, MappingNode):
+            raise ConstructorError(None, None,
+                    "expected a mapping node, but found %s" % node.id,
+                    node.start_mark)
+        mapping = {}
+        for key_node, value_node in node.value:
+            key = self.construct_object(key_node, deep=deep)
+            if not isinstance(key, collections.abc.Hashable):
+                raise ConstructorError("while constructing a mapping", node.start_mark,
+                        "found unhashable key", key_node.start_mark)
+            value = self.construct_object(value_node, deep=deep)
+            # PM: Following check was added to detect duplicate keys
+            if key in mapping:
+                raise ConstructorError("while constructing a mapping", node.start_mark,
+                        "%s - duplicate map key" % key, key_node.start_mark)
+            mapping[key] = value
+        return mapping
 
 SafeLineLoader.add_constructor(
     "tag:yaml.org,2002:int", SafeLineLoader.construct_yaml_int
@@ -149,4 +170,28 @@ SafeLineLoader.add_constructor(
 
 SafeLineLoader.add_constructor(
     "tag:yaml.org,2002:map", SafeLineLoader.construct_yaml_map
+)
+
+yaml.SafeDumper.add_representer(
+    StrCoord, yaml.SafeDumper.represent_str
+)
+
+yaml.SafeDumper.add_representer(
+    IntCoord, yaml.SafeDumper.represent_int
+)
+
+yaml.SafeDumper.add_representer(
+    FloatCoord, yaml.SafeDumper.represent_float
+)
+
+yaml.SafeDumper.add_representer(
+    ListCoord, yaml.SafeDumper.represent_list
+)
+
+yaml.SafeDumper.add_representer(
+    DictCoord, yaml.SafeDumper.represent_dict
+)
+
+yaml.SafeDumper.add_representer(
+    DatetimeCoord, yaml.SafeDumper.represent_datetime
 )
