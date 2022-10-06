@@ -463,18 +463,14 @@ diagnosticFormat () {
                ;;
       esac
       echo -e "   We get ${_JQ_LINUX_VERSION} from internet ..."
-#      mark _OLD_DIRECTORY
-#      cd "${CLOUDNET_BINDIR}" || return
-      curl -L -s https://github.com/stedolan/jq/releases/download/jq-1.6/${_JQ_LINUX_VERSION} --output "${CLOUDNET_BINDIR}${_JQ_LINUX_VERSION}"
-      if ! $?
+      if curl -L -s https://github.com/stedolan/jq/releases/download/jq-1.6/${_JQ_LINUX_VERSION} --output "${CLOUDNET_BINDIR}/${_JQ_LINUX_VERSION}"
       then
-         echo -e "   ${_JQ_LINUX_VERSION} downloaded ..."
-         chmod +x "${CLOUDNET_BINDIR}${_JQ_LINUX_VERSION}"
+         echo -e "   ${_JQ_LINUX_VERSION} downloaded ... "
+         chmod +x "${CLOUDNET_BINDIR}/${_JQ_LINUX_VERSION}"
+         pause
       else
-         exit 1
+         return 1
       fi
-      pause
- #     cd "$_OLD_DIRECTORY" || return
    fi
 
    # Sort file on files names in case
@@ -556,7 +552,7 @@ diagnosticFormat () {
        esac
        _INDEX=$((_INDEX+1))
 
-   done < <("${CLOUDNET_BINDIR}${_JQ_LINUX}" '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}")
+   done < <("${_JQ_LINUX}" '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}")
 }
 
 ################################################################################
