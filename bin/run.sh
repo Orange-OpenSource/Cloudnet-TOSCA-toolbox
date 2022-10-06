@@ -61,7 +61,7 @@ TOSCA_SyntaxCheck()
      do
 # Warning: "${filename^^}" does not work on MacOS!
 #      echo -e "\n${normal}${magenta}    ${filename^^} ${reset}" | tee -a logs/"${_LOG}"
-       echo -e "\n${normal}${magenta}    `echo $filename | tr [a-z] [A-Z]` ${reset}" | tee -a logs/${_LOG}
+       echo -e "\n${normal}${magenta}    $(echo $filename | tr [a-z] [A-Z]) ${reset}" | tee -a logs/${_LOG}
        translate "$filename" 2>&1 | tee -a logs/"${_LOG}"
      done
    IFS=$OLDIFS
@@ -402,6 +402,20 @@ myJQ () {
          pause
    esac
 }
+
+################################################################################
+# This function can be called with a variable name to record the current 
+# directory to use it later.
+#
+# record current directory
+# $ mark old_dir
+# go back to old_dir
+# $ cd ${old_dir}
+################################################################################
+function mark {
+    export $1=$(pwd);
+}
+
 ################################################################################
 # Display diagnostic file which is given in $1 parameter
 #     errors level, line and column numbers, and associated message
@@ -417,6 +431,50 @@ diagnosticFormat () {
    # Verify if there are errors in the diagnostic file
    if [ "$(wc -l <${_FILENAME})" == "0" ]; then
       echo -e "\n\n${bold}${magenta}**** No errors found in diagnostic file ${_FILENAME} ****${reset}\n\n\n" > "logs/${_FORMATTED_TRANSLATE_LOG}"
+   fi
+
+   # Verify which format of jq to use
+   case $(arch) in
+      x86_64)
+         # Linux 64 bits architecture
+         _JQ_LINUX="${CLOUDNET_BINDIR}/jq-linux64"
+         _JQ_LINUX_VERSION="jq-linux64"
+         ;;
+      i386)
+         # Linux 32 bits architecture
+         _JQ_LINUX="${CLOUDNET_BINDIR}/jq-linux32"
+         _JQ_LINUX_VERSION="jq-linux32"
+         ;;
+      *)
+         # Unknown linux architecture
+         echo -e "${bold}${red}Error${reset} Unknown architecture to run diagnostic menu..."
+         pause
+   esac
+
+   # If jq is not present, we ask to download it from the internet
+   if ! command -v ${_JQ_LINUX} &> /dev/null
+   then
+      echo "<${_JQ_LINUX_VERSION}> cannot be found"
+      echo ""
+      read -rp "   Would you like to install it ? [ O|n ] " choice
+      case $choice in
+            n) # exit with informational message
+               exit 0
+               ;;
+      esac
+      echo -e "   We get ${_JQ_LINUX_VERSION} from internet ..."
+#      mark _OLD_DIRECTORY
+#      cd "${CLOUDNET_BINDIR}" || return
+      curl -L -s https://github.com/stedolan/jq/releases/download/jq-1.6/${_JQ_LINUX_VERSION} --output "${CLOUDNET_BINDIR}${_JQ_LINUX_VERSION}"
+      if ! $?
+      then
+         echo -e "   ${_JQ_LINUX_VERSION} downloaded ..."
+         chmod +x "${CLOUDNET_BINDIR}${_JQ_LINUX_VERSION}"
+      else
+         exit 1
+      fi
+      pause
+ #     cd "$_OLD_DIRECTORY" || return
    fi
 
    # Sort file on files names in case
@@ -498,7 +556,7 @@ diagnosticFormat () {
        esac
        _INDEX=$((_INDEX+1))
 
-   done < <(myJQ)
+   done < <("${CLOUDNET_BINDIR}${_JQ_LINUX}" '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}")
 }
 
 ################################################################################
@@ -573,6 +631,11 @@ if [ ! -f "${TOSCA2CLOUDNET_CONF_FILE}" ]; then
      echo "  # Target directory where Alloy files are generated."
      echo "  target-directory: ${RESULT_DIR}/Alloy"
      echo ""
+     echo "# Configuration of the declarative workflow generator."
+     echo "DeclarativeWorkflows:"
+     echo "  # Target directory where declarative workflows are generated."
+     echo "  target-directory: ${RESULT_DIR}/DeclarativeWorkflows"
+     echo ""
      echo "# Configuration of the network diagram generator."
      echo "nwdiag:"
      echo "  # Target directory where network diagrams are generated."
@@ -630,7 +693,7 @@ fi
 ################################################################################
 # Process the input options.
 # When called in batch mode, it launch the whole treatement and return a code
-# indicating if the statys is OK, OK with warning or KO
+# indicating if the status is OK, OK with warning or KO
 ################################################################################
 # Get the options
 optstring=":hbs"
