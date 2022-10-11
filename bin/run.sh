@@ -383,27 +383,6 @@ columnize2 () {
 }
 
 ################################################################################
-# Define which jq version to use
-################################################################################
-myJQ () {
-   # Test the linux version
-   case $(arch) in
-      x86_64)
-         # Linux 64 bits architecture
-         "${CLOUDNET_BINDIR}"/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
-         ;;
-      i386)
-         # Linux 32 bits architecture
-         "${CLOUDNET_BINDIR}"/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
-         ;;
-      *)
-         # Unknown linux architecture
-         echo -e "${bold}${red}Error${reset} Unknown architecture to run diagnostic menu..."
-         pause
-   esac
-}
-
-################################################################################
 # This function can be called with a variable name to record the current 
 # directory to use it later.
 #
