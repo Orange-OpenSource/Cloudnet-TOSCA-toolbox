@@ -383,19 +383,6 @@ columnize2 () {
 }
 
 ################################################################################
-# This function can be called with a variable name to record the current 
-# directory to use it later.
-#
-# record current directory
-# $ mark old_dir
-# go back to old_dir
-# $ cd ${old_dir}
-################################################################################
-function mark {
-    export $1=$(pwd);
-}
-
-################################################################################
 # Display diagnostic file which is given in $1 parameter
 #     errors level, line and column numbers, and associated message
 ################################################################################
@@ -410,6 +397,7 @@ diagnosticFormat () {
    # Verify if there are errors in the diagnostic file
    if [ "$(wc -l <${_FILENAME})" == "0" ]; then
       echo -e "\n\n${bold}${magenta}**** No errors found in diagnostic file ${_FILENAME} ****${reset}\n\n\n" > "logs/${_FORMATTED_TRANSLATE_LOG}"
+      return
    fi
 
    # Verify which format of jq to use
@@ -431,7 +419,7 @@ diagnosticFormat () {
    esac
 
    # If jq is not present, we ask to download it from the internet
-   if ! command -v ${_JQ_LINUX} &> /dev/null
+   if ! command -v "${_JQ_LINUX}" &> /dev/null
    then
       echo "<${_JQ_LINUX_VERSION}> cannot be found"
       echo ""
@@ -470,7 +458,7 @@ diagnosticFormat () {
    do
        printf "."
        # remove double quotes in string
-       LREAD=$(echo $LREAD | tr -d \" )
+       LREAD=$(echo "$LREAD" | tr -d \" )
        case $_INDEX in
            1) # Filename
                   if [ "$_OLDFILENAME" != "${LREAD}" ]; then
@@ -532,6 +520,18 @@ diagnosticFormat () {
        _INDEX=$((_INDEX+1))
 
    done < <("${_JQ_LINUX}" '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}")
+
+   # Print the last summary for the last file si on a du traiter des erreurs
+   if [ -s  "${_FILENAME}" ]
+   then
+      echo -e "\n\011 ----------- Results -----------" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+      echo -e "\011 ${_NB_ERROR}${bold}${red} ERROR${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+               "  ${_NB_WARNING}${bold}${yellow} WARNING${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+               "  ${_NB_INFO}${bold}${white} INFO${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+               "  ${_NB_OTHER}${bold}${white} UNKNOW${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+   else
+      echo -e "\n\011 ----------- ${bold}${green}No errors found${reset} -----------" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+   fi
 }
 
 ################################################################################
