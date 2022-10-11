@@ -79,11 +79,13 @@ def main(argv):
             default="",
             help="json log output processing file.",
         )
+
         parser.add_argument(
             "--config-file",
             metavar="<config_file.yaml>",
-            default=configuration.CONFIGURATION_FILE,
-            help="use provided YAML file as default configuration",
+            default=[configuration.CONFIGURATION_FILE],
+            help="use provided YAML file(s) as default configuration",
+            nargs="+",
         )
         (args, extra_args) = parser.parse_known_args(argv)
 
@@ -92,9 +94,7 @@ def main(argv):
         )
 
         # Load configuration.
-        config = configuration.load(
-            config_file=args.config_file,
-        )
+        config = configuration.load(args.config_file)
 
         # Load the TOSCA service template.
         try:
