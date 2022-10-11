@@ -80,12 +80,6 @@ def main(argv):
             help="json log output processing file.",
         )
         parser.add_argument(
-            "--ignore-target-config",
-            dest="ignore_target_config",
-            action="store_true",
-            help="ignore target directory configuration, force it to default values.",
-        )
-        parser.add_argument(
             "--config-file",
             metavar="<config_file.yaml>",
             default=configuration.CONFIGURATION_FILE,
@@ -100,9 +94,6 @@ def main(argv):
         # Load configuration.
         config = configuration.load(
             config_file=args.config_file,
-            ignored_keys=[processors.Generator.TARGET_DIRECTORY]
-            if args.ignore_target_config
-            else [],
         )
 
         # Load the TOSCA service template.

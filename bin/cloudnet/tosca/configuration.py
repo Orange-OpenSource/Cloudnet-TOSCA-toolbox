@@ -25,19 +25,13 @@ LOGGER = logging.getLogger(__name__)
 CONFIGURATION_FILE = "tosca2cloudnet.yaml"
 
 
-def load(config_file=CONFIGURATION_FILE, ignored_keys=[]):
+def load(config_file=CONFIGURATION_FILE):
     configuration = DEFAULT_CONFIGURATION
 
     if os.path.exists(config_file):
         # Load the configuration file if it exists.
         with open(config_file, "r") as stream:
             content = yaml.load(stream, Loader=yaml.FullLoader)
-            # delete all subkeys of content which are in ignored values
-            for d in content.values():
-                if isinstance(d, dict):
-                    for k in ignored_keys:
-                        if k in d:
-                            del d[k]
             configuration = merge_dict(DEFAULT_CONFIGURATION, content)
 
     # Configure logging.
