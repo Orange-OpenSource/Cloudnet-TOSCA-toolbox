@@ -53,14 +53,8 @@ TOSCA_SyntaxCheck()
    OLDIFS=$IFS
    IFS=$'\n'
    echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/"${_LOG}"
-# TODO: Jean-Luc following commits need to be merged.
-# Next line committed by Jean-Luc in https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/commit/0844e5de97c8834cd3d6b21ecb521a9cdcf8dcdc#diff-00a80c5821edea2ebf676056aa4c9a24e57379ef52cefecb2ccffaaf4cc362c9
-#   for filename in $(grep -r --include=*.{yaml,yml} -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
-# Next line committed by Philippe in https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/commit/ff3ee75f572e6d665d05ad89496fcbff07503f53#diff-00a80c5821edea2ebf676056aa4c9a24e57379ef52cefecb2ccffaaf4cc362c9
    for filename in $(find . -not -path "./${DeclarativeWorkflows_target_directory}/*" -iname '*.yaml' -o -iname '*.yml' | xargs grep -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
      do
-# Warning: "${filename^^}" does not work on MacOS!
-#      echo -e "\n${normal}${magenta}    ${filename^^} ${reset}" | tee -a logs/"${_LOG}"
        echo -e "\n${normal}${magenta}    $(echo $filename | tr [a-z] [A-Z]) ${reset}" | tee -a logs/${_LOG}
        translate "$filename" 2>&1 | tee -a logs/"${_LOG}"
      done
