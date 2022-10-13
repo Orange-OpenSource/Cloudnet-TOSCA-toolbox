@@ -50,18 +50,15 @@ TOSCA_SyntaxCheck()
    touch logs/"$_LOG"
 
    # All description files translation
+   OLDIFS=$IFS
+   IFS=$'\n'
    echo -e "\n${normal}${magenta}*** Descriptor files syntax checking ***${reset}" | tee -a logs/"${_LOG}"
-# TODO: Jean-Luc following commits need to be merged.
-# Next line committed by Jean-Luc in https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/commit/0844e5de97c8834cd3d6b21ecb521a9cdcf8dcdc#diff-00a80c5821edea2ebf676056aa4c9a24e57379ef52cefecb2ccffaaf4cc362c9
-#   for filename in $(grep -r --include=*.{yaml,yml} -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
-# Next line committed by Philippe in https://github.com/Orange-OpenSource/Cloudnet-TOSCA-toolbox/commit/ff3ee75f572e6d665d05ad89496fcbff07503f53#diff-00a80c5821edea2ebf676056aa4c9a24e57379ef52cefecb2ccffaaf4cc362c9
    for filename in $(find . -not -path "./${DeclarativeWorkflows_target_directory}/*" -iname '*.yaml' -o -iname '*.yml' | xargs grep -l 'tosca_definitions_version:') $(find . -iname '*.csar' -o -iname '*.zip')
      do
-# Warning: "${filename^^}" does not work on MacOS!
-#      echo -e "\n${normal}${magenta}    ${filename^^} ${reset}" | tee -a logs/"${_LOG}"
-       echo -e "\n${normal}${magenta}    `echo $filename | tr [a-z] [A-Z]` ${reset}" | tee -a logs/${_LOG}
+       echo -e "\n${normal}${magenta}    $(echo $filename | tr [a-z] [A-Z]) ${reset}" | tee -a logs/${_LOG}
        translate "$filename" 2>&1 | tee -a logs/"${_LOG}"
      done
+   IFS=$OLDIFS
    SYNTAX_CHECK=true
 }
 
@@ -262,14 +259,15 @@ read_options(){
     case $choice in
         1) # Launch TOSCA syntax checking
            echo -e "\n"
-           TOSCA_SyntaxCheck
+           time TOSCA_SyntaxCheck
            pause
            ;;
         2) # Launch ALL diagrams generation
            echo -e "\n"
-           DiagramsGen network "$nwdiag_target_directory"
-           DiagramsGen TOSCA "$tosca_diagrams_target_directory"
-           DiagramsGen UML2 "$UML2_target_directory"
+           time ( time DiagramsGen network "$nwdiag_target_directory";
+           time DiagramsGen TOSCA "$tosca_diagrams_target_directory";
+           time DiagramsGen UML2 "$UML2_target_directory";
+           )
            pause
            ;;
         3) # Launch TOSCA syntax checking + ALL diagrams generation
@@ -379,26 +377,6 @@ columnize2 () {
 }
 
 ################################################################################
-# Define which jq version to use
-################################################################################
-myJQ () {
-   # Test the linux version
-   case $(arch) in
-      x86_64)
-         # Linux 64 bits architecture
-         "${CLOUDNET_BINDIR}"/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
-         ;;
-      i386)
-         # Linux 32 bits architecture
-         "${CLOUDNET_BINDIR}"/jq-linux64 '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}"
-         ;;
-      *)
-         # Unknown linux architecture
-         echo -e "${bold}${red}Error${reset} Unknown architecture to run diagnostic menu..."
-         pause
-   esac
-}
-################################################################################
 # Display diagnostic file which is given in $1 parameter
 #     errors level, line and column numbers, and associated message
 ################################################################################
@@ -413,6 +391,47 @@ diagnosticFormat () {
    # Verify if there are errors in the diagnostic file
    if [ "$(wc -l <${_FILENAME})" == "0" ]; then
       echo -e "\n\n${bold}${magenta}**** No errors found in diagnostic file ${_FILENAME} ****${reset}\n\n\n" > "logs/${_FORMATTED_TRANSLATE_LOG}"
+      return
+   fi
+
+   # Verify which format of jq to use
+   case $(arch) in
+      x86_64)
+         # Linux 64 bits architecture
+         _JQ_LINUX="${CLOUDNET_BINDIR}/jq-linux64"
+         _JQ_LINUX_VERSION="jq-linux64"
+         ;;
+      i386)
+         # Linux 32 bits architecture
+         _JQ_LINUX="${CLOUDNET_BINDIR}/jq-linux32"
+         _JQ_LINUX_VERSION="jq-linux32"
+         ;;
+      *)
+         # Unknown linux architecture
+         echo -e "${bold}${red}Error${reset} Unknown architecture to run diagnostic menu..."
+         pause
+   esac
+
+   # If jq is not present, we ask to download it from the internet
+   if ! command -v "${_JQ_LINUX}" &> /dev/null
+   then
+      echo "<${_JQ_LINUX_VERSION}> cannot be found"
+      echo ""
+      read -rp "   Would you like to install it ? [ O|n ] " choice
+      case $choice in
+            n) # exit with informational message
+               exit 0
+               ;;
+      esac
+      echo -e "   We get ${_JQ_LINUX_VERSION} from internet ..."
+      if curl -L -s https://github.com/stedolan/jq/releases/download/jq-1.6/${_JQ_LINUX_VERSION} --output "${CLOUDNET_BINDIR}/${_JQ_LINUX_VERSION}"
+      then
+         echo -e "   ${_JQ_LINUX_VERSION} downloaded ... "
+         chmod +x "${CLOUDNET_BINDIR}/${_JQ_LINUX_VERSION}"
+         pause
+      else
+         return 1
+      fi
    fi
 
    # Sort file on files names in case
@@ -433,7 +452,7 @@ diagnosticFormat () {
    do
        printf "."
        # remove double quotes in string
-       LREAD=$(echo $LREAD | tr -d \" )
+       LREAD=$(echo "$LREAD" | tr -d \" )
        case $_INDEX in
            1) # Filename
                   if [ "$_OLDFILENAME" != "${LREAD}" ]; then
@@ -494,7 +513,19 @@ diagnosticFormat () {
        esac
        _INDEX=$((_INDEX+1))
 
-   done < <(myJQ)
+   done < <("${_JQ_LINUX}" '.file, .gravity, .message, .line, .column' "${_SORTED_FILENAME}")
+
+   # Print the last summary for the last file si on a du traiter des erreurs
+   if [ -s  "${_FILENAME}" ]
+   then
+      echo -e "\n\011 ----------- Results -----------" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+      echo -e "\011 ${_NB_ERROR}${bold}${red} ERROR${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+               "  ${_NB_WARNING}${bold}${yellow} WARNING${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+               "  ${_NB_INFO}${bold}${white} INFO${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}" \
+               "  ${_NB_OTHER}${bold}${white} UNKNOW${reset}" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+   else
+      echo -e "\n\011 ----------- ${bold}${green}No errors found${reset} -----------" >> "logs/${_FORMATTED_TRANSLATE_LOG}"
+   fi
 }
 
 ################################################################################
@@ -513,7 +544,7 @@ white="37m"
 reset="\033[m"
 blink="5m"
 
-# Guess where are located the software
+# Guess where is located the software
 CLOUDNET_BINDIR="$PWD/.."
 Continue=1
 while [ $Continue -eq 1 ]
@@ -568,6 +599,11 @@ if [ ! -f "${TOSCA2CLOUDNET_CONF_FILE}" ]; then
      echo "Alloy:"
      echo "  # Target directory where Alloy files are generated."
      echo "  target-directory: ${RESULT_DIR}/Alloy"
+     echo ""
+     echo "# Configuration of the declarative workflow generator."
+     echo "DeclarativeWorkflows:"
+     echo "  # Target directory where declarative workflows are generated."
+     echo "  target-directory: ${RESULT_DIR}/DeclarativeWorkflows"
      echo ""
      echo "# Configuration of the network diagram generator."
      echo "nwdiag:"
@@ -626,7 +662,7 @@ fi
 ################################################################################
 # Process the input options.
 # When called in batch mode, it launch the whole treatement and return a code
-# indicating if the statys is OK, OK with warning or KO
+# indicating if the status is OK, OK with warning or KO
 ################################################################################
 # Get the options
 optstring=":hbs"
