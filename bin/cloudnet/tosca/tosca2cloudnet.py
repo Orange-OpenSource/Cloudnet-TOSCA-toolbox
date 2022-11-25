@@ -161,7 +161,7 @@ def main(argv):
             HOTGenerator,
         ]:
             generator = generator_class(generator=type_checker)
-            generator.generation()
+            generator.process()
             nb_errors += generator.nb_errors
             nb_warnings += generator.nb_warnings
         return diagnostics.return_code

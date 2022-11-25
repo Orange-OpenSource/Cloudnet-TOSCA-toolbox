@@ -23,8 +23,10 @@ from cloudnet.tosca.utils import normalize_name, short_type_name
 
 UML2 = "UML2"
 DEFAULT_CONFIGURATION[UML2] = {
+    # Generation activated.
+    Generator.GENERATION: True,
     # Target directory where UML2 diagrams are generated.
-    Generator.TARGET_DIRECTORY: "uml2",
+    Generator.TARGET_DIRECTORY: "Results/Uml2Diagrams",
     "kinds": {
         "Compute": "node",  # OASIS TOSCA 1.2
         "tosca.nodes.Compute": "node",  # OASIS TOSCA 1.2
@@ -59,6 +61,9 @@ class PlantUMLGenerator(Generator):
     def generator_configuration_id(self):
         return UML2
 
+    def generator_title(self):
+        return 'UML2 Diagram Generator'
+
     def get_relationship_type(self, capability_type_name):
         relationship_types = \
             self.type_system. \
@@ -71,8 +76,6 @@ class PlantUMLGenerator(Generator):
             return "**<color:orange>UNDEFINED</color>**"
 
     def generation(self):
-        self.info("UML2 diagram generation")
-
         self.generate_UML2_class_diagram()
 
         topology_template = syntax.get_topology_template(

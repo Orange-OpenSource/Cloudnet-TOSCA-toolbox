@@ -232,6 +232,27 @@ class Generator(Processor):
     def generator_configuration_id(self):
         raise Error("generator_configuration_id must be overloaded!")
 
+    def generator_title(self):
+        raise Error("generator_title must be overloaded!")
+
+    GENERATION = "generation"
+
+    def process(self):
+        generation = self.configuration.get(
+                        self.generator_configuration_id(),
+                        Generator.GENERATION
+        )
+        generator_title = self.generator_title()
+        if generation is True:
+            self.info("%s - generation..." % generator_title)
+            self.generation()
+            self.info("%s - generation done." % generator_title)
+        else:
+            self.info("%s deactivated!" % generator_title)
+
+    def generation(self):
+        pass
+
     TARGET_DIRECTORY = "target-directory"
 
     def create_target_directory(self):

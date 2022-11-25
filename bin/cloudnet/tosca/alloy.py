@@ -28,6 +28,8 @@ import cloudnet.tosca.yaml_line_numbering as yaml_ln
 ALLOY = "Alloy"
 SCOPE = "scope"
 configuration.DEFAULT_CONFIGURATION[ALLOY] = {
+    # Generation activated.
+    Generator.GENERATION: True,
     # Target directory where Alloy files are generated.
     Generator.TARGET_DIRECTORY: "Results/Alloy",
     SCOPE: {
@@ -4017,9 +4019,10 @@ class TopologyTemplateGenerator(AbstractAlloySigGenerator):
 #
 class AlloyGenerator(AbstractAlloySigGenerator):
 
-    def generation(self):
-        self.info("Alloy generation")
+    def generator_title(self):
+        return 'Alloy Generator'
 
+    def generation(self):
         self.open_file(".als", normalize=True)
 
         # Declare Alloy signatures.
