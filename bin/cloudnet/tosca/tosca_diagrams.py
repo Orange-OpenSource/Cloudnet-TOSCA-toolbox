@@ -22,8 +22,10 @@ from cloudnet.tosca.utils import normalize_name, short_type_name
 
 TOSCA_DIAGRAMS = "tosca_diagrams"
 configuration.DEFAULT_CONFIGURATION[TOSCA_DIAGRAMS] = {
+    # Generation activated.
+    Generator.GENERATION: True,
     # Target directory where network diagrams are generated.
-    Generator.TARGET_DIRECTORY: TOSCA_DIAGRAMS
+    Generator.TARGET_DIRECTORY: "Results/ToscaDiagrams"
 }
 configuration.DEFAULT_CONFIGURATION["logging"]["loggers"][__name__] = {
     "level": "INFO",
@@ -40,6 +42,9 @@ class ToscaDiagramGenerator(Generator):
     def generator_configuration_id(self):
         return TOSCA_DIAGRAMS
 
+    def generator_title(self):
+        return 'TOSCA Diagram Generator'
+
     def get_node_name_id(self, node_name):
         node_name_id = normalize_name(node_name)
         if node_name_id == "node":  # 'node' is a dot keyword
@@ -47,8 +52,6 @@ class ToscaDiagramGenerator(Generator):
         return node_name_id
 
     def generation(self):
-        self.info("TOSCA diagram generation")
-
         topology_template = syntax.get_topology_template(
             self.tosca_service_template.get_yaml()
         )

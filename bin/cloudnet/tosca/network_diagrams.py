@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-21 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -24,6 +24,8 @@ from cloudnet.tosca.processors import Generator
 
 NWDIAG = "nwdiag"
 DEFAULT_CONFIGURATION[NWDIAG] = {
+    # Generation activated.
+    Generator.GENERATION: True,
     # Target directory where network diagrams are generated.
     Generator.TARGET_DIRECTORY: "Results/NetworkDiagrams",
     # Network capability types.
@@ -78,8 +80,10 @@ class NwdiagGenerator(Generator):
     def generator_configuration_id(self):
         return NWDIAG
 
+    def generator_title(self):
+        return 'Network Diagram Generator'
+
     def generation(self):
-        self.info("Network diagram generation...")
         topology_template = self.tosca_service_template.get_yaml().get(
             syntax.TOPOLOGY_TEMPLATE
         )
@@ -89,7 +93,6 @@ class NwdiagGenerator(Generator):
         else:
             # generate network diagrams for TOSCA topology templates only
             self.generate_network_diagram(topology_template)
-        self.info("Network diagram generation done.")
 
     def generate_network_diagram(self, topology_template):
         # network ports

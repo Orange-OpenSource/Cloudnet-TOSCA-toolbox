@@ -29,6 +29,8 @@ from cloudnet.tosca.utils import split_scalar_unit
 HOT = "HOT"
 HEAT_TEMPLATE_VERSION = "heat_template_version"
 configuration.DEFAULT_CONFIGURATION[HOT] = {
+    # Generation activated.
+    Generator.GENERATION: True,
     # Target directory where HOT templates are generated.
     Generator.TARGET_DIRECTORY: "Results/HOT",
     # The Heat template version used into generated HOT templates.
@@ -63,6 +65,9 @@ class HOTGenerator(Generator):
     def generator_configuration_id(self):
         return HOT
 
+    def generator_title(self):
+        return 'HOT Generator'
+
     def get_flavour_id(self, node_yaml, node_type):
         flavour_id = get_dict(node_yaml, PROPERTIES).get(FLAVOUR_ID)
         if flavour_id is None:
@@ -73,8 +78,6 @@ class HOTGenerator(Generator):
         return flavour_id
 
     def generation(self):
-        self.info("HOT generation")
-
         # TODO: Document next line.
         self.subnet_cidr_idx = 0
 

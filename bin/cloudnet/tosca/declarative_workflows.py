@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2021-22 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -23,8 +23,10 @@ import copy
 import cloudnet.tosca.configuration as configuration
 DECLARATIVE_WORKFLOWS = 'DeclarativeWorkflows'
 configuration.DEFAULT_CONFIGURATION[DECLARATIVE_WORKFLOWS] = {
+    # Generation activated.
+    Generator.GENERATION: True,
     # Target directory where declarative workflows are generated.
-    Generator.TARGET_DIRECTORY: DECLARATIVE_WORKFLOWS,
+    Generator.TARGET_DIRECTORY: "Results/DeclarativeWorkflows",
 }
 
 with open(os.path.dirname(__file__) + "/declarative_workflows.yaml", 'r') as stream:
@@ -44,12 +46,7 @@ class TopologyTemplateGenerator(Generator):
         This is the base class of TOSCA topology template generators.
     '''
 
-    def info_message(self):
-        raise NotImplementedError
-
     def generation(self):
-        self.info('%s...' % self.info_message())
-
         topology_template = \
             syntax.get_topology_template(self.tosca_service_template.get_yaml())
         # Generate only for TOSCA topology template.
@@ -57,8 +54,6 @@ class TopologyTemplateGenerator(Generator):
             self.generate_topology_template(topology_template)
         else:
             self.info('no topology template to process')
-
-        self.info('%s done' % self.info_message())
 
     def generate_topology_template(self, topology_template):
         raise NotImplementedError
@@ -88,8 +83,8 @@ class DeclarativeWorkflowGenerator(TopologyTemplateGenerator):
     def generator_configuration_id(self):
         return DECLARATIVE_WORKFLOWS
 
-    def info_message(self):
-        return 'TOSCA declarative workflow generation'
+    def generator_title(self):
+        return 'TOSCA Declarative Workflow Generator'
 
     def generate_topology_template(self, topology_template):
         workflows = topology_template.get('workflows')
