@@ -42,6 +42,11 @@ HOT:
   # Target directory where HOT templates are generated.
   target-directory: RESULTS/HOT
 
+Orchestration:
+  # Target directory where Orchestration templates are generated.
+  target-directory: RESULTS/Orchestration
+  do_i_need_to_execute: NO
+
 # Logging configuration.
 logging:
   loggers:

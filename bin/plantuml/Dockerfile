@@ -20,7 +20,10 @@ MAINTAINER Philippe Merle <Philippe.Merle@inria.fr>
 ENV PLANTUML_VERSION 1.2021.13
 ENV LANG en_US.UTF-8
 
-RUN apk add --update --no-cache \
+# JLC : proxy added for building inside a docker in a Virtualbox VM
+RUN export http_proxy=http://172.17.0.1:3128/ && \
+    export https_proxy=http://172.17.0.1:3128/ && \
+    apk add --update --no-cache \
          openjdk8-jre \
          graphviz \
          ttf-freefont ttf-droid ttf-droid-nonlatin \

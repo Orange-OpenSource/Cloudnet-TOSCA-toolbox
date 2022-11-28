@@ -18,7 +18,10 @@ MAINTAINER Philippe Merle <Philippe.Merle@inria.fr>
 
 COPY requirements.txt /requirements.txt
 
-RUN pip install --upgrade pip -r /requirements.txt \
+# JLC : proxy added for building inside a docker in a Virtualbox VM
+RUN export http_proxy=http://172.17.0.1:3128/ && \
+    export https_proxy=http://172.17.0.1:3128/ && \
+    pip install --upgrade pip -r /requirements.txt \
     && rm /requirements.txt
 
 ENV PYTHONPATH /

@@ -37,6 +37,7 @@ import cloudnet.tosca.importers as importers
 import cloudnet.tosca.processors as processors
 from cloudnet.tosca.alloy import AlloyGenerator
 from cloudnet.tosca.hot import HOTGenerator
+from cloudnet.tosca.orchestrator import Orchestrator
 from cloudnet.tosca.declarative_workflows import DeclarativeWorkflowGenerator
 from cloudnet.tosca.network_diagrams import NwdiagGenerator
 from cloudnet.tosca.syntax import SyntaxChecker
@@ -159,6 +160,7 @@ def main(argv):
             NwdiagGenerator,
             ToscaDiagramGenerator,
             HOTGenerator,
+            Orchestrator, # Added by JLC example
         ]:
             generator = generator_class(generator=type_checker)
             generator.generation()
