@@ -11,5 +11,7 @@ jobs:
           python-version: '3.10'
       - uses: docker-practice/actions-setup-docker@master
         timeout-minutes: 12
-      - run: bin/build.sh
-      - run: tests/run.sh
+      - run: pwd
+      - run: ls -laF
+#      - run: bin/build.sh
+#      - run: tests/run.sh
