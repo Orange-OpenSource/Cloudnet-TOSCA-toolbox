@@ -13,8 +13,5 @@ jobs:
         timeout-minutes: 12
       - run: pwd
       - run: ls -laF
-      - run: cd bin
-      - run: ls -laF
-      - run: build.sh
-      - run: cd ../tests
-      - run: run.sh
+      - run: bin/build.sh
+      - run: tests/run.sh
