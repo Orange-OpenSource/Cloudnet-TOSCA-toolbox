@@ -12,9 +12,8 @@ jobs:
       - uses: docker-practice/actions-setup-docker@master
         timeout-minutes: 12
       - run: |
-          pwd
-          ls -laF
-          bin/build.sh
-          cd tests
+          cd bin
+          build.sh
+          cd ../tests
           pwd
           bash ./run.sh
