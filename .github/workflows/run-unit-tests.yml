@@ -14,4 +14,5 @@ jobs:
       - run: pwd
       - run: ls -laF
       - run: bin/build.sh
+      - run: echo "here we are ..."
       - run: tests/run.sh
