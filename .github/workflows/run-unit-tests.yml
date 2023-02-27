@@ -15,4 +15,4 @@ jobs:
       - run: ls -laF
       - run: bin/build.sh
       - run: cd tests
-      - run: ./run.sh
+      - run: bash ./run.sh
