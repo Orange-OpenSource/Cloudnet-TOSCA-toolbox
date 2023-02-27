@@ -16,10 +16,11 @@
 FROM python
 MAINTAINER Philippe Merle <Philippe.Merle@inria.fr>
 
-# JLC : proxy added for building inside a docker in a Virtualbox VM
-RUN export http_proxy=http://172.17.0.1:3128/ && \
-    export https_proxy=http://172.17.0.1:3128/ && \
-    apt-get update && apt-get install -y graphviz fonts-freefont-ttf && apt-get clean \
+# JLC : proxy to be added for building inside a docker in a Virtualbox VM
+# RUN export http_proxy=http://172.17.0.1:3128/ && \
+#     export https_proxy=http://172.17.0.1:3128/ && \
+
+RUN apt-get update && apt-get install -y graphviz fonts-freefont-ttf && apt-get clean \
     && pip install nwdiag
 
 ENTRYPOINT [ "nwdiag" , "-f", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf" ]
