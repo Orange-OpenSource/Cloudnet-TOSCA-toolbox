@@ -14,5 +14,4 @@ jobs:
       - run: pwd
       - run: ls -laF
       - run: bin/build.sh
-      - run: cd tests
-      - run: bash ./run.sh
+      - run: bash tests/run.sh
