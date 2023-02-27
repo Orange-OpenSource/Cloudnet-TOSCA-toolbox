@@ -13,7 +13,7 @@ jobs:
         timeout-minutes: 12
       - run: |
           cd bin
-          build.sh
+          bash ./build.sh
           cd ../tests
           pwd
           bash ./run.sh
