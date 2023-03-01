@@ -1,0 +1,356 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+description: "VNFD service template for 5GCN in a Box"
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml
+  - 5GCN-IN-A-BOX-NodeType.yaml
+
+
+topology_template:
+
+  substitution_mappings:
+    node_type: MyCompany.5GCNInABoxVnfNodeType.1_0.1_0
+    requirements:
+      virtual_link_n2_n3:   [ n2_n3, virtual_link ]
+      virtual_link_n6:  [ n6, virtual_link ]
+      
+      virtual_link_ausf: [ ausf_externalCp, virtual_link ]
+      virtual_link_udm: [ udm_externalCp, virtual_link ]
+      virtual_link_amf_smf: [ amf_smf_externalCp, virtual_link ]      
+
+      virtual_link_ausf_mgt: [ ausf_mgt, virtual_link ]
+      virtual_link_udm_mgt: [ udm_mgt, virtual_link ]      
+      virtual_link_amf_smf_upf_mgt: [ amf_smf_upf_mgt, virtual_link ]       
+      
+
+  node_templates:
+
+    5GCNInABox:
+      type: MyCompany.5GCNInABoxVnfNodeType.1_0.1_0
+      properties:
+        flavour_id: simple
+      interfaces:
+        Vnflcm:
+          operations:
+            scale: {}
+            
+            
+##################################################################################
+##   VNFCs                                                                      ## 
+##################################################################################
+         
+    udm:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: UDM
+        description: This VNFC contains the UDM NF
+        vdu_profile:
+          min_number_of_instances: 2
+          max_number_of_instances: 3
+      capabilities:
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 4 GB
+            virtual_cpu:
+              cpu_architecture: x86
+              num_virtual_cpu: 2
+      requirements:
+        - virtual_storage: udm_db
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: udm.image.v1.0.qcow2
+          properties:
+            name: UDM Software
+            version: '1.0'
+            checksum:
+              algorithm: sha-256
+              hash: c7c3036539fd7a5f87a1bf44eb05fdde8b556a1a7e664dbeda90ed3cd74b4f9d
+            container_format: bare
+            disk_format: qcow2
+            min_disk: 2 GB
+            size: 2 GB  
+            
+            
+    ausf:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: AUSF
+        description: This VNFC contains the AUSF NF
+        nfvi_constraints:
+          key_1: value_1 
+        vdu_profile:
+          min_number_of_instances: 2
+          max_number_of_instances: 3
+      capabilities:
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 4 GB
+            virtual_cpu:
+              cpu_architecture: x86
+              num_virtual_cpu: 2
+      requirements:
+        - virtual_storage: ausf_db
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: ausf.image.v1.0.qcow2
+          properties:
+            name: AUSF Software
+            version: '1.0'
+            checksum:
+              algorithm: sha-256
+              hash: c7c3036539fd7a5f87a1bf44eb05fdde8b556a1a7e664dbeda90ed3cd74b4f9d
+            container_format: bare
+            disk_format: qcow2
+            min_disk: 2 GB
+            size: 2 GB  
+            
+
+    amf_smf_upf:
+      type: tosca.nodes.nfv.Vdu.Compute
+      properties:
+        name: AMF_SMF_UPF
+        description: This VNFC contains the udm function
+        vdu_profile:
+          min_number_of_instances: 0
+          max_number_of_instances: 3
+      capabilities:
+        virtual_compute:
+          properties:
+            virtual_memory:
+              virtual_mem_size: 8 GB
+            virtual_cpu:
+              cpu_architecture: x86
+              num_virtual_cpu: 16
+      requirements:
+        - virtual_storage: amf_smf_upf_db
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.nfv.SwImage
+          file: amf_smf_upf.image.v1.0.qcow2
+          properties:
+            name: udm Software
+            version: '1.0'
+            checksum:
+              algorithm: sha-256
+              hash: e8c3036539fd7a5f97a1bf44eb05fcce8b556a1a7e664dbeda90ed3cd74b4f5a
+            container_format: bare
+            disk_format: qcow2
+            min_disk: 4 GB
+            size: 4 GB
+
+    ausf_db:
+      type: tosca.nodes.nfv.Vdu.VirtualBlockStorage
+      properties:
+        virtual_block_storage_data:
+          size_of_storage: 20 GB
+          rdma_enabled: true
+
+    udm_db: 
+      type: tosca.nodes.nfv.Vdu.VirtualBlockStorage
+      properties:
+        virtual_block_storage_data:
+          size_of_storage: 20 GB
+          rdma_enabled: true
+          
+                   
+
+##################################################################################
+##   connection points                                                          ## 
+##################################################################################
+
+    n2_n3:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: Connection point to the RAN
+      requirements:
+        - virtual_binding: amf_smf_upf
+#       - virtual_link: # to be connected to a link to the RAN
+
+    n6:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: Connection point to the PDNs
+      requirements:
+        - virtual_binding: amf_smf_upf
+#       - virtual_link: # to be connected to a link to PDNs
+
+    amf_smf_externalCp:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: Connection point to other control plane VNFs
+      requirements:
+        - virtual_binding: amf_smf_upf
+#       - virtual_link: # to be connected to a link to other control plane VNFs
+ 
+    amf_smf_upf_mgt:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: Connection point to the management systems
+      requirements:
+        - virtual_binding: amf_smf_upf
+#       - virtual_link: # to be connected to a link to management systems
+
+
+    amf_smf_upf_internalCp:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: Internal CP for communication between AMF-SMF, UDM and AUSF
+      requirements:
+        - virtual_binding: amf_smf_upf
+        - virtual_link: internalVl
+
+    udm_mgt:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: Connection point to the management systems
+      requirements:
+        - virtual_binding: udm
+#       - virtual_link: # to be connected to management systems
+  
+    udm_externalCp:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: CP for communication with other control plane VNFs
+      requirements:
+        - virtual_binding: udm
+#       - virtual_link: # to be connected to a link to other control plane VNFs
+
+    udm_internalCp:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: Internal CP for communication between AMF-SMF, UDM and AUSF
+      requirements:
+        - virtual_binding: udm
+        - virtual_link: internalVl
+
+    ausf_mgt:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: Connection point to the management systems
+      requirements:
+        - virtual_binding: udm
+#       - virtual_link: # to be connected to management systems
+  
+    ausf_externalCp:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: CP for communication with other control plane VNFs
+      requirements:
+        - virtual_binding: udm
+#       - virtual_link: # to be connected to a link to other control plane VNFs
+
+    ausf_internalCp:
+      type: tosca.nodes.nfv.VduCp
+      properties:
+        layer_protocols: [ ipv4 ]
+        description: Internal CP for communication between AMF-SMF, UDM and AUSF
+      requirements:
+        - virtual_binding: udm
+        - virtual_link: internalVl
+    
+    internalVl:
+      type: tosca.nodes.nfv.VnfVirtualLink
+      properties:
+        connectivity_type:
+          layer_protocols: [ ipv4 ]
+        description: Internal VL for communication between ausf, smf/amf and udm 
+        vl_profile:
+          max_bitrate_requirements:
+            root: 10000000000
+            leaf: 10000000000
+          min_bitrate_requirements:
+            root: 10000000000
+            leaf: 10000000000
+                
+###################################################################
+###   Instantiation and scaling policies                        ###
+###################################################################
+
+  policies:
+    - scaling_aspects:
+        type: tosca.policies.nfv.ScalingAspects
+        properties:
+          aspects:
+            global:
+              name: Global scaling
+              description: Enables scaling all components of the VNF
+              max_scale_level: 10
+            
+
+    - amf_smf_upf_initial_delta:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ amf_smf_upf ]
+
+    - amf_smf_upf_scaling_aspect_deltas:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: global
+          deltas:
+            delta_1:
+              number_of_instances: 2
+        targets: [ amf_smf_upf ]
+
+    - udm_initial_delta:
+        type: tosca.policies.nfv.VduInitialDelta
+        properties:
+          initial_delta:
+            number_of_instances: 1
+        targets: [ udm ]
+
+    - udm_scaling_aspect_deltas:
+        type: tosca.policies.nfv.VduScalingAspectDeltas
+        properties:
+          aspect: global
+          deltas:
+            delta_1:
+              number_of_instances: 1
+        targets: [ udm ]
+
+
+    - instantiation_levels:
+        type: tosca.policies.nfv.InstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              description: ..
+              scale_info:
+                global:
+                  scale_level: 0                
+          default_level: instantiation_level_1
+
+    - amf_smf_upf_instantiation_levels:
+        type: tosca.policies.nfv.VduInstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              number_of_instances: 0
+            instantiation_level_2:
+              number_of_instances: 5
+        targets: [ amf_smf_upf ]
+
+    - udm_instantiation_levels:
+        type: tosca.policies.nfv.VduInstantiationLevels
+        properties:
+          levels:
+            instantiation_level_1:
+              number_of_instances: 1
+            instantiation_level_2:
+              number_of_instances: 2
+        targets: [ udm ]
+

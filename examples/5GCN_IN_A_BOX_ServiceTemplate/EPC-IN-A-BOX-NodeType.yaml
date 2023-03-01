@@ -1,0 +1,63 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+description: "VNFD service template for EPC in a Box"
+imports:
+  - etsi_nfv_sol001_vnfd_types.yaml
+  
+node_types:
+  MyCompany.EPCInABoxVnfNodeType.1_0.1_0:
+    derived_from: tosca.nodes.nfv.VNF
+    properties:
+      descriptor_id:
+        type: string
+        constraints: [ equal: 33840883-2257-48e7-83b1-4f10b870a512 ]
+        default: 33840883-2257-48e7-83b1-4f10b870a512
+      descriptor_version:
+        type: string
+        constraints : [ equal: '1.0' ]
+        default: '1.0'
+      provider:
+        type: string
+        constraints: [equal: MyCompany]
+        default: MyCompany
+      product_name:
+        type: string
+        constraints: [equal: EPC-IN-A-BOX ]
+        default: EPC-IN-A-BOX
+      software_version:
+        type: string
+        constraints: [ equal: '1.0' ]
+        default: '1.0'
+      flavour_id:
+        type: string
+        constraints: [ equal: simple ]
+        default: "simple"
+      flavour_description:
+        type: string
+        default: ""
+      vnfm_info:
+        type: list
+        entry_schema:
+          type: string
+        default: [ 'etsivnfm:v3.3.1' ]
+    requirements:    
+      - virtual_link:   
+           capability: tosca.capabilities.nfv.VirtualLinkable
+           relationship: tosca.relationships.nfv.VirtualLinksTo
+           occurrences: [0, 0]
+      - virtual_link_s1:   
+           capability: tosca.capabilities.nfv.VirtualLinkable
+           relationship: tosca.relationships.nfv.VirtualLinksTo
+           occurrences: [0, 1]
+      - virtual_link_sgi:  
+          capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo
+          occurrences: [0, 1]
+      - virtual_link_mgt1: 
+          capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo
+          occurrences: [0, 1]
+      - virtual_link_mgt2: 
+          capability: tosca.capabilities.nfv.VirtualLinkable
+          relationship: tosca.relationships.nfv.VirtualLinksTo
+          occurrences: [0, 1]
+
