@@ -11,7 +11,8 @@ jobs:
           python-version: '3.10'
       - uses: docker-practice/actions-setup-docker@master
         timeout-minutes: 12
-      - run: |
+      - name: Unit tests
+        run: |
           cd bin
           bash ./build.sh
           cd ../tests
