@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-23 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -23,7 +23,7 @@ ENV LANG en_US.UTF-8
 RUN apk add --update --no-cache \
          openjdk8-jre \
          graphviz \
-         ttf-freefont ttf-droid ttf-droid-nonlatin \
+         ttf-freefont font-droid font-droid-nonlatin \
          curl \
     && curl -L https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar -o /plantuml.jar \
     && apk del curl
