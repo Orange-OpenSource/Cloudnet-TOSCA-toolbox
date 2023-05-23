@@ -10,7 +10,7 @@ idna==2.6
 networkx==2.0
 pika==0.9.14
 proxy-tools==0.1.0
-requests==2.20.0
+requests==2.31.0
 requests-toolbelt==0.8.0
 urllib3==1.26.5
 wsgiref==0.1.2
