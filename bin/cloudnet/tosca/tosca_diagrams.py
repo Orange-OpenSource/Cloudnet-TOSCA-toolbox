@@ -140,7 +140,6 @@ class ToscaDiagramGenerator(Generator):
                         )
                         if requirement_node is None:
                             continue
-                        capability_found = False
                         requirement_node_template = node_templates.get(requirement_node)
                         if requirement_node_template is None:
                             self.error(
@@ -148,18 +147,15 @@ class ToscaDiagramGenerator(Generator):
                                 requirement_node,
                             )
                             continue
-                        for capability_name, capability_yaml in syntax.get_capabilities(
-                            self.type_system.merge_node_type(
-                                syntax.get_type(requirement_node_template)
+                        cname = requirement_yaml.get("capability") if isinstance(requirement_yaml, dict) else None
+                        compatible_capabilities = \
+                            self.type_system.get_compatible_capabilities(
+                                    syntax.get_type(requirement_node_template),
+                                    cname,
+                                    requirement_capability if cname is None else cname
                             )
-                        ).items():
-                            if self.type_system.is_derived_from(
-                                syntax.get_capability_type(capability_yaml),
-                                requirement_capability,
-                            ):
-                                capability_found = True
-                                break
-                        if capability_found:
+                        if len(compatible_capabilities) == 1:
+                            capability_name = compatible_capabilities[0]
                             target_capability_ids[id(requirement)] = (
                                 self.get_node_name_id(requirement_node)
                                 + "_capability_"

@@ -689,11 +689,12 @@ class PlantUMLGenerator(Generator):
                             requirement_name
                         )
                     )
+                    cname = requirement_yaml.get("capability") if isinstance(requirement_yaml, dict) else None
                     compatible_capabilities = \
                         self.type_system.get_compatible_capabilities(
                                 node_templates[requirement_node]["type"],
-                                None,
-                                requirement_capability_type
+                                cname,
+                                requirement_capability_type if cname is None else cname
                         )
                     if len(compatible_capabilities) > 0:
                         used_capabilities[requirement_node].add(compatible_capabilities[0])
@@ -904,18 +905,15 @@ class PlantUMLGenerator(Generator):
                             requirement_name
                         )
                     )
-                    capability_found = False
-                    for (capability_name, capability_yaml) in get_dict(
-                        self.type_system.merge_node_type(requirement_node_type_name),
-                        CAPABILITIES,
-                    ).items():
-                        if self.type_system.is_derived_from(
-                            syntax.get_capability_type(capability_yaml),
-                            requirement_capability,
-                        ):
-                            capability_found = True
-                            break
-                    if capability_found:
+                    cname = requirement_yaml.get("capability") if isinstance(requirement_yaml, dict) else None
+                    compatible_capabilities = \
+                        self.type_system.get_compatible_capabilities(
+                                syntax.get_type(requirement_node_template),
+                                cname,
+                                requirement_capability if cname is None else cname
+                        )
+                    if len(compatible_capabilities) == 1:
+                        capability_name = compatible_capabilities[0]
                         target_node_uml_id = "node_" + normalize_name(requirement_node)
                         target_capability_uml_id = (
                             target_node_uml_id + "_" + normalize_name(capability_name)
