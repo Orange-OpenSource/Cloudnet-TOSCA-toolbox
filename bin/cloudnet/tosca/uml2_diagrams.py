@@ -912,7 +912,7 @@ class PlantUMLGenerator(Generator):
                                 cname,
                                 requirement_capability if cname is None else cname
                         )
-                    if len(compatible_capabilities) == 1:
+                    if len(compatible_capabilities) > 1:
                         capability_name = compatible_capabilities[0]
                         target_node_uml_id = "node_" + normalize_name(requirement_node)
                         target_capability_uml_id = (

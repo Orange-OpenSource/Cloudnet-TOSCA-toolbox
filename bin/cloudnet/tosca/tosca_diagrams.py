@@ -154,7 +154,7 @@ class ToscaDiagramGenerator(Generator):
                                     cname,
                                     requirement_capability if cname is None else cname
                             )
-                        if len(compatible_capabilities) == 1:
+                        if len(compatible_capabilities) > 0:
                             capability_name = compatible_capabilities[0]
                             target_capability_ids[id(requirement)] = (
                                 self.get_node_name_id(requirement_node)
