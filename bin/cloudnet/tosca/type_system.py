@@ -4983,7 +4983,15 @@ class TypeChecker(Checker):
         # check node
         update_requirement_node = None
         node = requirement_assignment.get(syntax.NODE)
-        if node is not None:
+        if node is None:
+            self.warning(
+                context_error_message
+                + ": "
+                + str(requirement_assignment)
+                + " - no node provided",
+                requirement_assignment,
+            )
+        else:
             node_template = (
                 self.get_topology_template().get(syntax.NODE_TEMPLATES, {}).get(node)
             )

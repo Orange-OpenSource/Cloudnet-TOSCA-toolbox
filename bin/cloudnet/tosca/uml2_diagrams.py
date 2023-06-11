@@ -684,6 +684,8 @@ class PlantUMLGenerator(Generator):
             for requirement in get_list(node_template_yaml, REQUIREMENTS):
                 for requirement_name, requirement_yaml in requirement.items():
                     requirement_node = get_requirement_node_template(requirement_yaml)
+                    if requirement_node is None:
+                        continue # skip this requirement as no node provided
                     requirement_capability_type = syntax.get_requirement_capability(
                         get_dict(merged_node_template_type, REQUIREMENTS).get(
                             requirement_name
