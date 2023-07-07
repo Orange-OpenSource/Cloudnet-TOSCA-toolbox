@@ -2101,6 +2101,7 @@ class TypeChecker(Checker):
                 )
                 node_type = self.type_system.merge_type(requirement_node)
                 capability_not_compatible = True
+                not_in_valid_source_types = False
                 for cap_name, cap_def in syntax.get_capabilities(node_type).items():
                     if self.type_system.is_derived_from(
                         syntax.get_capability_type(cap_def), requirement_capability
@@ -2115,15 +2116,21 @@ class TypeChecker(Checker):
                         ):
                             capability_not_compatible = False
                             break
+                        else:
+                            not_in_valid_source_types = True
                 if capability_not_compatible:
+                    if not_in_valid_source_types:
+                        reason = self.current_type_name + " is not in valid_source_types of " + requirement_capability
+                    else:
+                        reason = "no capability compatible with " + requirement_capability
                     self.error(
                         context_error_message
                         + ":"
                         + syntax.NODE
                         + ": "
                         + requirement_node
-                        + " - no capability compatible with "
-                        + requirement_capability,
+                        + " - "
+                        + reason,
                         requirement_node,
                     )
 
