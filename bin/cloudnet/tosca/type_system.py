@@ -2207,8 +2207,8 @@ class TypeChecker(Checker):
                 context_error_message + ":" + syntax.RELATIONSHIP,
             )
 
-            # check that capability is compatible with requirement type valid target types
-            valid_target_types = merged_definition.get(syntax.VALID_TARGET_TYPES)
+            # check that capability is compatible with requirement relationship valid target types
+            valid_target_types = merged_definition.get(syntax.VALID_TARGET_TYPES, [])
             if requirement_capability is not None and valid_target_types is not None:
                 # Check that requirement_capability is compatible with at least one
                 # requirement_relationship valid target type
