@@ -5272,7 +5272,7 @@ class TypeChecker(Checker):
             else:
                 relationship_types = (
                     self.search_relationship_types_compatible_with_capability_type(
-                        requirement_capability, cem
+                        requirement_definition.get("capability"), cem
                     )
                 )
                 if len(relationship_types) > 0:
