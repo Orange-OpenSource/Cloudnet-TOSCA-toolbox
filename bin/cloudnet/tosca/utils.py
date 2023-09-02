@@ -45,7 +45,7 @@ def short_type_name(type_name):
 
 
 def normalize_name(label):
-    for character in [".", "-", " ", ":"]:
+    for character in [".", "-", " ", ":", "[", "]"]:
         label = label.replace(character, "_")
     if label[0].isdigit():
         label = "_" + label
