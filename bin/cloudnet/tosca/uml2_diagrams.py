@@ -691,10 +691,13 @@ class PlantUMLGenerator(Generator):
                             requirement_name
                         )
                     )
+                    required_node_template = node_templates.get(requirement_node)
+                    if required_node_template is None:
+                        continue # skip this requirement as node template is unknown
                     cname = requirement_yaml.get("capability") if isinstance(requirement_yaml, dict) else None
                     compatible_capabilities = \
                         self.type_system.get_compatible_capabilities(
-                                node_templates[requirement_node]["type"],
+                                required_node_template["type"],
                                 cname,
                                 requirement_capability_type if cname is None else cname
                         )
