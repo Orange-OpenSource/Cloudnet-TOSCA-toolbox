@@ -2227,9 +2227,9 @@ class TypeChecker(Checker):
                         + ":"
                         + syntax.TYPE
                         + ": "
-                        + requirement_relationship_type_name
+                        + str(requirement_relationship_type_name)
                         + " - no valid target type compatible with "
-                        + requirement_capability,
+                        + str(requirement_capability),
                         requirement_relationship_type_name
                     )
 
@@ -5177,7 +5177,7 @@ class TypeChecker(Checker):
                         )
                 else:
                     if not self.type_system.is_relationship_type_compatible_with_capability_type(
-                        relationship_type, requirement_capability
+                        relationship_type, requirement_definition.get("capability")
                     ):
                         self.error(
                             cem
@@ -6626,33 +6626,42 @@ class TypeChecker(Checker):
                 )
                 return
 
-        def check_value(value, cem):
+        def check_value(value, msg, cem):
             self.warning(
-                cem + ": " + str(value) + " - deprecated since TOSCA 1.3",
+                cem + ": " + str(value) + " - " + msg + " deprecated since TOSCA 1.3",
                 value
             )
-            self.check_value_assignment(property_name, value, property_definition, cem)
+#            self.check_value_assignment(property_name, value, property_definition, cem)
 
         if isinstance(property_mapping, dict):
             # multi-line grammar
             mapping = property_mapping.get("mapping")
             if mapping != None:
-                # <property_name>:
-                #   mapping: [ <input_name> ]
-                check_mapping(mapping, context_error_message + ":mapping")
-            value = property_mapping.get("value")
-            if value != None:
-                # <property_name>:
-                #   value: <property_value> # This use is deprecated
-                check_value(value, context_error_message + ":value")
-        elif isinstance(property_mapping, list):
+                if isinstance(mapping, list) and len(mapping) == 1:
+                    # <property_name>:
+                    #   mapping: [ <input_name> ]
+                    check_mapping(mapping, context_error_message + ":mapping")
+                else:
+                    self.error(
+                        cem + ":mapping: " + str(mapping) + " - [ <input_name ] expected",
+                        mapping
+                    )
+            else:
+                value = property_mapping.get("value")
+                if "value" in property_mapping:
+                    # <property_name>:
+                    #   value: <property_value> # This use is deprecated
+                    check_value(value, "value: <property_value>", context_error_message + ":value")
+                else:
+                    check_value(property_mapping, "<property_name>: <property_value>", context_error_message)
+        elif isinstance(property_mapping, list) and len(property_mapping) == 1:
             # single-line grammar
             # <property_name>: [ <input_name> ]
             check_mapping(property_mapping, context_error_message)
         else:
             # single-line grammar
             # <property_name>: <property_value> # This use is deprecated
-            check_value(property_mapping, context_error_message)
+            check_value(property_mapping, "<property_name>: <property_value>", context_error_message)
 
     def check_capability_mapping(
         self,
