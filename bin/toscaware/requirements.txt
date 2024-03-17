@@ -15,7 +15,7 @@
 
 # Required Python packages
 jsonschema[format] # JSON schema validation
-PyYAML==5.3.1      # YAML parser
+PyYAML==5.4      # YAML parser
 #PyYAML==5.4.1      # pip install failed!
 #PyYAML==6.0.1      # pip install successed but toolchain not tested!
 requests           # HTTP requests
