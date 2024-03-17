@@ -17,30 +17,36 @@
 Alloy:
   # Target directory where Alloy files are generated.
   target-directory: RESULTS/Alloy
+  generation: true
 
 # Configuration of the declarative workflow generator.
 DeclarativeWorkflows:
   # Target directory where declarative workflows are generated.
   target-directory: RESULTS/DeclarativeWorkflows
+  generation: false
 
 # Configuration of the network diagram generator.
 nwdiag:
   # Target directory where network diagrams are generated.
   target-directory: RESULTS/NetworkDiagrams
+  generation: true
 
 # Configuration of the TOSCA diagram generator.
 tosca_diagrams:
   # Target directory where network diagrams are generated.
   target-directory: RESULTS/ToscaDiagrams
+  generation: true
 
 # Configuration of the UML2 diagram generator.
 UML2:
   # Target directory where UML2 diagrams are generated.
   target-directory: RESULTS/Uml2Diagrams
+  generation: true
 
 HOT:
   # Target directory where HOT templates are generated.
   target-directory: RESULTS/HOT
+  generation: true
 
 # Logging configuration.
 logging:
