@@ -6,7 +6,7 @@ chardet==3.0.4
 cloudify-plugins-common==4.2
 cloudify-rest-client==4.2
 decorator==4.1.2
-idna==2.6
+idna==3.7
 networkx==2.0
 pika==0.9.14
 proxy-tools==0.1.0
