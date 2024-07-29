@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-24 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -583,7 +583,7 @@ class SyntaxChecker(Checker):
             self.warning(
                 "tosca_definitions_version: "
                 + default_tosca_definitions_version
-                + " used instead of",
+                + " used by default",
                 template_yaml,
             )
             tosca_definitions_version = default_tosca_definitions_version
@@ -608,7 +608,7 @@ class SyntaxChecker(Checker):
             self.warning(
                 "tosca_definitions_version: "
                 + default_tosca_definitions_version
-                + " used instead of",
+                + " used by default",
                 tosca_definitions_version,
             )
             schema_file = self.get_mapping(
