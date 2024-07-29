@@ -279,6 +279,10 @@ class WorkflowGenerator(object):
                         {'call_operation': interface_name + '.' + operation_name }
                     ],
                 }
+                if(steps.get(step_name) is None):
+                    # Should not happen but sometimes this happens!
+                    # So skip following code
+                    continue
                 on_success = steps[step_name].get("on_success")
                 if operator == "after":
                     if on_success is None:
