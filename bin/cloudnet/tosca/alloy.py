@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-24 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -646,7 +646,7 @@ class AbstractAlloySigGenerator(Generator):
                     context_error_message + ": " + str(value) + " - boolean expected",
                     value,
                 )
-                return False
+                return "False"
             return str(value).lower()
 
         elif value_type == "integer":
@@ -707,7 +707,7 @@ class AbstractAlloySigGenerator(Generator):
                     + " expected",
                     value,
                 )
-                return value
+                return str(value)
             scalar_value, scalar_unit = self.split_scalar_unit(
                 value, context_error_message
             )
@@ -4163,9 +4163,12 @@ class AlloyGenerator(AbstractAlloySigGenerator):
                 # if import_file.endswith('.yml') or import_file.endswith('.yaml'):
                 #    import_file = import_file[:import_file.rfind('.')] # remove YAML extension.
                 # open_file = utils.normalize_name(import_file)
-                imported_template = self.tosca_service_template.imports(import_file)
-                open_file = self.compute_filename(imported_template)
-                self.generate(Alloy.OPEN, open_file)
+                try:
+                    imported_template = self.tosca_service_template.imports(import_file)
+                    open_file = self.compute_filename(imported_template)
+                    self.generate(Alloy.OPEN, open_file)
+                except FileNotFoundError:
+                    pass
             self.generate()
 
         #
