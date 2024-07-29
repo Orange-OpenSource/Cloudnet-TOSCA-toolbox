@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2021-22 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2021-24 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -341,17 +341,16 @@ class Relationship(object):
                  requirement, \
                  relationship_id):
         # store parameters
-#TBR        self.topology_template = topology_template
         self.source_node_template_name = node_template_name
-#TBR        self.source_node_template = node_template
         self.source_node_template_type = node_template_type
         self.source_requirement_name = requirement_name
-#TBR        self.source_requirement = requirement
         self.id = relationship_id
         # get target node template name
         self.target_node_template_name = \
             syntax.get_requirement_node_template(requirement)
-        assert self.target_node_template_name is not None
+        if(self.target_node_template_name is None):
+            # Should not be None so it is unknown node template
+            self.target_node_template_name = "UNKNOWN_NODE"
 
         # compute the relationship type name and interfaces
         node_type_requirements = syntax.get_requirements_dict(node_template_type)
