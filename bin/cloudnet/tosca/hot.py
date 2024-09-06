@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-24 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -17,6 +17,7 @@ import logging  # for logging purposes.
 
 import cloudnet.tosca.configuration as configuration
 import cloudnet.tosca.syntax as syntax
+import cloudnet.tosca.type_system as type_system
 from cloudnet.tosca.processors import Generator
 from cloudnet.tosca.syntax import *  # TODO remove later
 from cloudnet.tosca.utils import split_scalar_unit
@@ -451,30 +452,20 @@ class HOTGenerator(Generator):
                 "      # TODO: Translate ", property_name, ": ", property_value, sep=""
             )
 
-    def sizeInMB(self, scalar_size):
+    def convert_scaler_size(self, scalar_size, to_unit):
         size, unit = split_scalar_unit(scalar_size)
+        result = round(
+                    size * type_system.SCALAR_SIZE_UNITS[unit]
+                    / type_system.SCALAR_SIZE_UNITS[to_unit]
+                  )
+        self.info("Converting %s to %s %s" % (scalar_size, result, to_unit))
+        return result
 
-        if unit == "MB":
-            return size
-        if unit == "MiB":
-            return int(size / 1.024)
-        if unit == "GB":
-            return size * 1000
-        else:
-            self.error(
-                " - Do not know how to convert " + scalar_size + " to MB", scalar_size
-            )
-            return "1 # TODO: " + scalar_size
+    def sizeInMB(self, scalar_size):
+        return self.convert_scaler_size(scalar_size, "MB")
 
     def sizeInGB(self, scalar_size):
-        size, unit = split_scalar_unit(scalar_size)
-        if unit == "GB":
-            return size
-        else:
-            self.error(
-                " - Do not know how to convert " + scalar_size + " to GB", scalar_size
-            )
-            return "1 # TODO: " + scalar_size
+        return self.convert_scaler_size(scalar_size, "GB")
 
     def generate_NS(self, ns_name, ns_yaml):
         self.generate_hot_template_ressource(ns_name, ns_yaml)
