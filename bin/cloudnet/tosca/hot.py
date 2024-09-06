@@ -14,6 +14,7 @@
 ######################################################################
 
 import logging  # for logging purposes.
+import math # for ceil function.
 
 import cloudnet.tosca.configuration as configuration
 import cloudnet.tosca.syntax as syntax
@@ -454,7 +455,7 @@ class HOTGenerator(Generator):
 
     def convert_scaler_size(self, scalar_size, to_unit):
         size, unit = split_scalar_unit(scalar_size)
-        result = round(
+        result = math.ceil(
                     size * type_system.SCALAR_SIZE_UNITS[unit]
                     / type_system.SCALAR_SIZE_UNITS[to_unit]
                   )
