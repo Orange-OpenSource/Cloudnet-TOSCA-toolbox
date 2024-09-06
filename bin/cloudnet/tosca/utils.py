@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-24 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -15,7 +15,7 @@
 
 import re
 
-SCALAR_UNIT_RE = re.compile("^([0-9]+(\.[0-9]+)?)( )*([A-Za-z]+)$")
+SCALAR_UNIT_RE = re.compile("^([0-9]+(\\.[0-9]+)?)( )*([A-Za-z]+)$")
 
 
 def split_scalar_unit(scalar):

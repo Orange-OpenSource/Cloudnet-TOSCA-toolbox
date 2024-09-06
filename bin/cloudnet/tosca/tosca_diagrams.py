@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-24 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -185,7 +185,7 @@ class ToscaDiagramGenerator(Generator):
                 node_name,
                 ": ",
                 short_type_name(node_type),
-                '|\l\l\l\l" shape=record style=rounded]',
+                '|\\l\\l\\l\\l" shape=record style=rounded]',
                 sep="",
             )
             for capability_name, capability_yaml in syntax.get_capabilities(

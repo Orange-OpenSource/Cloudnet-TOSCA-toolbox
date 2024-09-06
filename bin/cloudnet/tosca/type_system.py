@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020-22 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-24 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -346,7 +346,7 @@ def array_to_string_with_or_separator(a_list):
     return str(a_list).replace("['", "").replace("']", "").replace("', '", " or ")
 
 
-SCALAR_UNIT_RE = re.compile("^([0-9]+(\.[0-9]+)?)( )*([A-Za-z]+)$")
+SCALAR_UNIT_RE = re.compile("^([0-9]+(\\.[0-9]+)?)( )*([A-Za-z]+)$")
 
 
 def split_scalar_unit(a_string, units):
@@ -380,7 +380,7 @@ def normalize_scalar_unit(a_string, units):
     return scalar * units.get(unit)
 
 
-VERSION_RE = re.compile("^([0-9]+)\.([0-9]+)(((\.[0-9]+)?)(\.[A-Za-z]+(\-[0-9]+)?)?)?$")
+VERSION_RE = re.compile("^([0-9]+)\\.([0-9]+)(((\\.[0-9]+)?)(\\.[A-Za-z]+(\\-[0-9]+)?)?)?$")
 
 
 def check_version(a_string):
