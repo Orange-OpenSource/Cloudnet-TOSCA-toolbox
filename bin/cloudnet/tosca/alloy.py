@@ -2299,7 +2299,11 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
         }
 
     # NOTE: Following is a heuristic to compute the scope of LG locations.
-    def get_required_locations(self, node_type_name, default_result=1):
+    def get_required_locations(self, node_type_name, default_result=1, already_visited_node_type_names = {}):
+#        print(f"get_required_locations node_type_name={node_type_name}")
+        if node_type_name in already_visited_node_type_names:
+            return default_result
+        already_visited_node_type_names[node_type_name] = node_type_name
         if not node_type_name:
             return default_result
         node_type_yaml = self.type_system.get_type(node_type_name)
@@ -2319,7 +2323,8 @@ class NodeTypeGenerator(ToscaComponentTypeGenerator):
                         )
                         if requirement_node is not None:
                             result = result + self.get_required_locations(
-                                requirement_node
+                                requirement_node,
+                                already_visited_node_type_names=already_visited_node_type_names
                             )
 
         # Iterate over derived_from
