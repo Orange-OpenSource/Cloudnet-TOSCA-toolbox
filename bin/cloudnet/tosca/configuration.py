@@ -2,7 +2,7 @@
 #
 # Software Name : Cloudnet TOSCA toolbox
 # Version: 1.0
-# SPDX-FileCopyrightText: Copyright (c) 2020 Orange
+# SPDX-FileCopyrightText: Copyright (c) 2020-25 Orange
 # SPDX-License-Identifier: Apache-2.0
 #
 # This software is distributed under the Apache License 2.0
@@ -37,7 +37,7 @@ def load(config_files=[CONFIGURATION_FILE]):
             # Log the configuration file loading.
             LOGGER.info(config_file + " loaded.")
             with open(config_file, "r") as stream:
-                content = yaml.load(stream, Loader=yaml.FullLoader)
+                content = yaml.load(stream, Loader=yaml.SafeLoader)
                 configuration = merge_dict(configuration, content)
 
     # Return the configuration.
