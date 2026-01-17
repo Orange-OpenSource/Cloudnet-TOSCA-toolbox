@@ -1,7 +1,7 @@
 # What is Cloudnet TOSCA toolbox?
 
 Cloudnet TOSCA toolbox is an OASIS TOSCA processor for checking and adjusting TOSCA service templates.
-TOSCA templates specify service structure and the procedure governing their life cycle. Services are typically application, infrastructure or network services.  
+TOSCA templates specify service structure and the procedure governing their lifecycle. Services are typically application, infrastructure or network services.  
 This set of tools is intended for syntax and type checking of any service templates written in TOSCA, including e.g. [NFV descriptors](https://forge.etsi.org/rep/nfv/SOL001).  
 It also allows for visualizing the associated architecture in different ways (UML, TOSCA, network diagrams). Have a look to [this video](https://www.youtube.com/watch?v=6yt-mqzbos4).  
 A web portal based on this code is available at this url: [https://toscatoolbox.orange.com](https://toscatoolbox.orange.com).
@@ -13,6 +13,8 @@ A web portal based on this code is available at this url: [https://toscatoolbox.
 - [Network diagrams generation](#then-to-generate-network-diagrams-type)<br />
 - [TOSCA diagrams generation](#to-get-tosca-diagrams-use-the-command)<br />
 - [UML diagrams generation](#and-to-generate-uml-diagrams)<br />
+- [Using TOSCA script from GitHub actions](#using-toscatoolbox-in-github-actions)<br />
+- [Code status](#status)<br />
 
 ## Prerequisites
 
@@ -62,7 +64,7 @@ will :
 - translate it into the MIT Alloy language,  
 - generate .dot, .nwdiag and .plantuml templates.  
 
-## Then to generate network diagrams, type:  
+## Then to generate network diagrams, type
 
 ```sh
 generate_network_diagrams Results/NetworkDiagrams/*.nwdiag
@@ -70,7 +72,7 @@ generate_network_diagrams Results/NetworkDiagrams/*.nwdiag
 
 ![Network diagram example](/docs/pictures/OASIS-TOSCA-1.3_example-8.6.1_nw.png)
 
-## To get TOSCA diagrams, use the command:  
+## To get TOSCA diagrams, use the command
 
 ```sh
 generate_tosca_diagrams Results/ToscaDiagrams/*.dot
@@ -78,10 +80,19 @@ generate_tosca_diagrams Results/ToscaDiagrams/*.dot
 
 ![TOSCA diagram example](/docs/pictures/OASIS-TOSCA-1.3_example-8.6.1_tosca.png)
 
-## And to generate UML diagrams:  
+## And to generate UML diagrams
 
 ```sh
 generate_uml2_diagrams Results/Uml2Diagrams/*.plantuml
 ```
 
 ![UML diagram example](/docs/pictures/OASIS-TOSCA-1.3_example-8.6.1_uml2.png)
+
+## Using ToscaToolBox in GitHub actions
+
+This GitHub project [actionTOSCAToolbox](https://github.com/JLCoulin/actionTOSCAToolbox) demonstrate how to launch a TSOSCA syntax checking from the actions.
+
+## Status
+
+[![unit-tests](https://github.com/JLCoulin/Cloudnet-TOSCA-toolbox/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/JLCoulin/Cloudnet-TOSCA-toolbox/actions/workflows/unit-tests.yml)
+[![Lint Code Base](https://github.com/JLCoulin/Cloudnet-TOSCA-toolbox/actions/workflows/linter.yml/badge.svg)](https://github.com/JLCoulin/Cloudnet-TOSCA-toolbox/actions/workflows/linter.yml)
