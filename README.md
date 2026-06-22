@@ -69,7 +69,7 @@ generate_network_diagrams Results/NetworkDiagrams/*.nwdiag
 
 ![Network diagram example](/docs/pictures/OASIS-TOSCA-1.3_example-8.6.1_nw.png)
 
-## To get TOSCA diagrams, use the command 
+## To get TOSCA diagrams, use the command
 
 ```sh
 generate_tosca_diagrams Results/ToscaDiagrams/*.dot
