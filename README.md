@@ -61,7 +61,7 @@ will :
 - translate it into the MIT Alloy language,  
 - generate .dot, .nwdiag and .plantuml templates.  
 
-## Then to generate network diagrams, type:  
+## Then to generate network diagrams, type
 
 ```sh
 generate_network_diagrams Results/NetworkDiagrams/*.nwdiag
@@ -69,7 +69,7 @@ generate_network_diagrams Results/NetworkDiagrams/*.nwdiag
 
 ![Network diagram example](/docs/pictures/OASIS-TOSCA-1.3_example-8.6.1_nw.png)
 
-## To get TOSCA diagrams, use the command:  
+## To get TOSCA diagrams, use the command 
 
 ```sh
 generate_tosca_diagrams Results/ToscaDiagrams/*.dot
@@ -77,7 +77,7 @@ generate_tosca_diagrams Results/ToscaDiagrams/*.dot
 
 ![TOSCA diagram example](/docs/pictures/OASIS-TOSCA-1.3_example-8.6.1_tosca.png)
 
-## And to generate UML diagrams:  
+## And to generate UML diagrams
 
 ```sh
 generate_uml2_diagrams Results/Uml2Diagrams/*.plantuml
