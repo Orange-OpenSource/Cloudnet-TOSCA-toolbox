@@ -12,6 +12,8 @@ It also allows for visualizing the associated architecture in different ways (UM
 - [Network diagrams generation](#then-to-generate-network-diagrams-type)<br />
 - [TOSCA diagrams generation](#to-get-tosca-diagrams-use-the-command)<br />
 - [UML diagrams generation](#and-to-generate-uml-diagrams)<br />
+- [Using TOSCA script from GitHub actions](#using-toscatoolbox-in-github-actions)<br />
+- [Code status](#status)<br />
 
 ## Prerequisites
 
@@ -84,3 +86,12 @@ generate_uml2_diagrams Results/Uml2Diagrams/*.plantuml
 ```
 
 ![UML diagram example](/docs/pictures/OASIS-TOSCA-1.3_example-8.6.1_uml2.png)
+
+## Using ToscaToolBox in GitHub actions
+
+This GitHub project [actionTOSCAToolbox](https://github.com/JLCoulin/actionTOSCAToolbox) demonstrate how to launch a TSOSCA syntax checking from the actions.
+
+## Status
+
+[![unit-tests](https://github.com/JLCoulin/Cloudnet-TOSCA-toolbox/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/JLCoulin/Cloudnet-TOSCA-toolbox/actions/workflows/unit-tests.yml)
+[![Lint Code Base](https://github.com/JLCoulin/Cloudnet-TOSCA-toolbox/actions/workflows/linter.yml/badge.svg)](https://github.com/JLCoulin/Cloudnet-TOSCA-toolbox/actions/workflows/linter.yml)
